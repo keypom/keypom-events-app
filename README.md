@@ -5,10 +5,10 @@
 
 <div align="center">
 
-<h1 style="font-size: 2.5rem; font-weight: bold;">Project Title</h1>
+<h1 style="font-size: 2.5rem; font-weight: bold;">Keypom [Redacted] Event App</h1>
 
   <p>
-    <strong>This is a basic project template for new Build DAO projects</strong>
+    <strong>Modular PWA with Keypom ticketing for <a href="https://redactedbangkok.ai/" target="_blank">[Redacted] Event</a>.</strong>
   </p>
 
 </div>
