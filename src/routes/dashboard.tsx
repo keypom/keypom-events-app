@@ -1,10 +1,10 @@
 import { Heading, Link } from "@chakra-ui/react";
 
-export function Home() {
+export function Dashboard() {
   return (
     <div>
       <Heading>Dashboard</Heading>
-      <Link href="/conference">Conference</Link>
+      <Link href="/">Home</Link>
     </div>
   );
 }

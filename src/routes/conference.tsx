@@ -4,7 +4,7 @@ export function Conference() {
   return (
     <div>
       <Heading>Conference</Heading>
-      <Link href="/">Home</Link>
+      <Link href="/dashboard">Dashboard</Link>
     </div>
   );
 }

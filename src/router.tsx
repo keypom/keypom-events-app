@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Home } from "./routes/home";
+import { Conference } from "./routes/conference";
 import { Root } from "./routes/layouts/root";
 import ErrorPage from "./error-page";
-import { Conference } from "./routes/conference";
+import { Dashboard } from "./routes/dashboard";
 
 const router = createBrowserRouter([
   {
@@ -13,11 +13,11 @@ const router = createBrowserRouter([
       {
         path: "/",
         index: true,
-        element: <Home />,
+        element: <Conference />,
       },
       {
-        path: "/conference",
-        element: <Conference />,
+        path: "/dashboard",
+        element: <Dashboard />,
       },
     ],
   },
