@@ -58,9 +58,11 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Playwright dependencies
         run: |
-          pnpm exec playwright install-deps
-          pnpm exec playwright install
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+          pnpm exec playwright install --with-deps
+      - name: Install system dependencies for WebKit
+        # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
+        if: ${{ inputs.browser == 'webkit' && steps.playwright-cache.outputs.cache-hit == 'true' }}
+        run: pnpm exec playwright install-deps webkit
       - name: Run tests
         run: |
           pnpm exec playwright test
