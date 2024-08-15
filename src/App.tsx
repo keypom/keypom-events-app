@@ -45,9 +45,7 @@ function App() {
           Edit <Code>src/App.tsx</Code> and save to test HMR
         </Text>
       </Flex>
-      <Text className="read-the-docs">
-        Click on the NEAR Builders logo to learn more
-      </Text>
+      <Text>Click on the NEAR Builders logo to learn more</Text>
     </VStack>
   );
 }
