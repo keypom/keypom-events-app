@@ -59,10 +59,6 @@ jobs:
       - name: Install Playwright dependencies
         run: |
           pnpm exec playwright install --with-deps
-      - name: Install system dependencies for WebKit
-        # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
-        if: ${{ inputs.browser == 'webkit' && steps.playwright-cache.outputs.cache-hit == 'true' }}
-        run: pnpm exec playwright install-deps webkit
       - name: Run tests
         run: |
           pnpm exec playwright test
