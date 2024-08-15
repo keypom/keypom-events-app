@@ -1,35 +1,54 @@
 import { useState } from "react";
-import "./App.css";
+import {
+  Box,
+  Image,
+  Heading,
+  Button,
+  Link,
+  Text,
+  Code,
+  VStack,
+  Flex,
+} from "@chakra-ui/react";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <>
-      <div>
-        <a href="https://nearbuilders.org" target="_blank">
-          <img
-            src={
-              "https://builders.mypinata.cloud/ipfs/QmWt1Nm47rypXFEamgeuadkvZendaUvAkcgJ3vtYf1rBFj"
-            }
-            className="logo"
+    <VStack
+      spacing={8}
+      padding={8}
+      justifyContent={"center"}
+      minHeight={"100vh"}
+    >
+      <Box>
+        <Link href="https://nearbuilders.org" isExternal>
+          <Image
+            src="https://builders.mypinata.cloud/ipfs/QmWt1Nm47rypXFEamgeuadkvZendaUvAkcgJ3vtYf1rBFj"
             alt="Near Builders logo"
+            width="192px"
+            padding="1.5em"
+            willChange={"filter"}
+            transition={"filter 300ms"}
+            _hover={{
+              filter: "drop-shadow(0 0 2em #646cffaa)",
+            }}
           />
-        </a>
-      </div>
-      <h1>NEAR Builders</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        </Link>
+      </Box>
+      <Heading>NEAR Builders</Heading>
+      <Flex direction={"column"} gap={4} alignItems={"center"}>
+        <Button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
+        </Button>
+        <Text>
+          Edit <Code>src/App.tsx</Code> and save to test HMR
+        </Text>
+      </Flex>
+      <Text className="read-the-docs">
         Click on the NEAR Builders logo to learn more
-      </p>
-    </>
+      </Text>
+    </VStack>
   );
 }
 
