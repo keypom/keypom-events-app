@@ -36,10 +36,9 @@ function App() {
           />
         </Link>
       </Box>
-      <Heading
-      >NEAR Builders</Heading>
+      <Heading>NEAR Builders</Heading>
       <Flex direction={"column"} gap={4} alignItems={"center"}>
-        <Button   onClick={() => setCount((count) => count + 1)}>
+        <Button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </Button>
         <Text>
