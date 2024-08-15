@@ -1,4 +1,4 @@
-import { Flex, Link } from "@chakra-ui/react";
+import { Flex, Button, Container } from "@chakra-ui/react";
 
 type Route = {
   name: string;
@@ -15,14 +15,16 @@ const routes: Route[] = [
 
 export function Footer() {
   return (
-    <footer>
-      <Flex m={4} justifyContent="center" alignItems="center" as="nav" gap={2}>
-        {routes.map((route, index) => (
-          <Link key={index} href={route.href} p={2}>
-            {route.name}
-          </Link>
-        ))}
-      </Flex>
-    </footer>
+    <Container maxW={"container.sm"} p={0}>
+      <footer>
+        <Flex justifyContent="space-between" alignItems="center" as="nav">
+          {routes.map((route, index) => (
+            <Button as="a" key={index} href={route.href} variant="navigation">
+              {route.name}
+            </Button>
+          ))}
+        </Flex>
+      </footer>
+    </Container>
   );
 }
