@@ -40,7 +40,7 @@ export function Header() {
             textTransform="uppercase"
           >
             <Text
-              fontFamily="headerText"
+              fontFamily="mono"
               textAlign="center"
               fontSize={["xs", "sm"]}
               fontWeight="bold"
@@ -53,7 +53,7 @@ export function Header() {
             </Text>
             <Redacted />
             <Text
-              fontFamily="headerText"
+              fontFamily="mono"
               textAlign="center"
               fontSize={["xs", "sm"]}
               fontWeight="bold"
