@@ -1,4 +1,4 @@
-import { Flex, Button, Container, Image } from "@chakra-ui/react";
+import { Flex, Button, Image, Box } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 
 import Help from "../../assets/icon-help.svg";
@@ -24,7 +24,7 @@ const routes: Route[] = [
 export function Footer() {
   const { pathname } = useLocation();
   return (
-    <Container maxW={"container.sm"} p={0}>
+    <Box p={0} width="100%" bg="black" borderBottomRadius={"md"}>
       <footer>
         <Flex justifyContent="space-between" alignItems="center" as="nav">
           {routes.map((route, index) => (
@@ -49,6 +49,6 @@ export function Footer() {
           ))}
         </Flex>
       </footer>
-    </Container>
+    </Box>
   );
 }

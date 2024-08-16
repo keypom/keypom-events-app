@@ -1,16 +1,17 @@
-import { Box, Container, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { Redacted } from "../icons";
 
 export function Header() {
   return (
-    <Container
-      maxW={"container.sm"}
+    <Box
       p={0}
       height="60px"
       background="black"
       display={"flex"}
       alignItems={"center"}
       justifyContent={"center"}
+      bg="black"
+      borderTopRadius={"md"}
     >
       <header
         style={{
@@ -65,6 +66,6 @@ export function Header() {
           </Flex>
         </Box>
       </header>
-    </Container>
+    </Box>
   );
 }
