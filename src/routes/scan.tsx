@@ -74,6 +74,7 @@ export function Scan() {
           }}
           components={{
             finder: false,
+            audio: false,
           }}
           constraints={{
             deviceId: selectedDevice,
