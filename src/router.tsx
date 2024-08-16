@@ -9,6 +9,7 @@ import { Agenda } from "./routes/agenda";
 import { Scan } from "./routes/scan";
 import { Wallet } from "./routes/wallet";
 import { Me } from "./routes/me";
+import { Claim } from "./routes/claim";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/me",
         element: <Me />,
+      },
+      {
+        path: "/claim/:id",
+        element: <Claim />,
       },
     ],
   },

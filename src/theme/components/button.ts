@@ -2,6 +2,18 @@ import { defineStyleConfig } from "@chakra-ui/react";
 
 export const ButtonStyle = defineStyleConfig({
   variants: {
+    transparent: {
+      bg: "transparent",
+      color: "brand.400",
+      _hover: {
+        bg: "transparent",
+        color: "brand.400",
+      },
+      _active: {
+        bg: "transparent",
+        color: "brand.400",
+      },
+    },
     navigation: {
       bg: "brand.400",
       color: "black",

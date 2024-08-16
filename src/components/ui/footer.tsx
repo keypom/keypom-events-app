@@ -27,7 +27,13 @@ export function Footer() {
   return (
     <Box p={0} width="100%" bg="black" borderBottomRadius={"md"}>
       <footer>
-        <Flex justifyContent="space-between" alignItems="center" as="nav">
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          as="nav"
+          bg={"black"}
+          borderBottomRadius={"md"}
+        >
           {routes.map((route, index) => (
             <Button
               as={Link}
