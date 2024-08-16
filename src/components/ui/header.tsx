@@ -40,7 +40,7 @@ export function Header() {
             textTransform="uppercase"
           >
             <Text
-              fontFamily={"'Martin Mono', monospace"}
+              fontFamily="headerText"
               textAlign="center"
               fontSize={["xs", "sm"]}
               fontWeight="bold"
@@ -53,7 +53,7 @@ export function Header() {
             </Text>
             <Redacted />
             <Text
-              fontFamily={"'Martin Mono', monospace"}
+              fontFamily="headerText"
               textAlign="center"
               fontSize={["xs", "sm"]}
               fontWeight="bold"

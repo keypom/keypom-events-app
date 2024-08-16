@@ -14,7 +14,7 @@ export const ButtonStyle = defineStyleConfig({
       gap: 2,
       flex: "1 0 0",
       borderRadius: "md",
-      fontFamily: "'Martian Mono', monospace",
+      fontFamily: "mono",
       textAlign: "center",
       textTransform: "uppercase",
       fontSize: "xs",
