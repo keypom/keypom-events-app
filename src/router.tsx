@@ -22,10 +22,6 @@ const router = createBrowserRouter([
         element: <Conference />,
       },
       {
-        path: "/dashboard",
-        element: <Dashboard />,
-      },
-      {
         path: "/help",
         element: <Help />,
       },
@@ -46,6 +42,10 @@ const router = createBrowserRouter([
         element: <Me />,
       },
     ],
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
   },
 ]);
 
