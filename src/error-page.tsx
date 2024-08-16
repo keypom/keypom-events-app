@@ -13,7 +13,7 @@ export default function ErrorPage() {
     <VStack
       alignItems="center"
       gap={4}
-      minHeight={"100vh"}
+      minHeight={"100dvh"}
       justifyContent={"center"}
     >
       <Heading>Oops!</Heading>

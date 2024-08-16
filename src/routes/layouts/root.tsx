@@ -7,7 +7,7 @@ import { Footer } from "../../components/ui/footer";
 export function Root() {
   return (
     <Box
-      minH="100vh"
+      minH="100dvh"
       width="100%"
       display={"flex"}
       flexDirection={"column"}
@@ -29,7 +29,7 @@ export function Root() {
       }}
     >
       <Flex
-        maxH={{ base: "100vh" }}
+        maxH={{ base: "100dvh" }}
         direction={"column"}
         maxW={{ base: "100%", md: "380px" }}
         width={"100%"}
@@ -45,7 +45,7 @@ export function Root() {
           role="main"
           flexGrow={1}
           maxW={{ base: "100%", md: "380px" }}
-          maxH={{ base: "100vh", md: "700px" }}
+          maxH={{ base: "100dvh", md: "700px" }}
           width="100%"
           height="100%"
           position="relative"
