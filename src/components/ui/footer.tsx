@@ -1,16 +1,18 @@
 import { Flex, Button, Container } from "@chakra-ui/react";
+import { Account, Wallet, Help, Agenda, Scan } from "../icons";
 
 type Route = {
   name: string;
   href: string;
+  icon: React.FC;
 };
 
 const routes: Route[] = [
-  { name: "Help", href: "/help" },
-  { name: "Agenda", href: "/agenda" },
-  { name: "Scan", href: "/scan" },
-  { name: "Wallet", href: "/wallet" },
-  { name: "Me", href: "/me" },
+  { name: "Help", href: "/help", icon: Help },
+  { name: "Agenda", href: "/agenda", icon: Agenda },
+  { name: "Scan", href: "/scan", icon: Scan },
+  { name: "Wallet", href: "/wallet", icon: Wallet },
+  { name: "Me", href: "/me", icon: Account },
 ];
 
 export function Footer() {
@@ -20,7 +22,8 @@ export function Footer() {
         <Flex justifyContent="space-between" alignItems="center" as="nav">
           {routes.map((route, index) => (
             <Button as="a" key={index} href={route.href} variant="navigation">
-              {route.name}
+              <route.icon />
+              <span>{route.name}</span>
             </Button>
           ))}
         </Flex>
