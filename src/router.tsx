@@ -43,7 +43,7 @@ const router = createBrowserRouter([
         element: <Me />,
       },
       {
-        path: "/claim/:id",
+        path: "/claim/:data",
         element: <Claim />,
       },
     ],

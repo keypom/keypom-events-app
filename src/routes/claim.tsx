@@ -5,7 +5,7 @@ import { Hidden } from "../components/claim/hidden";
 import { Reveal } from "../components/claim/reveal";
 
 export function Claim() {
-  // const { id } = useParams();
+  // const { data } = useParams();
   const [revealed, setRevealed] = useState(false);
   const onReveal = () => {
     setRevealed(true);
