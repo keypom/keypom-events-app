@@ -1,5 +1,6 @@
 import { Flex, Button, Image, Box } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import Help from "../../assets/icon-help.svg";
 import Agenda from "../../assets/icon-agenda.svg";
@@ -29,9 +30,9 @@ export function Footer() {
         <Flex justifyContent="space-between" alignItems="center" as="nav">
           {routes.map((route, index) => (
             <Button
-              as="a"
+              as={Link}
               key={index}
-              href={route.href}
+              to={route.href}
               variant="navigation"
               backgroundColor={pathname === route.href ? "black" : ""}
               color={pathname === route.href ? "brand.400" : "black"}

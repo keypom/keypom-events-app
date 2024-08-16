@@ -9,6 +9,9 @@ export function Root() {
     <Box
       minH="100vh"
       width="100%"
+      display={"flex"}
+      flexDirection={"column"}
+      justifyContent={"center"}
       _before={{
         content: '""',
         position: "absolute",
@@ -26,37 +29,40 @@ export function Root() {
       }}
     >
       <Flex
-        minHeight={"100vh"}
+        maxH={{ base: "100vh" }}
         direction={"column"}
         maxW={{ base: "100%", md: "380px" }}
+        width={"100%"}
         marginX="auto"
         alignItems="center"
         justifyContent="center"
         zIndex={5}
         position="relative"
+        flexGrow="1"
       >
         <Header />
         <Box
           role="main"
           flexGrow={1}
           maxW={{ base: "100%", md: "380px" }}
-          maxH={{ base: "100vh", md: "650px" }}
-          backgroundImage="url(/background.webp)"
-          backgroundSize="cover"
-          backgroundPosition="top center"
-          backgroundRepeat="no-repeat"
+          maxH={{ base: "100vh", md: "700px" }}
           width="100%"
           height="100%"
           position="relative"
-          style={{ backgroundPositionY: "-40px" }}
+          overflowY="auto"
+          bg="black"
+          zIndex={5}
           _before={{
             content: '""',
             position: "absolute",
-            top: 0,
+            opacity: 0.5,
             left: 0,
             width: "100%",
             height: "100%",
-            bg: "black",
+            backgroundImage: "url(/background.webp)",
+            backgroundSize: "cover",
+            backgroundPosition: "top center",
+            backgroundRepeat: "no-repeat",
             zIndex: -1,
           }}
         >

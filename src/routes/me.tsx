@@ -1,10 +1,11 @@
-import { Heading, Link } from "@chakra-ui/react";
+import { Heading } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 export function Me() {
   return (
     <div>
       <Heading>Me</Heading>
-      <Link href="/">Home</Link>
+      <Link to="/">Home</Link>
     </div>
   );
 }

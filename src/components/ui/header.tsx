@@ -1,5 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { Redacted } from "../icons";
+import { Link } from "react-router-dom";
 
 export function Header() {
   return (
@@ -29,8 +30,8 @@ export function Header() {
           justifyContent={"center"}
         >
           <Flex
-            as="a"
-            href="/"
+            as={Link}
+            to="/"
             textAlign="center"
             justifyContent="center"
             alignItems="center"
