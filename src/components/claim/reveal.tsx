@@ -69,6 +69,7 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
             bg="black"
             textAlign="left"
             textTransform={"uppercase"}
+            px={4}
           >
             Claimed
           </Heading>

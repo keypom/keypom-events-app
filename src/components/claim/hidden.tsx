@@ -49,6 +49,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             color="white"
             bg="black"
             textAlign="left"
+            px={2}
           >
             Congrats!
           </Heading>
@@ -59,6 +60,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             textAlign="right"
             alignSelf={"flex-end"}
             fontSize="xl"
+            px={2}
             textTransform={"uppercase"}
           >
             You've found some {foundItem}
