@@ -18,8 +18,8 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
           height="100%"
           objectFit={"cover"}
           position="relative"
-          minH="476px"
-          minW="348px"
+          minW="100%"
+          minH="500px"
           loading="eager"
         />
         <Image
@@ -30,6 +30,8 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
           position="absolute"
           top="50%"
           left="50%"
+          minH="500px"
+          minW="100%"
           transform="translate(-50%, -50%)"
           loading="eager"
         />

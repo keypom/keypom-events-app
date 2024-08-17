@@ -19,7 +19,6 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
         objectFit={"cover"}
         loading="eager"
         minH="476px"
-        minW="348px"
       />
       <VStack
         position="absolute"

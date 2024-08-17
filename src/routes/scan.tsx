@@ -9,7 +9,6 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { PageHeading } from "../components/ui/page-heading";
-
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
 import { useState } from "react";
 import Flip from "../assets/icon-flip.svg";
