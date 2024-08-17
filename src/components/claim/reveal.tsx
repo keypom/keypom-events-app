@@ -18,6 +18,9 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
           height="100%"
           objectFit={"cover"}
           position="relative"
+          minH="476px"
+          minW="348px"
+          loading="eager"
         />
         <Image
           src={ClaimShapes}
@@ -28,6 +31,7 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
           top="50%"
           left="50%"
           transform="translate(-50%, -50%)"
+          loading="eager"
         />
       </Box>
       <VStack

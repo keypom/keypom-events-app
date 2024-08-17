@@ -45,6 +45,10 @@ export function Footer() {
             >
               <Image
                 src={route.icon}
+                loading="eager"
+                height="24px"
+                width="24px"
+                objectFit="cover"
                 filter={
                   pathname === route.href
                     ? "brightness(0) saturate(100%) invert(70%) sepia(28%) saturate(2698%) hue-rotate(106deg) brightness(99%) contrast(101%);"

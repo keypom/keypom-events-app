@@ -1,11 +1,12 @@
-// import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState } from "react";
 
 import { Hidden } from "../components/claim/hidden";
 import { Reveal } from "../components/claim/reveal";
 
 export function Claim() {
-  // const { data } = useParams();
+  const { data } = useParams();
+  console.log(data);
   const [revealed, setRevealed] = useState(false);
   const onReveal = () => {
     setRevealed(true);

@@ -12,7 +12,15 @@ interface HiddenProps {
 export function Hidden({ foundItem, onReveal }: HiddenProps) {
   return (
     <Box mt="64px" position="relative" p={4}>
-      <Image src={Boxes} width="100%" height="100%" objectFit={"cover"} />
+      <Image
+        src={Boxes}
+        width="100%"
+        height="100%"
+        objectFit={"cover"}
+        loading="eager"
+        minH="476px"
+        minW="348px"
+      />
       <VStack
         position="absolute"
         top="50%"

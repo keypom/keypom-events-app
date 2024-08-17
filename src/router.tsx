@@ -3,13 +3,6 @@ import { Root } from "./routes/layouts/root";
 import ErrorPage from "./error-page";
 
 import { Conference } from "./routes/conference";
-import { Dashboard } from "./routes/dashboard";
-import { Help } from "./routes/help";
-import { Agenda } from "./routes/agenda";
-import { Scan } from "./routes/scan";
-import { Wallet } from "./routes/wallet";
-import { Me } from "./routes/me";
-import { Claim } from "./routes/claim";
 
 const router = createBrowserRouter([
   {
@@ -24,33 +17,54 @@ const router = createBrowserRouter([
       },
       {
         path: "/help",
-        element: <Help />,
+        async lazy() {
+          const { Help } = await import("./routes/help");
+          return { Component: Help };
+        },
       },
       {
         path: "/agenda",
-        element: <Agenda />,
+        async lazy() {
+          const { Agenda } = await import("./routes/agenda");
+          return { Component: Agenda };
+        },
       },
       {
         path: "/scan",
-        element: <Scan />,
+        async lazy() {
+          const { Scan } = await import("./routes/scan");
+          return { Component: Scan };
+        },
       },
       {
         path: "/wallet",
-        element: <Wallet />,
+        async lazy() {
+          const { Wallet } = await import("./routes/wallet");
+          return { Component: Wallet };
+        },
       },
       {
         path: "/me",
-        element: <Me />,
+        async lazy() {
+          const { Me } = await import("./routes/me");
+          return { Component: Me };
+        },
       },
       {
         path: "/claim/:data",
-        element: <Claim />,
+        async lazy() {
+          const { Claim } = await import("./routes/claim");
+          return { Component: Claim };
+        },
       },
     ],
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    async lazy() {
+      const { Dashboard } = await import("./routes/dashboard");
+      return { Component: Dashboard };
+    },
   },
 ]);
 
