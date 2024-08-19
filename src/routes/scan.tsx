@@ -69,7 +69,7 @@ export function Scan() {
       <VStack spacing={8}>
         <Scanner
           onScan={(result) => {
-            navigate(`/claim/${result[0].rawValue}`);
+            navigate(`/scan/${result[0].rawValue}`);
           }}
           components={{
             finder: false,
@@ -104,6 +104,7 @@ export function Scan() {
           width="100%"
           height="220px"
           objectFit={"cover"}
+          loading="eager"
           position="absolute"
           top="0"
           left="0"

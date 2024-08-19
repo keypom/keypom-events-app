@@ -37,6 +37,13 @@ const router = createBrowserRouter([
         },
       },
       {
+        path: "/scan/:data",
+        async lazy() {
+          const { Claim } = await import("./routes/scan/claim");
+          return { Component: Claim };
+        },
+      },
+      {
         path: "/wallet",
         async lazy() {
           const { Wallet } = await import("./routes/wallet");
@@ -48,13 +55,6 @@ const router = createBrowserRouter([
         async lazy() {
           const { Me } = await import("./routes/me");
           return { Component: Me };
-        },
-      },
-      {
-        path: "/claim/:data",
-        async lazy() {
-          const { Claim } = await import("./routes/claim");
-          return { Component: Claim };
         },
       },
     ],
