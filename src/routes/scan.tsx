@@ -11,7 +11,7 @@ import {
 import { PageHeading } from "../components/ui/page-heading";
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
 import { useState } from "react";
-import Flip from "/assets/icon-flip.svg";
+import { FlipIcon } from "../components/icons";
 import RedactedExpression from "/redacted-expression.webp";
 import { useNavigate } from "react-router-dom";
 
@@ -45,7 +45,7 @@ const CameraSwitchButton = ({
         color: "black",
       }}
     >
-      <Image src={Flip} width="24px" height="24px" objectFit={"cover"} />
+      <FlipIcon width={24} height={24} color={"black"} />
     </Button>
   );
 };

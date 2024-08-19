@@ -1,7 +1,7 @@
 import { Box, Heading, Image, VStack, Text, Button } from "@chakra-ui/react";
-import Help from "/assets/icon-help.svg";
-import Boxes from "//boxes-background.webp";
-import Arrow from "/assets/icon-arrow.svg";
+import Boxes from "/boxes-background.webp";
+
+import { HelpIcon, ArrowIcon } from "../../components/icons";
 
 interface HiddenProps {
   foundItem: string;
@@ -36,14 +36,10 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
           alignItems={"center"}
           justifyContent={"center"}
         >
-          <Image
-            src={Help}
-            width="128px"
-            height="128px"
-            filter="
-          brightness(0) saturate(100%) invert(70%) sepia(28%) saturate(2698%) hue-rotate(106deg) brightness(99%) contrast(101%);
-          "
-            objectFit={"cover"}
+          <HelpIcon
+            width={128}
+            height={128}
+            color={"var(--chakra-colors-brand-400)"}
           />
         </Box>
         <VStack alignItems="flex-start" gap={0} width={"100%"}>
@@ -107,7 +103,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             }}
           >
             <span>Reveal & Claim</span>
-            <Image
+            {/* <Image
               src={Arrow}
               width="24px"
               height="24px"
@@ -115,6 +111,12 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
               filter="
             brightness(0) saturate(100%) invert(70%) sepia(28%) saturate(2698%) hue-rotate(106deg) brightness(99%) contrast(101%);
             "
+            /> */}
+            <ArrowIcon
+              width={24}
+              direction="right"
+              height={24}
+              color={"var(--chakra-colors-brand-400)"}
             />
           </Button>
         </Box>

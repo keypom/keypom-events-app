@@ -1,15 +1,17 @@
-import { Heading, VStack, Text, Image, Button } from "@chakra-ui/react";
-import Arrow from "/assets/icon-arrow.svg";
+import { Heading, VStack, Text, Button } from "@chakra-ui/react";
+import { ArrowIcon } from "../icons";
 import { useNavigate } from "react-router-dom";
 
 interface PageHeadingProps {
   title: string;
+  titleSize?: string;
   description?: string;
   showBackButton?: boolean;
 }
 
 export function PageHeading({
   title,
+  titleSize = "32px",
   description,
   showBackButton = false,
 }: PageHeadingProps) {
@@ -23,7 +25,7 @@ export function PageHeading({
         fontWeight={"bold"}
         textAlign={"center"}
         color={"white"}
-        fontSize="2xl"
+        fontSize={titleSize}
         width={"100%"}
         letterSpacing={"-0.48px"}
         position={"relative"}
@@ -37,7 +39,12 @@ export function PageHeading({
             top={"50%"}
             transform={"translate(0, -50%)"}
           >
-            <Image src={Arrow} width="24px" height="24px" />
+            <ArrowIcon
+              width={24}
+              height={24}
+              color={"var(--chakra-colors-brand-400)"}
+              direction="left"
+            />
           </Button>
         )}
         <span>{title}</span>
