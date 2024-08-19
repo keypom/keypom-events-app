@@ -94,6 +94,7 @@ export function Scan() {
               borderRadius: "1rem",
               border: "3px solid var(--green, #00EC97)",
               background: "#00ec97",
+              objectFit: "cover",
             },
           }}
         />
