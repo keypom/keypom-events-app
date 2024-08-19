@@ -103,15 +103,6 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             }}
           >
             <span>Reveal & Claim</span>
-            {/* <Image
-              src={Arrow}
-              width="24px"
-              height="24px"
-              transform="rotate(180deg)"
-              filter="
-            brightness(0) saturate(100%) invert(70%) sepia(28%) saturate(2698%) hue-rotate(106deg) brightness(99%) contrast(101%);
-            "
-            /> */}
             <ArrowIcon
               width={24}
               direction="right"
