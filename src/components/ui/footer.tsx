@@ -1,25 +1,21 @@
-import { Flex, Button, Image, Box } from "@chakra-ui/react";
+import { Flex, Button, Box } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import Help from "../../assets/icon-help.svg";
-import Agenda from "../../assets/icon-agenda.svg";
-import Scan from "../../assets/icon-scan.svg";
-import Wallet from "../../assets/icon-wallet.svg";
-import Account from "../../assets/icon-account.svg";
+import { HelpIcon, AgendaIcon, ScanIcon, WalletIcon, UserIcon } from "../icons";
 
 type Route = {
   name: string;
   href: string;
-  icon: string;
+  icon: React.FC<{ width?: number; height?: number; color?: string }>;
 };
 
 const routes: Route[] = [
-  { name: "Help", href: "/help", icon: Help },
-  { name: "Agenda", href: "/agenda", icon: Agenda },
-  { name: "Scan", href: "/scan", icon: Scan },
-  { name: "Wallet", href: "/wallet", icon: Wallet },
-  { name: "Me", href: "/me", icon: Account },
+  { name: "Help", href: "/help", icon: HelpIcon },
+  { name: "Agenda", href: "/agenda", icon: AgendaIcon },
+  { name: "Scan", href: "/scan", icon: ScanIcon },
+  { name: "Wallet", href: "/wallet", icon: WalletIcon },
+  { name: "Me", href: "/me", icon: UserIcon },
 ];
 
 export function Footer() {
@@ -27,7 +23,13 @@ export function Footer() {
   return (
     <Box p={0} width="100%" bg="black" borderBottomRadius={"md"}>
       <footer>
-        <Flex justifyContent="space-between" alignItems="center" as="nav">
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          as="nav"
+          bg={"black"}
+          borderBottomRadius={"md"}
+        >
           {routes.map((route, index) => (
             <Button
               as={Link}
@@ -37,12 +39,13 @@ export function Footer() {
               backgroundColor={pathname === route.href ? "black" : ""}
               color={pathname === route.href ? "brand.400" : "black"}
             >
-              <Image
-                src={route.icon}
-                filter={
+              <route.icon
+                width={24}
+                height={24}
+                color={
                   pathname === route.href
-                    ? "brightness(0) saturate(100%) invert(70%) sepia(28%) saturate(2698%) hue-rotate(106deg) brightness(99%) contrast(101%);"
-                    : ""
+                    ? "var(--chakra-colors-brand-400)"
+                    : "black"
                 }
               />
               <span>{route.name}</span>
