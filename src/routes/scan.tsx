@@ -11,7 +11,7 @@ import {
 import { PageHeading } from "../components/ui/page-heading";
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
 import { useState } from "react";
-import Flip from "../assets/icon-flip.svg";
+import Flip from "/assets/icon-flip.svg";
 import RedactedExpression from "/redacted-expression.webp";
 import { useNavigate } from "react-router-dom";
 

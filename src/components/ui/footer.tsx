@@ -2,11 +2,11 @@ import { Flex, Button, Image, Box } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import Help from "../../assets/icon-help.svg";
-import Agenda from "../../assets/icon-agenda.svg";
-import Scan from "../../assets/icon-scan.svg";
-import Wallet from "../../assets/icon-wallet.svg";
-import Account from "../../assets/icon-account.svg";
+import Help from "/assets/icon-help.svg";
+import Agenda from "/assets/icon-agenda.svg";
+import Scan from "/assets/icon-scan.svg";
+import Wallet from "/assets/icon-wallet.svg";
+import Account from "/assets/icon-account.svg";
 
 type Route = {
   name: string;
