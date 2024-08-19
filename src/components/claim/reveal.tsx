@@ -1,7 +1,6 @@
 import { Box, Heading, Image, VStack } from "@chakra-ui/react";
 
 import Boxes from "/claim-blocks.webp";
-import ClaimShapes from "../../assets/claim.svg";
 
 interface RevealProps {
   foundItem: string;
@@ -20,19 +19,6 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
           position="relative"
           minW="100%"
           minH="500px"
-          loading="eager"
-        />
-        <Image
-          src={ClaimShapes}
-          width="100%"
-          height="100%"
-          objectFit={"cover"}
-          position="absolute"
-          top="50%"
-          left="50%"
-          minH="500px"
-          minW="100%"
-          transform="translate(-50%, -50%)"
           loading="eager"
         />
       </Box>
