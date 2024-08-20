@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 
-import { Hidden } from "../../components/claim/hidden";
-import { Reveal } from "../../components/claim/reveal";
+import { Hidden } from "@/components/claim/hidden";
+import { Reveal } from "@/components/claim/reveal";
 
 export function Claim() {
   const { data } = useParams();

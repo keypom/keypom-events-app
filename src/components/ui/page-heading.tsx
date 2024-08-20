@@ -1,6 +1,7 @@
 import { Heading, VStack, Text, Button } from "@chakra-ui/react";
-import { ArrowIcon } from "../icons";
 import { useNavigate } from "react-router-dom";
+
+import { ArrowIcon } from "@/components/icons";
 
 interface PageHeadingProps {
   title: string;

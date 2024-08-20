@@ -1,7 +1,7 @@
 import { Box, Heading, Image, VStack, Text, Button } from "@chakra-ui/react";
 import Boxes from "/boxes-background.webp";
 
-import { HelpIcon, ArrowIcon } from "../../components/icons";
+import { HelpIcon, ArrowIcon } from "@/components/icons";
 
 interface HiddenProps {
   foundItem: string;

@@ -8,12 +8,14 @@ import {
   Heading,
   Box,
 } from "@chakra-ui/react";
-import { PageHeading } from "../components/ui/page-heading";
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
-import { useState } from "react";
-import { FlipIcon } from "../components/icons";
-import RedactedExpression from "/redacted-expression.webp";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+import RedactedExpression from "/redacted-expression.webp";
+
+import { PageHeading } from "@/components/ui/page-heading";
+import { FlipIcon } from "@/components/icons";
 
 const CameraSwitchButton = ({
   useNextDevice,

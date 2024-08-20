@@ -1,12 +1,10 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
-
-import { Header } from "../../components/ui/header";
-import { Footer } from "../../components/ui/footer";
-
 import { useNavigation } from "react-router-dom";
 
-import { Spinner } from "../../components/ui/spinner";
+import { Header } from "@/components/ui/header";
+import { Footer } from "@/components/ui/footer";
+import { Spinner } from "@/components/ui/spinner";
 
 export function Root() {
   const { state } = useNavigation();
