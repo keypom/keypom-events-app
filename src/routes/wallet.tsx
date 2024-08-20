@@ -4,8 +4,6 @@ import "@near-wallet-selector/modal-ui/styles.css";
 
 export function Wallet() {
   const { modal, isLoggedIn, selector, accountId } = useAuthWalletContext();
-  console.log("Modal", modal);
-
   const handleConnectWallet = () => {
     if (!modal) {
       console.error("Modal not initialized");

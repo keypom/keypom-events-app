@@ -187,25 +187,3 @@ export const openMasterKeyModal = (setAppModal, confirm, cancel) => {
     ],
   });
 };
-
-// import React from 'react';
-
-// interface AppContextType {
-//   state: any;
-//   setState: React.Dispatch<React.SetStateAction<any>>;
-// }
-
-// const AppContext = React.createContext<AppContextType | undefined>(undefined);
-
-// function AppContextProvider({ children }: React.PropsWithChildren) {
-//   const initialState = {};
-//   const [state, setState] = React.useState(initialState);
-
-//   return (
-//     <AppContext.Provider value={{ state, setState }}>
-//       {children}
-//     </AppContext.Provider>
-//   );
-// }
-
-// export default AppContextProvider;
