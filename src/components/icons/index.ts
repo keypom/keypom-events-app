@@ -6,3 +6,4 @@ export * from "./wallet";
 export * from "./user";
 export * from "./arrow";
 export * from "./flip";
+export * from "./telegram";
