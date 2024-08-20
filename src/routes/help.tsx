@@ -33,7 +33,12 @@ export function Help() {
           highlighting help desk
         </Text>
       </Box>
-      <Button as={Link} to="#" variant={"redacted"}>
+      <Button
+        as={Link}
+        to="https://t.me/redactedbangkok"
+        target="_blank"
+        variant={"redacted"}
+      >
         <TelegramIcon
           width={24}
           height={24}
