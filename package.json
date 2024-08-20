@@ -18,9 +18,19 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@keypom/one-click-connect": "1.0.1",
+    "@mintbase-js/wallet": "0.6.0-beta.5",
+    "@near-wallet-selector/core": "^8.9.5",
+    "@near-wallet-selector/meteor-wallet": "^8.9.5",
+    "@near-wallet-selector/here-wallet": "^8.9.5",
+    "@near-wallet-selector/mintbase-wallet": "^8.9.7",
+    "@near-wallet-selector/modal-ui": "^8.9.5",
+    "@near-wallet-selector/my-near-wallet": "^8.8.2",
     "framer-motion": "^11.3.28",
+    "near-api-js": "^1.0.0 || ^2.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-error-boundary": "^4.0.13",
     "react-router-dom": "^6.26.1"
   },
   "devDependencies": {
@@ -30,6 +40,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "buffer": "^6.0.3",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
@@ -37,6 +48,7 @@
     "prettier": "3.3.3",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "vite-plugin-node-stdlib-browser": "^0.2.1"
   }
 }
