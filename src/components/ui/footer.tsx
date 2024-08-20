@@ -2,7 +2,13 @@ import { Flex, Button, Box } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import { HelpIcon, AgendaIcon, ScanIcon, WalletIcon, UserIcon } from "../icons";
+import {
+  HelpIcon,
+  AgendaIcon,
+  ScanIcon,
+  WalletIcon,
+  UserIcon,
+} from "@/components/icons";
 
 type Route = {
   name: string;

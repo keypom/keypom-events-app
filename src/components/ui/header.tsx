@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { Redacted } from "../icons";
 import { Link } from "react-router-dom";
+
+import { Redacted } from "@/components/icons";
 
 export function Header() {
   return (
