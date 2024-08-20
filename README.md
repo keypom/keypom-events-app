@@ -30,7 +30,7 @@
 ### Installing dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Running the app
@@ -38,7 +38,7 @@ npm install
 First, run the development server:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser to see the result.
@@ -46,13 +46,13 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to see the r
 ### Building for production
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ### Running tests
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 See the full [testing guide](./playwright-tests/README.md).
