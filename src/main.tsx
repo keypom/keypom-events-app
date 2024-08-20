@@ -4,8 +4,8 @@ import { ChakraProvider } from "@chakra-ui/react";
 import router from "@/router";
 import { theme } from "@/theme";
 import { RouterProvider } from "react-router-dom";
-import { AuthWalletContextProvider } from '@/contexts/AuthWalletContext';
-import './polyfills';
+import { AuthWalletContextProvider } from "@/contexts/AuthWalletContext";
+import "./polyfills";
 import { AppContextProvider } from "@/contexts/AppContext";
 
 createRoot(document.getElementById("root")!).render(
@@ -17,5 +17,5 @@ createRoot(document.getElementById("root")!).render(
         </AuthWalletContextProvider>
       </AppContextProvider>
     </ChakraProvider>
-  </StrictMode>
+  </StrictMode>,
 );

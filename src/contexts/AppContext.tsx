@@ -1,7 +1,13 @@
-import { createContext, type PropsWithChildren, useContext, useState, useEffect } from 'react';
-import { type ButtonProps } from '@chakra-ui/react';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
+import { type ButtonProps } from "@chakra-ui/react";
 
-import { set } from '@/utils/localStorage';
+import { set } from "@/utils/localStorage";
 
 export interface AppModalInputs {
   placeholder: string;
@@ -18,7 +24,7 @@ export interface AppModalOptions {
 export interface AppModalValues {
   isOpen: boolean;
   modalContent?: React.ReactNode;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "full";
   closeOnOverlayClick?: boolean;
   closeButtonVisible?: boolean;
   message?: string;
@@ -50,7 +56,7 @@ const fetchPrice = async (url, parseData) => {
     return parseData(data);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Fetch error:', error);
+    console.error("Fetch error:", error);
     return null;
   }
 };
@@ -67,7 +73,7 @@ export const AppContextProvider = ({ children }: PropsWithChildren) => {
     const setPriceWithFallback = async () => {
       if (fetchAttempts < 50) {
         const binancePrice = await fetchPrice(
-          'https://api.binance.com/api/v3/ticker/price?symbol=NEARUSDT',
+          "https://api.binance.com/api/v3/ticker/price?symbol=NEARUSDT",
           (data) => data.price,
         );
 
@@ -76,7 +82,7 @@ export const AppContextProvider = ({ children }: PropsWithChildren) => {
         }
 
         const coinbasePrice = await fetchPrice(
-          'https://api.coinbase.com/v2/prices/NEAR-USD/buy',
+          "https://api.coinbase.com/v2/prices/NEAR-USD/buy",
           (data) => data.data.amount,
         );
 
@@ -85,7 +91,7 @@ export const AppContextProvider = ({ children }: PropsWithChildren) => {
         }
 
         const coinapiPrice = await fetchPrice(
-          'https://rest.coinapi.io/v1/exchangerate/NEAR/USDC?apiKey=30634AC5-CF0B-4045-BE02-BAF8A3C1B4EC',
+          "https://rest.coinapi.io/v1/exchangerate/NEAR/USDC?apiKey=30634AC5-CF0B-4045-BE02-BAF8A3C1B4EC",
           (data) => data.rate,
         );
 
@@ -94,7 +100,7 @@ export const AppContextProvider = ({ children }: PropsWithChildren) => {
         }
 
         const coinlorePrice = await fetchPrice(
-          'https://api.coinlore.net/api/ticker/?id=48563',
+          "https://api.coinlore.net/api/ticker/?id=48563",
           (data) => data[0].price_usd,
         );
 
@@ -103,7 +109,7 @@ export const AppContextProvider = ({ children }: PropsWithChildren) => {
         }
 
         const coingeckoPrice = await fetchPrice(
-          'https://api.coingecko.com/api/v3/simple/price?ids=near&vs_currencies=usd',
+          "https://api.coingecko.com/api/v3/simple/price?ids=near&vs_currencies=usd",
           (data) => data.near.usd,
         );
 
@@ -136,7 +142,7 @@ export const useAppContext = () => {
   const context = useContext(AppContext);
 
   if (context === null) {
-    throw new Error('useAppContext must be used within a AppContextProvider');
+    throw new Error("useAppContext must be used within a AppContextProvider");
   }
 
   return context;
@@ -147,33 +153,34 @@ export const useAppContext = () => {
 export const openMasterKeyModal = (setAppModal, confirm, cancel) => {
   setAppModal({
     isOpen: true,
-    header: 'Enter your Keypom password',
-    message: 'This is used for security purpose. Do not share or lose your password.',
+    header: "Enter your Keypom password",
+    message:
+      "This is used for security purpose. Do not share or lose your password.",
     inputs: [
       {
-        placeholder: 'Password',
-        valueKey: 'masterKey',
+        placeholder: "Password",
+        valueKey: "masterKey",
       },
     ],
     options: [
       {
-        label: 'Cancel',
+        label: "Cancel",
         func: () => {
           if (cancel) cancel();
         },
         buttonProps: {
-          variant: 'outline',
+          variant: "outline",
         },
       },
       {
-        label: 'Set Password',
+        label: "Set Password",
         func: ({ masterKey }) => {
           if (!masterKey || masterKey.length === 0) {
-            alert('Master Key must be specified. Please try again.');
+            alert("Master Key must be specified. Please try again.");
             if (cancel) cancel();
             return;
           }
-          set('MASTER_KEY', masterKey);
+          set("MASTER_KEY", masterKey);
           if (confirm) confirm();
         },
       },

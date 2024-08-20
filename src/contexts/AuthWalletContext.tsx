@@ -1,7 +1,10 @@
-import { type AccountState, type WalletSelector } from '@near-wallet-selector/core';
-import { providers } from 'near-api-js';
-import { type AccountView } from 'near-api-js/lib/providers/provider';
-import { type WalletSelectorModal } from '@near-wallet-selector/modal-ui';
+import {
+  type AccountState,
+  type WalletSelector,
+} from "@near-wallet-selector/core";
+import { providers } from "near-api-js";
+import { type AccountView } from "near-api-js/lib/providers/provider";
+import { type WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import {
   createContext,
   type PropsWithChildren,
@@ -9,9 +12,9 @@ import {
   useContext,
   useEffect,
   useState,
-} from 'react';
+} from "react";
 
-import { NearWalletSelector } from '@/lib/walletSelector';
+import { NearWalletSelector } from "@/lib/walletSelector";
 
 declare global {
   interface Window {
@@ -38,7 +41,7 @@ interface AuthWalletContextValues {
 const AuthWalletContext = createContext<AuthWalletContextValues | null>(null);
 
 interface KeypomAccountState extends AccountState {
-  displayName?: string
+  displayName?: string;
 }
 
 export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
@@ -53,23 +56,23 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
     if (!activeAccount) {
       return null;
     }
-    console.log("Active account: ", activeAccount)
+    console.log("Active account: ", activeAccount);
 
     const provider = new providers.JsonRpcProvider({
-      url: selector?.options?.network.nodeUrl ?? '',
+      url: selector?.options?.network.nodeUrl ?? "",
     });
 
     return await provider
       .query<AccountView>({
-        request_type: 'view_account',
-        finality: 'final',
+        request_type: "view_account",
+        finality: "final",
         account_id: activeAccount.accountId,
       })
       .then((data) => ({
         ...data,
         account_id: activeAccount.accountId,
         public_key: activeAccount.publicKey,
-        display_name: activeAccount.displayName
+        display_name: activeAccount.displayName,
       }));
   }, [activeAccount, selector?.options]);
 
@@ -102,26 +105,26 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
 
     getAccount()
       .then((nextAccount) => {
-        console.log("Next account: ", nextAccount)
-        sessionStorage.setItem('account', JSON.stringify(nextAccount));
+        console.log("Next account: ", nextAccount);
+        sessionStorage.setItem("account", JSON.stringify(nextAccount));
         setAccount(nextAccount);
         // setLoading(false);
       })
       .catch(console.error); // eslint-disable-line no-console
   }, [activeAccount, getAccount]);
 
-  selector?.on('signedIn', () => {
+  selector?.on("signedIn", () => {
     const newAccountState: AccountState[] = selector.store.getState().accounts;
     setAccounts(newAccountState);
     getAccount().then((nextAccount) => {
       console.log(nextAccount);
-      sessionStorage.setItem('account', JSON.stringify(nextAccount));
+      sessionStorage.setItem("account", JSON.stringify(nextAccount));
       setAccount(nextAccount);
     });
   });
 
-  selector?.on('signedOut', () => {
-    sessionStorage.removeItem('account');
+  selector?.on("signedOut", () => {
+    sessionStorage.removeItem("account");
   });
 
   const value = {
@@ -133,19 +136,24 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
     account: account as Account,
   };
 
-  return <AuthWalletContext.Provider value={value}>{children}</AuthWalletContext.Provider>;
+  return (
+    <AuthWalletContext.Provider value={value}>
+      {children}
+    </AuthWalletContext.Provider>
+  );
 };
 
 export const useAuthWalletContext = () => {
   const context = useContext(AuthWalletContext);
 
   if (context === null) {
-    throw new Error('useAuthWalletContext must be used within a AuthWalletContextProvider');
+    throw new Error(
+      "useAuthWalletContext must be used within a AuthWalletContextProvider",
+    );
   }
 
   return context;
 };
-
 
 // import React, { createContext, useContext, useEffect, useState, PropsWithChildren } from 'react';
 // import { type AccountState, type WalletSelector } from '@near-wallet-selector/core';
