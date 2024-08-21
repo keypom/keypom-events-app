@@ -16,7 +16,6 @@ export const ButtonStyle = defineStyleConfig({
     },
     redacted: {
       display: "flex",
-      maxWidth: "300px",
       width: "100%",
       padding: "2rem 0",
       justifyContent: "center",

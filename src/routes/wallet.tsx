@@ -1,9 +1,15 @@
-import { Heading, Button } from "@chakra-ui/react";
+import { Button, VStack, Text, Box } from "@chakra-ui/react";
 import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
+import { Link } from "react-router-dom";
+
+import { PageHeading } from "@/components/ui/page-heading";
+import { WalletActions } from "@/components/wallet/wallet-actions";
+import { CollectiblesIcon, JourneysIcon } from "@/components/icons";
+
 import "@near-wallet-selector/modal-ui/styles.css";
 
 export function Wallet() {
-  const { modal, isLoggedIn, selector, accountId } = useAuthWalletContext();
+  const { modal, isLoggedIn } = useAuthWalletContext();
   const handleConnectWallet = () => {
     if (!modal) {
       console.error("Modal not initialized");
@@ -12,41 +18,30 @@ export function Wallet() {
     modal.show();
   };
 
-  const handleSignOut = async () => {
-    if (!selector.isSignedIn()) {
-      console.error("Not signed in");
-      return;
-    }
-    const wallet = await selector.wallet();
-
-    wallet
-      .signOut()
-      .then((_) => {
-        sessionStorage.removeItem("account");
-        window.location.href = "";
-      })
-      .catch((err) => {
-        // eslint-disable-next-line no-console
-        console.error("Failed to sign out");
-        // eslint-disable-next-line no-console
-        console.error(err);
-      });
-  };
-
   return (
-    <div>
-      <Heading>Wallet</Heading>
+    <VStack spacing={4}>
+      <Box p={4} pb={0}>
+        <PageHeading title="Wallet" />
+      </Box>
       {isLoggedIn ? (
         <>
-          <div>AccountId: {accountId}</div>
-
-          <Button onClick={handleSignOut}>Sign Out</Button>
+          <WalletActions />
+          <VStack width="100%" px={8} pb={4} spacing={4}>
+            <Button as={Link} to="/wallet/collectibles" variant="redacted">
+              <CollectiblesIcon color="var(--chakra-colors-brand-400)" />{" "}
+              COLLECTIBLES
+            </Button>
+            <Button as={Link} to="/wallet/journeys" variant="redacted">
+              <JourneysIcon color="var(--chakra-colors-brand-400)" /> JOURNEYS
+            </Button>
+          </VStack>
         </>
       ) : (
-        <p>
+        <Box p={4}>
+          <Text>Plase Login in order to continue</Text>
           <Button onClick={handleConnectWallet}>Connect Wallet</Button>
-        </p>
+        </Box>
       )}
-    </div>
+    </VStack>
   );
 }
