@@ -51,6 +51,34 @@ const router = createBrowserRouter([
         },
       },
       {
+        path: "/wallet/collectibles",
+        async lazy() {
+          const { Collectibles } = await import("@/routes/wallet/collectibles");
+          return { Component: Collectibles };
+        },
+      },
+      {
+        path: "/wallet/journeys",
+        async lazy() {
+          const { Journeys } = await import("@/routes/wallet/journeys");
+          return { Component: Journeys };
+        },
+      },
+      {
+        path: "/wallet/send",
+        async lazy() {
+          const { Send } = await import("@/routes/wallet/send");
+          return { Component: Send };
+        },
+      },
+      {
+        path: "/wallet/receive",
+        async lazy() {
+          const { Receive } = await import("@/routes/wallet/receive");
+          return { Component: Receive };
+        },
+      },
+      {
         path: "/me",
         async lazy() {
           const { Me } = await import("@/routes/me");

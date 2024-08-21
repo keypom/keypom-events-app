@@ -71,7 +71,12 @@ export function Scan() {
       <VStack spacing={8}>
         <Scanner
           onScan={(result) => {
-            navigate(`/scan/${result[0].rawValue}`);
+            const value = result[0].rawValue;
+            if (value.endsWith(".near") || value.endsWith(".testnet")) {
+              navigate(`/wallet/send?to=${value}`);
+              return;
+            }
+            navigate(`/scan/${value}`);
           }}
           components={{
             finder: false,

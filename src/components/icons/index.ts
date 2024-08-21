@@ -9,3 +9,4 @@ export * from "./flip";
 export * from "./telegram";
 export * from "./collectibles";
 export * from "./journeys";
+export * from "./check";
