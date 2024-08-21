@@ -21,8 +21,8 @@
     "@keypom/one-click-connect": "1.0.1",
     "@mintbase-js/wallet": "0.6.0-beta.5",
     "@near-wallet-selector/core": "^8.9.5",
-    "@near-wallet-selector/meteor-wallet": "^8.9.5",
     "@near-wallet-selector/here-wallet": "^8.9.5",
+    "@near-wallet-selector/meteor-wallet": "^8.9.5",
     "@near-wallet-selector/mintbase-wallet": "^8.9.7",
     "@near-wallet-selector/modal-ui": "^8.9.5",
     "@near-wallet-selector/my-near-wallet": "^8.8.2",
@@ -41,7 +41,6 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "buffer": "^6.0.3",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
@@ -50,6 +49,6 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
-    "vite-plugin-node-stdlib-browser": "^0.2.1"
+    "vite-plugin-node-polyfills": "^0.22.0"
   }
 }
