@@ -5,6 +5,7 @@ export const ButtonStyle = defineStyleConfig({
     transparent: {
       bg: "transparent",
       color: "brand.400",
+      padding: 0,
       _hover: {
         bg: "transparent",
         color: "brand.400",

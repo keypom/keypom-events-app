@@ -58,6 +58,15 @@ const router = createBrowserRouter([
         },
       },
       {
+        path: "/wallet/collectibles/:id",
+        async lazy() {
+          const { Collectible } = await import(
+            "@/routes/wallet/collectibles/collectible"
+          );
+          return { Component: Collectible };
+        },
+      },
+      {
         path: "/wallet/journeys",
         async lazy() {
           const { Journeys } = await import("@/routes/wallet/journeys");

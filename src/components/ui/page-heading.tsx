@@ -8,6 +8,7 @@ interface PageHeadingProps {
   titleSize?: string;
   description?: string;
   showBackButton?: boolean;
+  backUrl?: string;
 }
 
 export function PageHeading({
@@ -15,10 +16,16 @@ export function PageHeading({
   titleSize = "32px",
   description,
   showBackButton = false,
+  backUrl = "/ ",
 }: PageHeadingProps) {
   const navigate = useNavigate();
   return (
-    <VStack gap={4} alignItems={"center"} justifyContent={"center"}>
+    <VStack
+      gap={"1rem"}
+      alignItems={"center"}
+      justifyContent={"center"}
+      w="100%"
+    >
       <Heading
         as="h2"
         size="lg"
@@ -26,19 +33,23 @@ export function PageHeading({
         fontWeight={"bold"}
         textAlign={"center"}
         color={"white"}
+        height="32px"
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
         fontSize={titleSize}
         width={"100%"}
         letterSpacing={"-0.48px"}
-        position={"relative"}
+        position="relative"
       >
         {showBackButton && (
           <Button
-            onClick={() => navigate("/")}
+            onClick={() => navigate(backUrl)}
             variant="transparent"
             position={"absolute"}
             left={0}
             top={"50%"}
-            transform={"translate(0, -50%)"}
+            transform="translate(0, -50%)"
           >
             <ArrowIcon
               width={24}
