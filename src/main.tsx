@@ -5,7 +5,6 @@ import router from "@/router";
 import { theme } from "@/theme";
 import { RouterProvider } from "react-router-dom";
 import { AuthWalletContextProvider } from "@/contexts/AuthWalletContext";
-import "@/polyfills";
 import { AppContextProvider } from "@/contexts/AppContext";
 
 createRoot(document.getElementById("root")!).render(
