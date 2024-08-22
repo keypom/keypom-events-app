@@ -27,7 +27,7 @@ export function Receive() {
           </VStack>
         </VStack>
       ) : (
-        <Text>Please login to receive your account</Text>
+        <Text>Please login to receive to your account</Text>
       )}
     </VStack>
   );

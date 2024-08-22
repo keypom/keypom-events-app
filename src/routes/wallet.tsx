@@ -38,7 +38,7 @@ export function Wallet() {
         </>
       ) : (
         <Box p={4}>
-          <Text>Plase Login in order to continue</Text>
+          <Text>Please Login in order to continue</Text>
           <Button onClick={handleConnectWallet}>Connect Wallet</Button>
         </Box>
       )}
