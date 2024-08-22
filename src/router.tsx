@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { Root } from "@/routes/layouts/root";
 import { ErrorPage } from "@/error-page";
-import { Conference } from "@/routes/conference";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +12,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         index: true,
-        element: <Conference />,
+        async lazy() {
+          const { Conference } = await import("@/routes/conference");
+          return { Component: Conference };
+        },
       },
       {
         path: "/help",
@@ -71,6 +73,13 @@ const router = createBrowserRouter([
         async lazy() {
           const { Journeys } = await import("@/routes/wallet/journeys");
           return { Component: Journeys };
+        },
+      },
+      {
+        path: "/wallet/journeys/:id",
+        async lazy() {
+          const { Journey } = await import("@/routes/wallet/journeys/journey");
+          return { Component: Journey };
         },
       },
       {

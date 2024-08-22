@@ -6,6 +6,7 @@ import { styles } from "./styles";
 import { fonts } from "./fonts";
 
 import { ButtonStyle } from "./components/button";
+import { ProgressStyle } from "./components/progress";
 
 export const theme = extendTheme({
   colors,
@@ -14,5 +15,6 @@ export const theme = extendTheme({
   fonts,
   components: {
     Button: ButtonStyle,
+    Progress: ProgressStyle,
   },
 });
