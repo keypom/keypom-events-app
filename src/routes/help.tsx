@@ -6,15 +6,12 @@ import { TelegramIcon } from "@/components/icons";
 
 export function Help() {
   return (
-    <VStack p={4} spacing={4}>
+    <VStack py={4} px={12} spacing={4}>
       <PageHeading title="Help" />
       <Box
         bg="black"
         width="100%"
-        height="100%"
-        maxWidth="300px"
-        maxHeight="300px"
-        minHeight="300px"
+        aspectRatio={"1 / 1"}
         display="flex"
         alignItems="center"
         justifyContent="center"

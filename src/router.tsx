@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { Root } from "@/routes/layouts/root";
 import { ErrorPage } from "@/error-page";
-import { Conference } from "@/routes/conference";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +12,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         index: true,
-        element: <Conference />,
+        async lazy() {
+          const { Conference } = await import("@/routes/conference");
+          return { Component: Conference };
+        },
       },
       {
         path: "/help",
@@ -48,6 +50,50 @@ const router = createBrowserRouter([
         async lazy() {
           const { Wallet } = await import("@/routes/wallet");
           return { Component: Wallet };
+        },
+      },
+      {
+        path: "/wallet/collectibles",
+        async lazy() {
+          const { Collectibles } = await import("@/routes/wallet/collectibles");
+          return { Component: Collectibles };
+        },
+      },
+      {
+        path: "/wallet/collectibles/:id",
+        async lazy() {
+          const { Collectible } = await import(
+            "@/routes/wallet/collectibles/collectible"
+          );
+          return { Component: Collectible };
+        },
+      },
+      {
+        path: "/wallet/journeys",
+        async lazy() {
+          const { Journeys } = await import("@/routes/wallet/journeys");
+          return { Component: Journeys };
+        },
+      },
+      {
+        path: "/wallet/journeys/:id",
+        async lazy() {
+          const { Journey } = await import("@/routes/wallet/journeys/journey");
+          return { Component: Journey };
+        },
+      },
+      {
+        path: "/wallet/send",
+        async lazy() {
+          const { Send } = await import("@/routes/wallet/send");
+          return { Component: Send };
+        },
+      },
+      {
+        path: "/wallet/receive",
+        async lazy() {
+          const { Receive } = await import("@/routes/wallet/receive");
+          return { Component: Receive };
         },
       },
       {

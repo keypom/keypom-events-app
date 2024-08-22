@@ -5,6 +5,7 @@ export const ButtonStyle = defineStyleConfig({
     transparent: {
       bg: "transparent",
       color: "brand.400",
+      padding: 0,
       _hover: {
         bg: "transparent",
         color: "brand.400",
@@ -16,7 +17,6 @@ export const ButtonStyle = defineStyleConfig({
     },
     redacted: {
       display: "flex",
-      maxWidth: "300px",
       width: "100%",
       padding: "2rem 0",
       justifyContent: "center",
