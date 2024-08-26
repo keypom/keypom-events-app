@@ -11,3 +11,26 @@ export * from "./collectibles";
 export * from "./journeys";
 export * from "./check";
 export * from "./lock";
+export * from './CheckedIcon';
+export * from './ChevronLeftIcon';
+export * from './CopyIcon';
+export * from './DeleteIcon';
+export * from './DropIcon';
+export * from './ImageIcon';
+export * from './KeyIcon';
+export * from './LinkIcon';
+export * from './LogoNear';
+export * from './MenuIcon';
+export * from './NearIcon';
+export * from './NFTIcon';
+export * from './POAPNftIcon';
+export * from './SignOutIcon';
+export * from './StarIcon';
+export * from './TicketIcon';
+export * from './tokens/TokenEthIcon';
+export * from './TwitterLogoIcon';
+export * from './UncheckedIcon';
+export * from './wallets/HereWalletIcon';
+export * from './wallets/MintbaseWalletIcon'
+export * from './wallets/MyNearWalletIcon';
+
