@@ -1,13 +1,6 @@
 import { type Wallet } from "@near-wallet-selector/core";
 import { Button, ModalContent, Text, VStack } from "@chakra-ui/react";
 
-import keypomInstance from "@/lib/keypom";
-import {
-  KEYPOM_EVENTS_CONTRACT,
-  KEYPOM_MARKETPLACE_CONTRACT,
-} from "@/constants/common";
-import { type EventDrop, type TicketInfoMetadata } from "@/lib/eventsHelpers";
-
 import ProgressModalContent from "./ProgessModalContent";
 import CompletionModalContent from "./CompletionModal";
 import eventHelperInstance from "@/lib/event";

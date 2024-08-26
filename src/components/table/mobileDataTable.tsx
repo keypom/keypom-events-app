@@ -45,7 +45,7 @@ export const MobileDataTable = ({
       ));
     }
 
-    return data.map((drop, idx) => (
+    return data.map((drop) => (
       <Tr
         key={drop.id}
         _hover={

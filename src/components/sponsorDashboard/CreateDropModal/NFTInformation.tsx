@@ -3,9 +3,6 @@ import {
   VStack,
   HStack,
   Textarea,
-  Input,
-  Divider,
-  Heading,
 } from "@chakra-ui/react";
 import { FormControlComponent } from "@/components/FormControl";
 import { ImageInput } from "./ImageInput";
@@ -21,7 +18,6 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
   createdDrop,
   setCreatedDrop,
   errors,
-  setErrors,
 }) => {
   const onNFTDataChange = (key: string, value: string) => {
     setCreatedDrop({

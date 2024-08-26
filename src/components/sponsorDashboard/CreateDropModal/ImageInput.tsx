@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Input, Text } from "@chakra-ui/react";
 import { FormControlComponent } from "@/components/FormControl";
 import { ImageFileInputSmall } from "@/components/ImageFileInput/ImageFileInputSmall";
 

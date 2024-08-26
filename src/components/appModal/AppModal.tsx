@@ -19,7 +19,7 @@ import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 import { useAppContext } from "@/contexts/AppContext";
 
-import { RoundIcon } from "../IconBox/RoundIcon";
+import { RoundIcon } from "../iconBox/RoundIcon";
 
 // TODO: enhance css after merging sushan's sign in modal branch
 export const AppModal = () => {

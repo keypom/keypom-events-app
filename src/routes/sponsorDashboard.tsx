@@ -121,12 +121,13 @@ const capitalizeFirstLetter = (string) => {
 export const SponsorDashboardPage = () => {
   const { setAppModal } = useAppContext();
   const { selector, account } = useAuthWalletContext();
+  console.log("account",account);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
   const [isCreateDropModalOpen, setIsCreateDropModalOpen] = useState(false);
   const [tokensAvailable, setTokensAvailable] = useState<string>();
-  const [accountId, setAccountId] = useState<string>();
+  //const [accountId, setAccountId] = useState<string>();
   const [dropsCreated, setDropsCreated] = useState<CreatedConferenceDrop[]>([]);
   const [dropType, setDropType] = useState<"nft" | "token">("token");
   const toast = useToast();
@@ -152,22 +153,21 @@ export const SponsorDashboardPage = () => {
     try {
       const recoveredAccount = await eventHelperInstance.viewCall({
         contractId: TOKEN_FACTORY_CONTRACT,
-        methodName: "recover_account",
-        args: { key: account?.public_key },
+        methodName: 'recover_account',
+        args: { key_or_account_id: account?.public_key },
       });
-      setAccountId(recoveredAccount);
 
       const tokens = await eventHelperInstance.viewCall({
         contractId: TOKEN_FACTORY_CONTRACT,
-        methodName: "ft_balance_of",
-        args: { account_id: recoveredAccount },
+        methodName: 'ft_balance_of',
+        args: { account_id: recoveredAccount.account_id },
       });
       setTokensAvailable(eventHelperInstance.yoctoToNearWith4Decimals(tokens));
 
       const drops = await eventHelperInstance.viewCall({
         contractId: TOKEN_FACTORY_CONTRACT,
-        methodName: "get_drops_created_by_account",
-        args: { account_id: recoveredAccount },
+        methodName: 'get_drops_created_by_account',
+        args: { account_id: recoveredAccount.account_id },
       });
       setDropsCreated(drops);
     } catch (e) {
@@ -369,15 +369,15 @@ export const SponsorDashboardPage = () => {
     setIsCreateDropModalOpen(false);
   };
 
-  // if (isErr) {
-  //   return (
-  //     <NotFound404
-  //       cta="Return to homepage"
-  //       header="Account Unauthorized"
-  //       subheader="Check the signed in account and try again later."
-  //     />
-  //   );
-  // }
+  if (isErr) {
+    return (
+      <NotFound404
+        cta="Return to homepage"
+        header="Account Unauthorized"
+        subheader="Check the signed in account and try again later."
+      />
+    );
+  }
 
   return (
     <Box px="1" py={{ base: "3.25rem", md: "5rem" }}>
@@ -396,11 +396,11 @@ export const SponsorDashboardPage = () => {
             : ""}
         </Heading>
       )}
-      {/* {isLoading ? (
+      {isLoading ? (
         <Skeleton height="80px" mb="4" width="100%" />
       ) : (
         <TokensAvailableSection tokensAvailable={tokensAvailable} />
-      )} */}
+      )}
       <DropActionsSection
         allowAction={data.length > 0}
         setDropType={setDropType}
@@ -413,7 +413,7 @@ export const SponsorDashboardPage = () => {
         data={data}
         excludeMobileColumns={[]}
         loading={isLoading}
-        mt={{ base: "6", md: "4" }}
+        //mt={{ base: "6", md: "4" }}
         showColumns={true}
         showMobileTitles={["price", "numTickets"]}
         type="conference-drops"

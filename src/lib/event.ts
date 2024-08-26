@@ -12,6 +12,7 @@ import {
   deriveKeyFromPassword,
 } from "./cryptoHelper";
 import { Wallet } from "@near-wallet-selector/core";
+import { FinalExecutionStatus } from "near-api-js/lib/providers";
 
 let instance: EventJS;
 const networkId = process.env.REACT_APP_NETWORK_ID ?? "testnet";
@@ -260,11 +261,17 @@ class EventJS {
           },
         ],
       });
-      let dropId = atob(res?.status.SuccessValue);
-      if (dropId.startsWith('"') && dropId.endsWith('"')) {
-        dropId = dropId.slice(1, -1);
+      const status = res?.status as FinalExecutionStatus;
+      if (status && status.SuccessValue) {
+        // Now we're sure SuccessValue exists and is a string
+        let dropId = atob(status.SuccessValue);
+        if (dropId.startsWith('"') && dropId.endsWith('"')) {
+          dropId = dropId.slice(1, -1);
+        }
+        return { dropId, completeScavengerHunt: scavenger_hunt };
+      } else {
+        console.log("SuccessValue is not available");
       }
-      return { dropId, completeScavengerHunt: scavenger_hunt };
     }
 
     let res = await wallet.signAndSendTransaction({
@@ -290,11 +297,17 @@ class EventJS {
       ],
     });
 
-    let dropId = atob(res?.status.SuccessValue);
-    if (dropId.startsWith('"') && dropId.endsWith('"')) {
-      dropId = dropId.slice(1, -1);
+    const status = res?.status as FinalExecutionStatus;
+    if (status && status.SuccessValue) {
+      // Now we're sure SuccessValue exists and is a string
+      let dropId = atob(status.SuccessValue);
+      if (dropId.startsWith('"') && dropId.endsWith('"')) {
+        dropId = dropId.slice(1, -1);
+      }
+      return { dropId, completeScavengerHunt: scavenger_hunt };
+    } else {
+      console.log("SuccessValue is not available");
     }
-    return { dropId, completeScavengerHunt: scavenger_hunt };
   };
 
   claimEventTokenDrop = async ({

@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,

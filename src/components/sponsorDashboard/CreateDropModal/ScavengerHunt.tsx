@@ -22,7 +22,6 @@ export const ScavengerHunt = ({
   setIsScavengerHunt,
   scavengerPieces,
   setScavengerPieces,
-  errors,
 }) => {
   const [numPiecesError, setNumPiecesError] = useState("");
   const [tempNumPieces, setTempNumPieces] = useState("2");

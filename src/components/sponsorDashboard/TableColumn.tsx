@@ -1,6 +1,6 @@
 import { Skeleton } from "@chakra-ui/react";
 
-import { type ColumnItem } from "@/components/Table/types";
+import { type ColumnItem } from "@/components/table/types";
 
 export const tableColumns: ColumnItem[] = [
   {

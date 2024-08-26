@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { VStack, Button, Center, Spinner, Heading } from "@chakra-ui/react";
 import { NameInput } from "./NameInput";
 import { ImageInput } from "./ImageInput";
