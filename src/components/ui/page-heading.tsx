@@ -1,10 +1,13 @@
-import { Heading, VStack, Text, Button } from "@chakra-ui/react";
+import { Heading, VStack, Text, Button, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import { ArrowIcon } from "@/components/icons";
+import { ReactNode } from "react";
 
 interface PageHeadingProps {
   title: string;
+  leftChildren?: ReactNode;
+  rightChildren?: ReactNode;
   titleSize?: string;
   description?: string;
   showBackButton?: boolean;
@@ -13,6 +16,8 @@ interface PageHeadingProps {
 
 export function PageHeading({
   title,
+  leftChildren,
+  rightChildren,
   titleSize = "32px",
   description,
   showBackButton = false,
@@ -73,6 +78,9 @@ export function PageHeading({
           {description}
         </Text>
       )}
+      <HStack spacing={4} flex="1" justifyContent="flex-start">
+        {rightChildren}
+      </HStack>
     </VStack>
   );
 }
