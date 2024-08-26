@@ -103,6 +103,13 @@ const router = createBrowserRouter([
           return { Component: Me };
         },
       },
+      {
+        path: "/alerts",
+        async lazy() {
+          const { Alerts } = await import("@/routes/alerts");
+          return { Component: Alerts };
+        },
+      },
     ],
   },
   {
