@@ -6,8 +6,22 @@ import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
 import { Spinner } from "@/components/ui/spinner";
 
+import { useLocation } from "react-router-dom";
+import { useEffect, useRef } from "react";
+
 export function Root() {
   const { state } = useNavigation();
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Extracts pathname property(key) from an object
+  const { pathname } = useLocation();
+
+  // Automatically scrolls to top whenever pathname changes
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [pathname]);
 
   return (
     <Box
@@ -46,6 +60,7 @@ export function Root() {
       >
         <Header />
         <Box
+          ref={ref}
           role="main"
           flexGrow={1}
           maxW={{ base: "100%", md: "380px" }}
