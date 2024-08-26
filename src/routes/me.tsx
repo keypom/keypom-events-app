@@ -15,7 +15,7 @@ export function Me() {
   }
 
   return (
-    <VStack spacing={4} p={4}>
+    <VStack spacing={4} pt={4}>
       <PageHeading
         title={account.display_name || "No-Name Profile"}
         titleSize="24px"
