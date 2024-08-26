@@ -1,4 +1,3 @@
-
 export interface Collectible {
   id: number;
   title: string;
@@ -17,7 +16,9 @@ export const fetchCollectibles: () => Promise<Collectible[]> = async () => {
   return response.json();
 };
 
-export const fetchCollectibleById: (id: string) => Promise<Collectible> = async (id) => {
+export const fetchCollectibleById: (
+  id: string,
+) => Promise<Collectible> = async (id) => {
   const response = await fetch(`https://example.com/collectibles/${id}`);
   if (!response.ok) {
     throw new Error("Network response was not ok");

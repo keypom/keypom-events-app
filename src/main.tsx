@@ -10,7 +10,11 @@ async function prepare() {
         // Ignore routing requests
         if (req.url.startsWith(window.location.origin)) return;
         // Ignore font requests
-        if (req.url.startsWith("https://fonts.googleapis.com") || req.url.startsWith("https://fonts.gstatic.com")) return;
+        if (
+          req.url.startsWith("https://fonts.googleapis.com") ||
+          req.url.startsWith("https://fonts.gstatic.com")
+        )
+          return;
         print.warning();
       },
     });

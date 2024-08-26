@@ -4,7 +4,8 @@ export default [
   {
     id: "1",
     title: "Title of asset here",
-    description: "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
+    description:
+      "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
     imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
@@ -13,7 +14,8 @@ export default [
   {
     id: "2",
     title: "Title of asset here",
-    description: "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
+    description:
+      "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
     imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
@@ -22,7 +24,8 @@ export default [
   {
     id: "3",
     title: "Title of asset here",
-    description: "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
+    description:
+      "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
     imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
@@ -31,7 +34,8 @@ export default [
   {
     id: "4",
     title: "Title of asset here",
-    description: "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
+    description:
+      "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
     imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
@@ -40,7 +44,8 @@ export default [
   {
     id: "5",
     title: "Title of asset here",
-    description: "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
+    description:
+      "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
     imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
@@ -49,7 +54,8 @@ export default [
   {
     id: "6",
     title: "Title of asset here",
-    description: "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
+    description:
+      "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
     imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
@@ -58,7 +64,8 @@ export default [
   {
     id: "7",
     title: "Title of asset here",
-    description: "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
+    description:
+      "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
     imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
@@ -67,7 +74,8 @@ export default [
   {
     id: "8",
     title: "Title of asset here",
-    description: "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
+    description:
+      "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
     imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),

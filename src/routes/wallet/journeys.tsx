@@ -17,10 +17,13 @@ export function Journeys() {
   } = useQuery({ queryKey: ["journeys"], queryFn: fetchJourneys });
 
   const isJourneyCompleted = (journey: Journey) => {
-    return journey.steps.every(step => step.completed);
+    return journey.steps.every((step) => step.completed);
   };
 
-  const completedJourneys = useMemo(() => (journeys ? journeys.filter((it) => isJourneyCompleted(it)) : []), [journeys]);
+  const completedJourneys = useMemo(
+    () => (journeys ? journeys.filter((it) => isJourneyCompleted(it)) : []),
+    [journeys],
+  );
 
   const getProgressDescription = (journeys: Journey[]) => {
     const completed = completedJourneys.length;

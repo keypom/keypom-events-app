@@ -12,7 +12,6 @@ export function JourneyCard({
   steps,
   bgColor,
 }: Journey) {
-
   const progress = steps.reduce(
     (acc, step) => (step.completed ? acc + 100 / steps.length : acc),
     0,

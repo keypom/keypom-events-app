@@ -8,7 +8,12 @@ import { Collectible, fetchCollectibleById } from "@/lib/api/collectibles";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
-const CollectibleDetails = ({ title, description, imageSrc, bgColor }: Collectible) => {
+const CollectibleDetails = ({
+  title,
+  description,
+  imageSrc,
+  bgColor,
+}: Collectible) => {
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
       <Image

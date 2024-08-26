@@ -10,7 +10,7 @@ export function AlertItem({
   description,
   creationDate,
   href,
-  linkTitle
+  linkTitle,
 }: Alert) {
   return (
     <VStack

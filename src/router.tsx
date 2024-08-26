@@ -78,7 +78,9 @@ const router = createBrowserRouter([
       {
         path: "/wallet/journeys/:id",
         async lazy() {
-          const { JourneyPage } = await import("@/routes/wallet/journeys/journey");
+          const { JourneyPage } = await import(
+            "@/routes/wallet/journeys/journey"
+          );
           return { Component: JourneyPage };
         },
       },
