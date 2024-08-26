@@ -18,7 +18,7 @@ function AlertList({ alerts }) {
 }
 
 export function Alerts() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["alerts"],
     queryFn: fetchAlerts,
   });
@@ -28,7 +28,7 @@ export function Alerts() {
       <PageHeading title="Alerts" showBackButton backUrl="/me" />
       {isLoading && <LoadingBox />}
       {data && <AlertList alerts={data} />}
-      {error && <ErrorBox message={`Error: ${error.message}`} />}
+      {isError && <ErrorBox message={`Error: ${error.message}`} />}
     </VStack>
   );
 }

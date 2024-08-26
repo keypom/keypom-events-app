@@ -39,7 +39,7 @@ const CollectibleDetails = ({ title, description, imageSrc, bgColor }: Collectib
 export function CollectiblePage() {
   const { id } = useParams<{ id: string }>();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["collectible", id],
     queryFn: () => fetchCollectibleById(id!),
     enabled: !!id,
@@ -55,7 +55,7 @@ export function CollectiblePage() {
       />
       {isLoading && <LoadingBox />}
       {data && <CollectibleDetails {...data} />}
-      {error && <ErrorBox message={`Error: ${error.message}`} />}
+      {isError && <ErrorBox message={`Error: ${error.message}`} />}
     </VStack>
   );
 }

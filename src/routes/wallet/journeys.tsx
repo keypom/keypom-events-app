@@ -12,6 +12,7 @@ export function Journeys() {
   const {
     data: journeys,
     error,
+    isError,
     isLoading,
   } = useQuery({ queryKey: ["journeys"], queryFn: fetchJourneys });
 
@@ -43,7 +44,7 @@ export function Journeys() {
           ))}
         </VStack>
       )}
-      {error && <ErrorBox message={`Error: ${error.message}`} />}
+      {isError && <ErrorBox message={`Error: ${error.message}`} />}
     </VStack>
   );
 }

@@ -60,6 +60,7 @@ export function Collectibles() {
   const {
     data: collectibles,
     error,
+    isError,
     isLoading,
   } = useQuery({ queryKey: ["collectibles"], queryFn: fetchCollectibles });
 
@@ -93,7 +94,7 @@ export function Collectibles() {
           unlockedItems={unlockedItems}
         />
       )}
-      {error && <ErrorBox message={`Error: {error.message}`} />}
+      {isError && <ErrorBox message={`Error: ${error.message}`} />}
     </VStack>
   );
 }

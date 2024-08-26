@@ -90,7 +90,7 @@ const JourneyDetails = ({
 export function JourneyPage() {
   const { id } = useParams<{ id: string }>();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["journey", id],
     queryFn: () => fetchJourneyById(id!),
     enabled: !!id,
@@ -106,7 +106,7 @@ export function JourneyPage() {
       />
       {isLoading && <LoadingBox />}
       {data && <JourneyDetails {...data} />}
-      {error && <ErrorBox message={`Error: ${error.message}`} />}
+      {isError && <ErrorBox message={`Error: ${error.message}`} />}
     </VStack>
   );
 }
