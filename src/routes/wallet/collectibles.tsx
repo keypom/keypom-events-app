@@ -1,7 +1,12 @@
 import { Grid, GridItem, VStack } from "@chakra-ui/react";
 
+import { ErrorBox } from "@/components/ui/error-box";
+import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
 import { CollectibleCard } from "@/components/wallet/collectibles/card";
+import { Collectible, fetchCollectibles } from "@/lib/api/collectibles";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 const Divider = () => {
   return (
@@ -16,16 +21,9 @@ const Divider = () => {
   );
 };
 
-export function Collectibles() {
+const CollectiblesGrid = ({ lockedItems, unlockedItems }) => {
   return (
-    <VStack spacing={4} p={4}>
-      <PageHeading
-        title="Collectibles"
-        titleSize="24px"
-        description="2/8 found"
-        showBackButton
-        backUrl="/wallet"
-      />
+    <>
       <Grid
         templateColumns={{
           base: "repeat(2, minmax(0, 1fr))",
@@ -33,9 +31,9 @@ export function Collectibles() {
         width={"100%"}
         maxWidth="450px"
       >
-        {Array.from({ length: 2 }).map((_, index) => (
+        {unlockedItems.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>
-            <CollectibleCard id={index.toString()} />
+            <CollectibleCard {...collectible} />
           </GridItem>
         ))}
       </Grid>
@@ -48,12 +46,54 @@ export function Collectibles() {
         width={"100%"}
         maxWidth="450px"
       >
-        {Array.from({ length: 6 }).map((_, index) => (
+        {lockedItems.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>
-            <CollectibleCard id={index.toString()} disabled />
+            <CollectibleCard {...collectible} disabled />
           </GridItem>
         ))}
       </Grid>
+    </>
+  );
+};
+
+export function Collectibles() {
+  const {
+    data: collectibles,
+    error,
+    isLoading,
+  } = useQuery({ queryKey: ["collectibles"], queryFn: fetchCollectibles });
+
+  const unlockedItems = useMemo(
+    () => (collectibles ? collectibles.filter((it) => it.isFound) : []),
+    [collectibles],
+  );
+  const lockedItems = useMemo(
+    () => (collectibles ? collectibles.filter((it) => !it.isFound) : []),
+    [collectibles],
+  );
+
+  const getProgressDescription = (collectibles: Collectible[]) => {
+    const completed = unlockedItems.length;
+    return `${completed}/${collectibles.length} found`;
+  };
+
+  return (
+    <VStack spacing={4} p={4}>
+      <PageHeading
+        title="Collectibles"
+        titleSize="24px"
+        description={collectibles ? getProgressDescription(collectibles) : ""}
+        showBackButton
+        backUrl="/wallet"
+      />
+      {isLoading && <LoadingBox />}
+      {collectibles && (
+        <CollectiblesGrid
+          lockedItems={lockedItems}
+          unlockedItems={unlockedItems}
+        />
+      )}
+      {error && <ErrorBox message={`Error: {error.message}`} />}
     </VStack>
   );
 }

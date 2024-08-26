@@ -1,4 +1,3 @@
-import { AppContextProvider } from "@/contexts/AppContext";
 import { AuthWalletContextProvider } from "@/contexts/AuthWalletContext";
 import router from "@/router";
 import { theme } from "@/theme";
@@ -14,11 +13,9 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
-        <AppContextProvider>
-          <AuthWalletContextProvider>
-            <RouterProvider router={router} />
-          </AuthWalletContextProvider>
-        </AppContextProvider>
+        <AuthWalletContextProvider>
+          <RouterProvider router={router} />
+        </AuthWalletContextProvider>
       </ChakraProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

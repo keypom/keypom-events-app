@@ -2,20 +2,16 @@ import { VStack, Text, Heading, Flex, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 import { ArrowIcon } from "@/components/icons";
+import { Alert } from "@/lib/api/alerts";
+import { timeAgo } from "@/utils/date";
 
-interface AlertProps {
-  title?: string;
-  description?: string;
-  href?: string;
-  timeAgo?: string;
-}
-
-export function Alert({
-  title = "Title of the Alert goes here",
-  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
-  href = "/",
-  timeAgo = "2 days ago",
-}: AlertProps) {
+export function AlertItem({
+  title,
+  description,
+  creationDate,
+  href,
+  linkTitle
+}: Alert) {
   return (
     <VStack
       spacing={2}
@@ -58,7 +54,7 @@ export function Alert({
           {title}
         </Heading>
         <Text fontSize="10px" fontWeight="700" color="brand.600">
-          {timeAgo}
+          {timeAgo(creationDate)}
         </Text>
       </Flex>
       <Text color="white" fontSize="xs">
@@ -78,7 +74,7 @@ export function Alert({
         color="brand.400"
         gap="8px"
       >
-        <span>CUSTOM TITLE LINK</span>
+        <span>{linkTitle}</span>
         <ArrowIcon
           direction="right"
           width={8}

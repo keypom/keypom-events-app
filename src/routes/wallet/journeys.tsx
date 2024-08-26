@@ -1,24 +1,12 @@
-import { Box, VStack } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 
+import { ErrorBox } from "@/components/ui/error-box";
+import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
-import { Spinner } from "@/components/ui/spinner";
 import { JourneyCard } from "@/components/wallet/journeys/card";
+import { fetchJourneys, Journey } from "@/lib/api/journeys";
 import { useQuery } from "@tanstack/react-query";
-
-type Journey = {
-  title: string;
-  description: string;
-  progress: number;
-  bgColor: string;
-};
-
-const fetchJourneys: () => Promise<Journey[]> = async () => {
-  const response = await fetch("https://example.com/journeys");
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  return response.json();
-};
+import { useMemo } from "react";
 
 export function Journeys() {
   const {
@@ -27,10 +15,14 @@ export function Journeys() {
     isLoading,
   } = useQuery({ queryKey: ["journeys"], queryFn: fetchJourneys });
 
+  const isJourneyCompleted = (journey: Journey) => {
+    return journey.steps.every(step => step.completed);
+  };
+
+  const completedJourneys = useMemo(() => (journeys ? journeys.filter((it) => isJourneyCompleted(it)) : []), [journeys]);
+
   const getProgressDescription = (journeys: Journey[]) => {
-    const completed = journeys.filter(
-      (journey) => journey.progress === 100,
-    ).length;
+    const completed = completedJourneys.length;
     return `${completed}/${journeys.length} completed`;
   };
 
@@ -43,52 +35,15 @@ export function Journeys() {
         showBackButton
         backUrl="/wallet"
       />
-      {isLoading && (
-        <Box
-          position="absolute"
-          top="50%"
-          left="50%"
-          transform="translate(-50%, -50%)"
-          width="100%"
-          height="100%"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          zIndex={1}
-        >
-          <Spinner />
-        </Box>
-      )}
+      {isLoading && <LoadingBox />}
       {journeys && (
         <VStack width="100%" spacing={4}>
           {journeys.map((journey, index) => (
-            <JourneyCard
-              key={index}
-              title={journey.title}
-              description={journey.description}
-              progress={journey.progress}
-              bgColor={journey.bgColor}
-              id={index.toString()}
-            />
+            <JourneyCard key={index} {...journey} />
           ))}
         </VStack>
       )}
-      {error && (
-        <Box
-          position="absolute"
-          top="50%"
-          left="50%"
-          transform="translate(-50%, -50%)"
-          width="100%"
-          height="100%"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          zIndex={1}
-        >
-          <div>Error: {error.message}</div>
-        </Box>
-      )}
+      {error && <ErrorBox message={`Error: ${error.message}`} />}
     </VStack>
   );
 }
