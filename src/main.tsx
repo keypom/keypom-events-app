@@ -1,20 +1,18 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ChakraProvider } from "@chakra-ui/react";
-import router from "@/router";
-import { theme } from "@/theme";
-import { RouterProvider } from "react-router-dom";
-import { AuthWalletContextProvider } from "@/contexts/AuthWalletContext";
-import { AppContextProvider } from "@/contexts/AppContext";
+import App from "./App";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ChakraProvider theme={theme}>
-      <AppContextProvider>
-        <AuthWalletContextProvider>
-          <RouterProvider router={router} />
-        </AuthWalletContextProvider>
-      </AppContextProvider>
-    </ChakraProvider>
-  </StrictMode>,
-);
+async function prepare() {
+  if (import.meta.env.DEV) {
+    const { worker } = await import("@/mocks/browser");
+    return worker.start();
+  }
+}
+
+prepare().then(() => {
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
+});

@@ -1,7 +1,9 @@
-import { VStack } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
 
 import { PageHeading } from "@/components/ui/page-heading";
+import { Spinner } from "@/components/ui/spinner";
 import { JourneyCard } from "@/components/wallet/journeys/card";
+import { useQuery } from "@tanstack/react-query";
 
 type Journey = {
   title: string;
@@ -10,55 +12,83 @@ type Journey = {
   bgColor: string;
 };
 
-const journeys: Journey[] = [
-  {
-    title: "NEAR Sponsor Scavenger Hunt",
-    description: "4 of 4 found",
-    progress: 100,
-    bgColor: "#0282A2",
-  },
-  {
-    title: "NEAR Purple Scavenger Hunt",
-    description: "2 of 4 found",
-    progress: 50,
-    bgColor: "#7269E1",
-  },
-  {
-    title: "Chain Abstraction Adventure",
-    description: "0 of 4 found",
-    progress: 0,
-    bgColor: "#F44738",
-  },
-  {
-    title: "Another Adventure",
-    description: "0 of 4 found",
-    progress: 0,
-    bgColor: "#62EBE4",
-  },
-];
+const fetchJourneys: () => Promise<Journey[]> = async () => {
+  const response = await fetch("https://example.com/journeys");
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response.json();
+};
 
 export function Journeys() {
+  const {
+    data: journeys,
+    error,
+    isLoading,
+  } = useQuery({ queryKey: ["journeys"], queryFn: fetchJourneys });
+
+  const getProgressDescription = (journeys: Journey[]) => {
+    const completed = journeys.filter(
+      (journey) => journey.progress === 100,
+    ).length;
+    return `${completed}/${journeys.length} completed`;
+  };
+
   return (
     <VStack spacing={4} p={4}>
       <PageHeading
         title="Journeys"
         titleSize="24px"
-        description="1/4 completed"
+        description={journeys ? getProgressDescription(journeys) : ""}
         showBackButton
         backUrl="/wallet"
       />
-      <VStack width="100%" spacing={4}>
-        {journeys.map((journey, index) => (
-          <JourneyCard
-            key={index}
-            title={journey.title}
-            description={journey.description}
-            progress={journey.progress}
-            bgColor={journey.bgColor}
-            id={index.toString()}
-          />
-        ))}
-      </VStack>
+      {isLoading && (
+        <Box
+          position="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          width="100%"
+          height="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          zIndex={1}
+        >
+          <Spinner />
+        </Box>
+      )}
+      {journeys && (
+        <VStack width="100%" spacing={4}>
+          {journeys.map((journey, index) => (
+            <JourneyCard
+              key={index}
+              title={journey.title}
+              description={journey.description}
+              progress={journey.progress}
+              bgColor={journey.bgColor}
+              id={index.toString()}
+            />
+          ))}
+        </VStack>
+      )}
+      {error && (
+        <Box
+          position="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          width="100%"
+          height="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          zIndex={1}
+        >
+          <div>Error: {error.message}</div>
+        </Box>
+      )}
     </VStack>
   );
 }
