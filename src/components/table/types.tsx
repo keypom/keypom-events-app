@@ -1,4 +1,4 @@
-import { type TableCellProps } from '@chakra-ui/react';
+import { type TableCellProps } from "@chakra-ui/react";
 
 type Primitive = string | number | boolean;
 

@@ -1,4 +1,4 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface FilterIconProps extends IconProps {
   highToLow: boolean;

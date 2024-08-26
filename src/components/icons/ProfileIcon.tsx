@@ -1,10 +1,13 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface ProfileIconProps extends IconProps {
   color?: string;
 }
 
-export const ProfileIcon = ({ color = 'white', ...props }: ProfileIconProps) => {
+export const ProfileIcon = ({
+  color = "white",
+  ...props
+}: ProfileIconProps) => {
   return (
     <Icon
       fill="none"

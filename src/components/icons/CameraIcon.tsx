@@ -1,11 +1,15 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface CameraIconProps extends IconProps {
   color?: string;
   strokeWidth?: string;
 }
 
-export const CameraIcon = ({ strokeWidth = '2', color = '#3E3E3E', ...props }: CameraIconProps) => {
+export const CameraIcon = ({
+  strokeWidth = "2",
+  color = "#3E3E3E",
+  ...props
+}: CameraIconProps) => {
   return (
     <Icon
       fill="none"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -10,9 +10,9 @@ import {
   ModalFooter,
   IconButton,
   Text,
-} from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import { ModalWrapper } from './CreateDropModal/ModalWrapper';
+} from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { ModalWrapper } from "./CreateDropModal/ModalWrapper";
 
 interface QRCodeModalProps {
   isOpen: boolean;
@@ -35,7 +35,9 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
 
   const handlePrevious = () => {
     if (totalQrCodes > 1) {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + totalQrCodes) % totalQrCodes);
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + totalQrCodes) % totalQrCodes,
+      );
     }
   };
 
@@ -48,7 +50,8 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
       <ModalHeader>
-        QR Code{totalQrCodes > 1 ? ` (${currentIndex + 1} of ${totalQrCodes})` : ''}
+        QR Code
+        {totalQrCodes > 1 ? ` (${currentIndex + 1} of ${totalQrCodes})` : ""}
       </ModalHeader>
       <ModalBody>
         {totalQrCodes > 0 ? (
@@ -62,7 +65,10 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
                   isDisabled={totalQrCodes <= 1}
                   mr={2}
                 />
-                <img src={qrCodeUrls[currentIndex]} alt={`QR Code ${currentIndex + 1}`} />
+                <img
+                  src={qrCodeUrls[currentIndex]}
+                  alt={`QR Code ${currentIndex + 1}`}
+                />
                 <IconButton
                   aria-label="Next QR Code"
                   icon={<ChevronRightIcon />}
@@ -74,9 +80,13 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
             ) : (
               <img src={qrCodeUrls[0]} alt={`QR Code`} />
             )}
-            {totalQrCodes === 1 && <Text mb={4}>Scan this QR code to get the rewards.</Text>}
+            {totalQrCodes === 1 && (
+              <Text mb={4}>Scan this QR code to get the rewards.</Text>
+            )}
             {totalQrCodes > 1 && (
-              <Text mb={4}>This is a scavenger hunt. Scan all QR codes to get the rewards.</Text>
+              <Text mb={4}>
+                This is a scavenger hunt. Scan all QR codes to get the rewards.
+              </Text>
             )}
           </Box>
         ) : (
@@ -85,12 +95,20 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
       </ModalBody>
       <ModalFooter>
         {totalQrCodes > 1 && (
-          <Button colorScheme="blue" mr={3} onClick={() => onDownloadAll(qrCodeUrls)}>
+          <Button
+            colorScheme="blue"
+            mr={3}
+            onClick={() => onDownloadAll(qrCodeUrls)}
+          >
             Download All
           </Button>
         )}
         {totalQrCodes > 0 && (
-          <Button colorScheme="blue" mr={3} onClick={() => onDownload(qrCodeUrls[currentIndex])}>
+          <Button
+            colorScheme="blue"
+            mr={3}
+            onClick={() => onDownload(qrCodeUrls[currentIndex])}
+          >
             Download
           </Button>
         )}

@@ -14,35 +14,35 @@ import {
   type TableProps,
   useToast,
   useDisclosure,
-} from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { type ProtocolReturnedKeyInfo } from '@keypom/core';
+} from "@chakra-ui/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { type ProtocolReturnedKeyInfo } from "@keypom/core";
 
-import { type ColumnItem, type DataItem } from '@/components/Table/types';
-import { DataTable } from '@/components/Table';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { file } from '@/utils/file';
-import { useAuthWalletContext } from '@/contexts/AuthWalletContext';
-import { useAppContext } from '@/contexts/AppContext';
-import keypomInstance from '@/lib/keypom';
-import { useValidMasterKey } from '@/hooks/useValidMasterKey';
-import { share } from '@/utils/share';
-import { setMasterKeyValidityModal } from '@/features/drop-manager/components/MasterKeyValidityModal';
-import { PAGE_SIZE_LIMIT } from '@/constants/common';
-import { DropManagerPagination } from '@/features/all-events/components/DropManagerPagination';
-import { DropDownButton } from '@/features/all-events/components/DropDownButton';
-import { FilterOptionsMobileButton } from '@/features/all-events/components/FilterOptionsMobileButton';
-import { MobileDrawerMenu } from '@/features/all-events/components/MobileDrawerMenu';
+import { type ColumnItem, type DataItem } from "@/components/Table/types";
+import { DataTable } from "@/components/Table";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { file } from "@/utils/file";
+import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
+import { useAppContext } from "@/contexts/AppContext";
+import keypomInstance from "@/lib/keypom";
+import { useValidMasterKey } from "@/hooks/useValidMasterKey";
+import { share } from "@/utils/share";
+import { setMasterKeyValidityModal } from "@/features/drop-manager/components/MasterKeyValidityModal";
+import { PAGE_SIZE_LIMIT } from "@/constants/common";
+import { DropManagerPagination } from "@/features/all-events/components/DropManagerPagination";
+import { DropDownButton } from "@/features/all-events/components/DropDownButton";
+import { FilterOptionsMobileButton } from "@/features/all-events/components/FilterOptionsMobileButton";
+import { MobileDrawerMenu } from "@/features/all-events/components/MobileDrawerMenu";
 
 import {
   KEY_CLAIM_STATUS_OPTIONS,
   KEY_CLAIM_STATUS_ITEMS,
   PAGE_SIZE_ITEMS,
   createMenuItems,
-} from '../../all-events/config/menuItems';
+} from "../../all-events/config/menuItems";
 
-import { setConfirmationModalHelper } from './ConfirmationModal';
+import { setConfirmationModalHelper } from "./ConfirmationModal";
 
 export interface DropKeyItem {
   id: number;
@@ -76,10 +76,10 @@ export const DropManager = ({
   tableColumns = [],
   getData,
   showColumns = true,
-  dropImageSize = '150px',
+  dropImageSize = "150px",
   tableProps,
 }: DropManagerProps) => {
-  const { id: dropId = '' } = useParams();
+  const { id: dropId = "" } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
   const { setAppModal } = useAppContext();
@@ -92,11 +92,11 @@ export const DropManager = ({
     media: string | undefined;
     claimed: string;
   }>({
-    id: '',
-    name: '',
-    type: '',
-    media: 'loading',
-    claimed: '',
+    id: "",
+    name: "",
+    type: "",
+    media: "loading",
+    claimed: "",
   });
   const [loading, setLoading] = useState(true);
   const [isAllKeysLoading, setIsAllKeysLoading] = useState(true);
@@ -104,7 +104,7 @@ export const DropManager = ({
   const popoverClicked = useRef(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [name, setName] = useState('Untitled');
+  const [name, setName] = useState("Untitled");
   const [totalKeys, setTotalKeys] = useState<number>(0);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [exporting, setExporting] = useState<boolean>(false);
@@ -130,7 +130,7 @@ export const DropManager = ({
           window.location.reload();
         },
         () => {
-          navigate('/drops');
+          navigate("/drops");
         },
       );
     }
@@ -163,7 +163,7 @@ export const DropManager = ({
         const wallet = await selector.wallet();
         setWallet(wallet);
       } catch (error) {
-        console.error('Error fetching wallet:', error);
+        console.error("Error fetching wallet:", error);
         // Handle the error appropriately
       }
     }
@@ -173,9 +173,9 @@ export const DropManager = ({
 
   const getTableType = () => {
     if (filteredDropKeys.length === 0 && totalKeys === 0) {
-      return 'drop-manager';
+      return "drop-manager";
     }
-    return 'no-filtered-keys';
+    return "no-filtered-keys";
   };
 
   const handleDropData = async (dropId) => {
@@ -204,7 +204,9 @@ export const DropManager = ({
     const filteredKeys = handleFiltering(dropKeyItems);
     setFilteredDropKeys(filteredKeys);
 
-    const totalPages = Math.ceil(filteredKeys.length / selectedFilters.pageSize);
+    const totalPages = Math.ceil(
+      filteredKeys.length / selectedFilters.pageSize,
+    );
     setNumPages(totalPages);
 
     setCurPage(0);
@@ -221,7 +223,10 @@ export const DropManager = ({
     // Loop until we have enough filtered drops to fill the page size
     let keysFetched = 0;
     let filteredKeys = [];
-    while (keysFetched < totalKeySupply && filteredKeys.length < selectedFilters.pageSize) {
+    while (
+      keysFetched < totalKeySupply &&
+      filteredKeys.length < selectedFilters.pageSize
+    ) {
       const dropKeyItems = await keypomInstance.getPaginatedKeysInfo({
         dropId,
         start: keysFetched,
@@ -257,12 +262,12 @@ export const DropManager = ({
 
   const breadcrumbItems = [
     {
-      name: 'My drops',
-      href: '/drops',
+      name: "My drops",
+      href: "/drops",
     },
     {
       name,
-      href: '',
+      href: "",
     },
   ];
 
@@ -293,10 +298,12 @@ export const DropManager = ({
       setExporting(true);
 
       try {
-        const links = await keypomInstance.getLinksToExport(data[0].dropId as string);
-        file(`Drop ID ${data[0].dropId as string}.csv`, links.join('\r\n'));
+        const links = await keypomInstance.getLinksToExport(
+          data[0].dropId as string,
+        );
+        file(`Drop ID ${data[0].dropId as string}.csv`, links.join("\r\n"));
       } catch (e) {
-        console.error('error', e);
+        console.error("error", e);
       } finally {
         setExporting(false);
       }
@@ -316,9 +323,9 @@ export const DropManager = ({
             wallet,
             dropIds: [dropId as string],
           });
-          navigate('/drops');
+          navigate("/drops");
         },
-        'drop',
+        "drop",
       );
       setDeleting(false);
     }
@@ -326,7 +333,12 @@ export const DropManager = ({
 
   const handleCopyClick = (link: string) => {
     share(link);
-    toast({ title: 'Copied!', status: 'success', duration: 1000, isClosable: true });
+    toast({
+      title: "Copied!",
+      status: "success",
+      duration: 1000,
+      isClosable: true,
+    });
   };
 
   const handleDeleteClick = async (pubKey: string) => {
@@ -340,7 +352,7 @@ export const DropManager = ({
         });
         window.location.reload();
       },
-      'key',
+      "key",
     );
   };
 
@@ -354,7 +366,13 @@ export const DropManager = ({
         handleDeleteClick,
         handleCopyClick,
       ),
-    [getData, filteredDropKeys, filteredDropKeys.length, handleCopyClick, handleDeleteClick],
+    [
+      getData,
+      filteredDropKeys,
+      filteredDropKeys.length,
+      handleCopyClick,
+      handleDeleteClick,
+    ],
   );
 
   const allowAction = data.length > 0;
@@ -369,7 +387,7 @@ export const DropManager = ({
       py="3"
       textColor="red.500"
       variant="secondary"
-      w={{ base: '100%' }}
+      w={{ base: "100%" }}
       onClick={handleCancelAllClick}
     >
       Cancel all
@@ -377,12 +395,12 @@ export const DropManager = ({
   );
 
   return (
-    <Box px="1" py={{ base: '3.25rem', md: '5rem' }}>
+    <Box px="1" py={{ base: "3.25rem", md: "5rem" }}>
       <Breadcrumbs items={breadcrumbItems} />
       {/* Drop info section */}
       <VStack align="start" paddingTop="4" spacing="4">
         <HStack>
-          {dropData.media === 'loading' ? (
+          {dropData.media === "loading" ? (
             <Spinner />
           ) : (
             <Image
@@ -393,7 +411,7 @@ export const DropManager = ({
               src={dropData.media || placeholderImage} // Use dropData.media or fallback to placeholder
               onError={(e) => {
                 // eslint-disable-next-line no-console
-                console.warn('error loading image', e);
+                console.warn("error loading image", e);
                 setDropData((prev) => ({ ...prev, media: placeholderImage }));
               }}
             />
@@ -415,7 +433,7 @@ export const DropManager = ({
             w="100%" // Adjust based on your layout, 'fit-content' makes the box to fit its content size
           >
             <VStack align="start" spacing={1}>
-              {' '}
+              {" "}
               {/* Adjust spacing as needed */}
               <Text color="gray.400" fontSize="lg" fontWeight="medium">
                 Claimed
@@ -456,7 +474,7 @@ export const DropManager = ({
               py="3"
               textColor="red.500"
               variant="secondary"
-              w={{ base: '100%', sm: 'initial' }}
+              w={{ base: "100%", sm: "initial" }}
               onClick={handleCancelAllClick}
             >
               Cancel all
@@ -469,7 +487,7 @@ export const DropManager = ({
               px="6"
               py="3"
               variant="secondary"
-              w={{ base: '100%', sm: 'initial' }}
+              w={{ base: "100%", sm: "initial" }}
               onClick={handleExportCSVClick}
             >
               Export .CSV
@@ -498,7 +516,7 @@ export const DropManager = ({
               lineHeight=""
               px="6"
               variant="secondary"
-              w={{ sm: 'initial' }}
+              w={{ sm: "initial" }}
               onClick={handleExportCSVClick}
             >
               Export .CSV
@@ -513,7 +531,7 @@ export const DropManager = ({
           data={data}
           excludeMobileColumns={[]}
           loading={loading}
-          mt={{ base: '6', md: '4' }}
+          mt={{ base: "6", md: "4" }}
           showColumns={showColumns}
           showMobileTitles={[]}
           type={getTableType()}
@@ -537,7 +555,7 @@ export const DropManager = ({
         customButton={mobileCancelButton}
         filters={[
           {
-            label: 'Status',
+            label: "Status",
             value: selectedFilters.status,
             menuItems: keyClaimStatusMenuItems,
           },

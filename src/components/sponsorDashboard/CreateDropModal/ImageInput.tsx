@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Input, Text } from '@chakra-ui/react';
-import { FormControlComponent } from '@/components/FormControl';
-import { ImageFileInputSmall } from '@/components/ImageFileInput/ImageFileInputSmall';
+import React, { useEffect, useState } from "react";
+import { Input, Text } from "@chakra-ui/react";
+import { FormControlComponent } from "@/components/FormControl";
+import { ImageFileInputSmall } from "@/components/ImageFileInput/ImageFileInputSmall";
 
 interface ImageInputProps {
   createdDrop: any;
@@ -9,7 +9,11 @@ interface ImageInputProps {
   errors: any;
 }
 
-export const ImageInput: React.FC<ImageInputProps> = ({ createdDrop, setCreatedDrop, errors }) => {
+export const ImageInput: React.FC<ImageInputProps> = ({
+  createdDrop,
+  setCreatedDrop,
+  errors,
+}) => {
   const [preview, setPreview] = useState<string>();
 
   useEffect(() => {
@@ -35,7 +39,11 @@ export const ImageInput: React.FC<ImageInputProps> = ({ createdDrop, setCreatedD
   };
 
   return (
-    <FormControlComponent label="Image*" labelProps={{ fontSize: { base: 'xs', md: 'md' } }} my="1">
+    <FormControlComponent
+      label="Image*"
+      labelProps={{ fontSize: { base: "xs", md: "md" } }}
+      my="1"
+    >
       <ImageFileInputSmall
         accept="image/jpeg, image/png, image/gif"
         ctaText="Upload drop artwork"

@@ -1,5 +1,5 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Button } from '@chakra-ui/react';
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { Button } from "@chakra-ui/react";
 
 export const FilterOptionsMobileButton = ({
   buttonTitle,

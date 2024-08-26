@@ -1,18 +1,23 @@
-export const isValidNonNegativeNumber = (value: string) => /^\d*\.?\d+$/.test(value);
+export const isValidNonNegativeNumber = (value: string) =>
+  /^\d*\.?\d+$/.test(value);
 
 export const validateForm = (
   createdDrop: any,
   setErrors: React.Dispatch<React.SetStateAction<any>>,
 ) => {
-  console.log('Validating form', createdDrop);
+  console.log("Validating form", createdDrop);
   const errors: any = {};
-  if (!createdDrop.name) errors.name = 'Name is required';
-  if (!createdDrop.artwork) errors.artwork = 'Artwork is required';
+  if (!createdDrop.name) errors.name = "Name is required";
+  if (!createdDrop.artwork) errors.artwork = "Artwork is required";
 
   if (createdDrop.nftData) {
-    if (!createdDrop.nftData.title) errors.nft = { ...errors.nft, title: 'NFT title is required' };
+    if (!createdDrop.nftData.title)
+      errors.nft = { ...errors.nft, title: "NFT title is required" };
     if (!createdDrop.nftData.description)
-      errors.nft = { ...errors.nft, description: 'NFT description is required' };
+      errors.nft = {
+        ...errors.nft,
+        description: "NFT description is required",
+      };
   }
 
   setErrors(errors);
@@ -30,9 +35,16 @@ export const updateScavengerPieceDescription = (
   setScavengerPieces(newPieces);
 };
 
-export const addScavengerPiece = (scavengerPieces, setScavengerPieces, setTempNumPieces) => {
+export const addScavengerPiece = (
+  scavengerPieces,
+  setScavengerPieces,
+  setTempNumPieces,
+) => {
   if (scavengerPieces.length < 10) {
-    const newPiece = { piece: `Piece ${scavengerPieces.length + 1}`, description: '' };
+    const newPiece = {
+      piece: `Piece ${scavengerPieces.length + 1}`,
+      description: "",
+    };
     setScavengerPieces([...scavengerPieces, newPiece]);
     setTempNumPieces((scavengerPieces.length + 1).toString());
   }
@@ -46,16 +58,16 @@ export const updateNumPieces = (
 ) => {
   let numPieces = parseInt(tempNumPieces, 10);
   if (isNaN(numPieces) || numPieces < 2) {
-    setNumPiecesError('Scavenger hunts need to have at least 2 pieces.');
+    setNumPiecesError("Scavenger hunts need to have at least 2 pieces.");
     numPieces = 2; // Minimum 2 pieces if scavenger hunt is active
   } else {
-    setNumPiecesError('');
+    setNumPiecesError("");
   }
 
   if (numPieces <= 10) {
     const newPieces = Array.from({ length: numPieces }, (_, i) => ({
       piece: `Piece ${i + 1}`,
-      description: '',
+      description: "",
     }));
     setScavengerPieces(newPieces);
     setTempNumPieces(numPieces.toString());

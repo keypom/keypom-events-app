@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalOverlay } from '@chakra-ui/react';
+import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 
 export const ModalWrapper = ({ isOpen, onClose, children }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="2xl">

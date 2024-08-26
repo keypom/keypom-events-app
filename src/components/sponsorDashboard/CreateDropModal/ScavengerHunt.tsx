@@ -1,13 +1,21 @@
-import { VStack, Button, Input, Text, HStack, Tooltip, Switch } from '@chakra-ui/react';
-import { DeleteIcon } from '@chakra-ui/icons';
+import {
+  VStack,
+  Button,
+  Input,
+  Text,
+  HStack,
+  Tooltip,
+  Switch,
+} from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 import {
   updateScavengerPieceDescription,
   addScavengerPiece,
   removeScavengerPiece,
   updateNumPieces,
   isValidNonNegativeNumber,
-} from './dropUtils';
-import { useState } from 'react';
+} from "./dropUtils";
+import { useState } from "react";
 
 export const ScavengerHunt = ({
   isScavengerHunt,
@@ -16,12 +24,12 @@ export const ScavengerHunt = ({
   setScavengerPieces,
   errors,
 }) => {
-  const [numPiecesError, setNumPiecesError] = useState('');
-  const [tempNumPieces, setTempNumPieces] = useState('2');
+  const [numPiecesError, setNumPiecesError] = useState("");
+  const [tempNumPieces, setTempNumPieces] = useState("2");
 
   const handleNumPiecesChange = (e) => {
     const value = e.target.value;
-    if (isValidNonNegativeNumber(value) || value === '') {
+    if (isValidNonNegativeNumber(value) || value === "") {
       setTempNumPieces(value);
     }
   };
@@ -58,7 +66,7 @@ export const ScavengerHunt = ({
               }}
               onChange={handleNumPiecesChange}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === "Enter") {
                   updateNumPieces(
                     tempNumPieces,
                     setNumPiecesError,
@@ -117,7 +125,11 @@ export const ScavengerHunt = ({
               size="sm"
               variant="ghost"
               onClick={() => {
-                addScavengerPiece(scavengerPieces, setScavengerPieces, setTempNumPieces);
+                addScavengerPiece(
+                  scavengerPieces,
+                  setScavengerPieces,
+                  setTempNumPieces,
+                );
               }}
               isDisabled={scavengerPieces.length >= 10}
             >

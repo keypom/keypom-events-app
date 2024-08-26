@@ -1,12 +1,12 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface FooterCalendarIconProps extends IconProps {
   color?: string;
   strokeWidth?: string;
 }
 export const FooterCalendarIcon = ({
-  color = 'white',
-  strokeWidth = '2',
+  color = "white",
+  strokeWidth = "2",
   ...props
 }: FooterCalendarIconProps) => {
   return (

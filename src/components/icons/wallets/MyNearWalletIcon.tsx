@@ -1,4 +1,4 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 export const MyNearLogoIcon = ({ ...props }: IconProps) => {
   const uniqueId = Math.ceil(Math.random() * 1000); // prevent reusing of svg that aren't visible on page
@@ -11,7 +11,12 @@ export const MyNearLogoIcon = ({ ...props }: IconProps) => {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <rect fill={`url(#pattern${uniqueId})`} height="17.4438" width="15.3916" y="0.169922" />
+      <rect
+        fill={`url(#pattern${uniqueId})`}
+        height="17.4438"
+        width="15.3916"
+        y="0.169922"
+      />
       <defs>
         <pattern
           height="1"
@@ -19,7 +24,10 @@ export const MyNearLogoIcon = ({ ...props }: IconProps) => {
           patternContentUnits="objectBoundingBox"
           width="1"
         >
-          <use transform="scale(0.0111111 0.00980392)" xlinkHref="#image0_1384_4096" />
+          <use
+            transform="scale(0.0111111 0.00980392)"
+            xlinkHref="#image0_1384_4096"
+          />
         </pattern>
         <image
           height="102"

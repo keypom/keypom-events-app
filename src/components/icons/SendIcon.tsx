@@ -1,11 +1,15 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface SendIconProps extends IconProps {
   color?: string;
   strokeWidth?: string;
 }
 
-export const SendIcon = ({ strokeWidth = '2', color = '#3E3E3E', ...props }: SendIconProps) => {
+export const SendIcon = ({
+  strokeWidth = "2",
+  color = "#3E3E3E",
+  ...props
+}: SendIconProps) => {
   return (
     <Icon
       fill="none"

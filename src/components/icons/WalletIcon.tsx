@@ -1,10 +1,10 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface WalletIconProps extends IconProps {
   color?: string;
 }
 
-export const WalletIcon = ({ color = 'white', ...props }: WalletIconProps) => {
+export const WalletIcon = ({ color = "white", ...props }: WalletIconProps) => {
   return (
     <Icon
       fill="none"

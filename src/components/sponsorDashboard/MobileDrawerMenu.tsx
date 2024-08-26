@@ -1,4 +1,4 @@
-import type React from 'react';
+import type React from "react";
 import {
   Button,
   Drawer,
@@ -15,8 +15,8 @@ import {
   Menu,
   MenuButton,
   MenuList,
-} from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
+} from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 
 interface FilterConfig {
   label: string;

@@ -1,10 +1,10 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface ScanIconProps extends IconProps {
   color?: string;
 }
 
-export const ScanIcon = ({ color = 'white', ...props }: ScanIconProps) => {
+export const ScanIcon = ({ color = "white", ...props }: ScanIconProps) => {
   return (
     <Icon
       fill="none"

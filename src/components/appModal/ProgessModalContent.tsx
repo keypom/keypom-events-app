@@ -1,4 +1,11 @@
-import { ModalContent, VStack, Text, Progress, Center, Spinner } from '@chakra-ui/react';
+import {
+  ModalContent,
+  VStack,
+  Text,
+  Progress,
+  Center,
+  Spinner,
+} from "@chakra-ui/react";
 
 interface ProgressModalContentProps {
   title: string;
@@ -6,7 +13,11 @@ interface ProgressModalContentProps {
   message: string;
 }
 
-const ProgressModalContent = ({ title, progress, message }: ProgressModalContentProps) => (
+const ProgressModalContent = ({
+  title,
+  progress,
+  message,
+}: ProgressModalContentProps) => (
   <ModalContent padding={6}>
     <VStack align="stretch" spacing={4}>
       <Text fontSize="lg" fontWeight="semibold">
@@ -16,9 +27,9 @@ const ProgressModalContent = ({ title, progress, message }: ProgressModalContent
       <Center>
         <Spinner
           color="blue.400"
-          h={{ base: '16', md: '20' }}
+          h={{ base: "16", md: "20" }}
           mb="6"
-          w={{ base: '16', md: '20' }}
+          w={{ base: "16", md: "20" }}
         />
       </Center>
       <Text>{message}</Text>

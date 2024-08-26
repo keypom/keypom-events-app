@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { VStack, Button, Center, Spinner, Heading } from '@chakra-ui/react';
-import { NameInput } from './NameInput';
-import { ImageInput } from './ImageInput';
-import { NFTInformation } from './NFTInformation';
-import { ScavengerHunt } from './ScavengerHunt';
-import { ModalWrapper } from './ModalWrapper';
-import { validateForm } from './dropUtils';
-import DropTokenAmountSelector from './TokenAmountSelector';
+import React, { useState, useEffect } from "react";
+import { VStack, Button, Center, Spinner, Heading } from "@chakra-ui/react";
+import { NameInput } from "./NameInput";
+import { ImageInput } from "./ImageInput";
+import { NFTInformation } from "./NFTInformation";
+import { ScavengerHunt } from "./ScavengerHunt";
+import { ModalWrapper } from "./ModalWrapper";
+import { validateForm } from "./dropUtils";
+import DropTokenAmountSelector from "./TokenAmountSelector";
 
 const defaultDrop = {
-  name: '',
+  name: "",
   artwork: undefined,
-  amount: '1',
+  amount: "1",
   nftData: undefined,
 };
 const defaultScavengerHunt = [
   {
     piece: `Piece 1`,
-    description: '',
+    description: "",
   },
   {
     piece: `Piece 2`,
-    description: '',
+    description: "",
   },
 ];
 
 export const CreateDropModal = ({ modalType, isOpen, onClose }) => {
   const [createdDrop, setCreatedDrop] = useState(defaultDrop);
   const [scavengerPieces, setScavengerPieces] =
-    useState<Array<{ piece: string; description: string }>>(defaultScavengerHunt);
+    useState<Array<{ piece: string; description: string }>>(
+      defaultScavengerHunt,
+    );
 
   const [isLoading, setIsLoading] = useState(false);
   const [isScavengerHunt, setIsScavengerHunt] = useState(false);
@@ -64,7 +66,7 @@ export const CreateDropModal = ({ modalType, isOpen, onClose }) => {
           errors={errors}
           setErrors={setErrors}
         />
-        {modalType === 'nft' && (
+        {modalType === "nft" && (
           <NFTInformation
             createdDrop={createdDrop}
             setCreatedDrop={setCreatedDrop}
@@ -72,9 +74,13 @@ export const CreateDropModal = ({ modalType, isOpen, onClose }) => {
             setErrors={setErrors}
           />
         )}
-        {modalType === 'token' && (
+        {modalType === "token" && (
           <>
-            <ImageInput createdDrop={createdDrop} setCreatedDrop={setCreatedDrop} errors={errors} />
+            <ImageInput
+              createdDrop={createdDrop}
+              setCreatedDrop={setCreatedDrop}
+              errors={errors}
+            />
             <DropTokenAmountSelector
               currentDrop={createdDrop}
               setCurrentDrop={setCreatedDrop}

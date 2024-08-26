@@ -1,4 +1,4 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 export const CalendarIcon = ({ ...props }: IconProps) => {
   return (

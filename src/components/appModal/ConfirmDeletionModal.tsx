@@ -1,4 +1,4 @@
-import { ModalContent, VStack, Text, HStack, Button } from '@chakra-ui/react';
+import { ModalContent, VStack, Text, HStack, Button } from "@chakra-ui/react";
 
 interface ConfirmDeletionModalProps {
   onConfirm: () => void;
@@ -9,7 +9,7 @@ interface ConfirmDeletionModalProps {
 const ConfirmDeletionModal = ({
   onConfirm,
   onCancel,
-  confirmMessage = 'Are you sure you want to delete this item? This action cannot be undone.',
+  confirmMessage = "Are you sure you want to delete this item? This action cannot be undone.",
 }: ConfirmDeletionModalProps) => (
   <ModalContent padding={6}>
     <VStack align="stretch" spacing={4}>

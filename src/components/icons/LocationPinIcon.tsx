@@ -1,4 +1,4 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface LocationPinIconProps extends IconProps {
   color?: string;
@@ -6,8 +6,8 @@ interface LocationPinIconProps extends IconProps {
 }
 
 export const LocationPinIcon = ({
-  strokeWidth = '2',
-  color = '#3E3E3E',
+  strokeWidth = "2",
+  color = "#3E3E3E",
   ...props
 }: LocationPinIconProps) => {
   return (

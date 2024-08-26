@@ -83,7 +83,7 @@ export interface FunderEventMetadata {
 
 export type AssetType = null;
 export interface AssetConfig {
-  permissions: 'claim' | 'create_account_and_claim';
+  permissions: "claim" | "create_account_and_claim";
   root_account_id: string;
 }
 
@@ -141,13 +141,13 @@ export function isValidTicketNFTMetadata(tokenMetadata: TicketInfoMetadata) {
 
     // Check if all required properties exist and are of type 'string'
     return (
-      typeof tokenMetadata.title === 'string' &&
-      typeof tokenMetadata.description === 'string' &&
-      typeof tokenMetadata.media === 'string' &&
-      typeof extraMetadata.price === 'string' &&
-      typeof extraMetadata.salesValidThrough === 'object' &&
-      typeof extraMetadata.passValidThrough === 'object' &&
-      typeof extraMetadata.salesValidThrough.startDate === 'number'
+      typeof tokenMetadata.title === "string" &&
+      typeof tokenMetadata.description === "string" &&
+      typeof tokenMetadata.media === "string" &&
+      typeof extraMetadata.price === "string" &&
+      typeof extraMetadata.salesValidThrough === "object" &&
+      typeof extraMetadata.passValidThrough === "object" &&
+      typeof extraMetadata.salesValidThrough.startDate === "number"
     );
   } catch (e) {
     return false;
@@ -156,26 +156,52 @@ export function isValidTicketNFTMetadata(tokenMetadata: TicketInfoMetadata) {
 
 export const defaultEventInfo: FunderEventMetadata = {
   nearCheckout: false,
-  name: 'Loading...',
-  id: 'loading',
-  description: 'Loading description...',
-  location: 'Loading location...',
+  name: "Loading...",
+  id: "loading",
+  description: "Loading description...",
+  location: "Loading location...",
   date: { startDate: Date.now() },
-  artwork: 'loading',
+  artwork: "loading",
   dateCreated: new Date().toISOString(),
   questions: [],
   styles: {
-    title: { color: 'grey', fontFamily: 'Arial', fontSize: { base: '16px', md: '24px' } },
-    h1: { color: 'grey', fontFamily: 'Arial', fontSize: { base: '20px', md: '28px' } },
-    h2: { color: 'grey', fontFamily: 'Arial', fontSize: { base: '18px', md: '26px' } },
-    h3: { color: 'grey', fontFamily: 'Arial', fontSize: { base: '16px', md: '24px' } },
-    buttons: {
-      primary: { color: 'white', bg: 'blue', fontFamily: 'Arial', fontSize: '16px' },
-      secondary: { color: 'black', bg: 'grey', fontFamily: 'Arial', fontSize: '16px' },
+    title: {
+      color: "grey",
+      fontFamily: "Arial",
+      fontSize: { base: "16px", md: "24px" },
     },
-    border: { color: 'grey', border: '1px solid grey' },
-    icon: { color: 'grey', fontSize: '24px' },
-    background: 'loading',
+    h1: {
+      color: "grey",
+      fontFamily: "Arial",
+      fontSize: { base: "20px", md: "28px" },
+    },
+    h2: {
+      color: "grey",
+      fontFamily: "Arial",
+      fontSize: { base: "18px", md: "26px" },
+    },
+    h3: {
+      color: "grey",
+      fontFamily: "Arial",
+      fontSize: { base: "16px", md: "24px" },
+    },
+    buttons: {
+      primary: {
+        color: "white",
+        bg: "blue",
+        fontFamily: "Arial",
+        fontSize: "16px",
+      },
+      secondary: {
+        color: "black",
+        bg: "grey",
+        fontFamily: "Arial",
+        fontSize: "16px",
+      },
+    },
+    border: { color: "grey", border: "1px solid grey" },
+    icon: { color: "grey", fontSize: "24px" },
+    background: "loading",
   },
   qrPage: {
     showTitle: true,
@@ -187,33 +213,33 @@ export const defaultEventInfo: FunderEventMetadata = {
     sellableThroughText: true,
   },
   welcomePage: {
-    title: { color: 'grey', fontFamily: 'Arial', fontSize: '24px' },
+    title: { color: "grey", fontFamily: "Arial", fontSize: "24px" },
   },
 };
 
 export const defaultDropInfo: EventDrop = {
-  drop_id: 'loading',
-  funder_id: 'loading',
+  drop_id: "loading",
+  funder_id: "loading",
   max_key_uses: 0,
   asset_data: [
     {
       uses: 0,
       assets: [],
-      config: { root_account_id: 'loading', permissions: 'claim' },
+      config: { root_account_id: "loading", permissions: "claim" },
     },
   ],
   drop_config: {
     nft_keys_config: {
       token_metadata: {
-        title: 'Loading...',
-        description: 'Loading description...',
-        media: 'loading',
+        title: "Loading...",
+        description: "Loading description...",
+        media: "loading",
         extra: JSON.stringify({
-          eventId: 'loading',
+          eventId: "loading",
           dateCreated: new Date().toISOString(),
           salesValidThrough: { startDate: Date.now() },
           passValidThrough: { startDate: Date.now() },
-          price: '0',
+          price: "0",
           limitPerUser: 0,
         }),
       },
@@ -222,44 +248,46 @@ export const defaultDropInfo: EventDrop = {
 };
 
 export const defaultTicketInfo: TicketInfoMetadata = {
-  title: 'Loading...',
-  description: 'Loading description...',
-  media: 'loading',
+  title: "Loading...",
+  description: "Loading description...",
+  media: "loading",
   extra: JSON.stringify({
-    eventId: 'loading',
+    eventId: "loading",
     dateCreated: new Date().toISOString(),
     salesValidThrough: { startDate: Date.now() },
     passValidThrough: { startDate: Date.now() },
-    price: '0',
+    price: "0",
     limitPerUser: 0,
   }),
 };
 
 export const defaultTicketInfoExtra: TicketMetadataExtra = {
-  eventId: 'loading',
+  eventId: "loading",
   dateCreated: new Date().toISOString(),
   salesValidThrough: { startDate: Date.now() },
   passValidThrough: { startDate: Date.now() },
-  price: '0',
+  price: "0",
   limitPerUser: 0,
 };
 
-const FIRST_DROP_BASE_COST = BigInt('15899999999999900000000');
-const SUBSEQUENT_DROP_BASE_COST = BigInt('14460000000000200000000');
-const FUNDER_METADATA_BASE_COST = BigInt('840000000000000000000');
-const FIRST_MARKET_DROP_BASE_COST = BigInt('11790000000000000000000');
-const SUBSEQUENT_MARKET_DROP_BASE_COST = BigInt('6810000000000000000000');
-const YOCTO_PER_BYTE = BigInt('15000000000000000000'); // Includes a 200% safety margin
+const FIRST_DROP_BASE_COST = BigInt("15899999999999900000000");
+const SUBSEQUENT_DROP_BASE_COST = BigInt("14460000000000200000000");
+const FUNDER_METADATA_BASE_COST = BigInt("840000000000000000000");
+const FIRST_MARKET_DROP_BASE_COST = BigInt("11790000000000000000000");
+const SUBSEQUENT_MARKET_DROP_BASE_COST = BigInt("6810000000000000000000");
+const YOCTO_PER_BYTE = BigInt("15000000000000000000"); // Includes a 200% safety margin
 
-const BASE_MARKET_BYTES_PER_KEY = BigInt('800');
-const METADATA_MARKET_BYTES_PER_KEY = BigInt('900');
+const BASE_MARKET_BYTES_PER_KEY = BigInt("800");
+const METADATA_MARKET_BYTES_PER_KEY = BigInt("900");
 
 export function getByteSize(str: string) {
   return new Blob([str]).size;
 }
 
 export const yoctoPerFreeKey = () => {
-  return (BASE_MARKET_BYTES_PER_KEY + METADATA_MARKET_BYTES_PER_KEY) * YOCTO_PER_BYTE;
+  return (
+    (BASE_MARKET_BYTES_PER_KEY + METADATA_MARKET_BYTES_PER_KEY) * YOCTO_PER_BYTE
+  );
 };
 
 export const calculateDepositCost = ({
@@ -271,7 +299,12 @@ export const calculateDepositCost = ({
   eventTickets: TicketInfoMetadata[];
   marketTicketInfo: Record<
     string,
-    { max_tickets: number; price: string; sale_start?: number; sale_end?: number }
+    {
+      max_tickets: number;
+      price: string;
+      sale_start?: number;
+      sale_end?: number;
+    }
   >;
 }) => {
   let marketDeposit = FIRST_MARKET_DROP_BASE_COST;
@@ -280,18 +313,21 @@ export const calculateDepositCost = ({
 
   // Calculate drop deposit
   dropDeposit += BigInt(eventTickets.length - 1) * SUBSEQUENT_DROP_BASE_COST;
-  dropDeposit += BigInt(getByteSize(JSON.stringify(eventTickets))) * YOCTO_PER_BYTE;
+  dropDeposit +=
+    BigInt(getByteSize(JSON.stringify(eventTickets))) * YOCTO_PER_BYTE;
 
   // Calculate funder metadata cost
-  funderMetaCost += BigInt(getByteSize(JSON.stringify(eventMetadata))) * YOCTO_PER_BYTE;
+  funderMetaCost +=
+    BigInt(getByteSize(JSON.stringify(eventMetadata))) * YOCTO_PER_BYTE;
 
   // Initialize market deposit
   marketDeposit +=
-    BigInt(Object.keys(marketTicketInfo).length - 1) * SUBSEQUENT_MARKET_DROP_BASE_COST;
+    BigInt(Object.keys(marketTicketInfo).length - 1) *
+    SUBSEQUENT_MARKET_DROP_BASE_COST;
 
   let numFreeKeys = 0; // Initialize numFreeKeys as a number
   for (const keyInfo of Object.values(marketTicketInfo)) {
-    if (keyInfo.price === '0') {
+    if (keyInfo.price === "0") {
       numFreeKeys += keyInfo.max_tickets; // Ensure max_tickets is a number
     }
   }

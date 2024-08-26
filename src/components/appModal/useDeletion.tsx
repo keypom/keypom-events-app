@@ -1,11 +1,11 @@
-import ConfirmDeletionModal from './ConfirmDeletionModal';
+import ConfirmDeletionModal from "./ConfirmDeletionModal";
 
 const useDeletion = ({ setAppModal }) => {
   const openConfirmationModal = (dropId, customMessage, onConfirmCallback) => {
     setAppModal({
       isOpen: true,
       canClose: false,
-      size: 'xl',
+      size: "xl",
       modalContent: (
         <ConfirmDeletionModal
           confirmMessage={customMessage}

@@ -1,10 +1,19 @@
-import { Button, Center, Divider, Hide, HStack, Show, Text, VStack } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Center,
+  Divider,
+  Hide,
+  HStack,
+  Show,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 export const NotFound404 = ({
-  header = '404',
-  subheader = 'This page could not be found.',
-  cta = 'back to homepage',
+  header = "404",
+  subheader = "This page could not be found.",
+  cta = "back to homepage",
 }: {
   header?: string;
   subheader?: string;
@@ -22,7 +31,7 @@ export const NotFound404 = ({
           </HStack>
           <Button
             onClick={() => {
-              navigate('/');
+              navigate("/");
             }}
           >
             {cta}
@@ -37,7 +46,7 @@ export const NotFound404 = ({
           </Text>
           <Button
             onClick={() => {
-              navigate('/');
+              navigate("/");
             }}
           >
             {cta}

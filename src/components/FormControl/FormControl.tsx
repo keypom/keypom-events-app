@@ -5,8 +5,8 @@ import {
   FormLabel,
   type FormLabelProps,
   Text,
-} from '@chakra-ui/react';
-import React, { type PropsWithChildren } from 'react';
+} from "@chakra-ui/react";
+import React, { type PropsWithChildren } from "react";
 
 export interface FormControlProps extends CFormControlProps {
   label?: string;
@@ -24,12 +24,17 @@ export const FormControlComponent = ({
   children,
   labelProps,
   helperTextProps,
-  marginY = '5',
+  marginY = "5",
   ...props
 }: PropsWithChildren<FormControlProps>) => {
   return (
     <CFormControl my={marginY} textAlign="left" {...props}>
-      <FormLabel color="gray.800" fontSize={{ base: 'sm', md: 'base' }} m="0" {...labelProps}>
+      <FormLabel
+        color="gray.800"
+        fontSize={{ base: "sm", md: "base" }}
+        m="0"
+        {...labelProps}
+      >
         {label}
       </FormLabel>
       {helperText && (
@@ -39,7 +44,7 @@ export const FormControlComponent = ({
       )}
       <Box mt="1.5">{children}</Box>
       {errorText && (
-        <Text fontSize={{ base: 'xs', md: 'sm' }} mt="6px" variant="error">
+        <Text fontSize={{ base: "xs", md: "sm" }} mt="6px" variant="error">
           {errorText}
         </Text>
       )}

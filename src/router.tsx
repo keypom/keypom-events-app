@@ -108,7 +108,9 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     async lazy() {
-      const { SponsorDashboardPage } = await import("@/routes/sponsorDashboard");
+      const { SponsorDashboardPage } = await import(
+        "@/routes/sponsorDashboard"
+      );
       return { Component: SponsorDashboardPage };
     },
   },

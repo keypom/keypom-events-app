@@ -1,9 +1,17 @@
-import { Box, HStack, Menu, MenuList, Show, Heading, Skeleton } from '@chakra-ui/react';
-import { type ReactElement } from 'react';
+import {
+  Box,
+  HStack,
+  Menu,
+  MenuList,
+  Show,
+  Heading,
+  Skeleton,
+} from "@chakra-ui/react";
+import { type ReactElement } from "react";
 
-import { NextButton, PrevButton } from '@/components/Pagination';
+import { NextButton, PrevButton } from "@/components/Pagination";
 
-import { DropDownButton } from './DropDownButton';
+import { DropDownButton } from "./DropDownButton";
 
 interface DropManagerPaginationProps {
   isLoading: boolean;
@@ -26,7 +34,7 @@ export const DropManagerPagination = ({
   numPages,
   handleNextPage,
   handlePrevPage,
-  type = 'Rows',
+  type = "Rows",
 }: DropManagerPaginationProps) => {
   if (isLoading) {
     // Render Skeleton loaders while content is loading

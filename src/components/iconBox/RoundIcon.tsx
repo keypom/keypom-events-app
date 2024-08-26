@@ -1,4 +1,4 @@
-import { Box, type BoxProps, useToken } from '@chakra-ui/react';
+import { Box, type BoxProps, useToken } from "@chakra-ui/react";
 
 interface RoundIconProps extends BoxProps {
   icon: React.ReactNode;
@@ -8,11 +8,11 @@ interface RoundIconProps extends BoxProps {
 
 export const RoundIcon = ({
   icon = null,
-  bg = 'blue.100',
-  border = 'border.round',
+  bg = "blue.100",
+  border = "border.round",
   ...props
 }: RoundIconProps) => {
-  const [bgColor, borderBg] = useToken('colors', [bg, border]);
+  const [bgColor, borderBg] = useToken("colors", [bg, border]);
 
   return (
     <Box
@@ -21,10 +21,10 @@ export const RoundIcon = ({
       border="2px solid transparent"
       borderRadius="100%"
       display="flex"
-      h={{ base: '16', md: '20' }}
+      h={{ base: "16", md: "20" }}
       justifyContent="center"
       padding="0.5"
-      w={{ base: '16', md: '20' }}
+      w={{ base: "16", md: "20" }}
       {...props}
     >
       {icon}

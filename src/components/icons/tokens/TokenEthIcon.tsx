@@ -1,4 +1,4 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 export const TokenEthIcon = ({ ...props }: IconProps) => {
   return (
@@ -22,9 +22,18 @@ export const TokenEthIcon = ({ ...props }: IconProps) => {
           d="M10.9941 16.329L10.9131 16.4278V21.475L10.9941 21.7115L17.5751 12.4434L10.9941 16.329Z"
           fill="#3C3C3B"
         />
-        <path d="M10.9951 21.7115V16.329L4.41797 12.4434L10.9951 21.7115Z" fill="#8C8C8C" />
-        <path d="M10.9961 15.0842L17.573 11.1966L10.9961 8.20703V15.0842Z" fill="#141414" />
-        <path d="M4.41797 11.1966L10.9951 15.0842V8.20703L4.41797 11.1966Z" fill="#393939" />
+        <path
+          d="M10.9951 21.7115V16.329L4.41797 12.4434L10.9951 21.7115Z"
+          fill="#8C8C8C"
+        />
+        <path
+          d="M10.9961 15.0842L17.573 11.1966L10.9961 8.20703V15.0842Z"
+          fill="#141414"
+        />
+        <path
+          d="M4.41797 11.1966L10.9951 15.0842V8.20703L4.41797 11.1966Z"
+          fill="#393939"
+        />
       </g>
       <defs>
         <clipPath id="clip0_2230_294">

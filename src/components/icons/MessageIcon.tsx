@@ -1,10 +1,13 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface MessageIconProps extends IconProps {
   color?: string;
 }
 
-export const MessageIcon = ({ color = 'white', ...props }: MessageIconProps) => {
+export const MessageIcon = ({
+  color = "white",
+  ...props
+}: MessageIconProps) => {
   return (
     <Icon
       fill="none"

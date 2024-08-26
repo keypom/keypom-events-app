@@ -1,4 +1,4 @@
-import { Icon, type IconProps } from '@chakra-ui/react';
+import { Icon, type IconProps } from "@chakra-ui/react";
 
 interface ReceiveIconProps extends IconProps {
   color?: string;
@@ -6,8 +6,8 @@ interface ReceiveIconProps extends IconProps {
 }
 
 export const ReceiveIcon = ({
-  strokeWidth = '2',
-  color = '#3E3E3E',
+  strokeWidth = "2",
+  color = "#3E3E3E",
   ...props
 }: ReceiveIconProps) => {
   return (

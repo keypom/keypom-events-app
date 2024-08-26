@@ -1,7 +1,14 @@
-import React from 'react';
-import { VStack, HStack, Textarea, Input, Divider, Heading } from '@chakra-ui/react';
-import { FormControlComponent } from '@/components/FormControl';
-import { ImageInput } from './ImageInput';
+import React from "react";
+import {
+  VStack,
+  HStack,
+  Textarea,
+  Input,
+  Divider,
+  Heading,
+} from "@chakra-ui/react";
+import { FormControlComponent } from "@/components/FormControl";
+import { ImageInput } from "./ImageInput";
 
 interface NFTInformationProps {
   createdDrop: any;
@@ -27,18 +34,25 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
     <>
       <VStack spacing={0} w="100%">
         <HStack spacing={6} w="100%">
-          <FormControlComponent label="NFT Title*" errorText={errors.nft?.title} my="1">
+          <FormControlComponent
+            label="NFT Title*"
+            errorText={errors.nft?.title}
+            my="1"
+          >
             <Textarea
-              value={createdDrop.nftData?.title || ''}
-              onChange={(e) => onNFTDataChange('title', e.target.value)}
+              value={createdDrop.nftData?.title || ""}
+              onChange={(e) => onNFTDataChange("title", e.target.value)}
               isInvalid={!!errors.nft?.title}
               placeholder="Coolest NFT ever"
             />
           </FormControlComponent>
-          <FormControlComponent label="NFT Description*" errorText={errors.nft?.description}>
+          <FormControlComponent
+            label="NFT Description*"
+            errorText={errors.nft?.description}
+          >
             <Textarea
-              value={createdDrop.nftData?.description || ''}
-              onChange={(e) => onNFTDataChange('description', e.target.value)}
+              value={createdDrop.nftData?.description || ""}
+              onChange={(e) => onNFTDataChange("description", e.target.value)}
               isInvalid={!!errors.nft?.description}
               placeholder="One of a kind proof of touch"
             />

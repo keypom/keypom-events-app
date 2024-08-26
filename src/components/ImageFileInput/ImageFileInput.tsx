@@ -10,9 +10,9 @@ import {
   Text,
   Image,
   Show,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
-import { ImageIcon } from '../Icons';
+import { ImageIcon } from "../Icons";
 
 interface ImageFileInputProps extends InputProps {
   label?: string;
@@ -26,8 +26,8 @@ interface ImageFileInputProps extends InputProps {
 
 export const ImageFileInput = ({
   label,
-  ctaText = 'Browse or drag and drop your image here',
-  buttonText = 'Browse images',
+  ctaText = "Browse or drag and drop your image here",
+  buttonText = "Browse images",
   selectedFile,
   preview,
   errorMessage,
@@ -46,9 +46,9 @@ export const ImageFileInput = ({
       <InputGroup>
         <Flex
           border="2px dashed"
-          borderColor={errorMessage ? 'red.500' : 'gray.200'}
+          borderColor={errorMessage ? "red.500" : "gray.200"}
           borderRadius="6xl"
-          h={{ base: '12', md: '60' }}
+          h={{ base: "12", md: "60" }}
           justify="center"
           position="relative"
           w="full"
@@ -74,14 +74,14 @@ export const ImageFileInput = ({
           ) : (
             <Flex
               align="center"
-              flexDir={{ base: 'row', md: 'column' }}
+              flexDir={{ base: "row", md: "column" }}
               gap="4"
               h="full"
-              justify={{ base: 'space-between', md: 'center' }}
+              justify={{ base: "space-between", md: "center" }}
               left="0"
-              maxW={{ base: 'none', md: '11.75rem' }}
+              maxW={{ base: "none", md: "11.75rem" }}
               mx="auto"
-              p={{ base: '4', md: 'auto' }}
+              p={{ base: "4", md: "auto" }}
               position="relative"
               top="0"
               w="full"
@@ -89,8 +89,8 @@ export const ImageFileInput = ({
             >
               <ImageIcon
                 color="gray.400"
-                h={{ base: '6', md: '1.875rem' }}
-                w={{ base: '6', md: '1.875rem' }}
+                h={{ base: "6", md: "1.875rem" }}
+                w={{ base: "6", md: "1.875rem" }}
               />
               <Show above="md">
                 <Text color="gray.400">{ctaText}</Text>
@@ -100,8 +100,8 @@ export const ImageFileInput = ({
                 borderColor="gray.200"
                 borderRadius="full"
                 color="gray.800"
-                px={{ base: '3', md: '4' }}
-                py={{ base: '1', md: '2' }}
+                px={{ base: "3", md: "4" }}
+                py={{ base: "1", md: "2" }}
               >
                 {buttonText}
               </Center>
@@ -110,7 +110,12 @@ export const ImageFileInput = ({
         </Flex>
       </InputGroup>
       {errorMessage && (
-        <Text fontSize={{ base: 'xs', md: 'sm' }} mt="6px" textAlign="left" variant="error">
+        <Text
+          fontSize={{ base: "xs", md: "sm" }}
+          mt="6px"
+          textAlign="left"
+          variant="error"
+        >
           {errorMessage}
         </Text>
       )}
