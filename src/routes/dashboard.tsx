@@ -121,7 +121,6 @@ const capitalizeFirstLetter = (string) => {
 export const Dashboard = () => {
   const { setAppModal } = useAppContext();
   const { selector, account } = useAuthWalletContext();
-  console.log("account",account);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
@@ -184,6 +183,7 @@ export const Dashboard = () => {
   }, [account]);
 
   const handleDeleteClick = async (dropId) => {
+    console.log("deleting", dropId);
     const deletionArgs = {
       wallet,
       dropId,
