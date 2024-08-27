@@ -1,32 +1,17 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Outlet, useNavigation } from "react-router-dom";
 
 import { Footer } from "@/components/ui/footer";
 import { Header } from "@/components/ui/header";
 
-import { useEffect, useState, useRef } from "react";
 import { LoadingBox } from "@/components/ui/loading-box";
+import { OfflineBanner } from "@/components/ui/offline-banner";
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 export function Root() {
   const { state } = useNavigation();
   const ref = useRef<HTMLDivElement>(null);
-
-  const [onlineStatus, setOnlineStatus] = useState(navigator.onLine);
-
-  useEffect(() => {
-    const handleOnlineStatusChange = () => {
-      setOnlineStatus(navigator.onLine);
-    };
-
-    window.addEventListener("online", handleOnlineStatusChange);
-    window.addEventListener("offline", handleOnlineStatusChange);
-
-    return () => {
-      window.removeEventListener("online", handleOnlineStatusChange);
-      window.removeEventListener("offline", handleOnlineStatusChange);
-    };
-  }, []);
 
   // Extracts pathname property(key) from an object
   const { pathname } = useLocation();
@@ -74,24 +59,7 @@ export function Root() {
         flexGrow="1"
       >
         {/* Show if user is offline */}
-        {!onlineStatus && (
-          <Box
-            width="100%"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Text
-              fontFamily="mono"
-              color="brand.400"
-              textAlign="center"
-              fontSize="lg"
-              fontWeight="bold"
-            >
-              You are offline
-            </Text>
-          </Box>
-        )}
+        <OfflineBanner />
         <Header />
         <Box
           ref={ref}
