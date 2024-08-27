@@ -1,9 +1,13 @@
-import { VStack, Image, Heading, Text, Flex } from "@chakra-ui/react";
+import { Flex, Heading, Image, Text, VStack } from "@chakra-ui/react";
 
-import { PageHeading } from "@/components/ui/page-heading";
 import { CheckIcon } from "@/components/icons";
+import { PageHeading } from "@/components/ui/page-heading";
 
-import Dragon from "/collectible.webp";
+import { ErrorBox } from "@/components/ui/error-box";
+import { LoadingBox } from "@/components/ui/loading-box";
+import { fetchJourneyById, Journey } from "@/lib/api/journeys";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 
 function Step({
   index,
@@ -44,7 +48,54 @@ function Step({
   );
 }
 
-export function Journey() {
+const JourneyDetails = ({
+  title,
+  description,
+  imageSrc,
+  bgColor,
+  steps,
+}: Journey) => {
+  return (
+    <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
+      <Image
+        src={imageSrc}
+        width={"100%"}
+        height={"100%"}
+        bg={bgColor}
+        borderRadius={"md"}
+      />
+      <VStack alignItems="flex-start" gap={3}>
+        <Heading
+          as="h3"
+          fontSize="20px"
+          fontFamily={"mono"}
+          fontWeight="700"
+          color="white"
+        >
+          {title}
+        </Heading>
+        <Text fontSize="xs" lineHeight={"120%"}>
+          {description}
+        </Text>
+        <VStack alignItems="flex-start" gap={4} width={"100%"}>
+          {steps.map((step, index) => (
+            <Step key={index} {...step} index={index + 1} />
+          ))}
+        </VStack>
+      </VStack>
+    </VStack>
+  );
+};
+
+export function JourneyPage() {
+  const { id } = useParams<{ id: string }>();
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["journey", id],
+    queryFn: () => fetchJourneyById(id!),
+    enabled: !!id,
+  });
+
   return (
     <VStack spacing={4} p={4}>
       <PageHeading
@@ -53,37 +104,9 @@ export function Journey() {
         showBackButton
         backUrl="/wallet/journeys"
       />
-      <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
-        <Image
-          src={Dragon}
-          width={"100%"}
-          height={"100%"}
-          bg={"brand.400"}
-          borderRadius={"md"}
-        />
-        <VStack alignItems="flex-start" gap={3}>
-          <Heading
-            as="h3"
-            fontSize="20px"
-            fontFamily={"mono"}
-            fontWeight="700"
-            color="white"
-          >
-            NEAR Purple Scavenger Hunt
-          </Heading>
-          <Text fontSize="xs" lineHeight={"120%"}>
-            Here are some instructions on how to accomplish this journey and
-            perhaps some sponsor info. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit.
-          </Text>
-          <VStack alignItems="flex-start" gap={4} width={"100%"}>
-            <Step index={1} description="Find the purple dragon" completed />
-            <Step index={2} description="Find the purple dragon" completed />
-            <Step index={3} description="Find the purple dragon" completed />
-            <Step index={4} description="Find the purple dragon" completed />
-          </VStack>
-        </VStack>
-      </VStack>
+      {isLoading && <LoadingBox />}
+      {data && <JourneyDetails {...data} />}
+      {isError && <ErrorBox message={`Error: ${error.message}`} />}
     </VStack>
   );
 }

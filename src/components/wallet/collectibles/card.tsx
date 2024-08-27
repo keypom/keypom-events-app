@@ -1,25 +1,17 @@
-import { VStack, Image, Heading, Text, Box } from "@chakra-ui/react";
-
+import { Box, Heading, Image, Text, VStack } from "@chakra-ui/react";
 import { LockIcon } from "@/components/icons";
-
-import CollectibleLogo from "/collectible.webp";
 import { Link } from "react-router-dom";
-
-const randomColors = [
-  "#00EC97",
-  "#FFA99F",
-  "#4D3BC2",
-  "#9797FF",
-  "#E91409",
-  "#62EBE4",
-];
+import { Collectible } from "@/lib/api/collectibles";
 
 export function CollectibleCard({
   disabled,
   id,
-}: {
+  title,
+  assetType,
+  imageSrc,
+  bgColor,
+}: Collectible & {
   disabled?: boolean;
-  id: string;
 }) {
   return (
     <VStack
@@ -32,10 +24,10 @@ export function CollectibleCard({
     >
       <Box position="relative">
         <Image
-          src={CollectibleLogo}
+          src={imageSrc}
           width={"100%"}
           height={"100%"}
-          bg={randomColors[Math.floor(Math.random() * randomColors.length)]}
+          bg={bgColor}
           borderRadius={"md"}
           opacity={disabled ? 0.5 : 1}
           filter="auto"
@@ -58,10 +50,10 @@ export function CollectibleCard({
       </Box>
       <VStack alignItems="flex-start" gap={0}>
         <Heading as="h3" fontSize="sm" fontFamily={"mono"} color="white">
-          Title of asset here
+          {title}
         </Heading>
         <Text color="brand.400" fontSize="10px" fontWeight={700}>
-          POAP
+          {assetType}
         </Text>
       </VStack>
     </VStack>

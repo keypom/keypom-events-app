@@ -1,10 +1,55 @@
-import { VStack, Image, Heading, Text } from "@chakra-ui/react";
+import { Heading, Image, Text, VStack } from "@chakra-ui/react";
 
 import { PageHeading } from "@/components/ui/page-heading";
 
-import CollectibleLogo from "/collectible.webp";
+import { ErrorBox } from "@/components/ui/error-box";
+import { LoadingBox } from "@/components/ui/loading-box";
+import { Collectible, fetchCollectibleById } from "@/lib/api/collectibles";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 
-export function Collectible() {
+const CollectibleDetails = ({
+  title,
+  description,
+  imageSrc,
+  bgColor,
+}: Collectible) => {
+  return (
+    <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
+      <Image
+        src={imageSrc}
+        width={"100%"}
+        height={"100%"}
+        bg={bgColor}
+        borderRadius={"md"}
+      />
+      <VStack alignItems="flex-start" gap={3}>
+        <Heading
+          as="h3"
+          fontSize="20px"
+          fontFamily={"mono"}
+          fontWeight="700"
+          color="white"
+        >
+          {title}
+        </Heading>
+        <Text fontSize="xs" lineHeight={"120%"}>
+          {description}
+        </Text>
+      </VStack>
+    </VStack>
+  );
+};
+
+export function CollectiblePage() {
+  const { id } = useParams<{ id: string }>();
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["collectible", id],
+    queryFn: () => fetchCollectibleById(id!),
+    enabled: !!id,
+  });
+
   return (
     <VStack spacing={4} p={4}>
       <PageHeading
@@ -13,32 +58,9 @@ export function Collectible() {
         showBackButton
         backUrl="/wallet/collectibles"
       />
-      <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
-        <Image
-          src={CollectibleLogo}
-          width={"100%"}
-          height={"100%"}
-          bg={"brand.400"}
-          borderRadius={"md"}
-        />
-        <VStack alignItems="flex-start" gap={3}>
-          <Heading
-            as="h3"
-            fontSize="20px"
-            fontFamily={"mono"}
-            fontWeight="700"
-            color="white"
-          >
-            Title of asset here
-          </Heading>
-          <Text fontSize="xs" lineHeight={"120%"}>
-            Here are some instructions on how to retrieve this collectible.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas
-            placerat mauris turpis, vel consequat mi ultricies eu. Quisque
-            ligula neque, placerat ut dui.
-          </Text>
-        </VStack>
-      </VStack>
+      {isLoading && <LoadingBox />}
+      {data && <CollectibleDetails {...data} />}
+      {isError && <ErrorBox message={`Error: ${error.message}`} />}
     </VStack>
   );
 }

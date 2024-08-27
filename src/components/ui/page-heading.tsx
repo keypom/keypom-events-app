@@ -25,6 +25,7 @@ export function PageHeading({
       alignItems={"center"}
       justifyContent={"center"}
       w="100%"
+      zIndex={4}
     >
       <Heading
         as="h2"

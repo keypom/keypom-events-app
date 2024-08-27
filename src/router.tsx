@@ -62,10 +62,10 @@ const router = createBrowserRouter([
       {
         path: "/wallet/collectibles/:id",
         async lazy() {
-          const { Collectible } = await import(
+          const { CollectiblePage } = await import(
             "@/routes/wallet/collectibles/collectible"
           );
-          return { Component: Collectible };
+          return { Component: CollectiblePage };
         },
       },
       {
@@ -78,8 +78,10 @@ const router = createBrowserRouter([
       {
         path: "/wallet/journeys/:id",
         async lazy() {
-          const { Journey } = await import("@/routes/wallet/journeys/journey");
-          return { Component: Journey };
+          const { JourneyPage } = await import(
+            "@/routes/wallet/journeys/journey"
+          );
+          return { Component: JourneyPage };
         },
       },
       {
