@@ -1,27 +1,26 @@
-import { Heading, VStack, Text, Button, HStack } from "@chakra-ui/react";
+import { Heading, VStack, Text, Button, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import { ArrowIcon } from "@/components/icons";
-import { ReactNode } from "react";
 
 interface PageHeadingProps {
   title: string;
-  leftChildren?: ReactNode;
-  rightChildren?: ReactNode;
   titleSize?: string;
   description?: string;
   showBackButton?: boolean;
   backUrl?: string;
+  leftChildren?: React.ReactNode;
+  rightChildren?: React.ReactNode;
 }
 
 export function PageHeading({
   title,
-  leftChildren,
-  rightChildren,
   titleSize = "32px",
   description,
   showBackButton = false,
   backUrl = "/ ",
+  leftChildren,
+  rightChildren,
 }: PageHeadingProps) {
   const navigate = useNavigate();
   return (
@@ -65,6 +64,26 @@ export function PageHeading({
             />
           </Button>
         )}
+        {leftChildren && (
+          <Box
+            position={"absolute"}
+            left={0}
+            top={"50%"}
+            transform="translate(0, -50%)"
+          >
+            {leftChildren}
+          </Box>
+        )}
+        {rightChildren && (
+          <Box
+            position={"absolute"}
+            right={0}
+            top={"50%"}
+            transform="translate(0, -50%)"
+          >
+            {rightChildren}
+          </Box>
+        )}
         <span>{title}</span>
       </Heading>
       {description && (
@@ -78,9 +97,6 @@ export function PageHeading({
           {description}
         </Text>
       )}
-      <HStack spacing={4} flex="1" justifyContent="flex-start">
-        {rightChildren}
-      </HStack>
     </VStack>
   );
 }
