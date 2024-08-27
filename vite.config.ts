@@ -18,7 +18,12 @@ export default defineConfig({
       workbox: {
         navigateFallbackDenylist: [/^\/dashboard/],
       },
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
+      includeAssets: [
+        "favicon.ico",
+        "apple-touch-icon.png",
+        "mask-icon.svg",
+        "*.webp",
+      ],
       manifest: {
         name: "Keypom [Redacted] Event App",
         short_name: "Redacted",
