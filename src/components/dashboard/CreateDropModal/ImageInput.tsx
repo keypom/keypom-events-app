@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FormControlComponent } from "@/components/FormControl";
-import { ImageFileInputSmall } from "@/components/ImageFileInput/ImageFileInputSmall";
+import { FormControlComponent } from "@/components/dashboard/FormControl";
+import { ImageFileInputSmall } from "@/components/dashboard/ImageFileInput/ImageFileInputSmall";
 
 interface ImageInputProps {
   createdDrop: any;

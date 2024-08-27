@@ -12,7 +12,7 @@ import {
   Show,
 } from "@chakra-ui/react";
 
-import { ImageIcon } from "../icons";
+import { ImageIcon } from "@/components/dashboard/icons";
 
 interface ImageFileInputProps extends InputProps {
   label?: string;

@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, HStack, Input, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { FormControlComponent } from "@/components/FormControl";
-import { CreatedDropForm } from "./CreateDropModal";
+import { FormControlComponent } from "@/components/dashboard/FormControl";
 
 interface DropTokenAmountSelectorProps {
   errors: any;
-  currentDrop: CreatedDropForm;
-  setCurrentDrop: (drop: CreatedDropForm) => void;
+  currentDrop: any;
+  setCurrentDrop: (drop: any) => void;
 }
 
 export default function DropTokenAmountSelector({

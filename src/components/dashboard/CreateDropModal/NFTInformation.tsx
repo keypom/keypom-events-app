@@ -4,7 +4,7 @@ import {
   HStack,
   Textarea,
 } from "@chakra-ui/react";
-import { FormControlComponent } from "@/components/FormControl";
+import { FormControlComponent } from "@/components/dashboard/FormControl";
 import { ImageInput } from "./ImageInput";
 
 interface NFTInformationProps {

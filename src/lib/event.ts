@@ -12,9 +12,9 @@ import {
   deriveKeyFromPassword,
 } from "./cryptoHelper";
 import { Wallet } from "@near-wallet-selector/core";
-import { FinalExecutionStatus } from "near-api-js/lib/providers";
+import { FinalExecutionStatus, FinalExecutionOutcome } from "near-api-js/lib/providers";
 
-let instance: EventJS;
+let instance: EventJS | undefined;
 const networkId = process.env.REACT_APP_NETWORK_ID ?? "testnet";
 
 const myKeyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
@@ -161,7 +161,7 @@ class EventJS {
       const funderMeta: Record<string, FunderEventMetadata> = JSON.parse(
         funderInfo.metadata,
       );
-      let eventInfo: FunderEventMetadata = funderMeta[eventId];
+      const eventInfo: FunderEventMetadata = funderMeta[eventId];
 
       if (eventInfo === undefined || eventInfo === null) {
         throw new Error(`Event ${String(eventId)} not exist`);
@@ -213,6 +213,7 @@ class EventJS {
     wallet: Wallet;
     isScavengerHunt: boolean;
     scavengerHunt: Array<{ piece: string; description: string }>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdDrop: any;
   }) => {
     const accounts = await wallet.getAccounts();
@@ -234,8 +235,10 @@ class EventJS {
       }
     }
 
+    let res: FinalExecutionOutcome | void;
+
     if (createdDrop.nftData) {
-      let res = await wallet.signAndSendTransaction({
+      res = await wallet.signAndSendTransaction({
         signerId: accounts[0].accountId,
         receiverId: TOKEN_FACTORY_CONTRACT,
         actions: [
@@ -274,7 +277,7 @@ class EventJS {
       }
     }
 
-    let res = await wallet.signAndSendTransaction({
+    res = await wallet.signAndSendTransaction({
       signerId: accounts[0].accountId,
       receiverId: TOKEN_FACTORY_CONTRACT,
       actions: [

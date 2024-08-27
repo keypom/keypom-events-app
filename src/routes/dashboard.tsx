@@ -19,20 +19,20 @@ import {
 import { useEffect, useState, useMemo } from "react";
 import QRCode from "qrcode";
 
-import { DeleteIcon, LinkIcon, NFTIcon } from "@/components/icons";
-import { type ColumnItem, type DataItem } from "@/components/table/types";
-import { DataTable } from "@/components/table";
+import { DeleteIcon, LinkIcon, NFTIcon } from "@/components/dashboard/icons";
+import { type ColumnItem, type DataItem } from "@/components/dashboard/table/types";
+import { DataTable } from "@/components/dashboard/table";
 import { useAppContext } from "@/contexts/AppContext";
 import { CLOUDFLARE_IPFS, TOKEN_FACTORY_CONTRACT } from "@/constants/common";
-import { NotFound404 } from "@/components/NotFound404";
-import useDeletion from "@/components/appModal/useDeletion";
-import { performDeletionLogic } from "@/components/appModal/PerformDeletion";
+import { NotFound404 } from "@/components/dashboard/NotFound404";
+import useDeletion from "@/components/dashboard/appModal/useDeletion";
+import { performDeletionLogic } from "@/components/dashboard/appModal/PerformDeletion";
 import { truncateAddress } from "@/utils/truncateAddress";
 import { formatTokensAvailable } from "@/utils/formatTokensAvailable";
 import eventHelperInstance from "@/lib/event";
 
-import { CreateDropModal } from "@/components/sponsorDashboard/CreateDropModal/CreateDropModal";
-import QRViewerModal from "@/components/sponsorDashboard/QRViewerModal";
+import { CreateDropModal } from "@/components/dashboard/CreateDropModal/CreateDropModal";
+import QRViewerModal from "@/components/dashboard/QRViewerModal";
 import { Wallet } from "@near-wallet-selector/core";
 import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
 
@@ -118,7 +118,7 @@ const capitalizeFirstLetter = (string) => {
   return `${string.charAt(0).toUpperCase() as string}${string.slice(1).toString() as string}`;
 };
 
-export const SponsorDashboardPage = () => {
+export const Dashboard = () => {
   const { setAppModal } = useAppContext();
   const { selector, account } = useAuthWalletContext();
   console.log("account",account);
@@ -326,6 +326,7 @@ export const SponsorDashboardPage = () => {
   );
 
   const handleCreateDropClose = async (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dropCreated: any,
     isScavengerHunt: boolean,
     scavengerHunt: Array<{ piece: string; description: string }>,
@@ -334,13 +335,14 @@ export const SponsorDashboardPage = () => {
     if (dropCreated) {
       setIsModalLoading(true);
       try {
-        const { dropId, completeScavengerHunt } =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { dropId, completeScavengerHunt }: any =
           await eventHelperInstance.createConferenceDrop({
             wallet: wallet!,
             createdDrop: dropCreated,
             isScavengerHunt,
             scavengerHunt,
-          });
+          }) ;
         toast({
           title: "Drop created successfully.",
           status: "success",
@@ -402,7 +404,6 @@ export const SponsorDashboardPage = () => {
         <TokensAvailableSection tokensAvailable={tokensAvailable} />
       )}
       <DropActionsSection
-        allowAction={data.length > 0}
         setDropType={setDropType}
         onCreateDrop={() => {
           setIsCreateDropModalOpen(true);
@@ -451,7 +452,7 @@ const TokensAvailableSection = ({ tokensAvailable }) => (
   </VStack>
 );
 
-const DropActionsSection = ({ allowAction, onCreateDrop, setDropType }) => (
+const DropActionsSection = ({ onCreateDrop, setDropType }) => (
   <>
     <Show above="md">
       <HStack justify="space-between">
@@ -494,5 +495,3 @@ const DropActionsSection = ({ allowAction, onCreateDrop, setDropType }) => (
     </Hide>
   </>
 );
-
-//export default SponsorDashboardPage;

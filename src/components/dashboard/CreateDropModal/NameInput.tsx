@@ -1,4 +1,4 @@
-import { FormControlComponent } from "@/components/FormControl";
+import { FormControlComponent } from "@/components/dashboard/FormControl";
 import { Input } from "@chakra-ui/react";
 
 export const NameInput = ({

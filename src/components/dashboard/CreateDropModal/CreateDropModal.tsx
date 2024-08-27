@@ -93,7 +93,7 @@ export const CreateDropModal = ({ modalType, isOpen, onClose }) => {
           setIsScavengerHunt={setIsScavengerHunt}
           scavengerPieces={scavengerPieces}
           setScavengerPieces={setScavengerPieces}
-          errors={errors}
+          // errors={errors}
         />
         {isLoading ? (
           <Center>
