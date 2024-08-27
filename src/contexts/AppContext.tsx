@@ -3,9 +3,8 @@ import {
   createContext,
   type PropsWithChildren,
   useContext,
-  useState
+  useState,
 } from "react";
-
 
 export interface AppModalInputs {
   placeholder: string;

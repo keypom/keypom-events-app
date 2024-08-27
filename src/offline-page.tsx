@@ -6,11 +6,11 @@ export function OfflinePage() {
 
   const handleRetry = () => {
     navigate(0);
-  }
+  };
 
   const handleGoHome = () => {
     navigate("/");
-  }
+  };
 
   return (
     <VStack
