@@ -20,7 +20,10 @@ import { useEffect, useState, useMemo } from "react";
 import QRCode from "qrcode";
 
 import { DeleteIcon, LinkIcon, NFTIcon } from "@/components/dashboard/icons";
-import { type ColumnItem, type DataItem } from "@/components/dashboard/table/types";
+import {
+  type ColumnItem,
+  type DataItem,
+} from "@/components/dashboard/table/types";
 import { DataTable } from "@/components/dashboard/table";
 import { useAppContext } from "@/contexts/AppContext";
 import { CLOUDFLARE_IPFS, TOKEN_FACTORY_CONTRACT } from "@/constants/common";
@@ -152,20 +155,20 @@ export const Dashboard = () => {
     try {
       const recoveredAccount = await eventHelperInstance.viewCall({
         contractId: TOKEN_FACTORY_CONTRACT,
-        methodName: 'recover_account',
+        methodName: "recover_account",
         args: { key_or_account_id: account?.public_key },
       });
 
       const tokens = await eventHelperInstance.viewCall({
         contractId: TOKEN_FACTORY_CONTRACT,
-        methodName: 'ft_balance_of',
+        methodName: "ft_balance_of",
         args: { account_id: recoveredAccount.account_id },
       });
       setTokensAvailable(eventHelperInstance.yoctoToNearWith4Decimals(tokens));
 
       const drops = await eventHelperInstance.viewCall({
         contractId: TOKEN_FACTORY_CONTRACT,
-        methodName: 'get_drops_created_by_account',
+        methodName: "get_drops_created_by_account",
         args: { account_id: recoveredAccount.account_id },
       });
       setDropsCreated(drops);
@@ -342,7 +345,7 @@ export const Dashboard = () => {
             createdDrop: dropCreated,
             isScavengerHunt,
             scavengerHunt,
-          }) ;
+          });
         toast({
           title: "Drop created successfully.",
           status: "success",

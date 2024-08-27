@@ -108,9 +108,7 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     async lazy() {
-      const { Dashboard } = await import(
-        "@/routes/dashboard"
-      );
+      const { Dashboard } = await import("@/routes/dashboard");
       return { Component: Dashboard };
     },
   },

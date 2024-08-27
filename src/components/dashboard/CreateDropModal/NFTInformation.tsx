@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  VStack,
-  HStack,
-  Textarea,
-} from "@chakra-ui/react";
+import { VStack, HStack, Textarea } from "@chakra-ui/react";
 import { FormControlComponent } from "@/components/dashboard/FormControl";
 import { ImageInput } from "./ImageInput";
 

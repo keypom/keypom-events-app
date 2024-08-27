@@ -12,7 +12,10 @@ import {
   deriveKeyFromPassword,
 } from "./cryptoHelper";
 import { Wallet } from "@near-wallet-selector/core";
-import { FinalExecutionStatus, FinalExecutionOutcome } from "near-api-js/lib/providers";
+import {
+  FinalExecutionStatus,
+  FinalExecutionOutcome,
+} from "near-api-js/lib/providers";
 
 let instance: EventJS | undefined;
 const networkId = process.env.REACT_APP_NETWORK_ID ?? "testnet";
