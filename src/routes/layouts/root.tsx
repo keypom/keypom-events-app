@@ -5,6 +5,7 @@ import { Footer } from "@/components/ui/footer";
 import { Header } from "@/components/ui/header";
 
 import { LoadingBox } from "@/components/ui/loading-box";
+import { OfflineBanner } from "@/components/ui/offline-banner";
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -57,6 +58,8 @@ export function Root() {
         position="relative"
         flexGrow="1"
       >
+        {/* Show if user is offline */}
+        <OfflineBanner />
         <Header />
         <Box
           ref={ref}
