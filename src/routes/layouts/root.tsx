@@ -1,13 +1,12 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { Outlet } from "react-router-dom";
-import { useNavigation } from "react-router-dom";
+import { Outlet, useNavigation } from "react-router-dom";
 
-import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
-import { Spinner } from "@/components/ui/spinner";
+import { Header } from "@/components/ui/header";
 
-import { useLocation } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
+import { LoadingBox } from "@/components/ui/loading-box";
+import { useLocation } from "react-router-dom";
 
 export function Root() {
   const { state } = useNavigation();
@@ -120,23 +119,7 @@ export function Root() {
             zIndex: -1,
           }}
         >
-          {state === "loading" ? (
-            <Box
-              position="absolute"
-              top="50%"
-              left="50%"
-              transform="translate(-50%, -50%)"
-              width="100%"
-              height="100%"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Spinner />
-            </Box>
-          ) : (
-            <Outlet />
-          )}
+          {state === "loading" ? <LoadingBox /> : <Outlet />}
         </Box>
         <Footer />
       </Flex>

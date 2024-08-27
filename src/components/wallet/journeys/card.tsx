@@ -2,21 +2,21 @@ import { Flex, VStack, Image, Heading, Text, Progress } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 import { ArrowIcon, CheckIcon } from "@/components/icons";
-import Dragon from "/collectible.webp";
+import { Journey } from "@/lib/api/journeys";
 
 export function JourneyCard({
+  id,
   title,
   description,
-  progress,
+  imageSrc,
+  steps,
   bgColor,
-  id,
-}: {
-  title: string;
-  description: string;
-  progress: number;
-  bgColor: string;
-  id: string;
-}) {
+}: Journey) {
+  const progress = steps.reduce(
+    (acc, step) => (step.completed ? acc + 100 / steps.length : acc),
+    0,
+  );
+
   return (
     <Flex
       width="100%"
@@ -29,7 +29,7 @@ export function JourneyCard({
       cursor={"pointer"}
     >
       <Image
-        src={Dragon}
+        src={imageSrc}
         width={"100px"}
         height={"100px"}
         bg={bgColor}
