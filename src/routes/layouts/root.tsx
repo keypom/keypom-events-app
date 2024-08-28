@@ -57,7 +57,6 @@ export function Root() {
         zIndex={5}
         position="relative"
         flexGrow="1"
-        // bg="black"
         borderRadius={"md"}
       >
         <OfflineBanner />
