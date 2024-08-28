@@ -1,122 +1,58 @@
-import { Agenda, AgendaAgenda } from "@/types/common";
+import { Agenda, AgendaEvent } from "./api/agendas";
 
-function filterAgenda(
-  agendaData: Agenda[] | undefined,
+export const filterAgenda = (
+  agendaData: Agenda,
   searchKey: string,
   selectedDay: string | null,
-  selectedStage: string | null,
-) {
-  if (!agendaData) return [];
-
-  let filtered = agendaData;
+  selectedStage: string | null
+): Agenda => {
+  let filteredEvents = agendaData.events;
 
   if (selectedDay) {
-    filtered = filtered.filter(
-      (event) => event.date.toLowerCase() === selectedDay.toLowerCase(),
+    filteredEvents = filteredEvents.filter(
+      (event) =>
+        new Date(event.startDate).toLocaleDateString().toLowerCase() ===
+        new Date(selectedDay).toLocaleDateString().toLowerCase()
     );
   }
 
   if (selectedStage) {
-    const newData: { [key: string]: Agenda } = {};
-
-    filtered.forEach((event) => {
-      const date = event.date;
-      const agendas = event.agendas;
-
-      agendas.forEach((agenda) => {
-        const events = agenda.events;
-
-        events.forEach((event) => {
-          if (event.stage.toLowerCase() === selectedStage.toLowerCase()) {
-            if (!newData[date]) {
-              newData[date] = {
-                date,
-                agendas: [],
-              };
-            }
-
-            if (
-              !newData[date].agendas.find(
-                (agendaItem: AgendaAgenda) =>
-                  agendaItem.timeFrom === agenda.timeFrom,
-              )
-            ) {
-              newData[date].agendas.push({
-                timeFrom: agenda.timeFrom,
-                timeTo: agenda.timeTo,
-                events: [],
-              });
-            }
-
-            const agendaItem = newData[date].agendas.find(
-              (agendaItem: AgendaAgenda) =>
-                agendaItem.timeFrom === agenda.timeFrom,
-            );
-
-            if (agendaItem) {
-              agendaItem.events.push(event);
-            }
-          }
-        });
-      });
-    });
-
-    filtered = Object.values(newData);
+    filteredEvents = filteredEvents.filter(
+      (event) => event.stage.toLowerCase() === selectedStage.toLowerCase()
+    );
   }
 
   if (searchKey) {
-    const newData: { [key: string]: Agenda } = {};
-
-    filtered.forEach((event) => {
-      const date = event.date;
-      const agendas = event.agendas;
-
-      agendas.forEach((agenda) => {
-        const events = agenda.events;
-
-        events.forEach((event) => {
-          if (
-            event.title.toLowerCase().includes(searchKey.toLowerCase()) ||
-            event.stage.toLowerCase().includes(searchKey.toLowerCase()) ||
-            event.presenter.toLowerCase().includes(searchKey.toLowerCase())
-          ) {
-            if (!newData[date]) {
-              newData[date] = {
-                date,
-                agendas: [],
-              };
-            }
-
-            if (
-              !newData[date].agendas.find(
-                (agendaItem: AgendaAgenda) =>
-                  agendaItem.timeFrom === agenda.timeFrom,
-              )
-            ) {
-              newData[date].agendas.push({
-                timeFrom: agenda.timeFrom,
-                timeTo: agenda.timeTo,
-                events: [],
-              });
-            }
-
-            const agendaItem = newData[date].agendas.find(
-              (agendaItem: AgendaAgenda) =>
-                agendaItem.timeFrom === agenda.timeFrom,
-            );
-
-            if (agendaItem) {
-              agendaItem.events.push(event);
-            }
-          }
-        });
-      });
-    });
-
-    return Object.values(newData);
-  } else {
-    return filtered;
+    filteredEvents = filteredEvents.filter(
+      (event) =>
+        event.title.toLowerCase().includes(searchKey.toLowerCase()) ||
+        event.stage.toLowerCase().includes(searchKey.toLowerCase()) ||
+        event.presenter.toLowerCase().includes(searchKey.toLowerCase())
+    );
   }
+
+  return {
+    events: filteredEvents,
+  };
 }
 
-export { filterAgenda };
+export const findAllStages = (events: AgendaEvent[]): string[] => {
+  const stages = new Set<string>();
+
+  events.forEach((event) => {
+    stages.add(event.stage);
+  });
+
+  return Array.from(stages);
+};
+
+export const findAllDays = (events: AgendaEvent[]): string[] => {
+  const days = new Set<string>();
+
+  events.forEach((event) => {
+    days.add(new Date(event.startDate).toLocaleDateString());
+    days.add(new Date(event.endDate).toLocaleDateString());
+  });
+
+  return Array.from(days);
+}
