@@ -2,13 +2,16 @@ import { VStack, Box, Flex, Text } from "@chakra-ui/react";
 import { AgendaCard } from "@/components/agenda/card";
 import { Agenda } from "@/types/common";
 
-export function AgendaList({ data }: { data: Agenda[] }) {
+export function AgendaList({ data }: { data: Agenda[] | undefined }) {
+  if (!data) {
+    return <div>Loading...</div>;
+  }
   return (
     <VStack width="100%" gap={8}>
       {data.map((item, index) => (
         <>
           <Box
-            key={index}
+            key={item.date + index}
             width={"100%"}
             p={2}
             borderRadius={"4px"}
@@ -30,7 +33,7 @@ export function AgendaList({ data }: { data: Agenda[] }) {
           </Box>
           {item.agendas.map((agenda, index) => (
             <Flex
-              key={index}
+              key={index + item.date}
               pt={3}
               width={"100%"}
               gap={4}

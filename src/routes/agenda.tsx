@@ -10,7 +10,8 @@ import {
   SquareIcon,
 } from "@/components/icons";
 import { AgendaList } from "@/components/agenda/agenda-list";
-import { agendaData } from "@/constants/agenda";
+import { fetchAgendas } from "@/lib/api/agendas";
+import { useQuery } from "@tanstack/react-query";
 
 function FilterTitle({
   title,
@@ -76,6 +77,11 @@ function FilterCheckbox({
 }
 
 export function Agenda() {
+  const { data: agendaData, isLoading } = useQuery({
+    queryKey: ["agendas"],
+    queryFn: fetchAgendas,
+  });
+
   const [showSearch, setShowSearch] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
@@ -101,6 +107,7 @@ export function Agenda() {
     );
     setFilteredEvents(filtered);
   }, [
+    agendaData,
     searchKey,
     selectedDay,
     selectedStage,
@@ -125,6 +132,8 @@ export function Agenda() {
   const handleStageChange = (stage: string) => {
     setSelectedStage(stage === selectedStage ? null : stage);
   };
+
+  if (!agendaData || isLoading) return <div>Loading...</div>;
 
   return (
     <Box p={4} display={"flex"} flexDirection={"column"}>
@@ -188,19 +197,31 @@ export function Agenda() {
               {showFilterByDay && (
                 <>
                   <FilterCheckbox
-                    checked={selectedDay === "SATURDAY, NOV 9TH"}
-                    onChange={() => handleDayChange("SATURDAY, NOV 9TH")}
-                    title="SATURDAY, NOV 9TH"
+                    key={agendaData[0].date}
+                    checked={selectedDay === agendaData[0].date}
+                    onChange={() => handleDayChange(agendaData[0].date)}
+                    title={agendaData[0].date}
+                    // checked={selectedDay === "SATURDAY, NOV 9TH"}
+                    // onChange={() => handleDayChange("SATURDAY, NOV 9TH")}
+                    // title="SATURDAY, NOV 9TH"
                   />
                   <FilterCheckbox
-                    checked={selectedDay === "SUNDAY, NOV 10TH"}
-                    onChange={() => handleDayChange("SUNDAY, NOV 10TH")}
-                    title="SUNDAY, NOV 10TH"
+                    key={agendaData[1].date}
+                    checked={selectedDay === agendaData[1].date}
+                    onChange={() => handleDayChange(agendaData[1].date)}
+                    title={agendaData[1].date}
+                    // checked={selectedDay === "SUNDAY, NOV 10TH"}
+                    // onChange={() => handleDayChange("SUNDAY, NOV 10TH")}
+                    // title="SUNDAY, NOV 10TH"
                   />
                   <FilterCheckbox
-                    checked={selectedDay === "MONDAY, NOV 11TH"}
-                    onChange={() => handleDayChange("MONDAY, NOV 11TH")}
-                    title="MONDAY, NOV 11TH"
+                    key={agendaData[2].date}
+                    checked={selectedDay === agendaData[2].date}
+                    onChange={() => handleDayChange(agendaData[2].date)}
+                    title={agendaData[2].date}
+                    // checked={selectedDay === "MONDAY, NOV 11TH"}
+                    // onChange={() => handleDayChange("MONDAY, NOV 11TH")}
+                    // title="MONDAY, NOV 11TH"
                   />
                 </>
               )}
@@ -233,7 +254,7 @@ export function Agenda() {
             />
           </VStack>
         )}
-        <AgendaList data={filteredEvents} />
+        {agendaData && <AgendaList data={filteredEvents} />}
       </VStack>
     </Box>
   );

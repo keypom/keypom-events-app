@@ -1,11 +1,13 @@
 import { Agenda, AgendaAgenda } from "@/types/common";
 
 function filterAgenda(
-  agendaData: Agenda[],
+  agendaData: Agenda[] | undefined,
   searchKey: string,
   selectedDay: string | null,
   selectedStage: string | null,
 ) {
+  if (!agendaData) return [];
+
   let filtered = agendaData;
 
   if (selectedDay) {
