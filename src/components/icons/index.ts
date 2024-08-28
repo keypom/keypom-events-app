@@ -10,4 +10,5 @@ export * from "./redacted";
 export * from "./scan";
 export * from "./telegram";
 export * from "./user";
+export * from "./dino";
 export * from "./wallet";
