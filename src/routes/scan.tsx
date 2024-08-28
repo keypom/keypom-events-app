@@ -10,12 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import RedactedExpression from "/redacted-expression.webp";
 
 import { PageHeading } from "@/components/ui/page-heading";
 import { FlipIcon } from "@/components/icons";
+import { motion } from "framer-motion";
 
 const CameraSwitchButton = ({
   useNextDevice,
@@ -56,8 +57,29 @@ export function Scan() {
   const [selectedDevice, setSelectedDevice] = useState<string | undefined>(
     undefined,
   );
+
+  const variants = {
+    open: { x: [0, -50, 50, -50, 50, -50, 50, 0] },
+    closed: { x: 0 },
+  };
+
+  const [showAnimation, setShowAnimation] = useState(false);
   const devices = useDevices();
   const navigate = useNavigate();
+
+  const handleError = () => {
+    console.log("error");
+    setShowAnimation(true);
+  };
+
+  // set showAnimation to false after 1 second
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowAnimation(false);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  });
 
   const useNextDevice = () => {
     const currentIndex =
@@ -65,47 +87,63 @@ export function Scan() {
     setSelectedDevice(devices[currentIndex + (1 % devices.length)]?.deviceId);
   };
 
+  const isValidToken = (value: string) => {
+    return value.startsWith("token:");
+  };
+
   return (
     <Box p={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
       <VStack spacing={8}>
-        <Scanner
-          onScan={(result) => {
-            const value = result[0].rawValue;
-            if (value.endsWith(".near") || value.endsWith(".testnet")) {
-              navigate(`/wallet/send?to=${value}`);
-              return;
+        <Box
+          as={motion.div}
+          animate={showAnimation ? "open" : "closed"}
+          variants={variants}
+          initial="closed"
+          transition="1s linear"
+        >
+          <Scanner
+            onScan={(result) => {
+              const value = result[0].rawValue;
+
+              if (isValidToken(value)) {
+                navigate(`/scan/${value}`);
+                return;
+              }
+
+              handleError();
+            }}
+            allowMultiple={true}
+            scanDelay={1000}
+            components={{
+              finder: false,
+              audio: false,
+            }}
+            constraints={{
+              deviceId: selectedDevice,
+            }}
+            children={
+              <CameraSwitchButton
+                useNextDevice={useNextDevice}
+                devices={devices}
+              />
             }
-            navigate(`/scan/${value}`);
-          }}
-          components={{
-            finder: false,
-            audio: false,
-          }}
-          constraints={{
-            deviceId: selectedDevice,
-          }}
-          children={
-            <CameraSwitchButton
-              useNextDevice={useNextDevice}
-              devices={devices}
-            />
-          }
-          styles={{
-            container: {
-              width: "100%",
-              height: "100%",
-              aspectRatio: "1/1",
-              position: "relative",
-            },
-            video: {
-              borderRadius: "1rem",
-              border: "3px solid var(--green, #00EC97)",
-              background: "#00ec97",
-              objectFit: "cover",
-            },
-          }}
-        />
+            styles={{
+              container: {
+                width: "100%",
+                height: "100%",
+                aspectRatio: "1/1",
+                position: "relative",
+              },
+              video: {
+                borderRadius: "1rem",
+                border: `3px solid ${showAnimation ? "red" : "var(--green, #00EC97)"}`,
+                background: "#00ec97",
+                objectFit: "cover",
+              },
+            }}
+          />
+        </Box>
         <Image
           src={RedactedExpression}
           alt="Redacted Expression"
