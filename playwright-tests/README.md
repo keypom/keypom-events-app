@@ -49,6 +49,25 @@ It is encouraged to include video in pull requests in order to demonstrate funct
 
 ## Cookbook
 
+### Using storage states
+
+In order to represent different roles via an authenticated NEAR wallet, you can mock logins through [storage states](https://playwright.dev/docs/auth). These set values in local storage mocking what would typically be set through [near-wallet-selector](https://github.com/near/wallet-selector).
+
+```javascript
+test.describe("User is logged in", () => {
+
+  ...before each
+
+  test.use({
+    storageState: "playwright-tests/storage-states/wallet-connected.json",
+  });
+
+  ...your tests
+});
+```
+
+See the available storage states in [./storage-states](./storage-states/).
+
 ### Mocking fetch requests
 
 If you are testing a component that makes fetch requests, you can mock them using the [fetch](https://playwright.dev/docs/api/class-fetch) API.
