@@ -1,4 +1,4 @@
-import { Heading, VStack, Text, Button } from "@chakra-ui/react";
+import { Heading, VStack, Text, Button, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import { ArrowIcon } from "@/components/icons";
@@ -9,6 +9,8 @@ interface PageHeadingProps {
   description?: string;
   showBackButton?: boolean;
   backUrl?: string;
+  leftChildren?: React.ReactNode;
+  rightChildren?: React.ReactNode;
 }
 
 export function PageHeading({
@@ -17,6 +19,8 @@ export function PageHeading({
   description,
   showBackButton = false,
   backUrl = "/ ",
+  leftChildren,
+  rightChildren,
 }: PageHeadingProps) {
   const navigate = useNavigate();
   return (
@@ -59,6 +63,26 @@ export function PageHeading({
               direction="left"
             />
           </Button>
+        )}
+        {leftChildren && (
+          <Box
+            position={"absolute"}
+            left={0}
+            top={"50%"}
+            transform="translate(0, -50%)"
+          >
+            {leftChildren}
+          </Box>
+        )}
+        {rightChildren && (
+          <Box
+            position={"absolute"}
+            right={0}
+            top={"50%"}
+            transform="translate(0, -50%)"
+          >
+            {rightChildren}
+          </Box>
         )}
         <span>{title}</span>
       </Heading>

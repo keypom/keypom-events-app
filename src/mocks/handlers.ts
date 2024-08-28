@@ -2,6 +2,7 @@ import { http, HttpResponse } from "msw";
 import collectibles from "./data/collectibles.ts";
 import journeys from "./data/journeys.ts";
 import alerts from "./data/alerts.ts";
+import agendas from "./data/agendas.ts";
 
 export const handlers = [
   // Intercept "GET https://example.com/journeys" requests...
@@ -41,5 +42,8 @@ export const handlers = [
     } else {
       return new HttpResponse("Not found", { status: 404 });
     }
+  }),
+  http.get("https://example.com/agendas", () => {
+    return HttpResponse.json(agendas);
   }),
 ];
