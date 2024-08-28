@@ -1,13 +1,13 @@
-export function ArrowDownIcon({
+export function Chevron({
   width = 24,
   height = 24,
   color = "black",
-  rotate = false, // New prop to control rotation
+  direction = "down",
 }: {
   width?: number;
   height?: number;
   color?: string;
-  rotate?: boolean; // New boolean prop
+  direction?: "up" | "down" | "left" | "right";
 }) {
   return (
     <svg
@@ -17,7 +17,14 @@ export function ArrowDownIcon({
       viewBox="0 0 24 24"
       fill={color}
       style={{
-        transform: rotate ? "rotate(180deg)" : "none", // Apply rotation if the prop is true
+        transform:
+          direction === "up"
+            ? "rotate(180deg)"
+            : direction === "left"
+              ? "rotate(-90deg)"
+              : direction === "right"
+                ? "rotate(90deg)"
+                : "", // Apply rotation if the prop is true
         transition: "transform 0.3s ease", // Optional: Add a smooth transition
       }}
     >

@@ -1,38 +1,113 @@
-import {
-  Button,
-  Heading,
-  Box,
-  VStack,
-  Input,
-  Accordion,
-  CheckboxGroup,
-  AccordionPanel,
-  AccordionItem,
-  AccordionButton,
-  useAccordionItemState,
-} from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-
+import { Button, Heading, Box, VStack, Input, Flex } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { filterAgenda } from "@/lib/agenda";
 import { PageHeading } from "@/components/ui/page-heading";
-import { SearchIcon } from "@/components/icons/search";
-import { FilterIcon } from "@/components/icons/filter";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowDownIcon } from "@/components/icons/arrow-down";
+import {
+  SearchIcon,
+  FilterIcon,
+  Chevron,
+  CheckedIcon,
+  SquareIcon,
+} from "@/components/icons";
+import { AgendaList } from "@/components/agenda/agenda-list";
+import { agendaData } from "@/constants/agenda";
 
-function RotatingArrowDownIcon() {
-  const { isOpen } = useAccordionItemState();
+function FilterTitle({
+  title,
+  isOpen,
+  handleFilterOpen,
+}: {
+  title: string;
+  isOpen: boolean;
+  handleFilterOpen?: () => void;
+}) {
+  return (
+    <Flex
+      justifyContent="space-between"
+      alignItems="center"
+      p={2}
+      borderRadius="4px"
+      bg="#F2F1EA"
+      width="100%"
+      cursor="pointer"
+      onClick={handleFilterOpen}
+    >
+      <Heading as="h4" fontSize="md" fontFamily="mono" color="brand.600">
+        Filter by: <span style={{ color: "#000" }}>{title}</span>
+      </Heading>
+      <Chevron direction={isOpen ? "up" : "down"} width={24} height={24} />
+    </Flex>
+  );
+}
 
-  return <ArrowDownIcon rotate={isOpen} />;
+function FilterCheckbox({
+  title,
+  checked,
+  onChange,
+}: {
+  title: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <Flex
+      width="100%"
+      bg="#F2F1EA"
+      p={2}
+      borderRadius="4px"
+      onClick={() => onChange(!checked)}
+      alignItems="flex-start"
+      cursor="pointer"
+      userSelect={"none"}
+    >
+      <Heading
+        as={"h4"}
+        fontSize="md"
+        fontFamily="mono"
+        color="black"
+        display="flex"
+        alignItems="center"
+        gap={2}
+      >
+        {checked ? <CheckedIcon /> : <SquareIcon />} {title}
+      </Heading>
+    </Flex>
+  );
 }
 
 export function Agenda() {
   const [showSearch, setShowSearch] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
+
+  // Search states
+  const [searchKey, setSearchKey] = useState("");
+
+  // Filter states
+  const [showFilterByDay, setShowFilterByDay] = useState(true);
+  const [showFilterByStage, setShowFilterByStage] = useState(true);
+  const [showFilterByTags, setShowFilterByTags] = useState(false);
+
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
-  const days = ["SATURDAY, NOV 9TH", "SUNDAY, NOV 10TH", "MONDAY, NOV 11TH"];
-  const stages = ["MAIN STAGE", "CYBHERPUNK STAGE"];
+
+  const [filteredEvents, setFilteredEvents] = useState<any[]>(agendaData);
+
+  useEffect(() => {
+    const filtered = filterAgenda(
+      agendaData,
+      searchKey,
+      selectedDay,
+      selectedStage,
+    );
+    setFilteredEvents(filtered);
+  }, [
+    searchKey,
+    selectedDay,
+    selectedStage,
+    filteredEvents,
+    setFilteredEvents,
+  ]);
+
   const toggleSearch = () => {
     setShowSearch(!showSearch);
     if (!showSearch) setShowFilter(false);
@@ -50,6 +125,7 @@ export function Agenda() {
   const handleStageChange = (stage: string) => {
     setSelectedStage(stage === selectedStage ? null : stage);
   };
+
   return (
     <Box p={4} display={"flex"} flexDirection={"column"}>
       <PageHeading
@@ -74,19 +150,22 @@ export function Agenda() {
         }
       />
 
-      <VStack spacing={4} align="start" p={4}>
+      <VStack spacing={4} align="start" pt={4}>
         {showSearch && (
           <Input
             fontFamily={"mono"}
             placeholder="Search..."
-            color="white"
+            color="black"
             background={"#F2F1EA"}
             variant="outline"
             borderRadius="md"
+            fontWeight="700"
             px={4}
             py={2}
             autoFocus
             transition="all 0.3s ease-in-out"
+            value={searchKey}
+            onChange={(e) => setSearchKey(e.target.value)}
             _placeholder={{
               color: "var(--black, #000)",
               fontFamily: "mono",
@@ -99,161 +178,62 @@ export function Agenda() {
           />
         )}
         {showFilter && (
-          <Accordion
-            width={"full"}
-            defaultIndex={[0]}
-            padding={0}
-            border={"none"}
-            allowMultiple
-          >
-            <AccordionItem
-              borderRadius={"4px"}
-              border={"none"}
-              background={"#F2F1EA"}
-            >
-              <h2>
-                <AccordionButton>
-                  <Box
-                    as="span"
-                    flex="1"
-                    textAlign="left"
-                    fontWeight={700}
-                    fontFamily={"mono"}
-                    color={"#04A46E"}
-                  >
-                    <Box as="span" fontFamily={"mono"} color={"#04A46E"}>
-                      Filter by:{" "}
-                      <Box as="span" color={"#000"}>
-                        Day
-                      </Box>
-                    </Box>
-                  </Box>
-                  <RotatingArrowDownIcon />
-                </AccordionButton>
-              </h2>
-
-              <AccordionPanel pb={4}>
-                <VStack
-                  align="start"
-                  color={"#000"}
-                  fontFamily={"mono"}
-                  fontWeight={700}
-                  fontSize={"sm"}
-                >
-                  {days.map((day) => (
-                    <Checkbox
-                      key={day}
-                      value={day}
-                      isChecked={selectedDay === day}
-                      onChange={handleDayChange}
-                    >
-                      {day}
-                    </Checkbox>
-                  ))}
-                </VStack>
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem
-              borderRadius={"4px"}
-              border={"none"}
-              background={"#F2F1EA"}
-            >
-              <h2>
-                <AccordionButton>
-                  <Box
-                    as="span"
-                    flex="1"
-                    textAlign="left"
-                    fontWeight={700}
-                    fontFamily={"mono"}
-                    color={"#04A46E"}
-                  >
-                    <Box as="span" fontFamily={"mono"} color={"#04A46E"}>
-                      Filter by:{" "}
-                      <Box as="span" color={"#000"}>
-                        Stage
-                      </Box>
-                    </Box>
-                  </Box>
-                  <RotatingArrowDownIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <CheckboxGroup>
-                  <VStack
-                    align="start"
-                    color={"#000"}
-                    fontFamily={"mono"}
-                    fontWeight={700}
-                    fontSize={"sm"}
-                  >
-                    {stages.map((stage) => (
-                      <Checkbox
-                        key={stage}
-                        value={stage}
-                        isChecked={selectedStage === stage}
-                        onChange={handleStageChange}
-                      >
-                        {stage}
-                      </Checkbox>
-                    ))}
-                  </VStack>
-                </CheckboxGroup>
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem
-              borderRadius={"4px"}
-              border={"none"}
-              background={"#F2F1EA"}
-            >
-              <h2>
-                <AccordionButton>
-                  <Box
-                    as="span"
-                    flex="1"
-                    textAlign="left"
-                    fontWeight={700}
-                    fontFamily={"mono"}
-                    color={"#04A46E"}
-                  >
-                    <Box as="span" fontFamily={"mono"} color={"#04A46E"}>
-                      Filter by:
-                      <Box as="span" color={"#000"}>
-                        Tags
-                      </Box>
-                    </Box>
-                  </Box>
-                  <RotatingArrowDownIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}></AccordionPanel>
-            </AccordionItem>
-          </Accordion>
-        )}
-        {selectedDay && (
-          <Box
-            width={"100%"}
-            p={2}
-            borderRadius={"4px"}
-            background={"#00EC97"}
-            display={"flex"}
-            gap={"10px"}
-          >
-            <VStack
-              align="stretch"
-              color={"black"}
-              fontFamily={"mono"}
-              fontWeight={700}
-              fontSize={"16px"}
-              lineHeight={"14px"}
-              textTransform={"uppercase"}
-            >
-              <Box>{selectedDay}</Box>
+          <VStack width="100%">
+            <VStack width="100%" spacing={0}>
+              <FilterTitle
+                title="Day"
+                isOpen={showFilterByDay}
+                handleFilterOpen={() => setShowFilterByDay((prev) => !prev)}
+              />
+              {showFilterByDay && (
+                <>
+                  <FilterCheckbox
+                    checked={selectedDay === "SATURDAY, NOV 9TH"}
+                    onChange={() => handleDayChange("SATURDAY, NOV 9TH")}
+                    title="SATURDAY, NOV 9TH"
+                  />
+                  <FilterCheckbox
+                    checked={selectedDay === "SUNDAY, NOV 10TH"}
+                    onChange={() => handleDayChange("SUNDAY, NOV 10TH")}
+                    title="SUNDAY, NOV 10TH"
+                  />
+                  <FilterCheckbox
+                    checked={selectedDay === "MONDAY, NOV 11TH"}
+                    onChange={() => handleDayChange("MONDAY, NOV 11TH")}
+                    title="MONDAY, NOV 11TH"
+                  />
+                </>
+              )}
             </VStack>
-          </Box>
+            <VStack width="100%" spacing={0}>
+              <FilterTitle
+                title="Stage"
+                isOpen={showFilterByStage}
+                handleFilterOpen={() => setShowFilterByStage((prev) => !prev)}
+              />
+              {showFilterByStage && (
+                <>
+                  <FilterCheckbox
+                    checked={selectedStage === "MAIN STAGE"}
+                    onChange={() => handleStageChange("MAIN STAGE")}
+                    title="MAIN STAGE"
+                  />
+                  <FilterCheckbox
+                    checked={selectedStage === "CYPHERPUNK STAGE"}
+                    onChange={() => handleStageChange("CYPHERPUNK STAGE")}
+                    title="CYPHERPUNK STAGE"
+                  />
+                </>
+              )}
+            </VStack>
+            <FilterTitle
+              title="Tags"
+              isOpen={showFilterByTags}
+              handleFilterOpen={() => setShowFilterByTags((prev) => !prev)}
+            />
+          </VStack>
         )}
-        <Heading>Agenda</Heading>
-        <Link to="/">Home</Link>
+        <AgendaList data={filteredEvents} />
       </VStack>
     </Box>
   );
