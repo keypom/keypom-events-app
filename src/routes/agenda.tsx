@@ -90,7 +90,7 @@ export function Agenda() {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
 
-  const [filteredEvents, setFilteredEvents] = useState<any[]>(agendaData);
+  const [filteredEvents, setFilteredEvents] = useState(agendaData);
 
   useEffect(() => {
     const filtered = filterAgenda(

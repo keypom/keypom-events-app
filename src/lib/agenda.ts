@@ -1,5 +1,7 @@
+import { Agenda, AgendaAgenda } from "@/types/common";
+
 function filterAgenda(
-  agendaData: any,
+  agendaData: Agenda[],
   searchKey: string,
   selectedDay: string | null,
   selectedStage: string | null,
@@ -13,7 +15,7 @@ function filterAgenda(
   }
 
   if (selectedStage) {
-    let newData: { [key: string]: any } = {};
+    const newData: { [key: string]: Agenda } = {};
 
     filtered.forEach((event) => {
       const date = event.date;
@@ -33,7 +35,8 @@ function filterAgenda(
 
             if (
               !newData[date].agendas.find(
-                (agendaItem: any) => agendaItem.timeFrom === agenda.timeFrom,
+                (agendaItem: AgendaAgenda) =>
+                  agendaItem.timeFrom === agenda.timeFrom,
               )
             ) {
               newData[date].agendas.push({
@@ -43,11 +46,14 @@ function filterAgenda(
               });
             }
 
-            newData[date].agendas
-              .find(
-                (agendaItem: any) => agendaItem.timeFrom === agenda.timeFrom,
-              )
-              .events.push(event);
+            const agendaItem = newData[date].agendas.find(
+              (agendaItem: AgendaAgenda) =>
+                agendaItem.timeFrom === agenda.timeFrom,
+            );
+
+            if (agendaItem) {
+              agendaItem.events.push(event);
+            }
           }
         });
       });
@@ -57,7 +63,7 @@ function filterAgenda(
   }
 
   if (searchKey) {
-    let newData: { [key: string]: any } = {};
+    const newData: { [key: string]: Agenda } = {};
 
     filtered.forEach((event) => {
       const date = event.date;
@@ -81,7 +87,8 @@ function filterAgenda(
 
             if (
               !newData[date].agendas.find(
-                (agendaItem: any) => agendaItem.timeFrom === agenda.timeFrom,
+                (agendaItem: AgendaAgenda) =>
+                  agendaItem.timeFrom === agenda.timeFrom,
               )
             ) {
               newData[date].agendas.push({
@@ -91,11 +98,14 @@ function filterAgenda(
               });
             }
 
-            newData[date].agendas
-              .find(
-                (agendaItem: any) => agendaItem.timeFrom === agenda.timeFrom,
-              )
-              .events.push(event);
+            const agendaItem = newData[date].agendas.find(
+              (agendaItem: AgendaAgenda) =>
+                agendaItem.timeFrom === agenda.timeFrom,
+            );
+
+            if (agendaItem) {
+              agendaItem.events.push(event);
+            }
           }
         });
       });

@@ -1,4 +1,6 @@
-export const agendaData = [
+import { Agenda } from "@/types/common";
+
+export const agendaData: Agenda[] = [
   {
     date: "Saturday, Nov 9th",
     agendas: [

@@ -1,7 +1,8 @@
 import { VStack, Box, Flex, Text } from "@chakra-ui/react";
 import { AgendaCard } from "@/components/agenda/card";
+import { Agenda } from "@/types/common";
 
-export function AgendaList({ data }: { data: any[] }) {
+export function AgendaList({ data }: { data: Agenda[] }) {
   return (
     <VStack width="100%" gap={8}>
       {data.map((item, index) => (

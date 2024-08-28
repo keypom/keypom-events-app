@@ -1,4 +1,4 @@
-import { VStack, Flex, HStack, Box, Heading, Text } from "@chakra-ui/react";
+import { VStack, Flex, Heading, Text } from "@chakra-ui/react";
 import { CalenderAddIcon } from "../icons";
 
 export function AgendaCard({

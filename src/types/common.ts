@@ -26,3 +26,21 @@ export interface TokenAsset {
   value: string;
   symbol: string;
 }
+
+export type AgendaAgenda = {
+  timeFrom: string;
+  timeTo: string;
+  events: AgendaEvent[];
+};
+
+export type AgendaEvent = {
+  title: string;
+  stage: string;
+  description: string;
+  presenter: string;
+};
+
+export type Agenda = {
+  date: string;
+  agendas: AgendaAgenda[];
+};
