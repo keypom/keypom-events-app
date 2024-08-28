@@ -38,6 +38,7 @@ import { CreateDropModal } from "@/components/dashboard/CreateDropModal/CreateDr
 import QRViewerModal from "@/components/dashboard/QRViewerModal";
 import { Wallet } from "@near-wallet-selector/core";
 import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
+import { AppModal } from "@/components/dashboard/appModal/AppModal";
 
 export interface ScavengerHunt {
   piece: string;
@@ -391,6 +392,7 @@ export const Dashboard = () => {
         modalType={dropType}
         onClose={handleCreateDropClose}
       />
+      <AppModal />
       {isLoading ? (
         <Skeleton height="40px" mb="4" width="200px" />
       ) : (
