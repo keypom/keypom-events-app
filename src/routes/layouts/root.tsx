@@ -57,8 +57,9 @@ export function Root() {
         zIndex={5}
         position="relative"
         flexGrow="1"
+        bg="black"
+        borderRadius={"md"}
       >
-        {/* Show if user is offline */}
         <OfflineBanner />
         <Header />
         <Box
