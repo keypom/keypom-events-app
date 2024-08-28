@@ -6,7 +6,7 @@ import { TelegramIcon } from "@/components/icons";
 
 export function Help() {
   return (
-    <VStack py={4} px={12} spacing={4}>
+    <VStack p={4} spacing={4}>
       <PageHeading title="Help" />
       <Box
         bg="black"

@@ -23,6 +23,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/help",
+        // TODO: Show cached help page
         async lazy() {
           if (!navigator.onLine) {
             return { Component: OfflinePage };
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
       {
         path: "/agenda",
         async lazy() {
+          // TODO: Show cached agenda page
           if (!navigator.onLine) {
             return { Component: OfflinePage };
           }

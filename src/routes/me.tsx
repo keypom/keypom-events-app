@@ -31,7 +31,7 @@ export function Me() {
         description={accountId}
       />
       <WalletActions />
-      <VStack width="100%" px={8} pb={4} spacing={8}>
+      <VStack width="100%" p={4} spacing={8}>
         <Flex
           justifyContent="space-between"
           alignItems="center"

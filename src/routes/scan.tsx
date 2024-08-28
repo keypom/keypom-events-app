@@ -93,8 +93,9 @@ export function Scan() {
           }
           styles={{
             container: {
-              width: "320px",
-              height: "320px",
+              width: "100%",
+              height: "100%",
+              aspectRatio: "1/1",
               position: "relative",
             },
             video: {
@@ -118,7 +119,13 @@ export function Scan() {
           transform="translateY(50%)"
           zIndex={-1}
         />
-        <HStack alignItems="flex-start" gap={4} wrap={"wrap"}>
+        <HStack
+          width="100%"
+          justifyContent={"space-between"}
+          alignItems="flex-start"
+          gap={4}
+          wrap={"wrap"}
+        >
           <VStack alignItems="flex-start" gap={4}>
             <Heading as="h3" fontSize="2xl" color="white">
               Earn:

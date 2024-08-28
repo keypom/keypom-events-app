@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export function WalletActions() {
   return (
     <>
-      <VStack spacing={2}>
+      <VStack spacing={2} width={"100%"}>
         <Heading
           fontFamily="mono"
           fontSize="64px"
@@ -39,8 +39,7 @@ export function WalletActions() {
       <HStack
         spacing={2}
         width="100%"
-        px={8}
-        py={4}
+        p={4}
         bg="url(/redacted-button.webp) 50% / cover no-repeat"
       >
         <Button variant="navigation" as={Link} to="/wallet/send">
