@@ -17,9 +17,26 @@ const router = createBrowserRouter([
           if (!navigator.onLine) {
             return { Component: OfflinePage };
           }
-          const { Conference } = await import("@/routes/conference");
-          return { Component: Conference };
+          const { Home } = await import("@/routes/home");
+          return { Component: Home };
         },
+      },
+      {
+        path: "conference",
+        children: [
+          {
+            path: "app/:id", // Match /events/event/:id
+            async lazy() {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+              const { ConferencePageManager } = await import(
+                "@/routes/conference/conferencePageManager"
+              );
+              return { Component: ConferencePageManager };
+            },
+          },
+        ],
       },
       {
         path: "/help",
@@ -60,6 +77,21 @@ const router = createBrowserRouter([
           const { Claim } = await import("@/routes/scan/claim");
           return { Component: Claim };
         },
+      },
+      {
+        path: "/scan",
+        children: [
+          {
+            path: "event/:funderAndEventId",
+            async lazy() {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+              const { Scanner } = await import("@/routes/adminScan/adminScan");
+              return { Component: Scanner };
+            },
+          },
+        ],
       },
       {
         path: "/wallet",
@@ -154,6 +186,23 @@ const router = createBrowserRouter([
           const { Alerts } = await import("@/routes/alerts");
           return { Component: Alerts };
         },
+      },
+      {
+        path: "/tickets",
+        children: [
+          {
+            path: "ticket/:id", // Match /events/event/:id
+            async lazy() {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+              const { TicketPage } = await import(
+                "@/routes/tickets/ticketPage"
+              );
+              return { Component: TicketPage };
+            },
+          },
+        ],
       },
     ],
   },
