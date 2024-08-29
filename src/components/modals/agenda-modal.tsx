@@ -127,6 +127,7 @@ const buttonProps = {
   fontFamily: "mono",
   display: "flex",
   gap: 2,
+  fontSize: "xs",
 };
 export function AgendaModal() {
   const { isOpen, onClose, agenda } = useAgendaModalStore();
@@ -140,10 +141,16 @@ export function AgendaModal() {
         <ModalContent
           background="black"
           border={"1px solid var(--chakra-colors-brand-400)"}
+          maxWidth={{
+            base: "90%",
+            md: "380px",
+          }}
         >
-          <ModalHeader fontFamily={"mono"}>Add to Calendar</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody width={"100%"}>
+          <ModalHeader px={4} fontFamily={"mono"}>
+            Add to Calendar
+          </ModalHeader>
+          <ModalCloseButton top="16px" right="8px" />
+          <ModalBody width={"100%"} px={4}>
             <Flex gap={6} width={"100%"} justifyContent={"center"}>
               <Button
                 {...buttonProps}
@@ -175,7 +182,7 @@ export function AgendaModal() {
               </Button>
             </Flex>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter px={4}>
             <Button variant={"navigation"} onClick={onClose}>
               Close
             </Button>
