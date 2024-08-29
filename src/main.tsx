@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 
 async function prepare() {
-  if (import.meta.env.DEV) {
+  // if (import.meta.env.DEV) {
+  if (true) { // going to mock in both dev and prod
     const { worker } = await import("@/mocks/browser");
     return worker.start({
       onUnhandledRequest(req, print) {
