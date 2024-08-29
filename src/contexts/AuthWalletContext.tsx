@@ -91,7 +91,7 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
       }
     };
 
-    initWalletSelector().catch(console.error); // eslint-disable-line no-console
+    initWalletSelector().catch(console.error);  
   }, []);
 
   // set account
@@ -110,7 +110,7 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
         setAccount(nextAccount);
         // setLoading(false);
       })
-      .catch(console.error); // eslint-disable-line no-console
+      .catch(console.error);  
   }, [activeAccount, getAccount]);
 
   selector?.on("signedIn", () => {

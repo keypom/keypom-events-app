@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
+ 
 import {
   Box,
   Button,
@@ -130,7 +130,7 @@ export const Scanner = () => {
         });
         setTicketOptions(ticketOptions);
       } catch (e) {
-        // eslint-disable-next-line no-console
+         
         console.error("error getting event tickets:", e);
         setIsErr(true);
       }

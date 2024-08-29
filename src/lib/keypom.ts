@@ -660,7 +660,7 @@ class KeypomJS {
       args: { account_id: accountId },
     });
     const meta: FunderMetadata = JSON.parse(funderInfo.metadata);
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+     
     delete meta[eventId];
 
     await wallet.signAndSendTransaction({
@@ -681,14 +681,14 @@ class KeypomJS {
   };
 
   deleteEventFromCache = ({ eventId }: { eventId: string }) => {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+     
     delete this.eventInfoById[eventId];
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+     
     delete this.ticketDropsByEventId[eventId];
   };
 
   deleteTicketFromCache = ({ dropId }: { dropId: string }) => {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+     
     delete this.purchasedTicketsById[dropId];
   };
 
@@ -718,7 +718,7 @@ class KeypomJS {
 
       return eventInfo;
     } catch (error) {
-      /* eslint-disable no-console */
+       
       console.warn("Error getting event info", error);
       return null;
     }
@@ -1132,7 +1132,7 @@ class KeypomJS {
         );
 
         nftMetadata = {
-          media: `${CLOUDFLARE_IPFS}/${nftData?.metadata?.media}`, // eslint-disable-line
+          media: `${CLOUDFLARE_IPFS}/${nftData?.metadata?.media}`,  
           title: nftData?.metadata?.title,
           description: nftData?.metadata?.description,
         };
@@ -1441,7 +1441,7 @@ class KeypomJS {
       redirectUrl: dropMetadata.redirectUrl,
       ...(nftData
         ? {
-            media: `${CLOUDFLARE_IPFS}/${nftData.metadata.media}`, // eslint-disable-line
+            media: `${CLOUDFLARE_IPFS}/${nftData.metadata.media}`,  
             title: nftData.metadata.title,
             description: nftData.metadata.description,
           }
@@ -1489,7 +1489,7 @@ class KeypomJS {
       redirectUrl: dropMetadata.redirectUrl,
       ...(nftData
         ? {
-            media: `${CLOUDFLARE_IPFS}/${nftData.metadata.media}`, // eslint-disable-line
+            media: `${CLOUDFLARE_IPFS}/${nftData.metadata.media}`,  
             title: nftData.metadata.title,
             description: nftData.metadata.description,
           }
