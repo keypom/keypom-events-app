@@ -91,17 +91,43 @@ export function Scan() {
     return value.startsWith("token:");
   };
 
+  if (!devices) {
+    return (
+      <VStack p={4}>
+        <PageHeading title="Scan" />
+        <Heading>No Camera Device Found</Heading>
+      </VStack>
+    );
+  }
+
   return (
-    <Box p={4} display={"flex"} flexDirection={"column"} gap={4}>
+    <Box pt={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
-      <VStack spacing={8}>
+      <VStack spacing={8} width="100%">
         <Box
           as={motion.div}
           animate={showAnimation ? "open" : "closed"}
           variants={variants}
           initial="closed"
           transition="1s linear"
+          width="100%"
+          height="100%"
+          position={"relative"}
+          px={4}
         >
+          <Image
+            src={RedactedExpression}
+            alt="Redacted Expression"
+            width="100%"
+            height="220px"
+            objectFit={"cover"}
+            loading="eager"
+            position="absolute"
+            top="50%"
+            left="0"
+            transform="translateY(-50%)"
+            zIndex={-1}
+          />
           <Scanner
             onScan={(result) => {
               const value = result[0].rawValue;
@@ -140,28 +166,17 @@ export function Scan() {
                 border: `3px solid ${showAnimation ? "red" : "var(--green, #00EC97)"}`,
                 background: "#00ec97",
                 objectFit: "cover",
+                aspectRatio: "1/1",
               },
             }}
           />
         </Box>
-        <Image
-          src={RedactedExpression}
-          alt="Redacted Expression"
-          width="100%"
-          height="220px"
-          objectFit={"cover"}
-          loading="eager"
-          position="absolute"
-          top="0"
-          left="0"
-          transform="translateY(50%)"
-          zIndex={-1}
-        />
         <HStack
           width="100%"
           justifyContent={"space-between"}
           alignItems="flex-start"
           gap={4}
+          px={4}
           wrap={"wrap"}
         >
           <VStack alignItems="flex-start" gap={4}>
