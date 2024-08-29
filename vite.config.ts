@@ -23,6 +23,7 @@ export default defineConfig({
         "apple-touch-icon.png",
         "mask-icon.svg",
         "*.webp",
+        "*.js",
       ],
       manifest: {
         name: "Keypom [Redacted] Event App",
