@@ -22,7 +22,7 @@ export const QrDetails = ({ qrValue, eventInfo }: QrDetailsProps) => {
     >
       <Box
         border="1px solid"
-        borderColor="brand.400    "
+        borderColor="brand.400"
         borderRadius="12px"
         mb={{ base: "2", md: "2" }}
         p="5"
