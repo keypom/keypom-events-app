@@ -1,18 +1,30 @@
 import { CameraSwitchButton } from "@/components/scanner/camera-switch-button";
 import { ViewFinder } from "@/components/scanner/view-finder";
-import { Box } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ErrorBox } from "../ui/error-box";
+import { LoadingOverlay } from "./loading-overlay";
 
-export const QrScanner = ({ handleScan }: {
+export const QrScanner = ({
+  handleScan,
+}: {
   // Method to handle the scan event, return false if error to show error animation
-  handleScan: (value: string) => boolean | void;
+  handleScan: (value: string) => Promise<{ message: string } | void>;
 }) => {
   const [selectedDevice, setSelectedDevice] = useState<string | undefined>(
     undefined,
   );
+  const [isOnCooldown, setIsOnCooldown] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanStatus, setScanStatus] = useState<"success" | "error" | undefined>(
+    undefined,
+  );
+  const [statusMessage, setStatusMessage] = useState<string | undefined>(
+    undefined,
+  );
+  const toast = useToast();
 
   const variants = {
     open: { x: [0, -50, 50, -50, 50, -50, 50, 0] },
@@ -22,14 +34,13 @@ export const QrScanner = ({ handleScan }: {
   const [showAnimation, setShowAnimation] = useState(false);
   const devices = useDevices();
 
-  // set showAnimation to false after 1 second
-  useEffect(() => {
-    const timeout = setTimeout(() => {
+  const enableCooldown = () => {
+    setIsOnCooldown(true); // Activate cooldown
+    setTimeout(() => {
+      setIsOnCooldown(false); // Deactivate cooldown after 1000 milliseconds (1 seconds)
       setShowAnimation(false);
     }, 1000);
-
-    return () => clearTimeout(timeout);
-  });
+  };
 
   const useNextDevice = () => {
     const currentIndex =
@@ -37,9 +48,34 @@ export const QrScanner = ({ handleScan }: {
     setSelectedDevice(devices[currentIndex + (1 % devices.length)]?.deviceId);
   };
 
-  const onError = () => {
+  const onError = (error: { message: string }) => {
     setShowAnimation(true);
-  }
+    setScanStatus("error");
+    setStatusMessage(error.message);
+  };
+
+  const onSuccess = (result: { message: string } | void) => {
+    setScanStatus("success");
+    if (result) {
+      setStatusMessage(result.message);
+    }
+  };
+
+  useEffect(() => {
+    if (scanStatus) {
+      toast({
+        title: scanStatus === "success" ? "Success" : "Error",
+        description: statusMessage,
+        status: scanStatus,
+        duration: 5000,
+        isClosable: true,
+      });
+      // Reset the status after showing the message
+      setTimeout(() => {
+        setScanStatus(undefined);
+      }, 5000);
+    }
+  }, [scanStatus, statusMessage, toast]);
 
   if (!devices) {
     return (
@@ -72,12 +108,21 @@ export const QrScanner = ({ handleScan }: {
       height="100%"
     >
       <Scanner
-        onScan={(result) => {
-          const value = result[0].rawValue;
-          const isSuccesfulScan = handleScan(value);
-          if (!isSuccesfulScan) {
-            console.log("Unsuccessful scan");
-            onError();
+        onScan={async (result) => {
+          if (isOnCooldown || isScanning) return;
+          setScanStatus(undefined); // Reset status
+          setIsScanning(true);
+          try {
+            const value = result[0].rawValue;
+            const response = await handleScan(value);
+
+            onSuccess(response);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (error: any) {
+            onError(error);
+          } finally {
+            setIsScanning(false);
+            enableCooldown();
           }
         }}
         allowMultiple={true}
@@ -95,6 +140,10 @@ export const QrScanner = ({ handleScan }: {
             <CameraSwitchButton
               useNextDevice={useNextDevice}
               devices={devices}
+            />
+            <LoadingOverlay
+              isVisible={isOnCooldown || isScanning}
+              status={scanStatus}
             />
           </>
         }

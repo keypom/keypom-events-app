@@ -5,34 +5,31 @@ import {
   Button,
   Center,
   Heading,
-  VStack,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
-  Text,
-  useToast,
+  MenuList,
   Spinner,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { type OnResultFunction, QrReader } from "react-qr-reader";
 import { useNavigate } from "react-router-dom";
 
-import keypomInstance from "@/lib/keypom";
-import { useTicketScanningParams } from "@/hooks/useTicketScanningParams";
 import { NotFound404 } from "@/components/dashboard/NotFound404";
-import { ViewFinder } from "@/components/scanner/view-finder";
-import {
-  type FunderEventMetadata,
-  type EventDrop,
-  type TicketMetadataExtra,
-  type DateAndTimeInfo,
-} from "@/lib/eventsHelper";
-import { dateAndTimeToText } from "@/utils/parseDates";
 import { KEYPOM_EVENTS_CONTRACT } from "@/constants/common";
+import { useTicketScanningParams } from "@/hooks/useTicketScanningParams";
+import {
+  type DateAndTimeInfo,
+  type EventDrop,
+  type FunderEventMetadata,
+  type TicketMetadataExtra,
+} from "@/lib/eventsHelper";
+import keypomInstance from "@/lib/keypom";
+import { dateAndTimeToText } from "@/utils/parseDates";
 
+import { QrScanner } from "@/components/scanner/qr-scanner";
 import { getDropFromSecretKey, validateDrop } from "./helpers";
-import { LoadingOverlay } from "@/components/scanner/LoadingOverlay";
 
 interface StateRefObject {
   isScanning: boolean;
@@ -46,9 +43,7 @@ interface StateRefObject {
 export const Scanner = () => {
   const { funderId, eventId } = useTicketScanningParams();
   const navigate = useNavigate();
-  const toast = useToast();
 
-  const [facingMode, setFacingMode] = useState("user"); // default to rear camera
   const [eventInfo, setEventInfo] = useState<FunderEventMetadata>();
   const [ticketOptions, setTicketOptions] = useState<
     Array<{ dropId: string; name: string; validThrough: DateAndTimeInfo }>
@@ -56,7 +51,6 @@ export const Scanner = () => {
   const [isErr, setIsErr] = useState(false);
   const [ticketToVerify, setTicketToVerify] = useState<string>("");
   const [isScanning, setIsScanning] = useState(false);
-  const [isOnCooldown, setIsOnCooldown] = useState(false); // New state to manage cooldown
 
   const stateRef = useRef<StateRefObject>({
     isScanning: false,
@@ -68,9 +62,6 @@ export const Scanner = () => {
   });
 
   const [allTicketOptions, setAllTicketOptions] = useState<EventDrop[]>();
-
-  const [scanStatus, setScanStatus] = useState<"success" | "error">();
-  const [statusMessage, setStatusMessage] = useState("");
 
   const [ticketsToScan, setTicketsToScan] = useState<string[]>([]);
 
@@ -140,42 +131,11 @@ export const Scanner = () => {
   }, [eventId, funderId]);
 
   useEffect(() => {
-    if (scanStatus) {
-      toast({
-        title: scanStatus === "success" ? "Success" : "Error",
-        description: statusMessage,
-        status: scanStatus,
-        duration: 5000,
-        isClosable: true,
-      });
-      // Reset the status after showing the message
-      setTimeout(() => {
-        setScanStatus(undefined);
-      }, 5000);
-    }
-  }, [scanStatus, statusMessage, toast]);
-
-  const enableCooldown = () => {
-    setIsOnCooldown(true); // Activate cooldown
-    setTimeout(() => {
-      setIsOnCooldown(false); // Deactivate cooldown after 3000 milliseconds (3 seconds)
-    }, 1000);
-  };
-
-  useEffect(() => {
-    stateRef.current.isScanning = isScanning;
     stateRef.current.ticketsToScan = ticketsToScan;
-    stateRef.current.isOnCooldown = isOnCooldown;
     stateRef.current.allTicketOptions = allTicketOptions || [];
     stateRef.current.ticktToVerify = ticketToVerify;
     // Update other state variables in stateRef.current as needed
-  }, [
-    isScanning,
-    ticketsToScan,
-    isOnCooldown,
-    allTicketOptions,
-    ticketToVerify,
-  ]);
+  }, [ticketsToScan, allTicketOptions, ticketToVerify]);
 
   useEffect(() => {
     // Process tickets in batches but only if not currently processing
@@ -187,66 +147,47 @@ export const Scanner = () => {
     }
   }, [ticketsToScan]);
 
-  const handleScanResult: OnResultFunction = async (result) => {
-    if (
-      result &&
-      !stateRef.current.isScanning &&
-      !stateRef.current.isOnCooldown
-    ) {
-      setIsScanning(true); // Start scanning
-      setScanStatus(undefined); // Reset the status message
-      try {
-        const secretKey = result.getText();
-        console.log("Scanning result:", secretKey);
-        const dropInfo = await getDropFromSecretKey(secretKey);
-        if (dropInfo) {
-          const { drop, usesRemaining, maxKeyUses } = dropInfo;
-          const curUse = maxKeyUses - usesRemaining + 1;
-          // Check if the ticket has already been scanned
-          if (stateRef.current.ticketsToScan.includes(secretKey)) {
-            // This now correctly checks against the most up-to-date ticketsToScan
-            setScanStatus("error");
-            setStatusMessage("Ticket already scanned.");
-            return;
-          }
-
-          if (curUse !== 1) {
-            setScanStatus("error");
-            setStatusMessage("Ticket has already been used.");
-            return;
-          }
-
-          // Suppose you have a function to validate the ticket
-          const { status, message } = validateDrop({
-            drop,
-            allTicketOptions: stateRef.current.allTicketOptions,
-            ticketToVerify: stateRef.current.ticktToVerify,
-          });
-
-          // If the ticket is valid, update the state to include the new ticket
-          if (status === "success") {
-            // Update both the ref and the state to enqueue the ticket
-            const updatedTickets = [
-              ...stateRef.current.ticketsToScan,
-              secretKey,
-            ];
-            stateRef.current.ticketsToScan = updatedTickets;
-            setTicketsToScan(updatedTickets);
-          }
-          setScanStatus(status);
-          setStatusMessage(message);
-        } else {
-          setScanStatus("error");
-          setStatusMessage("No ticket information found.");
+  const handleScanResult = async (secretKey: string) => {
+    setIsScanning(true);
+    try {
+      console.log("Scanning result:", secretKey);
+      const dropInfo = await getDropFromSecretKey(secretKey);
+      if (dropInfo) {
+        const { drop, usesRemaining, maxKeyUses } = dropInfo;
+        const curUse = maxKeyUses - usesRemaining + 1;
+        // Check if the ticket has already been scanned
+        if (stateRef.current.ticketsToScan.includes(secretKey)) {
+          // This now correctly checks against the most up-to-date ticketsToScan
+          throw new Error("Ticket already scanned.");
         }
-      } catch (error) {
-        console.error("Scan failed", error);
-        setScanStatus("error");
-        setStatusMessage("Error scanning the ticket. Please try again.");
-      } finally {
-        setIsScanning(false); // End scanning regardless of success or error
-        enableCooldown(); // Enable cooldown to prevent multiple scans
+
+        if (curUse !== 1) {
+          throw new Error("Ticket has already been used.");
+        }
+
+        // Suppose you have a function to validate the ticket
+        const { status, message } = validateDrop({
+          drop,
+          allTicketOptions: stateRef.current.allTicketOptions,
+          ticketToVerify: stateRef.current.ticktToVerify,
+        });
+
+        // If the ticket is valid, update the state to include the new ticket
+        if (status === "success") {
+          // Update both the ref and the state to enqueue the ticket
+          const updatedTickets = [...stateRef.current.ticketsToScan, secretKey];
+          stateRef.current.ticketsToScan = updatedTickets;
+          setTicketsToScan(updatedTickets);
+        }
+        return Promise.resolve({ message });
+      } else {
+        throw new Error("No ticket information found.");
       }
+    } catch (error) {
+      console.error("Scan failed", error);
+      throw new Error("Error scanning the ticket. Please try again.");
+    } finally {
+      setIsScanning(false);
     }
   };
 
@@ -358,12 +299,7 @@ export const Scanner = () => {
                     <Text>Select Ticket Type To Scan</Text>
                   </Center>
                 </MenuButton>
-                <MenuList
-                  borderRadius="md"
-                  boxShadow="xl"
-                  py="0" 
-                  zIndex={2}
-                >
+                <MenuList borderRadius="md" boxShadow="xl" py="0" zIndex={2}>
                   {ticketOptions.map((option, index) => (
                     <MenuItem
                       key={`${option.dropId}-${index}`}
@@ -381,9 +317,6 @@ export const Scanner = () => {
           <Center marginBottom="1" marginTop="6" w="100%">
             <VStack
               alignItems="center"
-              borderColor="gray.200"
-              borderRadius="24px"
-              borderWidth="2px"
               h="100%"
               maxHeight="500px"
               maxW="500px"
@@ -392,22 +325,7 @@ export const Scanner = () => {
               spacing={4}
               w="full"
             >
-              <QrReader
-                constraints={{ facingMode }}
-                containerStyle={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "24px",
-                }}
-                scanDelay={1000}
-                ViewFinder={() => <ViewFinder />}
-                onResult={handleScanResult}
-              />
-              {/* Overlay Component */}
-              <LoadingOverlay
-                isVisible={isOnCooldown || isScanning}
-                status={scanStatus}
-              />
+              <QrScanner handleScan={handleScanResult} />
             </VStack>
           </Center>
           {ticketsToScan.length > 0 ? (
@@ -417,18 +335,6 @@ export const Scanner = () => {
           ) : (
             <Text color="gray.500">Waiting for QR code...</Text>
           )}
-          <Center maxW="500px" mt="4" w="full">
-            <Button
-              w="full"
-              onClick={() => {
-                setFacingMode((prevMode) =>
-                  prevMode === "environment" ? "user" : "environment",
-                );
-              }}
-            >
-              Flip Camera
-            </Button>
-          </Center>
         </VStack>
       </Center>
     </Box>

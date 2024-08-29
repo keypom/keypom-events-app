@@ -22,11 +22,22 @@ export function Scan() {
   };
 
   // Handle the scan event, return false if error
-  const handleScan = (value: string): boolean | void => {
+  const handleScan = async (
+    value: string,
+  ): Promise<{ message: string } | void> => {
     if (isValidToken(value)) {
-      navigate(`/scan/${value}`);
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          try {
+            navigate(`/scan/${value}`);
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        }, 1000);
+      });
     } else {
-      return false;
+      throw new Error("Invalid token");
     }
   };
 
