@@ -104,22 +104,21 @@ export function TicketPage() {
         setEventId(eventId);
         setFunderId(drop.funder_id);
 
-         
         console.log("eventInfo", eventInfo);
-         
+
         console.log("Ticket Metadata", ticketMetadata);
-         
+
         console.log("Ticket Metadata Extra", ticketExtra);
 
         setIsLoading(false);
       } catch (e) {
-         
         console.error("Error getting event info: ", e);
         setIsValid(false);
         setIsLoading(false);
       }
     };
     getEventInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [secretKey]);
 
   if (!isValid) {

@@ -61,6 +61,7 @@ export default function TicketQRPage({
     return () => {
       clearInterval(intervalId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [secretKey]);
 
   return (

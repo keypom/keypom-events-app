@@ -92,6 +92,7 @@ export const ConferenceProvider = ({
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useConferenceContext = () => {
   const context = useContext(ConferenceContext);
   if (!context) {

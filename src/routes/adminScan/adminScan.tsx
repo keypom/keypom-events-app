@@ -1,4 +1,5 @@
- 
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import {
   Box,
   Button,
@@ -130,7 +131,6 @@ export const Scanner = () => {
         });
         setTicketOptions(ticketOptions);
       } catch (e) {
-         
         console.error("error getting event tickets:", e);
         setIsErr(true);
       }

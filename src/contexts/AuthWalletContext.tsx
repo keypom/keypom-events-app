@@ -85,13 +85,13 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
       setSelector(walletSelector.selector);
       setAccounts(walletSelector.accounts);
 
-      if (typeof window !== undefined) {
+      if (typeof window !== "undefined") {
         window.modal = walletSelector.modal;
         window.selector = walletSelector.selector;
       }
     };
 
-    initWalletSelector().catch(console.error);  
+    initWalletSelector().catch(console.error);
   }, []);
 
   // set account
@@ -110,7 +110,7 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
         setAccount(nextAccount);
         // setLoading(false);
       })
-      .catch(console.error);  
+      .catch(console.error);
   }, [activeAccount, getAccount]);
 
   selector?.on("signedIn", () => {
@@ -143,6 +143,7 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuthWalletContext = () => {
   const context = useContext(AuthWalletContext);
 

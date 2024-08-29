@@ -150,6 +150,7 @@ export function isValidTicketNFTMetadata(tokenMetadata: TicketInfoMetadata) {
       typeof extraMetadata.salesValidThrough.startDate === "number"
     );
   } catch (e) {
+    console.error(e);
     return false;
   }
 }
