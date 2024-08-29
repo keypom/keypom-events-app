@@ -1,17 +1,17 @@
-import { VStack, Flex, Heading, Text } from "@chakra-ui/react";
+import { AgendaEvent } from "@/lib/api/agendas";
+import { useAddToCalendar } from "@/stores/add-to-calendar";
+import { Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import { CalenderAddIcon } from "../icons";
 
-export function AgendaCard({
-  title,
-  stage,
-  description,
-  presenter,
-}: {
-  title: string;
-  stage: string;
-  description: string;
-  presenter: string;
-}) {
+export function AgendaCard(event: AgendaEvent) {
+  const { title, stage, description, presenter } = event;
+  const { onOpen, setEvent } = useAddToCalendar();
+
+  const handleCalendarClick = () => {
+    onOpen();
+    setEvent(event);
+  };
+
   return (
     <VStack width={"100%"} alignItems={"flex-start"} gap={2}>
       <Flex width={"100%"} justifyContent={"space-between"}>
@@ -34,11 +34,13 @@ export function AgendaCard({
             {presenter}
           </Heading>
         </VStack>
-        <CalenderAddIcon
-          width={24}
-          height={24}
-          color={"var(--chakra-colors-brand-400)"}
-        />
+        <Button variant={"transparent"} onClick={() => handleCalendarClick()}>
+          <CalenderAddIcon
+            width={24}
+            height={24}
+            color={"var(--chakra-colors-brand-400)"}
+          />
+        </Button>
       </Flex>
       <Text color={"brand.600"} fontSize={"xs"}>
         {description}

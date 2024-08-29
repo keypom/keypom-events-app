@@ -6,6 +6,7 @@ import {
   SearchIcon,
   SquareIcon,
 } from "@/components/icons";
+import { AddToCalendarModal } from "@/components/modals/add-to-calendar";
 import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
@@ -250,6 +251,7 @@ export function Agenda() {
         {filteredEvents && <EventList events={filteredEvents} />}
         {isError && <ErrorBox message={`Error: ${error.message}`} />}
       </VStack>
+      <AddToCalendarModal />
     </Box>
   );
 }
