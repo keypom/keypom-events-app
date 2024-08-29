@@ -1,28 +1,15 @@
-import { VStack, Flex, Heading, Text, Button } from "@chakra-ui/react";
-import { CalenderAddIcon } from "../icons";
-import { useAgendaModalStore } from "@/stores/agenda-modal-store";
 import { AgendaEvent } from "@/lib/api/agendas";
+import { useAddToCalendar } from "@/stores/add-to-calendar";
+import { Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
+import { CalenderAddIcon } from "../icons";
 
-export function AgendaCard({
-  title,
-  stage,
-  description,
-  presenter,
-  startDate,
-  endDate,
-}: AgendaEvent) {
-  const { onOpen, setAgenda } = useAgendaModalStore();
+export function AgendaCard(event: AgendaEvent) {
+  const { title, stage, description, presenter } = event;
+  const { onOpen, setEvent } = useAddToCalendar();
 
   const handleCalendarClick = () => {
     onOpen();
-    setAgenda({
-      startDate,
-      endDate,
-      title,
-      stage,
-      description,
-      presenter,
-    });
+    setEvent(event);
   };
 
   return (

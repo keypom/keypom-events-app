@@ -11,15 +11,16 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { useAgendaModalStore } from "@/stores/agenda-modal-store";
+import { useAddToCalendar } from "@/stores/add-to-calendar";
 
 import googleCalendarLogo from "/calendar/google-calendar.webp";
 import appleCalendar from "/calendar/apple-calendar.webp";
+import { AgendaEvent } from "@/lib/api/agendas";
 
-const timeZone = "Asia/Bangkok";
+const TIMEZONE = "Asia/Bangkok";
 
-function createGoogleCalendarLink(agenda) {
-  const { title, stage, description, presenter, startDate, endDate } = agenda;
+function createGoogleCalendarLink(event: AgendaEvent) {
+  const { title, stage, description, presenter, startDate, endDate } = event;
 
   const encodedTitle = encodeURIComponent(title);
   const encodedStage = encodeURIComponent(stage);
@@ -32,13 +33,13 @@ function createGoogleCalendarLink(agenda) {
   const endDateTime = endDate.replace(/[^\w\s]/gi, "");
 
   // Construct the Google Calendar link
-  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${startDateTime}/${endDateTime}&details=${encodedDescription}&location=${encodedStage}&trp=false&ctz=${timeZone}`;
+  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${startDateTime}/${endDateTime}&details=${encodedDescription}&location=${encodedStage}&trp=false&ctz=${TIMEZONE}`;
 
   return googleCalendarUrl;
 }
 
-function createICalendarLink(agenda) {
-  const { title, stage, description, presenter, startDate, endDate } = agenda;
+function createICalendarLink(event: AgendaEvent) {
+  const { title, stage, description, presenter, startDate, endDate } = event;
 
   const formattedDescription = `${description}\nPresenter: ${presenter}`;
 
@@ -54,8 +55,8 @@ function createICalendarLink(agenda) {
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VTIMEZONE",
-    `TZID:${timeZone}`,
-    `X-LIC-LOCATION:${timeZone}`,
+    `TZID:${TIMEZONE}`,
+    `X-LIC-LOCATION:${TIMEZONE}`,
     "BEGIN:STANDARD",
     "TZOFFSETFROM:+0700",
     "TZOFFSETTO:+0700",
@@ -66,8 +67,8 @@ function createICalendarLink(agenda) {
     "BEGIN:VEVENT",
     `UID:${Date.now()}@yourdomain.com`,
     `DTSTAMP:${startDateTime}Z`,
-    `DTSTART;TZID=${timeZone}:${startDateTime}`,
-    `DTEND;TZID=${timeZone}:${endDateTime}`,
+    `DTSTART;TZID=${TIMEZONE}:${startDateTime}`,
+    `DTEND;TZID=${TIMEZONE}:${endDateTime}`,
     `SUMMARY:${title}`,
     `DESCRIPTION:${formattedDescription.replace(/\n/g, "\\n")}`,
     `LOCATION:${stage}`,
@@ -97,10 +98,10 @@ const buttonProps = {
   gap: 2,
   fontSize: "xs",
 };
-export function AgendaModal() {
-  const { isOpen, onClose, agenda } = useAgendaModalStore();
+export function AddToCalendarModal() {
+  const { isOpen, onClose, event } = useAddToCalendar();
 
-  if (!isOpen) return null;
+  if (!isOpen || !event) return null;
 
   return (
     <>
@@ -122,7 +123,7 @@ export function AgendaModal() {
             <Flex gap={6} width={"100%"} justifyContent={"center"}>
               <Button
                 {...buttonProps}
-                to={createGoogleCalendarLink(agenda)}
+                to={createGoogleCalendarLink(event)}
                 flexDirection={"column"}
               >
                 <Image
@@ -136,7 +137,7 @@ export function AgendaModal() {
               </Button>
               <Button
                 {...buttonProps}
-                to={createICalendarLink(agenda)}
+                to={createICalendarLink(event)}
                 flexDirection={"column"}
               >
                 <Image
