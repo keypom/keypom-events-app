@@ -80,7 +80,7 @@ export default function TicketQRPage({
         width="100%"
       >
         <Heading mb={8} textAlign="center">
-          You're notattending {eventInfo?.name}!
+          You're attending {eventInfo?.name}!
         </Heading>
       </Box>
 
