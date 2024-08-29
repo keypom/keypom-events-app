@@ -1,17 +1,20 @@
-import { Button, Heading, Box, VStack, Input, Flex } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { filterAgenda } from "@/lib/agenda";
-import { PageHeading } from "@/components/ui/page-heading";
+import { EventList } from "@/components/agenda/event-list";
 import {
-  SearchIcon,
-  FilterIcon,
-  Chevron,
   CheckedIcon,
+  Chevron,
+  FilterIcon,
+  SearchIcon,
   SquareIcon,
 } from "@/components/icons";
-import { AgendaList } from "@/components/agenda/agenda-list";
-import { fetchAgendas } from "@/lib/api/agendas";
+import { ErrorBox } from "@/components/ui/error-box";
+import { LoadingBox } from "@/components/ui/loading-box";
+import { PageHeading } from "@/components/ui/page-heading";
+import { filterAgenda, findAllDays, findAllStages } from "@/lib/agenda";
+import { AgendaEvent, fetchAgenda } from "@/lib/api/agendas";
+import { formatDate } from "@/utils/date";
+import { Box, Button, Flex, Heading, Input, VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 
 function FilterTitle({
   title,
@@ -77,9 +80,14 @@ function FilterCheckbox({
 }
 
 export function Agenda() {
-  const { data: agendaData, isLoading } = useQuery({
-    queryKey: ["agendas"],
-    queryFn: fetchAgendas,
+  const {
+    data: agendaData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["agenda"],
+    queryFn: fetchAgenda,
   });
 
   const [showSearch, setShowSearch] = useState(false);
@@ -96,23 +104,27 @@ export function Agenda() {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
 
-  const [filteredEvents, setFilteredEvents] = useState(agendaData);
+  const [filteredEvents, setfilteredEvents] = useState<AgendaEvent[] | []>(
+    agendaData ? agendaData.events : [],
+  );
 
   useEffect(() => {
-    const filtered = filterAgenda(
-      agendaData,
-      searchKey,
-      selectedDay,
-      selectedStage,
-    );
-    setFilteredEvents(filtered);
+    if (agendaData) {
+      const filtered = filterAgenda(
+        agendaData,
+        searchKey,
+        selectedDay,
+        selectedStage,
+      );
+      setfilteredEvents(filtered.events);
+    }
   }, [
     agendaData,
     searchKey,
     selectedDay,
     selectedStage,
     filteredEvents,
-    setFilteredEvents,
+    setfilteredEvents,
   ]);
 
   const toggleSearch = () => {
@@ -133,7 +145,15 @@ export function Agenda() {
     setSelectedStage(stage === selectedStage ? null : stage);
   };
 
-  if (!agendaData || isLoading) return <div>Loading...</div>;
+  const stages = useMemo(
+    () => (agendaData ? findAllStages(agendaData.events) : []),
+    [agendaData],
+  );
+
+  const days = useMemo(
+    () => (agendaData ? findAllDays(agendaData.events) : []),
+    [agendaData],
+  );
 
   return (
     <Box p={4} display={"flex"} flexDirection={"column"}>
@@ -158,7 +178,6 @@ export function Agenda() {
           </Button>
         }
       />
-
       <VStack spacing={4} align="start" pt={4}>
         {showSearch && (
           <Input
@@ -194,37 +213,15 @@ export function Agenda() {
                 isOpen={showFilterByDay}
                 handleFilterOpen={() => setShowFilterByDay((prev) => !prev)}
               />
-              {showFilterByDay && (
-                <>
+              {showFilterByDay &&
+                days.map((day) => (
                   <FilterCheckbox
-                    key={agendaData[0].date}
-                    checked={selectedDay === agendaData[0].date}
-                    onChange={() => handleDayChange(agendaData[0].date)}
-                    title={agendaData[0].date}
-                    // checked={selectedDay === "SATURDAY, NOV 9TH"}
-                    // onChange={() => handleDayChange("SATURDAY, NOV 9TH")}
-                    // title="SATURDAY, NOV 9TH"
+                    key={day}
+                    checked={selectedDay === day}
+                    onChange={() => handleDayChange(day)}
+                    title={formatDate(new Date(day))}
                   />
-                  <FilterCheckbox
-                    key={agendaData[1].date}
-                    checked={selectedDay === agendaData[1].date}
-                    onChange={() => handleDayChange(agendaData[1].date)}
-                    title={agendaData[1].date}
-                    // checked={selectedDay === "SUNDAY, NOV 10TH"}
-                    // onChange={() => handleDayChange("SUNDAY, NOV 10TH")}
-                    // title="SUNDAY, NOV 10TH"
-                  />
-                  <FilterCheckbox
-                    key={agendaData[2].date}
-                    checked={selectedDay === agendaData[2].date}
-                    onChange={() => handleDayChange(agendaData[2].date)}
-                    title={agendaData[2].date}
-                    // checked={selectedDay === "MONDAY, NOV 11TH"}
-                    // onChange={() => handleDayChange("MONDAY, NOV 11TH")}
-                    // title="MONDAY, NOV 11TH"
-                  />
-                </>
-              )}
+                ))}
             </VStack>
             <VStack width="100%" spacing={0}>
               <FilterTitle
@@ -232,20 +229,15 @@ export function Agenda() {
                 isOpen={showFilterByStage}
                 handleFilterOpen={() => setShowFilterByStage((prev) => !prev)}
               />
-              {showFilterByStage && (
-                <>
+              {showFilterByStage &&
+                stages.map((stage: string) => (
                   <FilterCheckbox
-                    checked={selectedStage === "MAIN STAGE"}
-                    onChange={() => handleStageChange("MAIN STAGE")}
-                    title="MAIN STAGE"
+                    key={stage}
+                    checked={selectedStage === stage}
+                    onChange={() => handleStageChange(stage)}
+                    title={stage.toUpperCase()}
                   />
-                  <FilterCheckbox
-                    checked={selectedStage === "CYPHERPUNK STAGE"}
-                    onChange={() => handleStageChange("CYPHERPUNK STAGE")}
-                    title="CYPHERPUNK STAGE"
-                  />
-                </>
-              )}
+                ))}
             </VStack>
             <FilterTitle
               title="Tags"
@@ -254,7 +246,9 @@ export function Agenda() {
             />
           </VStack>
         )}
-        {agendaData && <AgendaList data={filteredEvents} />}
+        {isLoading && <LoadingBox />}
+        {filteredEvents && <EventList events={filteredEvents} />}
+        {isError && <ErrorBox message={`Error: ${error.message}`} />}
       </VStack>
     </Box>
   );

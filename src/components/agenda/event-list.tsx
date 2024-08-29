@@ -1,21 +1,39 @@
-import { VStack, Box, Flex, Text } from "@chakra-ui/react";
 import { AgendaCard } from "@/components/agenda/card";
-import { Agenda } from "@/types/common";
+import { AgendaEvent } from "@/lib/api/agendas";
+import { formatDate, pureFormat } from "@/utils/date";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
+import React from "react";
 
-export function AgendaList({ data }: { data: Agenda[] | undefined }) {
-  if (!data) {
-    return <div>Loading...</div>;
-  }
+export function EventList({ events }: { events: AgendaEvent[] }) {
+  // Group events by date
+  const groupedEvents = events.reduce(
+    (acc, event) => {
+      const date = formatDate(new Date(event.startDate));
+      const timeKey = `${pureFormat(event.startDate, "HH:mm")}-${pureFormat(event.endDate, "HH:mm")}`;
+
+      if (!acc[date]) {
+        acc[date] = {};
+      }
+      if (!acc[date][timeKey]) {
+        acc[date][timeKey] = [];
+      }
+      acc[date][timeKey].push(event);
+      return acc;
+    },
+    {} as Record<string, Record<string, AgendaEvent[]>>,
+  );
+
+  console.log(`Grouped Events: ${JSON.stringify(groupedEvents)}`);
+
   return (
     <VStack width="100%" gap={8}>
-      {data.map((item, index) => (
-        <>
+      {Object.entries(groupedEvents).map(([date, timeslots]) => (
+        <React.Fragment key={date}>
           <Box
-            key={item.date + index}
             width={"100%"}
             p={2}
             borderRadius={"4px"}
-            background={"#00EC97"}
+            background={"brand.400"}
             display={"flex"}
             gap={"10px"}
           >
@@ -28,12 +46,12 @@ export function AgendaList({ data }: { data: Agenda[] | undefined }) {
               lineHeight={"14px"}
               textTransform={"uppercase"}
             >
-              <Box>{item.date}</Box>
+              <Box>{date}</Box>
             </VStack>
           </Box>
-          {item.agendas.map((agenda, index) => (
+          {Object.entries(timeslots).map(([timeKey, timeEvents]) => (
             <Flex
-              key={index + item.date}
+              key={`${date}-${timeKey}`}
               pt={3}
               width={"100%"}
               gap={4}
@@ -53,25 +71,17 @@ export function AgendaList({ data }: { data: Agenda[] | undefined }) {
               }}
             >
               <VStack gap={0} fontFamily={"mono"} alignItems={"flex-start"}>
-                <Text
-                  color={"var(--chakra-colors-brand-400)"}
-                  fontSize={"sm"}
-                  fontWeight={700}
-                >
-                  {agenda.timeFrom}-
+                <Text color={"brand.400"} fontSize={"sm"} fontWeight={700}>
+                  {timeKey.split("-")[0]}-
                 </Text>
-                <Text
-                  color={"var(--chakra-colors-brand-400)"}
-                  fontSize={"sm"}
-                  fontWeight={700}
-                >
-                  {agenda.timeTo}
+                <Text color={"brand.400"} fontSize={"sm"} fontWeight={700}>
+                  {timeKey.split("-")[1]}
                 </Text>
               </VStack>
               <VStack flexGrow={1} gap={8}>
-                {agenda.events.map((event) => (
+                {timeEvents.map((event, index) => (
                   <AgendaCard
-                    key={event.title}
+                    key={`${event.title}-${index}`}
                     title={event.title}
                     stage={event.stage}
                     description={event.description}
@@ -81,7 +91,7 @@ export function AgendaList({ data }: { data: Agenda[] | undefined }) {
               </VStack>
             </Flex>
           ))}
-        </>
+        </React.Fragment>
       ))}
     </VStack>
   );
