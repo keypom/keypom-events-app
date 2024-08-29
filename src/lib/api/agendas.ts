@@ -11,7 +11,6 @@ export type Agenda = {
   events: AgendaEvent[];
 };
 
-
 export const fetchAgenda: () => Promise<Agenda> = async () => {
   const response = await fetch("https://example.com/agendas");
   if (!response.ok) {

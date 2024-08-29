@@ -4,7 +4,7 @@ export const filterAgenda = (
   agendaData: Agenda,
   searchKey: string,
   selectedDay: string | null,
-  selectedStage: string | null
+  selectedStage: string | null,
 ): Agenda => {
   let filteredEvents = agendaData.events;
 
@@ -12,13 +12,13 @@ export const filterAgenda = (
     filteredEvents = filteredEvents.filter(
       (event) =>
         new Date(event.startDate).toLocaleDateString().toLowerCase() ===
-        new Date(selectedDay).toLocaleDateString().toLowerCase()
+        new Date(selectedDay).toLocaleDateString().toLowerCase(),
     );
   }
 
   if (selectedStage) {
     filteredEvents = filteredEvents.filter(
-      (event) => event.stage.toLowerCase() === selectedStage.toLowerCase()
+      (event) => event.stage.toLowerCase() === selectedStage.toLowerCase(),
     );
   }
 
@@ -27,14 +27,14 @@ export const filterAgenda = (
       (event) =>
         event.title.toLowerCase().includes(searchKey.toLowerCase()) ||
         event.stage.toLowerCase().includes(searchKey.toLowerCase()) ||
-        event.presenter.toLowerCase().includes(searchKey.toLowerCase())
+        event.presenter.toLowerCase().includes(searchKey.toLowerCase()),
     );
   }
 
   return {
     events: filteredEvents,
   };
-}
+};
 
 export const findAllStages = (events: AgendaEvent[]): string[] => {
   const stages = new Set<string>();
@@ -55,4 +55,4 @@ export const findAllDays = (events: AgendaEvent[]): string[] => {
   });
 
   return Array.from(days);
-}
+};
