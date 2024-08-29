@@ -140,6 +140,9 @@ export function Scan() {
                 border: `3px solid ${showAnimation ? "red" : "var(--green, #00EC97)"}`,
                 background: "#00ec97",
                 objectFit: "cover",
+                width: "100%",
+                height: "100%",
+                aspectRatio: "1/1",
               },
             }}
           />
