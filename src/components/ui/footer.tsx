@@ -24,8 +24,17 @@ const routes: Route[] = [
   { name: "Me", href: "/me", icon: UserIcon },
 ];
 
+const hiddenFooterRoutes = ["/tickets", "/conference/app/profile"];
+
 export function Footer() {
   const { pathname } = useLocation();
+
+  // check if pathname is in hidden footer routes
+  const isHiddenRoute = hiddenFooterRoutes.some((route) =>
+    pathname.includes(route),
+  );
+  if (isHiddenRoute) return null;
+
   return (
     <Box p={0} width="100%" bg="black" borderBottomRadius={"md"}>
       <footer>
