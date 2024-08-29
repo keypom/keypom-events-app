@@ -11,6 +11,8 @@ async function prepare() {
       url: "/mockServiceWorker.js",
     },
     onUnhandledRequest(req, print) {
+      // Workaround: passthrough all when in production
+      if (!import.meta.env.DEV) return;
       // Ignore routing requests
       if (req.url.startsWith(window.location.origin)) return;
       // Ignore font requests
@@ -19,6 +21,7 @@ async function prepare() {
         req.url.startsWith("https://fonts.gstatic.com")
       )
         return;
+
       print.warning();
     },
   });
