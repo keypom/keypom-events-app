@@ -29,6 +29,7 @@ export const LoadingOverlay = ({ isVisible, status }: LoadingOverlayProps) => {
       position="absolute"
       right="0"
       top="0"
+      borderRadius={"1rem"}
     >
       {content}
     </Center>

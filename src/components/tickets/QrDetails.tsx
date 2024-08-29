@@ -26,11 +26,12 @@ export const QrDetails = ({ qrValue, eventInfo }: QrDetailsProps) => {
         borderRadius="12px"
         mb={{ base: "2", md: "2" }}
         p="5"
+        bg={"white"}
       >
         <QRCode
           size={240}
           value={qrValue}
-          fgColor="var(--chakra-colors-brand-400)"
+          fgColor="black"
           bgColor="transparent"
         />
       </Box>

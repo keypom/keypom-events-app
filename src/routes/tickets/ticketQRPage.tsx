@@ -102,7 +102,7 @@ export default function TicketQRPage({
             w="full"
           >
             <Box>
-              <BoxWithShape bg="black" borderTopRadius="8xl" w="full">
+              <BoxWithShape borderTopRadius="8xl" w="full">
                 {isLoading ? (
                   <Skeleton height="200px" width="full" />
                 ) : (
