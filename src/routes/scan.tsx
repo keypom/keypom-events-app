@@ -16,7 +16,7 @@ import RedactedExpression from "/redacted-expression.webp";
 import { PageHeading } from "@/components/ui/page-heading";
 import { motion } from "framer-motion";
 import { CameraSwitchButton } from "@/components/scanner/camera-switch-button";
-import { ViewFinder } from "@/components/scanner/ViewFinder";
+import { ViewFinder } from "@/components/scanner/view-finder";
 
 export function Scan() {
   const [selectedDevice, setSelectedDevice] = useState<string | undefined>(

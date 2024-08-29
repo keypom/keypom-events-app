@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import keypomInstance from "@/lib/keypom";
 import { useTicketScanningParams } from "@/hooks/useTicketScanningParams";
 import { NotFound404 } from "@/components/dashboard/NotFound404";
-import { ViewFinder } from "@/components/scanner/ViewFinder";
+import { ViewFinder } from "@/components/scanner/view-finder";
 import {
   type FunderEventMetadata,
   type EventDrop,
