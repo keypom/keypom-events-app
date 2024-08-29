@@ -7,9 +7,12 @@ async function prepare() {
 
   const { worker } = await import("@/mocks/browser");
   return worker.start({
+    serviceWorker: {
+      url: "/mockServiceWorker.js",
+    },
     onUnhandledRequest(req, print) {
       // Ignore routing requests
-      // if (req.url.startsWith(window.location.origin)) return;
+      if (req.url.startsWith(window.location.origin)) return;
       // Ignore font requests
       if (
         req.url.startsWith("https://fonts.googleapis.com") ||
