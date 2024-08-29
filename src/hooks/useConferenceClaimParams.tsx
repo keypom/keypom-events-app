@@ -14,7 +14,7 @@ export const useConferenceClaimParams = () => {
     localStorage.setItem("EVENT_SECRET_KEY", secretKey);
 
     // Clear URL
-    navigate(`/me`, { replace: true });
+    navigate(`/conference/app/profile`, { replace: true });
   } else {
     // Fallback to local storage
     dropId = localStorage.getItem("EVENT_DROP_ID") || "";

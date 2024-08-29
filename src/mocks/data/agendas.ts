@@ -65,4 +65,4 @@ export default {
       endDate: "2024-11-11T12:30:00",
     },
   ],
-}
+};
