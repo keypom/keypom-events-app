@@ -1,11 +1,9 @@
 import {
   Box,
   Button,
-  Center,
   Flex,
   FormControl,
   FormErrorMessage,
-  Grid,
   Heading,
   Image,
   Input,
@@ -14,11 +12,12 @@ import {
   useToast,
   VStack,
   useMediaQuery,
+  UnorderedList,
+  ListItem,
+  HStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { accountExists, getPubFromSecret } from "@keypom/core";
-
-import { IconBox } from "@/components/dashboard/iconBox";
 import { BoxWithShape } from "@/components/tickets/BoxWithShape";
 import {
   type TicketInfoMetadata,
@@ -168,295 +167,175 @@ export default function WelcomePage({
   };
 
   return (
-    <Flex
-      //backgroundPosition="center"
-      //backgroundRepeat="no-repeat"
-      //backgroundSize="cover"
-      //backgroundColor=""
-      direction="column"
-      //h="100vh"
-      //width="100vw"
-    >
-      <Box flex="1" overflowY="auto" pt="3">
-        <Center maxH="100vh">
-          <VStack
-            gap={{ base: "16px", md: "24px", lg: "32px" }}
-            h="100%"
-            overflowY="auto"
-            pt="10"
-            spacing="4"
-            w={{ base: "90vw", md: "90%", lg: "80%" }}
+    <Flex direction="column" p={4} width="100%">
+      <Skeleton isLoaded={!isLoading}>
+        <Image
+          mx="auto"
+          borderRadius="full"
+          height={{ base: "14", md: "12" }}
+          width={{ base: "14", md: "12" }}
+          objectFit={"cover"}
+          src={`/logo.svg`}
+          mb="4"
+        />
+      </Skeleton>
+      <Box h="full">
+        <BoxWithShape
+          color="white"
+          borderTopRadius="8xl"
+          showNotch={false}
+          w="full"
+        >
+          {isLoading ? (
+            <Skeleton height="200px" width="full" />
+          ) : (
+            <Flex align="center" flexDir="column">
+              <Heading>Welcome</Heading>
+              <Text
+                color="brand.400"
+                fontFamily="mono"
+                fontSize="sm"
+                mb="5"
+                textAlign="center"
+              >
+                To get started, enter a username.
+              </Text>
+              <FormControl isInvalid={!isValidUsername} mb="5">
+                <Input
+                  backgroundColor="white"
+                  border="1px solid"
+                  borderColor={!isValidUsername ? "red.500" : "event.h1"}
+                  autoFocus
+                  transition="all 0.3s ease-in-out"
+                  color="black"
+                  fontFamily="mono"
+                  background="#F2F1EA"
+                  variant="outline"
+                  fontWeight="700"
+                  borderRadius="md"
+                  id="username"
+                  placeholder="Username"
+                  px={4}
+                  py={2}
+                  _placeholder={{
+                    color: "var(--black, #000)",
+                    fontFamily: "mono",
+                    fontSize: "16px",
+                    fontStyle: "normal",
+                    fontWeight: "700",
+                    lineHeight: "14px",
+                    textTransform: "uppercase",
+                  }}
+                  value={username}
+                  onBlur={checkUsernameAvailable}
+                  onChange={handleChangeUsername}
+                />
+                <FormErrorMessage>
+                  Username is invalid or already taken.
+                </FormErrorMessage>
+              </FormControl>
+              <Text
+                color="white"
+                fontFamily="heading"
+                fontSize="sm"
+                fontWeight="400"
+                mb="3"
+                textAlign="center"
+              >
+                Your ticket comes with{" "}
+                <Text
+                  as="span"
+                  color="brand.400"
+                  fontWeight="400"
+                  size={{ base: "lg", md: "xl" }}
+                >
+                  {tokensToClaim} ${ticker}
+                </Text>
+              </Text>
+              <Skeleton borderRadius="12px" isLoaded={!isLoading}>
+                <Image
+                  alt={`Event image for ${eventInfo?.name}`}
+                  borderRadius={imgSize.borderRadius}
+                  height={imgSize.h}
+                  mb="2"
+                  objectFit="contain"
+                  src={`/assets/${EVENT_IMG_DIR_FOLDER_NAME}/${ticketInfo?.media}`}
+                />
+              </Skeleton>
+              <Heading
+                color="brand.400"
+                fontFamily="mono"
+                fontSize={fontSize.h1}
+                textAlign="center"
+                my={4}
+              >
+                {ticketInfo?.title}
+              </Heading>
+            </Flex>
+          )}
+        </BoxWithShape>
+        <Flex align="center" pt={8} flexDir="column" gap={4}>
+          <Text
+            color="white"
+            fontFamily="heading"
+            fontSize={fontSize.h1}
+            fontWeight="600"
+            textAlign="center"
           >
-            <IconBox
-              bg="border.box"
-              h="full"
-              icon={
-                <Skeleton isLoaded={!isLoading}>
-                  <Image
-                    borderRadius="full"
-                    height={{ base: "14", md: "12" }}
-                    src={`/logo.svg`}
-                    width={{ base: "20", md: "12" }}
-                  />
-                </Skeleton>
-              }
-              iconBg={"event.iconBg"}
-              iconBorder={"event.iconBorder"}
-              minW={{ base: "90vw", md: "345px" }}
-              p="0"
-              pb="0"
-              w="full"
-            >
-              <Box h="full">
-                <BoxWithShape
-                  bg="white"
-                  borderTopRadius="8xl"
-                  showNotch={false}
-                  w="full"
-                >
-                  {isLoading ? (
-                    <Skeleton height="200px" width="full" />
-                  ) : (
-                    <Flex
-                      align="center"
-                      flexDir="column"
-                      p={{ base: "3", md: "8" }}
-                      pt={{ base: "10", md: "16" }}
-                      px="6"
-                    >
-                      <Text
-                        color="black"
-                        fontFamily="heading"
-                        fontSize="2xl"
-                        fontWeight="600"
-                        textAlign="center"
-                      >
-                        Welcome
-                      </Text>
-                      <Text
-                        color="black"
-                        fontFamily="heading"
-                        fontSize="sm"
-                        fontWeight="400"
-                        mb="5"
-                        textAlign="center"
-                      >
-                        To get started, enter a username.
-                      </Text>
-                      <FormControl isInvalid={!isValidUsername} mb="5">
-                        <Input
-                          backgroundColor="white"
-                          border="1px solid"
-                          borderColor={
-                            !isValidUsername ? "red.500" : "event.h1"
-                          }
-                          borderRadius="12px"
-                          color="black"
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                          height={{ base: "38px", md: "48px" }}
-                          id="username"
-                          placeholder="Username"
-                          px="6"
-                          sx={{
-                            "::placeholder": {
-                              color: "black", // Placeholder text color
-                            },
-                          }}
-                          value={username}
-                          onBlur={checkUsernameAvailable}
-                          onChange={handleChangeUsername}
-                        />
-                        <FormErrorMessage>
-                          Username is invalid or already taken.
-                        </FormErrorMessage>
-                      </FormControl>
-                      <Text
-                        color="black"
-                        fontFamily="heading"
-                        fontSize="sm"
-                        fontWeight="400"
-                        mb="3"
-                        textAlign="center"
-                      >
-                        Your ticket comes with{" "}
-                        <Text
-                          as="span"
-                          color="black"
-                          fontWeight="400"
-                          size={{ base: "lg", md: "xl" }}
-                        >
-                          {tokensToClaim} ${ticker}
-                        </Text>
-                      </Text>
-                      <Skeleton borderRadius="12px" isLoaded={!isLoading}>
-                        <Image
-                          alt={`Event image for ${eventInfo?.name}`}
-                          borderRadius={imgSize.borderRadius}
-                          height={imgSize.h}
-                          mb="2"
-                          objectFit="contain"
-                          src={`/assets/demos/${EVENT_IMG_DIR_FOLDER_NAME}/${ticketInfo?.media}`}
-                        />
-                      </Skeleton>
-                      <Heading
-                        color="black"
-                        fontFamily="title"
-                        fontSize={fontSize.h1}
-                        textAlign="center"
-                      >
-                        {ticketInfo?.title}
-                      </Heading>
-                    </Flex>
-                  )}
-                </BoxWithShape>
-                <Flex
-                  align="center"
-                  bg="gray.50"
-                  borderBottomRadius="8xl"
-                  flexDir="column"
-                  pb="6"
-                  pt="2"
-                  px="6"
-                >
-                  <Text
-                    color="black"
-                    fontFamily="heading"
-                    fontSize={fontSize.h1}
-                    fontWeight="600"
-                    textAlign="center"
-                  >
-                    ${ticker} Details
-                  </Text>
-                  {/* Start of the grid for Spork Details */}
-                  <Grid
-                    gap={6} // Space between grid items
-                    py={4} // Padding on the top and bottom
-                    templateColumns={{ base: "repeat(2, 1fr)" }} // Responsive grid layout
-                    width="full" // Full width of the parent container
-                  >
-                    {/* Left column for earning methods */}
-                    <Box>
-                      <Text
-                        color="black"
-                        fontFamily="heading"
-                        fontSize={fontSize.h2}
-                        fontWeight="500"
-                        mb={0}
-                        textAlign="left"
-                      >
-                        Earn By:
-                      </Text>
-                      <VStack align="stretch" spacing={1} textAlign="left">
-                        <Text
-                          color="black"
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                        >
-                          Attending Talks
-                        </Text>
-                        <Text
-                          color="black"
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                        >
-                          Visiting Booths
-                        </Text>
-                        <Text
-                          color="black"
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                        >
-                          Scavenger Hunts
-                        </Text>
-                        <Text
-                          color="black" //gotta make these colors configurable for different events
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                        >
-                          Quizzes
-                        </Text>
-                      </VStack>
-                    </Box>
+            ${ticker} Details
+          </Text>
+          {/* Start of the grid for Spork Details */}
+          <HStack
+            width="100%"
+            justifyContent={"space-between"}
+            alignItems="flex-start"
+            gap={4}
+            wrap={"wrap"}
+          >
+            <VStack alignItems="flex-start" gap={4}>
+              <Heading as="h3" fontSize="2xl" color="white">
+                Earn:
+              </Heading>
+              <UnorderedList
+                color="brand.400"
+                fontFamily="mono"
+                textAlign={"left"}
+              >
+                <ListItem>Attending Talks</ListItem>
+                <ListItem>Visiting Booths</ListItem>
+                <ListItem>Scavenger Hunts</ListItem>
+                <ListItem>Sponsor Quizzes</ListItem>
+                <ListItem>and more.</ListItem>
+              </UnorderedList>
+            </VStack>
+            <VStack alignItems="flex-start" gap={4}>
+              <Heading as="h3" fontSize="2xl" color="white">
+                Spend:
+              </Heading>
+              <UnorderedList
+                color="brand.400"
+                fontFamily="mono"
+                textAlign={"left"}
+              >
+                <ListItem>Swag</ListItem>
+                <ListItem>Food</ListItem>
+                <ListItem>Raffles</ListItem>
+                <ListItem>NFTs</ListItem>
+                <ListItem>and more.</ListItem>
+              </UnorderedList>
+            </VStack>
+          </HStack>
 
-                    {/* Right column for spending methods */}
-                    <Box>
-                      <Text
-                        color="black"
-                        fontFamily="heading"
-                        fontSize={fontSize.h2}
-                        fontWeight="400"
-                        mb={0}
-                        textAlign="right"
-                      >
-                        Spend On:
-                      </Text>
-                      <VStack align="stretch" spacing={1} textAlign="right">
-                        <Text
-                          color="black"
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                        >
-                          Food
-                        </Text>
-                        <Text
-                          color="black"
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                        >
-                          Merch
-                        </Text>
-                        <Text
-                          color="black"
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                        >
-                          Raffles
-                        </Text>
-                        <Text
-                          color="black"
-                          fontFamily="heading"
-                          fontSize={fontSize.h3}
-                          fontWeight="400"
-                        >
-                          NFTs
-                        </Text>
-                      </VStack>
-                    </Box>
-                  </Grid>
-                  <Button
-                    backgroundColor="black" //need to take from config
-                    color="white" //need to take from config
-                    fontFamily="heading"
-                    fontSize={fontSize.button}
-                    fontWeight="500"
-                    h="48px"
-                    isDisabled={!isValidUsername || !username}
-                    isLoading={isClaiming}
-                    sx={{
-                      _hover: {
-                        backgroundColor: "event.button.primary.hover",
-                      },
-                    }}
-                    variant="outline"
-                    w="full"
-                    onClick={handleBeginJourney}
-                  >
-                    BEGIN JOURNEY
-                  </Button>
-                </Flex>
-              </Box>
-            </IconBox>
-          </VStack>
-        </Center>
+          <Button
+            isDisabled={!isValidUsername || !username}
+            isLoading={isClaiming}
+            variant="navigation"
+            onClick={handleBeginJourney}
+            width="100%"
+          >
+            BEGIN JOURNEY
+          </Button>
+        </Flex>
       </Box>
     </Flex>
   );

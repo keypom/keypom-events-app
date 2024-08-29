@@ -68,7 +68,6 @@ export default function TicketQRPage({
       backgroundPosition="center"
       backgroundRepeat="no-repeat"
       backgroundSize="cover"
-      minH="100vh"
       py="10"
       //width="100vw"
     >
@@ -85,10 +84,7 @@ export default function TicketQRPage({
       </Box>
 
       <Center>
-        <VStack
-          gap={{ base: "calc(24px + 8px)", md: "calc(32px + 10px)" }}
-          paddingBottom="20"
-        >
+        <VStack gap={{ base: "calc(24px + 8px)", md: "calc(32px + 10px)" }}>
           <IconBox
             bg="border.box"
             h="full"
@@ -105,7 +101,7 @@ export default function TicketQRPage({
             w="full"
           >
             <Box>
-              <BoxWithShape bg="white" borderTopRadius="8xl" w="full">
+              <BoxWithShape bg="black" borderTopRadius="8xl" w="full">
                 {isLoading ? (
                   <Skeleton height="200px" width="full" />
                 ) : (
@@ -118,11 +114,9 @@ export default function TicketQRPage({
               </BoxWithShape>
               <Flex
                 align="center"
-                bg="gray.50"
                 borderBottomRadius="8xl"
                 flexDir="column"
-                px="6"
-                py="8"
+                pt={8}
               >
                 <Skeleton borderRadius="12px" isLoaded={!isLoading}>
                   <Image

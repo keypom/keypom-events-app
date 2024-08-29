@@ -22,15 +22,20 @@ export const QrDetails = ({ qrValue, eventInfo }: QrDetailsProps) => {
     >
       <Box
         border="1px solid"
-        borderColor="gray.200"
+        borderColor="brand.400"
         borderRadius="12px"
         mb={{ base: "2", md: "2" }}
         p="5"
       >
-        <QRCode size={240} value={qrValue} />
+        <QRCode
+          size={240}
+          value={qrValue}
+          fgColor="var(--chakra-colors-brand-400)"
+          bgColor="transparent"
+        />
       </Box>
       <Text
-        color="black"
+        color="white"
         fontFamily="heading"
         fontWeight="600"
         mb="1"
@@ -40,7 +45,7 @@ export const QrDetails = ({ qrValue, eventInfo }: QrDetailsProps) => {
         {dateAndTimeToText(eventInfo.date, "", false, true)}
       </Text>
       <Text
-        color="black"
+        color="brand.400"
         fontFamily="heading"
         fontSize="sm"
         mb="6"
