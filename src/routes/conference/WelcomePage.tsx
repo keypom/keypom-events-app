@@ -161,6 +161,7 @@ export default function WelcomePage({
 
       return true;
     } catch (e) {
+      console.error(e);
       setIsValidUsername(false);
       return false;
     }

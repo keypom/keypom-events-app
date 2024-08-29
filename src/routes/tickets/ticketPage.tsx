@@ -104,22 +104,21 @@ export function TicketPage() {
         setEventId(eventId);
         setFunderId(drop.funder_id);
 
-        // eslint-disable-next-line no-console
         console.log("eventInfo", eventInfo);
-        // eslint-disable-next-line no-console
+
         console.log("Ticket Metadata", ticketMetadata);
-        // eslint-disable-next-line no-console
+
         console.log("Ticket Metadata Extra", ticketExtra);
 
         setIsLoading(false);
       } catch (e) {
-        // eslint-disable-next-line no-console
         console.error("Error getting event info: ", e);
         setIsValid(false);
         setIsLoading(false);
       }
     };
     getEventInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [secretKey]);
 
   if (!isValid) {

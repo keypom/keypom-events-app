@@ -33,6 +33,7 @@ export const getDropFromSecretKey = async (
       maxKeyUses: drop.max_key_uses,
     };
   } catch (e) {
+    console.error(e);
     return null;
   }
 };

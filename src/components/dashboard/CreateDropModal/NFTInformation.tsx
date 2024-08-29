@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React from "react";
 import { VStack, HStack, Textarea } from "@chakra-ui/react";
 import { FormControlComponent } from "@/components/dashboard/FormControl";

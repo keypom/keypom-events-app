@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   getDropInformation,
   getEnv,
@@ -371,6 +373,7 @@ class KeypomJS {
       const account = await this.nearConnection.account(accountId);
       await account.state();
     } catch (err) {
+      console.error(err);
       throw new Error("Account Id does not exist");
     }
     return true;
@@ -430,6 +433,7 @@ class KeypomJS {
       await this.getDropInfo({ secretKey });
       return true;
     } catch (err) {
+      console.error(err);
       return false;
     }
   };
@@ -464,7 +468,7 @@ class KeypomJS {
   };
 
   claimEventTicket = async (
-    secretKey: string,
+    secretKey: string | any,
     args: any,
     createAccount = false,
   ) => {
@@ -600,6 +604,7 @@ class KeypomJS {
 
       return this.dropStore[accountId];
     } catch (error) {
+      console.error(error);
       throw new Error("Failed to fetch drops.");
     }
   };
@@ -660,7 +665,7 @@ class KeypomJS {
       args: { account_id: accountId },
     });
     const meta: FunderMetadata = JSON.parse(funderInfo.metadata);
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+
     delete meta[eventId];
 
     await wallet.signAndSendTransaction({
@@ -681,14 +686,12 @@ class KeypomJS {
   };
 
   deleteEventFromCache = ({ eventId }: { eventId: string }) => {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete this.eventInfoById[eventId];
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+
     delete this.ticketDropsByEventId[eventId];
   };
 
   deleteTicketFromCache = ({ dropId }: { dropId: string }) => {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete this.purchasedTicketsById[dropId];
   };
 
@@ -718,7 +721,6 @@ class KeypomJS {
 
       return eventInfo;
     } catch (error) {
-      /* eslint-disable no-console */
       console.warn("Error getting event info", error);
       return null;
     }
@@ -902,6 +904,7 @@ class KeypomJS {
 
       return this.purchasedTicketsById[dropId];
     } catch (error) {
+      console.error(error);
       throw new Error("Failed to get keys info.");
     }
   };
@@ -929,6 +932,7 @@ class KeypomJS {
       // Return the requested slice from the cache
       return fetchedinfo;
     } catch (e) {
+      console.error(e);
       throw new Error("Failed to get key info.");
     }
   };
@@ -999,6 +1003,7 @@ class KeypomJS {
         endIndex,
       );
     } catch (e) {
+      console.error(e);
       throw new Error("Failed to get paginated keys info.");
     }
   };
@@ -1057,6 +1062,7 @@ class KeypomJS {
       // Return the requested slice from the cache
       return this.dropStore[accountId].slice(start, endIndex);
     } catch (error) {
+      console.error(error);
       throw new Error("Failed to fetch drops.");
     }
   };
@@ -1104,7 +1110,8 @@ class KeypomJS {
       if (drop == null || drop === undefined)
         throw new Error("Drop is null or undefined");
       type = this.getDropType(drop);
-    } catch (_) {
+    } catch (e) {
+      console.error(e);
       type = DROP_TYPE.OTHER;
     }
 
@@ -1132,11 +1139,12 @@ class KeypomJS {
         );
 
         nftMetadata = {
-          media: `${CLOUDFLARE_IPFS}/${nftData?.metadata?.media}`, // eslint-disable-line
+          media: `${CLOUDFLARE_IPFS}/${nftData?.metadata?.media}`,
           title: nftData?.metadata?.title,
           description: nftData?.metadata?.description,
         };
       } catch (e) {
+        console.error(e);
         throw new Error("Failed to get NFT metadata.");
       }
       nftHref = nftMetadata?.media || "assets/image-not-found.png";
@@ -1173,6 +1181,7 @@ class KeypomJS {
     try {
       drop = await getDropInformation({ dropId, secretKey });
     } catch (err) {
+      console.error(err);
       throw new Error(
         "Unable to claim. This drop may have been claimed before.",
       );
@@ -1266,6 +1275,7 @@ class KeypomJS {
 
       return this.keyStore[dropId];
     } catch (error) {
+      console.error(error);
       throw new Error("Failed to get keys info.");
     }
   }
@@ -1330,6 +1340,7 @@ class KeypomJS {
     try {
       await this.getDropInfo({ secretKey });
     } catch (err) {
+      console.error(err);
       throw new Error("This drop has been claimed.");
     }
 
@@ -1389,6 +1400,7 @@ class KeypomJS {
         args: { mint_id: parseFloat(dropId) },
       });
     } catch (err) {
+      console.error(err);
       throw new Error("NFT series not found");
     }
 
@@ -1441,7 +1453,7 @@ class KeypomJS {
       redirectUrl: dropMetadata.redirectUrl,
       ...(nftData
         ? {
-            media: `${CLOUDFLARE_IPFS}/${nftData.metadata.media}`, // eslint-disable-line
+            media: `${CLOUDFLARE_IPFS}/${nftData.metadata.media}`,
             title: nftData.metadata.title,
             description: nftData.metadata.description,
           }
@@ -1489,7 +1501,7 @@ class KeypomJS {
       redirectUrl: dropMetadata.redirectUrl,
       ...(nftData
         ? {
-            media: `${CLOUDFLARE_IPFS}/${nftData.metadata.media}`, // eslint-disable-line
+            media: `${CLOUDFLARE_IPFS}/${nftData.metadata.media}`,
             title: nftData.metadata.title,
             description: nftData.metadata.description,
           }

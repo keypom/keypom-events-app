@@ -7,7 +7,7 @@ export const get = (key: string) => {
     try {
       return JSON.parse(value);
     } catch (e) {
-      // eslint-disable-next-line no-console
+       
       console.warn(e);
     }
   }

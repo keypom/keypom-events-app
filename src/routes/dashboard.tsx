@@ -184,6 +184,7 @@ export const Dashboard = () => {
   useEffect(() => {
     if (!account) return;
     getAccountInformation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 
   const handleDeleteClick = async (dropId) => {
@@ -326,6 +327,7 @@ export const Dashboard = () => {
 
   const data = useMemo(
     () => getTableRows(dropsCreated, handleDeleteClick),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [dropsCreated],
   );
 

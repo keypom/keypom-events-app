@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export async function generateKeyPair(): Promise<{
   privateKey: any;
   publicKey: any;

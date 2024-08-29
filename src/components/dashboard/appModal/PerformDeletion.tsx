@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { type Wallet } from "@near-wallet-selector/core";
 import { Button, ModalContent, Text, VStack } from "@chakra-ui/react";
 
@@ -51,7 +53,6 @@ export const performDeletionLogic = async ({
       ),
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Error during deletion:", error);
     // Error Modal
     setAppModal({
