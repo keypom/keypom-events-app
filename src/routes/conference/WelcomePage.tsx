@@ -18,8 +18,6 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { accountExists, getPubFromSecret } from "@keypom/core";
-
-import { IconBox } from "@/components/dashboard/iconBox";
 import { BoxWithShape } from "@/components/tickets/BoxWithShape";
 import {
   type TicketInfoMetadata,
