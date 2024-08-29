@@ -197,6 +197,7 @@ export const Scanner = () => {
       setScanStatus(undefined); // Reset the status message
       try {
         const secretKey = result.getText();
+        console.log("Scanning result:", secretKey);
         const dropInfo = await getDropFromSecretKey(secretKey);
         if (dropInfo) {
           const { drop, usesRemaining, maxKeyUses } = dropInfo;
@@ -343,7 +344,7 @@ export const Scanner = () => {
               <Box maxW="500px" w="full">
                 <MenuButton
                   as={Button}
-                  bg="border.box" // Replace 'border.box' with your color code or variable
+                  bg="border.box"
                   border="2px solid transparent"
                   borderRadius="6xl"
                   isActive={isOpen}
@@ -358,14 +359,14 @@ export const Scanner = () => {
                   </Center>
                 </MenuButton>
                 <MenuList
-                  borderRadius="md" // Rounded corners for the dropdown
-                  boxShadow="xl" // Larger shadow for the dropdown
-                  py="0" // Remove default padding
-                  zIndex={2} // Ensure it's above other content
+                  borderRadius="md"
+                  boxShadow="xl"
+                  py="0" 
+                  zIndex={2}
                 >
-                  {ticketOptions.map((option) => (
+                  {ticketOptions.map((option, index) => (
                     <MenuItem
-                      key={option.dropId}
+                      key={`${option.dropId}-${index}`}
                       onClick={() => {
                         setTicketToVerify(option.dropId);
                       }}

@@ -8,7 +8,7 @@ export const ViewFinder: React.FC<ViewFinderProps> = ({ style = {} }) => {
   const defaultStyle: React.CSSProperties = {
     top: 0,
     left: 0,
-    zIndex: 1,
+    zIndex: 0,
     boxSizing: "border-box",
     border: "50px solid rgba(0, 0, 0, 0.3)",
     position: "absolute",
