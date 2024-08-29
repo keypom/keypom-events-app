@@ -16,67 +16,35 @@ import { useAgendaModalStore } from "@/stores/agenda-modal-store";
 import googleCalendarLogo from "/calendar/google-calendar.webp";
 import appleCalendar from "/calendar/apple-calendar.webp";
 
-const monthMap = {
-  JAN: "01",
-  FEB: "02",
-  MAR: "03",
-  APR: "04",
-  MAY: "05",
-  JUN: "06",
-  JUL: "07",
-  AUG: "08",
-  SEP: "09",
-  OCT: "10",
-  NOV: "11",
-  DEC: "12",
-};
-
 const timeZone = "Asia/Bangkok";
 
 function createGoogleCalendarLink(agenda) {
-  const { date, timeFrom, timeTo, events } = agenda;
+  const { title, stage, description, presenter, startDate, endDate } = agenda;
 
-  const title = encodeURIComponent(events.title);
-  const stage = encodeURIComponent(events.stage);
-  const description = encodeURIComponent(
-    events.description + "\nPresenter: " + events.presenter,
+  const encodedTitle = encodeURIComponent(title);
+  const encodedStage = encodeURIComponent(stage);
+  const encodedDescription = encodeURIComponent(
+    `${description}\nPresenter: ${presenter}`,
   );
 
-  // Parse the date
-  const dateParts = date.split(" ");
-
-  const month = monthMap[dateParts[1].toUpperCase()]; // e.g., 'NOV' -> '11'
-  const day = dateParts[2].replace(/[^0-9]/g, "").padStart(2, "0"); // '9TH' -> '09'
-
-  const year = new Date().getFullYear(); // Assuming the event is in the current year
-
-  const formattedDate = `${year}${month}${day}`; // e.g., '20241109'
-  const startDateTime = `${formattedDate}T${timeFrom.replace(":", "")}00`;
-  const endDateTime = `${formattedDate}T${timeTo.replace(":", "")}00`;
+  // Format the start and end date-times to the required format
+  const startDateTime = startDate.replace(/[^\w\s]/gi, "");
+  const endDateTime = endDate.replace(/[^\w\s]/gi, "");
 
   // Construct the Google Calendar link
-  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDateTime}/${endDateTime}&details=${description}&location=${stage}&trp=false&ctz=${timeZone}`;
+  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${startDateTime}/${endDateTime}&details=${encodedDescription}&location=${encodedStage}&trp=false&ctz=${timeZone}`;
 
   return googleCalendarUrl;
 }
 
 function createICalendarLink(agenda) {
-  const { date, timeFrom, timeTo, events } = agenda;
+  const { title, stage, description, presenter, startDate, endDate } = agenda;
 
-  const title = events.title;
-  const stage = events.stage;
-  const description = `${events.description}\nPresenter: ${events.presenter}`;
+  const formattedDescription = `${description}\nPresenter: ${presenter}`;
 
-  // Parse the date
-  const dateParts = date.split(" ");
-
-  const month = monthMap[dateParts[1].toUpperCase()];
-  const day = dateParts[2].replace(/[^0-9]/g, "").padStart(2, "0");
-  const year = new Date().getFullYear(); // Assuming the event is in the current year
-
-  const formattedDate = `${year}${month}${day}`;
-  const startDateTime = `${formattedDate}T${timeFrom.replace(":", "")}00`;
-  const endDateTime = `${formattedDate}T${timeTo.replace(":", "")}00`;
+  // Format the start and end date-times to the required format
+  const startDateTime = startDate.replace(/[^\w\s]/gi, "");
+  const endDateTime = endDate.replace(/[^\w\s]/gi, "");
 
   // Construct the .ics file content with proper CRLF line breaks and VTIMEZONE component
   const icsContent = [
@@ -86,8 +54,8 @@ function createICalendarLink(agenda) {
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VTIMEZONE",
-    "TZID:Asia/Bangkok",
-    "X-LIC-LOCATION:Asia/Bangkok",
+    `TZID:${timeZone}`,
+    `X-LIC-LOCATION:${timeZone}`,
     "BEGIN:STANDARD",
     "TZOFFSETFROM:+0700",
     "TZOFFSETTO:+0700",
@@ -97,11 +65,11 @@ function createICalendarLink(agenda) {
     "END:VTIMEZONE",
     "BEGIN:VEVENT",
     `UID:${Date.now()}@yourdomain.com`,
-    `DTSTAMP:${formattedDate}T${timeFrom.replace(":", "")}00Z`,
-    `DTSTART;TZID=Asia/Bangkok:${startDateTime}`,
-    `DTEND;TZID=Asia/Bangkok:${endDateTime}`,
+    `DTSTAMP:${startDateTime}Z`,
+    `DTSTART;TZID=${timeZone}:${startDateTime}`,
+    `DTEND;TZID=${timeZone}:${endDateTime}`,
     `SUMMARY:${title}`,
-    `DESCRIPTION:${description.replace(/\n/g, "\\n")}`,
+    `DESCRIPTION:${formattedDescription.replace(/\n/g, "\\n")}`,
     `LOCATION:${stage}`,
     "END:VEVENT",
     "END:VCALENDAR",

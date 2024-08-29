@@ -1,23 +1,12 @@
 import { create } from "zustand";
-
-type Agenda = {
-  date: string;
-  timeFrom: string;
-  timeTo: string;
-  events: {
-    title: string;
-    stage: string;
-    description: string;
-    presenter: string;
-  };
-};
+import { AgendaEvent } from "@/lib/api/agendas";
 
 interface AgendaModalStore {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
-  agenda: Agenda | null;
-  setAgenda: (agenda: Agenda) => void;
+  agenda: AgendaEvent | null;
+  setAgenda: (agenda: AgendaEvent) => void;
 }
 
 export const useAgendaModalStore = create<AgendaModalStore>((set) => ({
@@ -25,5 +14,5 @@ export const useAgendaModalStore = create<AgendaModalStore>((set) => ({
   onClose: () => set(() => ({ isOpen: false })),
   onOpen: () => set(() => ({ isOpen: true })),
   agenda: null,
-  setAgenda: (agenda: Agenda) => set(() => ({ agenda })),
+  setAgenda: (agenda: AgendaEvent) => set(() => ({ agenda })),
 }));

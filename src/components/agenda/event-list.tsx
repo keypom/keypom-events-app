@@ -84,11 +84,8 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
                     stage={event.stage}
                     description={event.description}
                     presenter={event.presenter}
-                    calendarProps={{
-                      date: date,
-                      timeFrom: timeKey.split("-")[0],
-                      timeTo: timeKey.split("-")[1],
-                    }}
+                    startDate={event.startDate}
+                    endDate={event.endDate}
                   />
                 ))}
               </VStack>
