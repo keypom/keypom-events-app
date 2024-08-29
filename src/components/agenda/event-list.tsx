@@ -23,8 +23,6 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
     {} as Record<string, Record<string, AgendaEvent[]>>,
   );
 
-  console.log(`Grouped Events: ${JSON.stringify(groupedEvents)}`);
-
   return (
     <VStack width="100%" gap={8}>
       {Object.entries(groupedEvents).map(([date, timeslots]) => (
@@ -86,6 +84,11 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
                     stage={event.stage}
                     description={event.description}
                     presenter={event.presenter}
+                    calendarProps={{
+                      date: date,
+                      timeFrom: timeKey.split("-")[0],
+                      timeTo: timeKey.split("-")[1],
+                    }}
                   />
                 ))}
               </VStack>
