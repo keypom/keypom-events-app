@@ -11,7 +11,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
+        path: "/:id",
         index: true,
         async lazy() {
           if (!navigator.onLine) {

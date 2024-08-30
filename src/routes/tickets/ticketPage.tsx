@@ -89,15 +89,16 @@ export function TicketPage() {
 
         // First check if ticket is either GA or sponsor / admin
         // Sponsor / Admin case
+
         if (maxUses === 2) {
           console.log("Ticket already checked in");
-          navigate(`/#${secretKey}`);
+          navigate(`/${eventId}#${secretKey}`);
         }
 
         // General Admissions case
         if (curStep !== 1) {
           console.log("Ticket already checked in");
-          navigate(`/#${secretKey}`);
+          navigate(`/${eventId}#${secretKey}`);
         }
 
         setEventInfo(eventInfo);
