@@ -54,7 +54,11 @@ export function WalletActions({ backUrl }: WalletActionsProps) {
           <ArrowIcon width={24} height={24} direction="up" />
           <span>Send</span>
         </Button>
-        <Button variant="navigation" as={Link} to="/wallet/receive">
+        <Button
+          variant="navigation"
+          as={Link}
+          to={`/wallet/receive?backUrl=${backUrl}`}
+        >
           <ArrowIcon width={24} height={24} direction="down" />
           <span>Receive</span>
         </Button>
