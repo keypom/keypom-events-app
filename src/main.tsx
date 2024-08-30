@@ -3,9 +3,12 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 
 async function prepare() {
-  // if (import.meta.env.DEV) { // going to mock in both dev and prod
+  // Skip if in test environment
+  const isTestEnv = import.meta.env.VITE_IS_TEST;
+  if (isTestEnv) return;
 
   const { worker } = await import("@/mocks/browser");
+
   return worker.start({
     serviceWorker: {
       url: "/mockServiceWorker.js",
@@ -21,6 +24,9 @@ async function prepare() {
         req.url.startsWith("https://fonts.gstatic.com")
       )
         return;
+
+      // Ignore RPC requests
+      if (req.url.startsWith("https://rpc.testnet.near.org/")) return;
 
       print.warning();
     },
