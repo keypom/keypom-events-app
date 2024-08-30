@@ -10,7 +10,6 @@ import { LoadingOverlay } from "./loading-overlay";
 export const QrScanner = ({
   handleScan,
 }: {
-  // Method to handle the scan event, return false if error to show error animation
   handleScan: (value: string) => Promise<{ message: string } | void>;
 }) => {
   const [selectedDevice, setSelectedDevice] = useState<string | undefined>(
@@ -24,15 +23,31 @@ export const QrScanner = ({
   const [statusMessage, setStatusMessage] = useState<string | undefined>(
     undefined,
   );
+  const [showAnimation, setShowAnimation] = useState(false);
+  const devices = useDevices();
   const toast = useToast();
 
   const variants = {
     open: { x: [0, -50, 50, -50, 50, -50, 50, 0] },
     closed: { x: 0 },
   };
+  const onScan = async (result) => {
+    if (isOnCooldown || isScanning) return;
+    setScanStatus(undefined); // Reset status
+    setIsScanning(true);
+    try {
+      const value = result[0].rawValue;
+      const response = await handleScan(value);
 
-  const [showAnimation, setShowAnimation] = useState(false);
-  const devices = useDevices();
+      onSuccess(response);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      onError(error);
+    } finally {
+      setIsScanning(false);
+      enableCooldown();
+    }
+  }
 
   const enableCooldown = () => {
     setIsOnCooldown(true); // Activate cooldown
@@ -77,6 +92,25 @@ export const QrScanner = ({
     }
   }, [scanStatus, statusMessage, toast]);
 
+  // DO NOT REMOVE: Exposes the triggerTestScan function to the window in test environment
+  useEffect(() => {
+    const isTestEnv = import.meta.env.VITE_IS_TEST;
+    if (isTestEnv) {
+      // @ts-expect-error - Expose the triggerTestScan function to the window
+      window.triggerTestScan = (result) => {
+        onScan(result);
+      };
+    }
+    return () => {
+      if (isTestEnv) {
+        // @ts-expect-error - Expose the triggerTestScan function to the window
+        delete window.triggerTestScan;
+      }
+    };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!devices) {
     return (
       <Box
@@ -108,23 +142,7 @@ export const QrScanner = ({
       height="100%"
     >
       <Scanner
-        onScan={async (result) => {
-          if (isOnCooldown || isScanning) return;
-          setScanStatus(undefined); // Reset status
-          setIsScanning(true);
-          try {
-            const value = result[0].rawValue;
-            const response = await handleScan(value);
-
-            onSuccess(response);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (error: any) {
-            onError(error);
-          } finally {
-            setIsScanning(false);
-            enableCooldown();
-          }
-        }}
+        onScan={onScan}
         allowMultiple={true}
         scanDelay={1000}
         components={{
