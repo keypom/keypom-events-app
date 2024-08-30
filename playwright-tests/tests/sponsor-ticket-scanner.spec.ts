@@ -1,4 +1,3 @@
- 
 import { expect, test } from "@playwright/test";
 import { mockTicketScan } from "../utils/qr-mock";
 
