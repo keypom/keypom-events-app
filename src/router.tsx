@@ -22,23 +22,6 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: "conference",
-        children: [
-          {
-            path: "app/:id", // Match /events/event/:id
-            async lazy() {
-              if (!navigator.onLine) {
-                return { Component: OfflinePage };
-              }
-              const { ConferencePageManager } = await import(
-                "@/routes/conference/conferencePageManager"
-              );
-              return { Component: ConferencePageManager };
-            },
-          },
-        ],
-      },
-      {
         path: "/help",
         // TODO: Show cached help page
         async lazy() {

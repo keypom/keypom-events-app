@@ -24,7 +24,7 @@ const routes: Route[] = [
   { name: "Me", href: "/me", icon: UserIcon },
 ];
 
-const hiddenFooterRoutes = ["/tickets", "/conference/app/profile"];
+const hiddenFooterRoutes = ["/tickets"];
 
 export function Footer() {
   const { pathname } = useLocation();

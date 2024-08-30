@@ -91,13 +91,13 @@ export function TicketPage() {
         // Sponsor / Admin case
         if (maxUses === 2) {
           console.log("Ticket already checked in");
-          navigate(`/conference/app/${eventId}#${secretKey}`);
+          navigate(`/#${secretKey}`);
         }
 
         // General Admissions case
         if (curStep !== 1) {
           console.log("Ticket already checked in");
-          navigate(`/conference/app/${eventId}#${secretKey}`);
+          navigate(`/#${secretKey}`);
         }
 
         setEventInfo(eventInfo);
