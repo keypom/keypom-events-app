@@ -25,7 +25,7 @@ export function Wallet() {
       </Box>
       {isLoggedIn ? (
         <>
-          <WalletActions />
+          <WalletActions backUrl={`/wallet`} />
           <VStack width="100%" p={4} pt={0} spacing={4}>
             <Button as={Link} to="/wallet/collectibles" variant="redacted">
               <CollectiblesIcon color="var(--chakra-colors-brand-400)" />{" "}

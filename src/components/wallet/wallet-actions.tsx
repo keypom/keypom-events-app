@@ -2,7 +2,11 @@ import { VStack, Heading, HStack, Box, Text, Button } from "@chakra-ui/react";
 import { ArrowIcon, ScanIcon } from "@/components/icons";
 import { Link } from "react-router-dom";
 
-export function WalletActions() {
+interface WalletActionsProps {
+  backUrl: string;
+}
+
+export function WalletActions({ backUrl }: WalletActionsProps) {
   return (
     <>
       <VStack spacing={2} width={"100%"}>
@@ -42,7 +46,11 @@ export function WalletActions() {
         p={4}
         bg="url(/redacted-button.webp) 50% / cover no-repeat"
       >
-        <Button variant="navigation" as={Link} to="/wallet/send">
+        <Button
+          variant="navigation"
+          as={Link}
+          to={`/wallet/send?backUrl=${backUrl}`}
+        >
           <ArrowIcon width={24} height={24} direction="up" />
           <span>Send</span>
         </Button>

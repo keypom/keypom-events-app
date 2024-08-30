@@ -7,10 +7,12 @@ export function SetRecipient({
   reciever,
   setReciever,
   setStep,
+  backUrl,
 }: {
   reciever: string;
   setReciever: (value: string) => void;
   setStep: (value: string) => void;
+  backUrl: string;
 }) {
   return (
     <>
@@ -47,7 +49,7 @@ export function SetRecipient({
         />
       </Box>
       <ButtonGroup width="100%" justifyContent="center" p={4}>
-        <Button as={Link} to="/" {...secondaryButtonStyle}>
+        <Button as={Link} to={backUrl} {...secondaryButtonStyle}>
           CANCEL
         </Button>
         <Button

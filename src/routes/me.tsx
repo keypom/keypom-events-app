@@ -30,7 +30,7 @@ export function Me() {
         titleSize="24px"
         description={accountId}
       />
-      <WalletActions />
+      <WalletActions backUrl={`/`} />
       <VStack width="100%" p={4} spacing={8}>
         <Flex
           justifyContent="space-between"

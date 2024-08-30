@@ -25,7 +25,7 @@ export function Alerts() {
 
   return (
     <VStack spacing={4} p={4}>
-      <PageHeading title="Alerts" showBackButton backUrl="/me" />
+      <PageHeading title="Alerts" showBackButton backUrl="/" />
       {isLoading && <LoadingBox />}
       {data && <AlertList alerts={data} />}
       {isError && <ErrorBox message={`Error: ${error.message}`} />}
