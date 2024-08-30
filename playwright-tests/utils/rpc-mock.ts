@@ -23,10 +23,8 @@ export async function mockRpcRequest({
         (param) => postData.params[param] === filterParams[param],
       ).length === filterParamsKeys.length
     ) {
-      console.log(
-        `It's a HIT for ${filterParams.method_name}, with args: `,
-        JSON.stringify(filterParams.args_base64),
-      );
+      // console.log(`It's a HIT for ${filterParams.method_name}`);
+
       const json = await route.fetch().then((r) => r.json());
 
       if (modifyOriginalResultFunction) {
@@ -52,10 +50,7 @@ export async function mockRpcRequest({
         body: JSON.stringify(mockedResponse),
       });
     } else {
-      console.log(
-        `It's a MISS for ${filterParams.method_name}, with args: `,
-        JSON.stringify(filterParams.args_base64),
-      );
+      // console.log(`It's a MISS for ${filterParams.method_name}`);
       route.fallback();
     }
   });

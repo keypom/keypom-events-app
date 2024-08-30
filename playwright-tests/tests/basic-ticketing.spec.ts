@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { mockRpcRequest } from "../utils/rpcmock";
+import { mockRpcRequest } from "../utils/rpc-mock";
 
 const UNSCANNED_TICKET_PRIVATE_KEY = "2pcZwjQnvmpUXg29D7V86oPaop5KxR2RyWiPJPXub7XiBaMNGBCTuruPwoX71nGSCSQjSGopSmENtfDNkcmao2XL"
 const DROP_ID = "ga_pass";
@@ -8,9 +8,9 @@ const EVENT_ID = "aa4a7964-c917-4010-92c3-9e4b3f7dfc5e";
 const FACTORY_ACCOUNT = "1724680439172-factory.testnet";
 
 
-test.describe("Ticketing", () => {
+test.describe("Basic ticketing (User shows ticket)", () => {
 
-  test.describe("Ticket has not been scanned", () => {
+  test.describe("Ticket has not been scanned, ticket exists", () => {
     test.beforeEach(async ({ page }) => {
 
       await mockRpcRequest({

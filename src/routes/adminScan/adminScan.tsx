@@ -183,9 +183,9 @@ export const Scanner = () => {
       } else {
         throw new Error("No ticket information found.");
       }
-    } catch (error) {
+    } catch (error: { message: string }) {
       console.error("Scan failed", error);
-      throw new Error("Error scanning the ticket. Please try again.");
+      throw new Error(`Error scanning the ticket: ${error.message}. Please try again.`);
     } finally {
       setIsScanning(false);
     }
