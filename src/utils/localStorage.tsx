@@ -7,7 +7,6 @@ export const get = (key: string) => {
     try {
       return JSON.parse(value);
     } catch (e) {
-       
       console.warn(e);
     }
   }

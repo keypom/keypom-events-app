@@ -26,8 +26,8 @@ export default defineConfig({
 
     contextOptions: {
       /* Can't use service workers with playwright request routing */
-      serviceWorkers: "block"
-    }
+      serviceWorkers: "block",
+    },
   },
 
   /* Configure projects for major browsers */

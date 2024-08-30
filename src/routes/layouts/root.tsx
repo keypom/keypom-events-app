@@ -49,7 +49,7 @@ export function Root() {
       <Flex
         maxH={{ base: "100dvh" }}
         direction={"column"}
-        maxW={{ base: "100%", md: "380px" }}
+        maxW={{ base: "100%", lg: "380px" }}
         width={"100%"}
         marginX="auto"
         alignItems="center"
@@ -65,8 +65,8 @@ export function Root() {
           ref={ref}
           role="main"
           flexGrow={1}
-          maxW={{ base: "100%", md: "380px" }}
-          maxH={{ base: "100dvh", md: "700px" }}
+          maxW={{ base: "100%", lg: "380px" }}
+          maxH={{ base: "100dvh", lg: "700px" }}
           width="100%"
           height="100%"
           position="relative"
