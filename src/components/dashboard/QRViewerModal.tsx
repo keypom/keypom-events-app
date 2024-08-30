@@ -46,7 +46,7 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
-      <ModalHeader>
+      <ModalHeader fontFamily={"mono"}>
         QR Code
         {totalQrCodes > 1 ? ` (${currentIndex + 1} of ${totalQrCodes})` : ""}
       </ModalHeader>
@@ -78,7 +78,9 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
               <img src={qrCodeUrls[0]} alt={`QR Code`} />
             )}
             {totalQrCodes === 1 && (
-              <Text mb={4}>Scan this QR code to get the rewards.</Text>
+              <Text fontFamily={"mono"} mt={4} mb={4}>
+                Scan this QR code to get the rewards.
+              </Text>
             )}
             {totalQrCodes > 1 && (
               <Text mb={4}>
@@ -93,7 +95,8 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
       <ModalFooter>
         {totalQrCodes > 1 && (
           <Button
-            colorScheme="blue"
+            variant={"navigation"}
+            maxWidth={"fit-content"}
             mr={3}
             onClick={() => onDownloadAll(qrCodeUrls)}
           >
@@ -102,14 +105,23 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
         )}
         {totalQrCodes > 0 && (
           <Button
-            colorScheme="blue"
+            variant={"navigation"}
+            maxWidth={"fit-content"}
             mr={3}
             onClick={() => onDownload(qrCodeUrls[currentIndex])}
           >
             Download
           </Button>
         )}
-        <Button variant="ghost" onClick={onClose}>
+        <Button
+          variant="navigation"
+          background={"transparent"}
+          color={"white"}
+          border={"1px solid white"}
+          maxWidth={"fit-content"}
+          height={"48px"}
+          onClick={onClose}
+        >
           Cancel
         </Button>
       </ModalFooter>

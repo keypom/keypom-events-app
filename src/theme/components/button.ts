@@ -15,6 +15,7 @@ export const ButtonStyle = defineStyleConfig({
         color: "brand.400",
       },
     },
+
     redacted: {
       display: "flex",
       width: "100%",

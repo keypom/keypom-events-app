@@ -11,17 +11,35 @@ const ConfirmDeletionModal = ({
   onCancel,
   confirmMessage = "Are you sure you want to delete this item? This action cannot be undone.",
 }: ConfirmDeletionModalProps) => (
-  <ModalContent padding={6}>
+  <ModalContent
+    padding={6}
+    background={"black"}
+    border={"1px solid var(--chakra-colors-brand-400)"}
+    fontFamily={"mono"}
+  >
     <VStack align="stretch" spacing={4}>
       <Text fontSize="lg" fontWeight="semibold">
         Confirm Deletion
       </Text>
       <Text>{confirmMessage}</Text>
-      <HStack justify="space-between">
-        <Button colorScheme="red" onClick={onConfirm}>
+      <HStack justify="center" width="100%">
+        <Button
+          background={"red.400"}
+          maxWidth={"fit-content"}
+          variant="navigation"
+          onClick={onConfirm}
+        >
           Delete
         </Button>
-        <Button variant="ghost" onClick={onCancel}>
+        <Button
+          variant="navigation"
+          background={"transparent"}
+          color={"white"}
+          border={"1px solid white"}
+          maxWidth={"fit-content"}
+          height={"48px"}
+          onClick={onCancel}
+        >
           Cancel
         </Button>
       </HStack>

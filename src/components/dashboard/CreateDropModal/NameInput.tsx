@@ -9,21 +9,27 @@ export const NameInput = ({
 }) => (
   <FormControlComponent
     errorText={errors.name}
-    label="Name*"
+    label="Name"
+    required={true}
     labelProps={{ fontSize: { base: "xs", md: "md" } }}
     my="1"
   >
     <Input
-      borderRadius="5xl"
+      borderRadius={"md"}
       height="35px"
       isInvalid={!!errors.name}
       maxLength={500}
+      background={"#F2F1EA"}
       placeholder="My Awesome Drop"
+      color={"black"}
+      fontFamily={"mono"}
+      fontWeight={"700"}
       size="sm"
       sx={{
         "::placeholder": {
-          color: "gray.400",
+          color: "black",
           fontSize: { base: "xs", md: "sm" },
+          fontFamily: "mono",
         },
       }}
       type="text"
