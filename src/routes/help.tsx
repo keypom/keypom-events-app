@@ -11,7 +11,7 @@ export function Help() {
       <Box
         bg="black"
         width="100%"
-        aspectRatio={"4/5"}
+        aspectRatio={"1/1.025"}
         display="flex"
         alignItems="center"
         justifyContent="center"
