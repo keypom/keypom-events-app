@@ -17,8 +17,8 @@ const router = createBrowserRouter([
           if (!navigator.onLine) {
             return { Component: OfflinePage };
           }
-          const { Me } = await import("@/routes/me");
-          return { Component: Me };
+          const { Home } = await import("@/routes/home");
+          return { Component: Home };
         },
       },
       {
@@ -167,6 +167,16 @@ const router = createBrowserRouter([
           }
           const { Receive } = await import("@/routes/wallet/receive");
           return { Component: Receive };
+        },
+      },
+      {
+        path: "/me",
+        async lazy() {
+          if (!navigator.onLine) {
+            return { Component: OfflinePage };
+          }
+          const { Me } = await import("@/routes/me");
+          return { Component: Me };
         },
       },
       {
