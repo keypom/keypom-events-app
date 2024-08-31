@@ -37,7 +37,6 @@ export function Journeys() {
         titleSize="24px"
         description={journeys ? getProgressDescription(journeys) : ""}
         showBackButton
-        backUrl="/wallet"
       />
       {isLoading && <LoadingBox />}
       {journeys && (

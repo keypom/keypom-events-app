@@ -8,7 +8,6 @@ interface PageHeadingProps {
   titleSize?: string;
   description?: string;
   showBackButton?: boolean;
-  backUrl?: string;
   leftChildren?: React.ReactNode;
   rightChildren?: React.ReactNode;
 }
@@ -18,7 +17,6 @@ export function PageHeading({
   titleSize = "32px",
   description,
   showBackButton = false,
-  backUrl = "/ ",
   leftChildren,
   rightChildren,
 }: PageHeadingProps) {
@@ -49,7 +47,7 @@ export function PageHeading({
       >
         {showBackButton && (
           <Button
-            onClick={() => navigate(backUrl)}
+            onClick={() => navigate(-1)}
             variant="transparent"
             position={"absolute"}
             left={0}

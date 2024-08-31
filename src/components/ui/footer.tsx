@@ -21,7 +21,7 @@ const routes: Route[] = [
   { name: "Agenda", href: "/agenda", icon: AgendaIcon },
   { name: "Scan", href: "/scan", icon: ScanIcon },
   { name: "Wallet", href: "/wallet", icon: WalletIcon },
-  { name: "Me", href: "/", icon: UserIcon },
+  { name: "Me", href: "/me", icon: UserIcon },
 ];
 
 const hiddenFooterRoutes = ["/tickets", "/conference/app/profile"];

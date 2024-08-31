@@ -10,7 +10,6 @@ import { Sent } from "@/components/wallet/send/sent";
 export function Send() {
   const [params] = useSearchParams();
   const toParam = params.get("to");
-  const backUrl = params.get("backUrl");
   const [reciever, setReciever] = useState<string>(toParam || "");
   const [amount, setAmount] = useState<number>(0);
   const [step, setStep] = useState<string>("recipient");
@@ -32,7 +31,6 @@ export function Send() {
           reciever={reciever}
           setReciever={setReciever}
           setStep={setStep}
-          backUrl={backUrl || "/"}
         />
       ) : step === "amount" ? (
         <SetAmount amount={amount} setAmount={setAmount} setStep={setStep} />

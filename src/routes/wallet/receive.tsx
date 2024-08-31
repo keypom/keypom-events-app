@@ -1,6 +1,5 @@
 import { Heading, VStack, Text } from "@chakra-ui/react";
 import QRCode from "react-qr-code";
-import { useSearchParams } from "react-router-dom";
 
 import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
 import { PageHeading } from "@/components/ui/page-heading";
@@ -8,12 +7,9 @@ import { PageHeading } from "@/components/ui/page-heading";
 export function Receive() {
   const { account, isLoggedIn } = useAuthWalletContext();
 
-  const [params] = useSearchParams();
-  const backUrl = params.get("backUrl");
-
   return (
     <VStack p={4}>
-      <PageHeading title="Receive" showBackButton backUrl={backUrl || "/"} />
+      <PageHeading title="Receive" showBackButton />
       {isLoggedIn ? (
         <VStack p={4}>
           <QRCode

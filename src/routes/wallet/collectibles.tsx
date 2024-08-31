@@ -85,7 +85,6 @@ export function Collectibles() {
         titleSize="24px"
         description={collectibles ? getProgressDescription(collectibles) : ""}
         showBackButton
-        backUrl="/wallet"
       />
       {isLoading && <LoadingBox />}
       {collectibles && (
