@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { VStack, Button, Center, Spinner, Heading } from "@chakra-ui/react";
+import {
+  VStack,
+  Button,
+  Center,
+  Spinner,
+  Heading,
+  HStack,
+} from "@chakra-ui/react";
 import { NameInput } from "./NameInput";
 import { ImageInput } from "./ImageInput";
 import { NFTInformation } from "./NFTInformation";
@@ -100,14 +107,22 @@ export const CreateDropModal = ({ modalType, isOpen, onClose }) => {
             <Spinner size="lg" />
           </Center>
         ) : (
-          <>
-            <Button variant="primary" width="full" onClick={handleCreateDrop}>
+          <HStack>
+            <Button
+              variant="navigation"
+              width="full"
+              onClick={handleCreateDrop}
+            >
               Create
             </Button>
-            <Button variant="secondary" width="full" onClick={handleCancelDrop}>
+            <Button
+              variant="navigation"
+              width="full"
+              onClick={handleCancelDrop}
+            >
               Cancel
             </Button>
-          </>
+          </HStack>
         )}
       </VStack>
     </ModalWrapper>

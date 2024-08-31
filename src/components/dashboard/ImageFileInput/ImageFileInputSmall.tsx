@@ -46,8 +46,8 @@ export const ImageFileInputSmall = ({
       <InputGroup>
         <Flex
           border="2px dashed"
-          borderColor={errorMessage ? "red.500" : "gray.200"}
-          borderRadius="6xl"
+          borderColor={errorMessage ? "red.500" : "brand.400"}
+          borderRadius="md"
           h={{ base: "20" }}
           justify="center"
           position="relative"
@@ -89,15 +89,15 @@ export const ImageFileInputSmall = ({
               w="full"
               zIndex="1"
             >
-              <ImageIcon color="gray.400" h={{ base: "6" }} w={{ base: "6" }} />
+              <ImageIcon color="white" h={{ base: "6" }} w={{ base: "6" }} />
               <Show above="md">
-                <Text color="gray.400">{ctaText}</Text>
+                <Text color="white">{ctaText}</Text>
               </Show>
               <Center
                 border="1px solid"
-                borderColor="gray.200"
-                borderRadius="6xl"
-                color="gray.800"
+                borderColor="brand.400"
+                borderRadius="md"
+                color="white"
                 px={{ base: "3" }}
                 py={{ base: "1" }}
               >

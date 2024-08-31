@@ -47,8 +47,10 @@ export default function DropTokenAmountSelector({
   return (
     <FormControlComponent
       errorText={errors.amount}
-      label="Token amount*"
+      label="Token amount"
+      required={true}
       labelProps={{ fontSize: { base: "xs", md: "md" } }}
+      fontFamily={"mono"}
       marginY="2"
     >
       <VStack alignItems="flex-start">
@@ -58,12 +60,10 @@ export default function DropTokenAmountSelector({
               <Box
                 key={amount}
                 alignItems="center"
-                border="2px solid transparent"
-                borderRadius="5xl"
+                border="2px solid"
+                borderRadius="md"
                 color={
-                  currentDrop.amount === String(amount)
-                    ? "blue.500"
-                    : "gray.500"
+                  currentDrop.amount === String(amount) ? "black" : "brand.400"
                 }
                 display="flex"
                 fontSize={{ base: "xs", md: "sm" }}
@@ -72,12 +72,16 @@ export default function DropTokenAmountSelector({
                 sx={{
                   bg:
                     currentDrop.amount === String(amount)
-                      ? "linear-gradient(to bottom, var(--chakra-colors-blue-100), var(--chakra-colors-blue-100)) padding-box, linear-gradient(0deg, rgba(255,207,234,1) 0%, rgba(182,232,247,1) 100%) border-box"
-                      : "gray.100", // Selected item background
+                      ? "brand.400"
+                      : "black",
                   cursor: "pointer",
+                  borderColor:
+                    currentDrop.amount === String(amount)
+                      ? "white"
+                      : "brand.400",
                   ":hover": {
-                    background:
-                      "linear-gradient(to bottom, var(--chakra-colors-blue-100), var(--chakra-colors-blue-100)) padding-box, linear-gradient(0deg, rgba(255,207,234,1) 0%, rgba(182,232,247,1) 100%) border-box",
+                    background: "brand.400",
+                    color: "black",
                   },
                 }}
                 width="20%"
@@ -91,24 +95,29 @@ export default function DropTokenAmountSelector({
           </HStack>
           <Input
             key="custom"
-            _hover={{
-              borderColor: "blue.500 !important", // Change to your preferred border color on hover
-            }}
-            border="2px solid transparent"
-            borderRadius="5xl"
+            border="2px solid"
+            borderColor={"brand.400"}
+            borderRadius="md"
+            fontFamily={"mono"}
+            fontWeight={"700"}
             color={
               presetAmounts.includes(Number(currentDrop.amount))
-                ? "gray.500"
-                : "blue.500"
+                ? "black"
+                : "black"
             }
+            _placeholder={{
+              color: "black",
+              fontSize: { base: "xs", md: "sm" },
+              fontFamily: "mono",
+            }}
             height="30px"
             id="customAmountInput"
             placeholder="Custom"
             size={{ base: "xs", md: "sm" }}
             sx={{
               bg: !presetAmounts.includes(Number(currentDrop.amount))
-                ? "linear-gradient(to bottom, var(--chakra-colors-blue-100), var(--chakra-colors-blue-100)) padding-box, linear-gradient(0deg, rgba(255,207,234,1) 0%, rgba(182,232,247,1) 100%) border-box"
-                : "gray.100", // Selected item background
+                ? "#F2F1EA"
+                : "#F2F1EA",
             }}
             textAlign="center"
             type="number"

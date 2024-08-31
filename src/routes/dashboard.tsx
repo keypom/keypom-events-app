@@ -251,9 +251,9 @@ export const Dashboard = () => {
       action: (
         <HStack justify="right" spacing={8} w="100%">
           <Button
-            borderRadius="6xl"
             size="md"
-            variant="icon"
+            variant="navigation"
+            maxWidth={"max-content"}
             onClick={(e) => {
               e.stopPropagation();
               generateQRCode(
@@ -267,15 +267,16 @@ export const Dashboard = () => {
             Get QR Code
           </Button>
           <Button
-            borderRadius="6xl"
-            size="md"
             variant="icon"
+            background={"red.400"}
+            height={"48px"}
+            width={"48px"}
             onClick={(e) => {
               e.stopPropagation();
               handleDeleteClick(item.base.id);
             }}
           >
-            <DeleteIcon color="red.400" />
+            <DeleteIcon color="white" />
           </Button>
         </HStack>
       ),
@@ -388,51 +389,71 @@ export const Dashboard = () => {
   }
 
   return (
-    <Box px="1" py={{ base: "3.25rem", md: "5rem" }}>
-      <CreateDropModal
-        isOpen={isCreateDropModalOpen}
-        modalType={dropType}
-        onClose={handleCreateDropClose}
-      />
-      <AppModal />
-      {isLoading ? (
-        <Skeleton height="40px" mb="4" width="200px" />
-      ) : (
-        <Heading>
-          Welcome{" "}
-          {account?.display_name
-            ? capitalizeFirstLetter(account.display_name)
-            : ""}
-        </Heading>
-      )}
-      {isLoading ? (
-        <Skeleton height="80px" mb="4" width="100%" />
-      ) : (
-        <TokensAvailableSection tokensAvailable={tokensAvailable} />
-      )}
-      <DropActionsSection
-        setDropType={setDropType}
-        onCreateDrop={() => {
-          setIsCreateDropModalOpen(true);
-        }}
-      />
-      <DataTable
-        columns={eventTableColumns}
-        data={data}
-        excludeMobileColumns={[]}
-        loading={isLoading}
-        //mt={{ base: "6", md: "4" }}
-        showColumns={true}
-        showMobileTitles={["price", "numTickets"]}
-        type="conference-drops"
-      />
-      <QRViewerModal
-        isOpen={isOpen}
-        onClose={onClose}
-        qrCodeUrls={qrCodeUrls}
-        onDownload={(url) => handleDownloadQrCode(url)}
-        onDownloadAll={(urls) => handleDownloadAllQrCodes(urls)}
-      />
+    <Box
+      position={"relative"}
+      width="100%"
+      minHeight="100dvh"
+      bg="black"
+      zIndex={5}
+      _before={{
+        content: '""',
+        position: "absolute",
+        opacity: 0.5,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        backgroundImage: "url(/background.webp)",
+        backgroundSize: "cover",
+        backgroundPosition: "top center",
+        backgroundRepeat: "no-repeat",
+        zIndex: -1,
+      }}
+    >
+      <Box p={8}>
+        <CreateDropModal
+          isOpen={isCreateDropModalOpen}
+          modalType={dropType}
+          onClose={handleCreateDropClose}
+        />
+        <AppModal />
+        {isLoading ? (
+          <Skeleton height="40px" mb="4" width="200px" />
+        ) : (
+          <Heading fontFamily={"mono"} color={"white"} textAlign={"center"}>
+            Welcome{" "}
+            {account?.display_name
+              ? capitalizeFirstLetter(account.display_name)
+              : "user"}
+          </Heading>
+        )}
+        {isLoading ? (
+          <Skeleton height="80px" mb="4" width="100%" />
+        ) : (
+          <TokensAvailableSection tokensAvailable={tokensAvailable} />
+        )}
+        <DropActionsSection
+          setDropType={setDropType}
+          onCreateDrop={() => {
+            setIsCreateDropModalOpen(true);
+          }}
+        />
+        <DataTable
+          columns={eventTableColumns}
+          data={data}
+          excludeMobileColumns={[]}
+          loading={isLoading}
+          showColumns={true}
+          showMobileTitles={["price", "numTickets"]}
+          type="conference-drops"
+        />
+        <QRViewerModal
+          isOpen={isOpen}
+          onClose={onClose}
+          qrCodeUrls={qrCodeUrls}
+          onDownload={(url) => handleDownloadQrCode(url)}
+          onDownloadAll={(urls) => handleDownloadAllQrCodes(urls)}
+        />
+      </Box>
     </Box>
   );
 };
@@ -448,12 +469,19 @@ const TokensAvailableSection = ({ tokensAvailable }) => (
         p={4}
         w="100%"
       >
-        <VStack align="start" spacing={1}>
-          <Text color="gray.700" fontSize="lg" fontWeight="medium">
+        <HStack align="center" spacing={4}>
+          <Text
+            color="brand.400"
+            fontSize="lg"
+            fontWeight="medium"
+            fontFamily={"mono"}
+          >
             Tokens Available
           </Text>
-          <Heading>{formatTokensAvailable(tokensAvailable)}</Heading>
-        </VStack>
+          <Heading fontWeight={"400"}>
+            {formatTokensAvailable(tokensAvailable)}
+          </Heading>
+        </HStack>
       </Box>
     </VStack>
   </VStack>
@@ -462,16 +490,27 @@ const TokensAvailableSection = ({ tokensAvailable }) => (
 const DropActionsSection = ({ onCreateDrop, setDropType }) => (
   <>
     <Show above="md">
-      <HStack justify="space-between">
+      <HStack justify="space-between" p={4}>
         <Heading paddingBottom="0" paddingTop="4">
           All Drops
         </Heading>
         <Menu>
-          <MenuButton as={Button} variant="primary">
+          <MenuButton as={Button} variant="navigation" maxWidth={"max-content"}>
             Create Drop
           </MenuButton>
-          <MenuList>
+          <MenuList
+            background={"black"}
+            borderRadius={"md"}
+            border={"1px solid var(--chakra-colors-brand-400)"}
+            fontFamily={"mono"}
+          >
             <MenuItem
+              background="black"
+              color="white"
+              _hover={{
+                background: "black",
+                color: "brand.400",
+              }}
               key="token"
               icon={<LinkIcon h="4" w="4" />}
               onClick={() => {
@@ -482,6 +521,12 @@ const DropActionsSection = ({ onCreateDrop, setDropType }) => (
               Token Drop
             </MenuItem>
             <MenuItem
+              background="black"
+              color="white"
+              _hover={{
+                background: "black",
+                color: "brand.400",
+              }}
               key="nft"
               icon={<NFTIcon h="4" w="4" />}
               onClick={() => {

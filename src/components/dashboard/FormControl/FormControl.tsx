@@ -15,6 +15,7 @@ export interface FormControlProps extends CFormControlProps {
   labelProps?: FormLabelProps;
   helperTextProps?: Record<string, unknown>;
   marginY?: string;
+  required?: boolean;
 }
 
 export const FormControlComponent = ({
@@ -25,17 +26,25 @@ export const FormControlComponent = ({
   labelProps,
   helperTextProps,
   marginY = "5",
+  required = false,
   ...props
 }: PropsWithChildren<FormControlProps>) => {
   return (
     <CFormControl my={marginY} textAlign="left" {...props}>
       <FormLabel
-        color="gray.800"
+        display={"flex"}
         fontSize={{ base: "sm", md: "base" }}
         m="0"
+        color="white"
+        fontFamily={"mono"}
         {...labelProps}
       >
         {label}
+        {required && (
+          <Text as="small" fontSize={"xs"} color="brand.400">
+            *
+          </Text>
+        )}
       </FormLabel>
       {helperText && (
         <Text color="gray.400" mt="0.5" {...helperTextProps}>
