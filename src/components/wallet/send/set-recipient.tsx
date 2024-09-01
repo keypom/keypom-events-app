@@ -1,5 +1,5 @@
 import { Box, Input, Button, ButtonGroup } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { primaryButtonStyle, secondaryButtonStyle } from "./styles";
 
@@ -12,6 +12,7 @@ export function SetRecipient({
   setReciever: (value: string) => void;
   setStep: (value: string) => void;
 }) {
+  const navigate = useNavigate();
   return (
     <>
       <Box
@@ -47,7 +48,7 @@ export function SetRecipient({
         />
       </Box>
       <ButtonGroup width="100%" justifyContent="center" p={4}>
-        <Button as={Link} to="/" {...secondaryButtonStyle}>
+        <Button onClick={() => navigate(-1)} {...secondaryButtonStyle}>
           CANCEL
         </Button>
         <Button

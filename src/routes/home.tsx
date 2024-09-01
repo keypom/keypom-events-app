@@ -1,9 +1,7 @@
-import { Heading } from "@chakra-ui/react";
-
 export function Home() {
   return (
     <div>
-      <Heading>Home</Heading>
+      <h1>Home</h1>
     </div>
   );
 }
