@@ -167,7 +167,7 @@ export const ScavengerHunt = ({
             ))}
             <Button
               size="sm"
-              variant="navigation"
+              variant="primary"
               mb={2}
               maxWidth={"fit-content"}
               onClick={() => {

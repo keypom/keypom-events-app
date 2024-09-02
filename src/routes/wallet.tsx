@@ -27,11 +27,11 @@ export function Wallet() {
         <>
           <WalletActions />
           <VStack width="100%" p={4} pt={0} spacing={4}>
-            <Button as={Link} to="/wallet/collectibles" variant="redacted">
+            <Button as={Link} to="/wallet/collectibles" variant="custom">
               <CollectiblesIcon color="var(--chakra-colors-brand-400)" />{" "}
               COLLECTIBLES
             </Button>
-            <Button as={Link} to="/wallet/journeys" variant="redacted">
+            <Button as={Link} to="/wallet/journeys" variant="custom">
               <JourneysIcon color="var(--chakra-colors-brand-400)" /> JOURNEYS
             </Button>
           </VStack>

@@ -16,10 +16,10 @@ export const ButtonStyle = defineStyleConfig({
       },
     },
 
-    redacted: {
+    custom: {
       display: "flex",
       width: "100%",
-      padding: "2rem 0",
+      padding: "2.5rem 0",
       justifyContent: "center",
       alignItems: "center",
       gap: 4,
@@ -44,7 +44,7 @@ export const ButtonStyle = defineStyleConfig({
         zIndex: -1,
       },
     },
-    navigation: {
+    primary: {
       display: "flex",
       bg: "brand.400",
       color: "black",
@@ -52,7 +52,7 @@ export const ButtonStyle = defineStyleConfig({
       height: "100%",
       alignItems: "center",
       justifyContent: "center",
-      padding: "1rem 1.5rem",
+      padding: "1.5rem 2rem",
       gap: 2,
       flex: "1 0 0",
       borderRadius: "md",

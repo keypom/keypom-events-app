@@ -43,7 +43,7 @@ export function Me() {
             [ALERTS]
           </Heading>
           <Button
-            variant="navigation"
+            variant="primary"
             as={Link}
             to="/alerts"
             flexDirection="row"

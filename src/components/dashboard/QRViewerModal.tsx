@@ -95,7 +95,7 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
       <ModalFooter>
         {totalQrCodes > 1 && (
           <Button
-            variant={"navigation"}
+            variant={"primary"}
             maxWidth={"fit-content"}
             mr={3}
             onClick={() => onDownloadAll(qrCodeUrls)}
@@ -105,7 +105,7 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
         )}
         {totalQrCodes > 0 && (
           <Button
-            variant={"navigation"}
+            variant={"primary"}
             maxWidth={"fit-content"}
             mr={3}
             onClick={() => onDownload(qrCodeUrls[currentIndex])}
@@ -114,7 +114,7 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
           </Button>
         )}
         <Button
-          variant="navigation"
+          variant="primary"
           background={"transparent"}
           color={"white"}
           border={"1px solid white"}

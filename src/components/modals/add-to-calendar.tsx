@@ -152,7 +152,7 @@ export function AddToCalendarModal() {
             </Flex>
           </ModalBody>
           <ModalFooter px={4}>
-            <Button variant={"navigation"} onClick={onClose}>
+            <Button variant={"primary"} onClick={onClose}>
               Close
             </Button>
           </ModalFooter>
