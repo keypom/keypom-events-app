@@ -42,11 +42,11 @@ export function WalletActions() {
         p={4}
         bg="url(/redacted-button.webp) 50% / cover no-repeat"
       >
-        <Button variant="navigation" as={Link} to="/wallet/send">
+        <Button variant="navigation" as={Link} to={`/wallet/send`}>
           <ArrowIcon width={24} height={24} direction="up" />
           <span>Send</span>
         </Button>
-        <Button variant="navigation" as={Link} to="/wallet/receive">
+        <Button variant="navigation" as={Link} to={`/wallet/receive`}>
           <ArrowIcon width={24} height={24} direction="down" />
           <span>Receive</span>
         </Button>

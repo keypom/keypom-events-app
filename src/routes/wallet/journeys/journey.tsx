@@ -98,12 +98,7 @@ export function JourneyPage() {
 
   return (
     <VStack spacing={4} p={4}>
-      <PageHeading
-        title="Journey Details"
-        titleSize="16px"
-        showBackButton
-        backUrl="/wallet/journeys"
-      />
+      <PageHeading title="Journey Details" titleSize="16px" showBackButton />
       {isLoading && <LoadingBox />}
       {data && <JourneyDetails {...data} />}
       {isError && <ErrorBox message={`Error: ${error.message}`} />}

@@ -47,7 +47,7 @@ export const QrScanner = ({
       setIsScanning(false);
       enableCooldown();
     }
-  }
+  };
 
   const enableCooldown = () => {
     setIsOnCooldown(true); // Activate cooldown
@@ -108,7 +108,7 @@ export const QrScanner = ({
       }
     };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!devices) {

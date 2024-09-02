@@ -9,7 +9,12 @@ const CompletionModalContent = ({
   onClose,
   completionMessage = "Deletion complete.",
 }: CompletionModalContentProps) => (
-  <ModalContent padding={6}>
+  <ModalContent
+    padding={6}
+    background={"black"}
+    border={"1px solid var(--chakra-colors-brand-400)"}
+    fontFamily={"mono"}
+  >
     <VStack align="stretch" spacing={4}>
       <Text fontSize="lg" fontWeight="semibold">
         Deletion Complete
@@ -18,8 +23,12 @@ const CompletionModalContent = ({
       <Text>{completionMessage}</Text>
       <Button
         autoFocus={false}
-        variant="secondary"
-        width="full"
+        variant="navigation"
+        background={"transparent"}
+        color={"white"}
+        border={"1px solid white"}
+        maxWidth={"fit-content"}
+        height={"48px"}
         onClick={onClose}
       >
         Close

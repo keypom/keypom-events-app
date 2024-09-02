@@ -115,17 +115,23 @@ export const DataTable = ({
         <>
           {/* Desktop Table */}
           <Show above="md">
-            <TableContainer>
+            <TableContainer
+              background={"rgba(23, 25, 35, 0.4)"}
+              borderRadius="md"
+              p={8}
+              border={"1px solid var(--chakra-colors-brand-400)"}
+              fontFamily={"mono"}
+            >
               <Table {...props} borderRadius="12px">
                 {showColumns && (
                   <Thead>
                     <Tr>
                       {columns.map((col, index) => (
                         <Th
+                          color={"white"}
                           key={col.id}
                           fontFamily="body"
                           {...col.thProps}
-                          // Apply a border radius of 12px to the first and last Th elements
                           borderTopLeftRadius={
                             index === 0 ? "12px !important" : undefined
                           }
@@ -170,7 +176,7 @@ export const DataTable = ({
               <Heading fontSize={{ base: "xl", md: "2xl" }} fontWeight="600">
                 {EMPTY_TABLE_TEXT_MAP[type].heading}
               </Heading>
-              <Text>{EMPTY_TABLE_TEXT_MAP[type].text}</Text>
+              <Text fontFamily={"mono"}>{EMPTY_TABLE_TEXT_MAP[type].text}</Text>
             </VStack>
           </Center>
         </IconBox>

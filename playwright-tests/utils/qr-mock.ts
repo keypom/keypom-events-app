@@ -14,7 +14,7 @@ export const simulateQrScan = async (page: Page, rawValue: any) => {
           { x: 32, y: 32 },
           { x: 232, y: 32 },
           { x: 232, y: 232 },
-          { x: 32, y: 232 }
+          { x: 32, y: 232 },
         ],
         boundingBox: {
           x: 32,
@@ -24,30 +24,40 @@ export const simulateQrScan = async (page: Page, rawValue: any) => {
           top: 32,
           right: 232,
           bottom: 232,
-          left: 32
-        }
-      }
+          left: 32,
+        },
+      },
     ];
     // @ts-expect-error - Expose the triggerTestScan function to the window
     window.triggerTestScan(validDetectedBarcode);
   }, rawValue);
-}
+};
 
-export const mockTicketScan = async (page: Page, secretKey: string, remainingUses: number, drop_id: string, maxUses: number) => {
+export const mockTicketScan = async (
+  page: Page,
+  secretKey: string,
+  remainingUses: number,
+  drop_id: string,
+  maxUses: number,
+) => {
   await mockRpcRequest({
-    page, filterParams: { method_name: "get_key_information" }, modifyOriginalResultFunction: (result) => {
+    page,
+    filterParams: { method_name: "get_key_information" },
+    modifyOriginalResultFunction: (result) => {
       result.uses_remaining = remainingUses;
       result.drop_id = drop_id;
       return result;
-    }
+    },
   });
 
   await mockRpcRequest({
-    page, filterParams: { method_name: "get_drop_information" }, modifyOriginalResultFunction: (result) => {
+    page,
+    filterParams: { method_name: "get_drop_information" },
+    modifyOriginalResultFunction: (result) => {
       result.max_key_uses = maxUses;
       return result;
-    }
+    },
   });
 
   await simulateQrScan(page, secretKey);
-}
+};

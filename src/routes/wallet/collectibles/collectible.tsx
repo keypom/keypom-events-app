@@ -56,7 +56,6 @@ export function CollectiblePage() {
         title="Collectible Details"
         titleSize="16px"
         showBackButton
-        backUrl="/wallet/collectibles"
       />
       {isLoading && <LoadingBox />}
       {data && <CollectibleDetails {...data} />}

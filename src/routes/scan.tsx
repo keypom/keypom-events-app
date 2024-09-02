@@ -42,7 +42,7 @@ export function Scan() {
   };
 
   return (
-    <Box pt={4} display={"flex"} flexDirection={"column"} gap={4}>
+    <Box py={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
       <VStack spacing={8} width="100%">
         <Box width="100%" height="100%" position={"relative"} px={4}>

@@ -183,10 +183,12 @@ export const Scanner = () => {
       } else {
         throw new Error("No ticket information found.");
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Scan failed", err);
-      throw new Error(`Error scanning the ticket: ${err.message}. Please try again.`);
+      throw new Error(
+        `Error scanning the ticket: ${err.message}. Please try again.`,
+      );
     } finally {
       setIsScanning(false);
     }

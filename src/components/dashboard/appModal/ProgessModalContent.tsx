@@ -18,7 +18,12 @@ const ProgressModalContent = ({
   progress,
   message,
 }: ProgressModalContentProps) => (
-  <ModalContent padding={6}>
+  <ModalContent
+    padding={6}
+    background={"black"}
+    border={"1px solid var(--chakra-colors-brand-400)"}
+    fontFamily={"mono"}
+  >
     <VStack align="stretch" spacing={4}>
       <Text fontSize="lg" fontWeight="semibold">
         {title}
@@ -26,7 +31,7 @@ const ProgressModalContent = ({
       <Progress hasStripe isAnimated value={progress} />
       <Center>
         <Spinner
-          color="blue.400"
+          color="brand.400"
           h={{ base: "16", md: "20" }}
           mb="6"
           w={{ base: "16", md: "20" }}

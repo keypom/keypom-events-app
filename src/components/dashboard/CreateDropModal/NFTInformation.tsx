@@ -29,11 +29,27 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
       <VStack spacing={0} w="100%">
         <HStack spacing={6} w="100%">
           <FormControlComponent
-            label="NFT Title*"
+            label="NFT Title"
+            required={true}
             errorText={errors.nft?.title}
             my="1"
           >
             <Textarea
+              borderRadius={"md"}
+              height="35px"
+              maxLength={500}
+              background={"#F2F1EA"}
+              color={"black"}
+              fontFamily={"mono"}
+              fontWeight={"700"}
+              size="sm"
+              sx={{
+                "::placeholder": {
+                  color: "black",
+                  fontSize: { base: "xs", md: "sm" },
+                  fontFamily: "mono",
+                },
+              }}
               value={createdDrop.nftData?.title || ""}
               onChange={(e) => onNFTDataChange("title", e.target.value)}
               isInvalid={!!errors.nft?.title}
@@ -41,10 +57,26 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
             />
           </FormControlComponent>
           <FormControlComponent
-            label="NFT Description*"
+            label="NFT Description"
+            required={true}
             errorText={errors.nft?.description}
           >
             <Textarea
+              borderRadius={"md"}
+              height="35px"
+              maxLength={500}
+              background={"#F2F1EA"}
+              color={"black"}
+              fontFamily={"mono"}
+              fontWeight={"700"}
+              size="sm"
+              sx={{
+                "::placeholder": {
+                  color: "black",
+                  fontSize: { base: "xs", md: "sm" },
+                  fontFamily: "mono",
+                },
+              }}
               value={createdDrop.nftData?.description || ""}
               onChange={(e) => onNFTDataChange("description", e.target.value)}
               isInvalid={!!errors.nft?.description}

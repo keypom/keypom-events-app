@@ -36,9 +36,16 @@ export const ScavengerHunt = ({
   return (
     <>
       <HStack justify="space-between" my="4">
-        <Tooltip label="Scavenger hunts require users to collect all the pieces before the reward is given.">
-          <HStack spacing={4}>
-            <Text>Make it a Scavenger Hunt!</Text>
+        <Tooltip
+          bg={"rgba(23, 25, 35, 1)"}
+          color={"white"}
+          border={"1px solid var(--chakra-colors-brand-400)"}
+          borderRadius={"md"}
+          p={2}
+          label="Scavenger hunts require users to collect all the pieces before the reward is given."
+        >
+          <HStack spacing={4} fontFamily={"mono"}>
+            <Text fontSize={"xs"}>Make it a Scavenger Hunt!</Text>
             <Switch
               id="scavenger-hunt"
               isChecked={isScavengerHunt}
@@ -49,12 +56,34 @@ export const ScavengerHunt = ({
           </HStack>
         </Tooltip>
         {isScavengerHunt && (
-          <HStack justify="flex-end" spacing={4}>
+          <HStack
+            fontFamily={"mono"}
+            fontSize={"xs"}
+            justify="flex-end"
+            spacing={4}
+          >
             <Text>Num Pieces</Text>
             <Input
+              borderRadius={"md"}
+              height="35px"
+              maxLength={500}
+              background={"#F2F1EA"}
+              placeholder="num pieces"
+              color={"black"}
+              fontFamily={"mono"}
+              fontWeight={"700"}
+              size="sm"
+              sx={{
+                "::placeholder": {
+                  color: "black",
+                  fontSize: { base: "xs", md: "sm" },
+                  fontFamily: "mono",
+                },
+              }}
               type="text"
               value={tempNumPieces}
               w="25%"
+              h="fit-content"
               onBlur={() => {
                 updateNumPieces(
                   tempNumPieces,
@@ -85,12 +114,27 @@ export const ScavengerHunt = ({
       )}
       {isScavengerHunt && (
         <>
-          <VStack align="stretch" spacing={4}>
+          <VStack align="stretch" spacing={4} alignItems={"center"}>
             {scavengerPieces.map((piece, index) => (
               <VStack key={index} alignItems="flex-start" w="100%">
                 <Text>{piece.piece}</Text>
                 <HStack alignItems="center" spacing={4} w="100%">
                   <Input
+                    borderRadius={"md"}
+                    height="35px"
+                    maxLength={500}
+                    background={"#F2F1EA"}
+                    color={"black"}
+                    fontFamily={"mono"}
+                    fontWeight={"700"}
+                    size="sm"
+                    sx={{
+                      "::placeholder": {
+                        color: "black",
+                        fontSize: { base: "xs", md: "sm" },
+                        fontFamily: "mono",
+                      },
+                    }}
                     placeholder="Description"
                     value={piece.description}
                     onChange={(e) =>
@@ -103,8 +147,9 @@ export const ScavengerHunt = ({
                     }
                   />
                   <Button
+                    variant="icon"
+                    background={"red.400"}
                     size="sm"
-                    variant="ghost"
                     onClick={() => {
                       removeScavengerPiece(
                         index,
@@ -122,7 +167,9 @@ export const ScavengerHunt = ({
             ))}
             <Button
               size="sm"
-              variant="ghost"
+              variant="navigation"
+              mb={2}
+              maxWidth={"fit-content"}
               onClick={() => {
                 addScavengerPiece(
                   scavengerPieces,

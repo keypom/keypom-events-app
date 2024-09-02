@@ -41,7 +41,8 @@ export const ImageInput: React.FC<ImageInputProps> = ({
 
   return (
     <FormControlComponent
-      label="Image*"
+      label="Image"
+      required={true}
       labelProps={{ fontSize: { base: "xs", md: "md" } }}
       my="1"
     >
