@@ -14,7 +14,7 @@ const Divider = () => {
       style={{
         border: "2px solid var(--chakra-colors-brand-400)",
         width: "100%",
-        maxWidth: "450px",
+        maxWidth: "550px",
         margin: "24px 0",
       }}
     />
@@ -29,7 +29,7 @@ const CollectiblesGrid = ({ lockedItems, unlockedItems }) => {
           base: "repeat(2, minmax(0, 1fr))",
         }}
         width={"100%"}
-        maxWidth="450px"
+        maxWidth="550px"
       >
         {unlockedItems.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>
@@ -44,7 +44,7 @@ const CollectiblesGrid = ({ lockedItems, unlockedItems }) => {
           base: "repeat(2, minmax(0, 1fr))",
         }}
         width={"100%"}
-        maxWidth="450px"
+        maxWidth="550px"
       >
         {lockedItems.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>

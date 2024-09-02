@@ -56,7 +56,7 @@ const JourneyDetails = ({
   steps,
 }: Journey) => {
   return (
-    <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
+    <VStack alignItems="flex-start" gap={"30px"} maxWidth="550px">
       <Image
         src={imageSrc}
         width={"100%"}
