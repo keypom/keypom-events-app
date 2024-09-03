@@ -1,10 +1,11 @@
 import { NotFound404 } from "@/components/dashboard/NotFound404";
 import { useTicketClaimParams } from "@/hooks/useTicketClaimParams";
 
+import TicketQRPage from "@/components/tickets/ticket-qr-code";
 import { fetchConferenceData } from "@/hooks/useConferenceData";
+import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import TicketQRPage from "@/components/tickets/ticket-qr-code";
 
 export default function Ticket() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function Ticket() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["conferenceData", secretKey],
     queryFn: async () => await fetchConferenceData(secretKey),
-    retry: 1
+    retry: 1,
   });
 
   const onScanned = () => {
@@ -20,22 +21,25 @@ export default function Ticket() {
   };
 
   if (isError) {
-    return (
-      <NotFound404
-        header="Error"
-        subheader={error?.message}
-      />
-    );
+    return <NotFound404 header="Error" subheader={error?.message} />;
   }
 
   if (isLoading) {
-    return <div>Loading...</div>; // Placeholder for loading state
+    return (
+      <Center minH="100vh">
+        <VStack spacing={4}>
+          <Spinner size="xl" />
+          <Text>Loading ticket information...</Text>
+        </VStack>
+      </Center>
+    );
   }
 
   const { ticketInfo, dropInfo, keyInfo, ticketExtra, eventInfo } = data!;
 
   const maxUses = dropInfo.max_key_uses;
-  const curStep = dropInfo.max_key_uses - keyInfo.uses_remaining + 1;
+  const usesRemaining = keyInfo.uses_remaining;
+  const curStep = maxUses - usesRemaining + 1;
   const { funder_id } = dropInfo;
   const { eventId } = ticketExtra;
   const { account_type } = ticketInfo;
@@ -48,8 +52,6 @@ export default function Ticket() {
   if (curStep !== 1) {
     navigate(`/conference/app/${eventId}#${secretKey}`);
   }
-
-  console.log("Account type: ", account_type);
 
   switch (account_type) {
     case "Basic":

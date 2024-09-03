@@ -1,3 +1,4 @@
+import { TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import eventHelperInstance from "@/lib/event";
 import {
   EventDrop,
@@ -6,6 +7,7 @@ import {
   TicketMetadataExtra,
 } from "@/lib/eventsHelper";
 import { AttendeeKeyItem } from "@/lib/keypom";
+import { TokenAsset } from "@/types/common";
 import { getPubFromSecret } from "@keypom/core";
 
 export interface ConferenceData {
@@ -15,6 +17,7 @@ export interface ConferenceData {
   ticketMetadata: TicketInfoMetadata;
   ticketExtra: TicketMetadataExtra;
   eventInfo: FunderEventMetadata | undefined;
+  tokenInfo: TokenAsset;
 }
 
 export const fetchConferenceData = async (secretKey: string) => {
@@ -28,6 +31,12 @@ export const fetchConferenceData = async (secretKey: string) => {
     const dropInfo = await eventHelperInstance.viewCall({
       methodName: "get_drop_information",
       args: { drop_id: keyInfo.drop_id },
+    });
+
+    const tokenInfo = await eventHelperInstance.viewCall({
+      contractId: TOKEN_FACTORY_CONTRACT,
+      methodName: "ft_metadata",
+      args: { drop_id: dropInfo.drop_id },
     });
 
     const factoryAccount = dropInfo.asset_data[1].config.root_account_id;
@@ -61,6 +70,7 @@ export const fetchConferenceData = async (secretKey: string) => {
       keyInfo,
       dropInfo,
       ticketInfo,
+      tokenInfo,
       ticketMetadata,
       ticketExtra,
       eventInfo,

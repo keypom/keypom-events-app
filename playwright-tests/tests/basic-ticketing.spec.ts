@@ -43,6 +43,17 @@ test.describe("Basic ticketing (User shows ticket)", () => {
       await mockRpcRequest({
         page,
         filterParams: {
+          methodName: "ft_metadata"
+        },
+        modifyOriginalResultFunction: (result) => {
+          result.symbol = "SOV3";
+          return result;
+        }
+      });
+
+      await mockRpcRequest({
+        page,
+        filterParams: {
           contract_id: FACTORY_ACCOUNT,
           method_name: "get_ticket_data",
         },
@@ -107,6 +118,11 @@ test.describe("Basic ticketing (User shows ticket)", () => {
 
       const WelcomePageTitle = await page.getByText("Welcome");
       await expect(WelcomePageTitle).toBeVisible();
+
+      await test.step("should show token balance", async () => {
+        const tokenBalance = await page.getByText("50 $SOV3");
+        await expect(tokenBalance).toBeVisible();
+      });
     });
   });
 
