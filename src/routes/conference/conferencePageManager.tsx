@@ -3,7 +3,7 @@ import { Center, Spinner, VStack, Text } from "@chakra-ui/react";
 import { getPubFromSecret } from "@keypom/core";
 
 //import InConferenceApp from "@/features/conference-app/InConferenceApp";
-import { Me } from "@/routes/me";
+import Me from "@/routes/me";
 import { NotFound404 } from "@/components/dashboard/NotFound404";
 import eventHelperInstance from "@/lib/event";
 import {

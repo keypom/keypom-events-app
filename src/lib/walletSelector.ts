@@ -2,6 +2,7 @@ import {
   type AccountState,
   type NetworkId,
   setupWalletSelector,
+  WalletModuleFactory,
   type WalletSelector,
 } from "@near-wallet-selector/core";
 import {
@@ -33,7 +34,7 @@ export class NearWalletSelector {
         setupOneClickConnect({
           networkId: "testnet",
           contractId: TOKEN_FACTORY_CONTRACT,
-        }),
+        }) as WalletModuleFactory,
       ],
     });
     const _modal = setupModal(_selector, { contractId: config.contractId });
