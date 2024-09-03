@@ -28,6 +28,7 @@ import {
   EVENT_IMG_DIR_FOLDER_NAME,
   TOKEN_FACTORY_CONTRACT,
 } from "@/constants/common";
+import { useNavigate } from "react-router-dom";
 
 const sizeConfig = {
   img: {
@@ -88,6 +89,7 @@ export default function WelcomePage({
   tokensToClaim,
   secretKey,
 }: WelcomePageProps) {
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [isValidUsername, setIsValidUsername] = useState<boolean>(true);
   const [isClaiming, setIsClaiming] = useState<boolean>(false);
@@ -131,7 +133,7 @@ export default function WelcomePage({
         true,
       );
       setIsClaiming(false);
-      window.location.reload();
+      navigate(0);
     } catch (e) {
       setIsClaiming(false);
       toast({
@@ -160,10 +162,9 @@ export default function WelcomePage({
       }
 
       return true;
-    } catch (e) {
-      console.error(e);
-      setIsValidUsername(false);
-      return false;
+    } catch {
+      setIsValidUsername(true);
+      return true;
     }
   };
 

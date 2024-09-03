@@ -119,9 +119,52 @@ test.describe("Basic ticketing (User shows ticket)", () => {
       const WelcomePageTitle = await page.getByText("Welcome");
       await expect(WelcomePageTitle).toBeVisible();
 
-      await test.step("should show token balance", async () => {
+      await test.step("should show appropriate token balance", async () => {
         const tokenBalance = await page.getByText("50 $SOV3");
         await expect(tokenBalance).toBeVisible();
+      });
+
+      await test.step("should not enable begin journey if invalid username submitted", async () => {
+        await mockRpcRequest({
+          page,
+          filterParams: {
+            request_type: "view_account",
+          },
+          mockedResult: { // account already exists
+            account_id: "testing123",
+            balance: "0",
+          },
+        })
+        await page.getByPlaceholder('Username').fill('testing123');
+
+        // NEED TO BLUR TO TRIGGER VALIDATION
+        await page.getByPlaceholder('Username').blur();
+
+        const errorMessage = page.getByText("Username is invalid or already taken.");
+        await expect(errorMessage).toBeVisible();
+
+        const continueButton = page.getByRole("button", { name: "Begin Journey" });
+        expect(continueButton).not.toBeEnabled();
+      });
+
+      await test.step("should enable begin journey if valid username submitted", async () => {
+        await mockRpcRequest({
+          page,
+          filterParams: {
+            request_type: "view_account",
+          },
+          mockedResult: {}, // account does not exist
+        })
+        await page.getByPlaceholder('Username').fill('basic-ticket-testing');
+
+        // NEED TO BLUR TO TRIGGER VALIDATION
+        await page.getByPlaceholder('Username').blur();
+
+        const errorMessage = page.getByText("Username is invalid or already taken.");
+        await expect(errorMessage).not.toBeVisible();
+
+        const continueButton = page.getByRole("button", { name: "Begin Journey" });
+        expect(continueButton).toBeEnabled();
       });
     });
   });
