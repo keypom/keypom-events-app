@@ -125,4 +125,103 @@ test.describe("Basic ticketing (User shows ticket)", () => {
       });
     });
   });
+  
+  test.describe("Ticket has already been scanned, ticket exists", () => {
+
+    test.beforeEach(async ({ page }) => {
+      await mockRpcRequest({
+        page,
+        filterParams: {
+          method_name: "get_key_information",
+        },
+        modifyOriginalResultFunction: (result) => {
+          result.uses_remaining = 1;
+          result.drop_id = DROP_ID;
+          return result;
+        },
+      });
+
+      await mockRpcRequest({
+        page,
+        filterParams: {
+          method_name: "get_drop_information",
+        },
+        modifyOriginalResultFunction: (result) => {
+          result.funder_id = FUNDER_ID;
+          result.drop_config.nft_keys_config.token_metadata.extra =
+            JSON.stringify({ eventId: EVENT_ID });
+          result.max_key_uses = 3;
+          result.asset_data = [
+            { config: { root_account_id: "1724680439172-kp-ticketing" } },
+            { config: { root_account_id: FACTORY_ACCOUNT } },
+          ];
+          return result;
+        },
+      });
+
+      await mockRpcRequest({
+        page,
+        filterParams: {
+          contract_id: FACTORY_ACCOUNT,
+          method_name: "get_ticket_data",
+        },
+        modifyOriginalResultFunction: (result) => {
+          result.account_type = "Basic";
+          return result;
+        },
+      });
+
+      await mockRpcRequest({
+        page,
+        filterParams: {
+          method_name: "get_funder_info",
+        },
+        modifyOriginalResultFunction: (result) => {
+          result.metadata = JSON.stringify({
+            [EVENT_ID]: {
+              name: "Redacted 2025",
+              dateCreated: "1724680461141",
+              id: EVENT_ID,
+              description:
+                "Join us in Bangkok this November for [REDACTED] - a convergence of visionaries, builders, and pioneers from AI x Web3 backgrounds united in shaping a future where technology belongs to the people, not corporations.",
+              location: "257 CHAROENNAKORN ROAD THONBURI BANGKOK 10600",
+              date: {
+                startDate: 1742702400000,
+                endDate: 1743652800000,
+              },
+              artwork:
+                "https://cloudflare-ipfs.com/ipfs/bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
+            },
+          });
+
+          return result;
+        },
+      });
+
+      await mockRpcRequest({
+        page,
+        filterParams: {
+          request_type: "view_account"
+        },
+        modifyOriginalResultFunction: (result) => {
+          result.display_name = "basic-ticket-testing";
+          result.account_id = `basic-ticket-testing.${FACTORY_ACCOUNT}`;
+          return result;
+        }
+      })
+
+      await page.goto(
+        `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_PRIVATE_KEY}`,
+      );
+    });
+
+    test("should navigate to app if already scanned", async ({
+      page,
+    }) => {
+      // TODO: This test is failing, we would expect the page to navigate to the me page
+      // With the username filled in
+      const AppPageTitle = await page.getByText("basic-ticket-testing");
+      await expect(AppPageTitle).toBeVisible();
+    });
+  });
 });
