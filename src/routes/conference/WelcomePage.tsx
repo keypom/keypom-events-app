@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { accountExists, getPubFromSecret } from "@keypom/core";
-import { BoxWithShape } from "@/components/tickets/BoxWithShape";
+import { BoxWithShape } from "@/components/tickets/box-with-shape";
 import {
   type TicketInfoMetadata,
   type FunderEventMetadata,

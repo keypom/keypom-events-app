@@ -130,6 +130,7 @@ export interface TicketInfoMetadata {
   description: string;
   media: string; // CID to IPFS. To render, use `${CLOUDFLARE_IPDS}/${media}`
   extra: string; // Stringified TicketMetadataExtra
+  account_type?: "Basic" | "Sponsor" | "Admin";
 }
 
 /// Maps UUID to Event Metadata

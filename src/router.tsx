@@ -112,7 +112,7 @@ const router = createBrowserRouter([
           {
             path: "ticket/:id", // Match /events/event/:id
             lazy: lazyWithOfflineCheck(
-              () => import("@/routes/tickets/ticketPage"),
+              () => import("@/routes/tickets/ticket"),
             ),
           },
         ],

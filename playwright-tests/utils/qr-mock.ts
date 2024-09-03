@@ -43,10 +43,9 @@ export const mockTicketScan = async (
   await mockRpcRequest({
     page,
     filterParams: { method_name: "get_key_information" },
-    modifyOriginalResultFunction: (result) => {
-      result.uses_remaining = remainingUses;
-      result.drop_id = drop_id;
-      return result;
+    mockedResult:{
+      uses_remaining: remainingUses,
+      drop_id: drop_id
     },
   });
 

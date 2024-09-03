@@ -1,0 +1,77 @@
+import { NotFound404 } from "@/components/dashboard/NotFound404";
+import { useTicketClaimParams } from "@/hooks/useTicketClaimParams";
+
+import { fetchConferenceData } from "@/hooks/useConferenceData";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import TicketQRPage from "@/components/tickets/ticket-qr-code";
+
+export default function Ticket() {
+  const navigate = useNavigate();
+  const { secretKey } = useTicketClaimParams();
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["conferenceData", secretKey],
+    queryFn: async () => await fetchConferenceData(secretKey),
+    retry: 1
+  });
+
+  const onScanned = () => {
+    navigate(0);
+  };
+
+  if (isError) {
+    return (
+      <NotFound404
+        header="Error"
+        subheader={error?.message}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Placeholder for loading state
+  }
+
+  const { ticketInfo, dropInfo, keyInfo, ticketExtra, eventInfo } = data!;
+
+  const maxUses = dropInfo.max_key_uses;
+  const curStep = dropInfo.max_key_uses - keyInfo.uses_remaining + 1;
+  const { funder_id } = dropInfo;
+  const { eventId } = ticketExtra;
+  const { account_type } = ticketInfo;
+
+  // Redirect if ticket has been used
+  if (maxUses === 2) {
+    navigate(`/conference/app/${eventId}#${secretKey}`);
+  }
+
+  if (curStep !== 1) {
+    navigate(`/conference/app/${eventId}#${secretKey}`);
+  }
+
+  console.log("Account type: ", account_type);
+
+  switch (account_type) {
+    case "Basic":
+      console.log("Rendering basic ticket");
+      return (
+        <TicketQRPage
+          eventId={eventId}
+          eventInfo={eventInfo}
+          funderId={funder_id}
+          isLoading={isLoading}
+          secretKey={secretKey}
+          ticketInfo={ticketInfo}
+          onScanned={onScanned}
+        />
+      );
+    case "Sponsor":
+      console.log("Rendering Sponsor ticket");
+      return <div>Sponsor</div>;
+    case "Admin":
+      console.log("Rendering Admin ticket");
+      return <div>Admin</div>;
+    default:
+      return <div>Unknown ticket type</div>;
+  }
+}
