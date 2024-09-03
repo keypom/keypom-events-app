@@ -151,19 +151,16 @@ export default function WelcomePage({
     }
     try {
       const accountId = `${username}.${TOKEN_FACTORY_CONTRACT}`;
-      console.log("Checking username", accountId);
       const doesExist = await accountExists(accountId);
-      console.log("Does exist", doesExist);
+
       if (doesExist) {
         setIsValidUsername(false);
-        return false;
       }
 
-      return true;
-    } catch (e) {
-      console.error(e);
-      setIsValidUsername(false);
       return false;
+    } catch {
+      setIsValidUsername(true); // Throws exception that account has been found
+      return true;
     }
   };
 

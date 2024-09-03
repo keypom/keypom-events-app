@@ -81,10 +81,7 @@ export function TicketPage() {
         console.log("eventInfo", eventInfo);
 
         if ((maxUses !== 3 && maxUses !== 2) || !eventInfo) {
-          console.error("Invalid ticket");
-          setIsValid(false);
-          setIsLoading(false);
-          return;
+          throw new Error("Invalid ticket");
         }
 
         // First check if ticket is either GA or sponsor / admin

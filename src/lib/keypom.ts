@@ -504,7 +504,7 @@ class KeypomJS {
 
     await keypomAccount.functionCall({
       contractId: KEYPOM_EVENTS_CONTRACT,
-      methodName: !createAccount ? "claim" : "create_account_and_claim",
+      methodName: createAccount ? "create_account_and_claim" : "claim",
       args: {
         ...args,
         signature: base64Signature,

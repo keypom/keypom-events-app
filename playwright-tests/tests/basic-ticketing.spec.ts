@@ -109,6 +109,20 @@ test.describe("Basic ticketing (User shows ticket)", () => {
 
       const WelcomePageTitle = await page.getByText("Welcome");
       await expect(WelcomePageTitle).toBeVisible();
+
+      await test.step("should navigate to wallet after username", async () => {
+
+        await page.getByPlaceholder('Username').fill('basic-ticket-testing');
+
+        const continueButton = page.getByRole("button", { name: "Begin Journey" });
+        expect(continueButton).toBeEnabled();
+
+        // continueButton.click();
+
+        // TODO: Need to mock the claimEventTicket call
+        // const walletTitle = await page.getByText("basic-ticket-testing");
+        // await expect(walletTitle).toBeVisible();
+      });
     });
   });
 });
