@@ -1,90 +1,60 @@
+import { getPubFromSecret } from "@keypom/core";
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
-  type ReactNode,
-  type Dispatch,
-  type SetStateAction,
+  useState,
+  type ReactNode
 } from "react";
-import { getPubFromSecret } from "@keypom/core";
 
-import keypomInstance from "@/lib/keypom";
-import {
-  type TicketInfoMetadata,
-  type TicketMetadataExtra,
-  type FunderEventMetadata,
-  type EventDrop,
-} from "@/lib/eventsHelper";
 import { TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+import { useConferenceClaimParams } from "@/hooks/useConferenceClaimParams";
+import keypomInstance from "@/lib/keypom";
 
 interface ConferenceContextProps {
-  eventInfo: FunderEventMetadata;
-  ticketInfo: TicketInfoMetadata;
-  ticketInfoExtra: TicketMetadataExtra;
-  dropInfo: EventDrop;
-  isLoading: boolean;
-  eventId: string;
-  funderId: string;
-  ticker: string;
+  dropId: string;
+  // eventId: string;
   secretKey: string;
   accountId: string;
   tokensAvailable: string;
-  setTriggerRefetch: Dispatch<SetStateAction<number>>;
-  triggerRefetch: number;
-  //queryString: URLSearchParams;
 }
 
 const ConferenceContext = createContext<ConferenceContextProps | undefined>(
   undefined,
 );
 
-export const ConferenceProvider = ({
-  children,
-  initialData,
-}: {
-  children: ReactNode;
-  initialData: Omit<
-    ConferenceContextProps,
-    "accountId" | "tokensAvailable" | "setTriggerRefetch" | "triggerRefetch"
-  >;
-}) => {
+export const ConferenceProvider = ({ children }: { children: ReactNode }) => {
   const [accountId, setAccountId] = useState<string>("");
   const [tokensAvailable, setTokensAvailable] = useState<string>("0");
-  const [triggerRefetch, setTriggerRefetch] = useState<number>(0);
-  const { dropInfo, isLoading, secretKey } = initialData;
+  const { dropId, secretKey } = useConferenceClaimParams();
 
   useEffect(() => {
     const recoverAccount = async () => {
-      if (!isLoading && dropInfo.drop_id !== "loading") {
-        console.log("Secret Key: ", secretKey);
-        const recoveredAccountId = await keypomInstance.viewCall({
-          contractId: TOKEN_FACTORY_CONTRACT,
-          methodName: "recover_account",
-          args: { key: getPubFromSecret(secretKey) },
-        });
-        const balance = await keypomInstance.viewCall({
-          contractId: TOKEN_FACTORY_CONTRACT,
-          methodName: "ft_balance_of",
-          args: { account_id: recoveredAccountId },
-        });
-        console.log("recovered account id: ", recoveredAccountId);
-        console.log("balance: ", balance);
-        setTokensAvailable(keypomInstance.yoctoToNearWith4Decimals(balance));
-        setAccountId(recoveredAccountId);
-      }
+      const recoveredAccountId = await keypomInstance.viewCall({
+        contractId: TOKEN_FACTORY_CONTRACT,
+        methodName: "recover_account",
+        args: { key: getPubFromSecret(secretKey) },
+      });
+
+      const balance = await keypomInstance.viewCall({
+        contractId: TOKEN_FACTORY_CONTRACT,
+        methodName: "ft_balance_of",
+        args: { account_id: recoveredAccountId },
+      });
+
+      setTokensAvailable(keypomInstance.yoctoToNearWith4Decimals(balance));
+      setAccountId(recoveredAccountId);
     };
     recoverAccount();
-  }, [dropInfo, isLoading, secretKey, triggerRefetch]);
+  }, [dropId, secretKey]);
 
   return (
     <ConferenceContext.Provider
       value={{
-        ...initialData,
+        dropId,
+        secretKey,
         accountId,
         tokensAvailable,
-        setTriggerRefetch,
-        triggerRefetch,
       }}
     >
       {children}

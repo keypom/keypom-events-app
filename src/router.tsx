@@ -3,22 +3,27 @@ import { createBrowserRouter } from "react-router-dom";
 import { ErrorPage } from "@/error-page";
 import { Root } from "@/routes/layouts/root";
 import { OfflinePage } from "@/offline-page";
+import { ConferenceProvider } from "./contexts/ConferenceContext";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: (
+      <ConferenceProvider>
+        <Root />
+      </ConferenceProvider>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/:id",
         index: true,
+        path: "/me",
         async lazy() {
           if (!navigator.onLine) {
             return { Component: OfflinePage };
           }
-          const { Home } = await import("@/routes/home");
-          return { Component: Home };
+          const { Me } = await import("@/routes/me");
+          return { Component: Me };
         },
       },
       {
@@ -150,16 +155,6 @@ const router = createBrowserRouter([
           }
           const { Receive } = await import("@/routes/wallet/receive");
           return { Component: Receive };
-        },
-      },
-      {
-        path: "/me",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Me } = await import("@/routes/me");
-          return { Component: Me };
         },
       },
       {

@@ -2,11 +2,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export const useTicketClaimParams = () => {
   const navigate = useNavigate();
-  const { id: dropIdParam } = useParams();
+  const { id: dropId } = useParams();
   const { hash } = useLocation();
 
-  const dropId = dropIdParam;
-  const secretKey = hash ? hash.replace("#", "") : "";
+  const secretKey = hash ? hash.replace("#", "") : ""; // and the secret key
 
   if (!dropId || !secretKey) {
     console.error(

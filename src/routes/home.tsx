@@ -18,8 +18,8 @@ import {
 } from "@/lib/eventsHelper";
 import { useConferenceClaimParams } from "@/hooks/useConferenceClaimParams";
 import WelcomePage from "@/components/tickets/welcome";
-import { ConferenceProvider } from "@/contexts/ConferenceContext";
 import { TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+import { Navigate } from "react-router-dom";
 
 export function Home() {
   const { secretKey } = useConferenceClaimParams();
@@ -157,9 +157,7 @@ export function Home() {
       );
     case 3:
       return (
-        <ConferenceProvider initialData={initialData}>
-          <Me />
-        </ConferenceProvider>
+        <Navigate to="/" />
       );
     default:
       return (
