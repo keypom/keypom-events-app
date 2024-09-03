@@ -57,9 +57,12 @@ const router = createBrowserRouter([
       },
       {
         path: "/scan",
-        lazy: lazyWithOfflineCheck(
-          () => import("@/routes/adminScan/adminScan"),
-        ),
+        children: [
+          {
+            path: "event/:funderAndEventId",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/adminScan/adminScan")),
+          },
+        ],
       },
       {
         path: "/wallet",
