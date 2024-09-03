@@ -342,4 +342,4 @@ export default function Scanner() {
       </Center>
     </Box>
   );
-};
+}

@@ -456,7 +456,7 @@ export default function Dashboard() {
       </Box>
     </Box>
   );
-};
+}
 
 const TokensAvailableSection = ({ tokensAvailable }) => (
   <VStack align="left" paddingTop="4" spacing="6">
