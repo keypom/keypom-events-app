@@ -56,7 +56,7 @@ const CollectiblesGrid = ({ lockedItems, unlockedItems }) => {
   );
 };
 
-export function Collectibles() {
+export default function Collectibles() {
   const {
     data: collectibles,
     error,

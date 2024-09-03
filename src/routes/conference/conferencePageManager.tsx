@@ -21,7 +21,7 @@ import WelcomePage from "./WelcomePage";
 import { ConferenceProvider } from "@/contexts/ConferenceContext";
 import { TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 
-export function ConferencePageManager() {
+export default function ConferencePageManager() {
   const { secretKey } = useConferenceClaimParams();
 
   // State variables for managing the ticket and event information

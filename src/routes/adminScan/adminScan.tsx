@@ -40,7 +40,7 @@ interface StateRefObject {
   isProcessing: boolean;
 }
 
-export const Scanner = () => {
+export default function Scanner() {
   const { funderId, eventId } = useTicketScanningParams();
   const navigate = useNavigate();
 

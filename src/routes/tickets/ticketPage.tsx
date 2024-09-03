@@ -16,7 +16,7 @@ import {
 import TicketQRPage from "./ticketQRPage";
 import eventHelperInstance from "@/lib/event";
 
-export function TicketPage() {
+export default function TicketPage() {
   const { secretKey } = useTicketClaimParams();
   const navigate = useNavigate();
 

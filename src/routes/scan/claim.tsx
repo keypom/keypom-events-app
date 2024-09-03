@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Hidden } from "@/components/claim/hidden";
 import { Reveal } from "@/components/claim/reveal";
 
-export function Claim() {
+export default function Claim() {
   const { data } = useParams();
   console.log(data);
   const [revealed, setRevealed] = useState(false);

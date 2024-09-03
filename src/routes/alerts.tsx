@@ -17,7 +17,7 @@ function AlertList({ alerts }) {
   );
 }
 
-export function Alerts() {
+export default function Alerts() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["alerts"],
     queryFn: fetchAlerts,

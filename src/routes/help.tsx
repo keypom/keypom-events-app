@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { PageHeading } from "@/components/ui/page-heading";
 import { TelegramIcon } from "@/components/icons";
 
-export function Help() {
+export default function Help() {
   return (
     <VStack p={4} spacing={4}>
       <PageHeading title="Help" />

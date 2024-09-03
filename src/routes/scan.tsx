@@ -14,7 +14,7 @@ import { QrScanner } from "@/components/scanner/qr-scanner";
 import { PageHeading } from "@/components/ui/page-heading";
 import { useNavigate } from "react-router-dom";
 
-export function Scan() {
+export default function Scan() {
   const navigate = useNavigate();
 
   const isValidToken = (value: string) => {
