@@ -4,7 +4,7 @@ import {
   useContext,
   useEffect,
   useState,
-  type ReactNode
+  type ReactNode,
 } from "react";
 
 import { TOKEN_FACTORY_CONTRACT } from "@/constants/common";

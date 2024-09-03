@@ -9,11 +9,13 @@ interface TicketStore {
 }
 
 export const useTicketStore = create<TicketStore>(
-  persist((set) => ({
-    setTicketData: (data: EventDrop) => set({ ticketData: data }),
-    clearTicketData: () => set({ ticketData: null }),
-  }),
+  persist(
+    (set) => ({
+      setTicketData: (data: EventDrop) => set({ ticketData: data }),
+      clearTicketData: () => set({ ticketData: null }),
+    }),
     {
       name: "ticket-storage",
-    }
-  ));
+    },
+  ),
+);

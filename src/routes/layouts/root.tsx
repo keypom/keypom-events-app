@@ -9,7 +9,8 @@ import { OfflineBanner } from "@/components/ui/offline-banner";
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
-export function Root() { // This could be AppLayout
+export function Root() {
+  // This could be AppLayout
   const { state } = useNavigation();
   const ref = useRef<HTMLDivElement>(null);
 

@@ -156,9 +156,7 @@ export function Home() {
         />
       );
     case 3:
-      return (
-        <Navigate to="/" />
-      );
+      return <Navigate to="/" />;
     default:
       return (
         <NotFound404
