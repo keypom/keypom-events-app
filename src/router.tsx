@@ -29,15 +29,10 @@ const router = createBrowserRouter([
         lazy: lazyWithOfflineCheck(() => import("@/routes/home")),
       },
       {
-        path: "conference",
-        children: [
-          {
-            path: "app/:id", // Match /events/event/:id
-            lazy: lazyWithOfflineCheck(
-              () => import("@/routes/conference/conferencePageManager"),
-            ),
-          },
-        ],
+        path: "/app",
+        lazy: lazyWithOfflineCheck(
+          () => import("@/routes/conference/conferencePageManager"),
+        ),
       },
       {
         path: "/help",
@@ -60,7 +55,9 @@ const router = createBrowserRouter([
         children: [
           {
             path: "event/:funderAndEventId",
-            lazy: lazyWithOfflineCheck(() => import("@/routes/adminScan/adminScan")),
+            lazy: lazyWithOfflineCheck(
+              () => import("@/routes/adminScan/adminScan"),
+            ),
           },
         ],
       },
@@ -111,9 +108,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "ticket/:id", // Match /events/event/:id
-            lazy: lazyWithOfflineCheck(
-              () => import("@/routes/tickets/ticket"),
-            ),
+            lazy: lazyWithOfflineCheck(() => import("@/routes/tickets/ticket")),
           },
         ],
       },

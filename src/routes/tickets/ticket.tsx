@@ -6,10 +6,13 @@ import { fetchConferenceData } from "@/hooks/useConferenceData";
 import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useEventCredentials } from "@/stores/event-credentials";
 
 export default function Ticket() {
   const navigate = useNavigate();
   const { secretKey } = useTicketClaimParams();
+  const { setEventCredentials } = useEventCredentials();
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["conferenceData", secretKey],
     queryFn: async () => await fetchConferenceData(secretKey),
@@ -46,11 +49,13 @@ export default function Ticket() {
 
   // Redirect if ticket has been used
   if (maxUses === 2) {
-    navigate(`/conference/app/${eventId}#${secretKey}`);
+    setEventCredentials(eventId, secretKey);
+    navigate("/app");
   }
 
   if (curStep !== 1) {
-    navigate(`/conference/app/${eventId}#${secretKey}`);
+    setEventCredentials(eventId, secretKey);
+    navigate("/app");
   }
 
   switch (account_type) {

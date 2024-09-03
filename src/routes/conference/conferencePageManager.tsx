@@ -1,16 +1,16 @@
 import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 
-//import InConferenceApp from "@/features/conference-app/InConferenceApp";
 import { NotFound404 } from "@/components/dashboard/NotFound404";
-import { useConferenceClaimParams } from "@/hooks/useConferenceClaimParams";
 import { fetchConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
+import { useEventCredentials } from "@/stores/event-credentials";
 import { useQuery } from "@tanstack/react-query";
 import { Navigate } from "react-router-dom";
 import WelcomePage from "./WelcomePage";
 
 export default function ConferencePageManager() {
-  const { secretKey } = useConferenceClaimParams();
+  const { secretKey } = useEventCredentials();
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["conferenceData", secretKey],
     queryFn: async () => await fetchConferenceData(secretKey),
