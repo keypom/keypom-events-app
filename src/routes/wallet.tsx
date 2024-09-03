@@ -8,7 +8,7 @@ import { CollectiblesIcon, JourneysIcon } from "@/components/icons";
 
 import "@near-wallet-selector/modal-ui/styles.css";
 
-export function Wallet() {
+export default function Wallet() {
   const { modal, isLoggedIn } = useAuthWalletContext();
   const handleConnectWallet = () => {
     if (!modal) {

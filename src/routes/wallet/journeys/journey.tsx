@@ -87,7 +87,7 @@ const JourneyDetails = ({
   );
 };
 
-export function JourneyPage() {
+export default function JourneyPage() {
   const { id } = useParams<{ id: string }>();
 
   const { data, isLoading, isError, error } = useQuery({

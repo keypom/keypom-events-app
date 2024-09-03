@@ -9,7 +9,7 @@ import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
 import { fetchAlerts } from "@/lib/api/alerts";
 import { useQuery } from "@tanstack/react-query";
 
-export function Me() {
+export default function Me() {
   // TODO: We may want to get the most recent alert in a better way, this can be cached.
   // We'll want to subscribe, and not have it rely on rerender.
   const { data: alerts } = useQuery({

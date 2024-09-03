@@ -1,8 +1,21 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { ErrorPage } from "@/error-page";
-import { Root } from "@/routes/layouts/root";
 import { OfflinePage } from "@/offline-page";
+import { Root } from "@/routes/layouts/root";
+import { ComponentType } from "react";
+
+const lazyWithOfflineCheck = (
+  importCallback: () => Promise<{ default: ComponentType<unknown> }>,
+) => {
+  return async () => {
+    if (!navigator.onLine) {
+      return { Component: OfflinePage };
+    }
+    const { default: Component } = await importCallback();
+    return { Component };
+  };
+};
 
 const router = createBrowserRouter([
   {
@@ -13,196 +26,91 @@ const router = createBrowserRouter([
       {
         path: "/",
         index: true,
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Home } = await import("@/routes/home");
-          return { Component: Home };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/home")),
       },
       {
         path: "conference",
         children: [
           {
             path: "app/:id", // Match /events/event/:id
-            async lazy() {
-              if (!navigator.onLine) {
-                return { Component: OfflinePage };
-              }
-              const { ConferencePageManager } = await import(
-                "@/routes/conference/conferencePageManager"
-              );
-              return { Component: ConferencePageManager };
-            },
+            lazy: lazyWithOfflineCheck(
+              () => import("@/routes/conference/conferencePageManager"),
+            ),
           },
         ],
       },
       {
         path: "/help",
-        // TODO: Show cached help page
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Help } = await import("@/routes/help");
-          return { Component: Help };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/help")),
       },
       {
         path: "/agenda",
-        async lazy() {
-          // TODO: Show cached agenda page
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Agenda } = await import("@/routes/agenda");
-          return { Component: Agenda };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/agenda")),
       },
       {
         path: "/scan",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Scan } = await import("@/routes/scan");
-          return { Component: Scan };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/scan")),
       },
       {
         path: "/scan/:data",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Claim } = await import("@/routes/scan/claim");
-          return { Component: Claim };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/scan/claim")),
       },
       {
         path: "/scan",
-        children: [
-          {
-            path: "event/:funderAndEventId",
-            async lazy() {
-              if (!navigator.onLine) {
-                return { Component: OfflinePage };
-              }
-              const { Scanner } = await import("@/routes/adminScan/adminScan");
-              return { Component: Scanner };
-            },
-          },
-        ],
+        lazy: lazyWithOfflineCheck(
+          () => import("@/routes/adminScan/adminScan"),
+        ),
       },
       {
         path: "/wallet",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Wallet } = await import("@/routes/wallet");
-          return { Component: Wallet };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/wallet")),
       },
       {
         path: "/wallet/collectibles",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Collectibles } = await import("@/routes/wallet/collectibles");
-          return { Component: Collectibles };
-        },
+        lazy: lazyWithOfflineCheck(
+          () => import("@/routes/wallet/collectibles"),
+        ),
       },
       {
         path: "/wallet/collectibles/:id",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { CollectiblePage } = await import(
-            "@/routes/wallet/collectibles/collectible"
-          );
-          return { Component: CollectiblePage };
-        },
+        lazy: lazyWithOfflineCheck(
+          () => import("@/routes/wallet/collectibles/collectible"),
+        ),
       },
       {
         path: "/wallet/journeys",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Journeys } = await import("@/routes/wallet/journeys");
-          return { Component: Journeys };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/journeys")),
       },
       {
         path: "/wallet/journeys/:id",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { JourneyPage } = await import(
-            "@/routes/wallet/journeys/journey"
-          );
-          return { Component: JourneyPage };
-        },
+        lazy: lazyWithOfflineCheck(
+          () => import("@/routes/wallet/journeys/journey"),
+        ),
       },
       {
         path: "/wallet/send",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Send } = await import("@/routes/wallet/send");
-          return { Component: Send };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/send")),
       },
       {
         path: "/wallet/receive",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Receive } = await import("@/routes/wallet/receive");
-          return { Component: Receive };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/receive")),
       },
       {
         path: "/me",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Me } = await import("@/routes/me");
-          return { Component: Me };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/me")),
       },
       {
         path: "/alerts",
-        async lazy() {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-          const { Alerts } = await import("@/routes/alerts");
-          return { Component: Alerts };
-        },
+        lazy: lazyWithOfflineCheck(() => import("@/routes/alerts")),
       },
       {
         path: "/tickets",
         children: [
           {
             path: "ticket/:id", // Match /events/event/:id
-            async lazy() {
-              if (!navigator.onLine) {
-                return { Component: OfflinePage };
-              }
-              const { TicketPage } = await import(
-                "@/routes/tickets/ticketPage"
-              );
-              return { Component: TicketPage };
-            },
+            lazy: lazyWithOfflineCheck(
+              () => import("@/routes/tickets/ticketPage"),
+            ),
           },
         ],
       },
@@ -210,13 +118,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    async lazy() {
-      if (!navigator.onLine) {
-        return { Component: OfflinePage };
-      }
-      const { Dashboard } = await import("@/routes/dashboard");
-      return { Component: Dashboard };
-    },
+    lazy: lazyWithOfflineCheck(() => import("@/routes/dashboard")),
   },
 ]);
 

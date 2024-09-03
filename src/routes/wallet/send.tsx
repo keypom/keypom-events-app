@@ -7,7 +7,7 @@ import { SetRecipient } from "@/components/wallet/send/set-recipient";
 import { SetAmount } from "@/components/wallet/send/set-amount";
 import { Sent } from "@/components/wallet/send/sent";
 
-export function Send() {
+export default function Send() {
   const [params] = useSearchParams();
   const toParam = params.get("to");
   const [reciever, setReciever] = useState<string>(toParam || "");

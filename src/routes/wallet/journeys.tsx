@@ -8,7 +8,7 @@ import { fetchJourneys, Journey } from "@/lib/api/journeys";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-export function Journeys() {
+export default function Journeys() {
   const {
     data: journeys,
     error,

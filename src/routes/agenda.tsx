@@ -80,7 +80,7 @@ function FilterCheckbox({
   );
 }
 
-export function Agenda() {
+export default function Agenda() {
   const {
     data: agendaData,
     isLoading,

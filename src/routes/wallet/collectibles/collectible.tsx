@@ -41,7 +41,7 @@ const CollectibleDetails = ({
   );
 };
 
-export function CollectiblePage() {
+export default function CollectiblePage() {
   const { id } = useParams<{ id: string }>();
 
   const { data, isLoading, isError, error } = useQuery({

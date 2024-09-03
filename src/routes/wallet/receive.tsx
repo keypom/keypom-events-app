@@ -4,7 +4,7 @@ import QRCode from "react-qr-code";
 import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
 import { PageHeading } from "@/components/ui/page-heading";
 
-export function Receive() {
+export default function Receive() {
   const { account, isLoggedIn } = useAuthWalletContext();
 
   return (
