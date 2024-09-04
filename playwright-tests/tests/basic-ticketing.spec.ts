@@ -95,6 +95,10 @@ test.describe("Basic ticketing (User shows ticket)", () => {
       );
     });
 
+    test.afterEach(async ({ page }) => {
+      await page.unrouteAll({ behavior: "ignoreErrors" });
+    });
+
     test("should show the ticket QR page", async ({ page }) => {
       const QRPageTitle = await page.getByText(
         "You're attending Redacted 2025",
