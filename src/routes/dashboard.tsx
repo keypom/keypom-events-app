@@ -25,9 +25,11 @@ import {
   type DataItem,
 } from "@/components/dashboard/table/types";
 import { DataTable } from "@/components/dashboard/table";
+import { useAppContext } from "@/contexts/AppContext";
 import { CLOUDFLARE_IPFS, TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import { NotFound404 } from "@/components/dashboard/NotFound404";
-
+import useDeletion from "@/components/dashboard/appModal/useDeletion";
+import { performDeletionLogic } from "@/components/dashboard/appModal/PerformDeletion";
 import { truncateAddress } from "@/utils/truncateAddress";
 import { formatTokensAvailable } from "@/utils/formatTokensAvailable";
 import eventHelperInstance from "@/lib/event";
@@ -36,9 +38,7 @@ import { CreateDropModal } from "@/components/dashboard/CreateDropModal/CreateDr
 import QRViewerModal from "@/components/dashboard/QRViewerModal";
 import { Wallet } from "@near-wallet-selector/core";
 import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
-
-import { TokenDeleteModal } from "@/components/modals/token-delete";
-import { useTokenDeleteModalStore } from "@/stores/token-delete-modal";
+import { AppModal } from "@/components/dashboard/appModal/AppModal";
 
 export interface ScavengerHunt {
   piece: string;
@@ -123,6 +123,7 @@ const capitalizeFirstLetter = (string) => {
 };
 
 export function Dashboard() {
+  const { setAppModal } = useAppContext();
   const { selector, account } = useAuthWalletContext();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -185,27 +186,26 @@ export function Dashboard() {
     getAccountInformation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
-  const onDeleteModalOpen = useTokenDeleteModalStore((state) => state.onOpen);
-  const setDeleteArgs = useTokenDeleteModalStore(
-    (state) => state.setDeletionArgs,
-  );
+
   const handleDeleteClick = async (dropId) => {
     console.log("deleting", dropId);
-
-    if (!wallet) {
-      console.error("Wallet is undefined, unable to delete.");
-      return;
-    }
-
     const deletionArgs = {
       wallet,
       dropId,
+      setAppModal,
       getAccountInformation,
     };
 
-    onDeleteModalOpen();
-    setDeleteArgs(deletionArgs);
+    openConfirmationModal(
+      deletionArgs,
+      "Are you sure you want to delete this drop?",
+      performDeletionLogic,
+    );
   };
+
+  const openConfirmationModal = useDeletion({
+    setAppModal,
+  }).openConfirmationModal;
 
   const getTableRows: GetTicketDataFn = (data, handleDeleteClick) => {
     if (!data) return [];
@@ -415,8 +415,7 @@ export function Dashboard() {
           modalType={dropType}
           onClose={handleCreateDropClose}
         />
-
-        <TokenDeleteModal />
+        <AppModal />
         {isLoading ? (
           <Skeleton height="40px" mb="4" width="200px" />
         ) : (

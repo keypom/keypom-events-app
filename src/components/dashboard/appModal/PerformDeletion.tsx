@@ -3,10 +3,9 @@
 import { type Wallet } from "@near-wallet-selector/core";
 import { Button, ModalContent, Text, VStack } from "@chakra-ui/react";
 
-// import ProgressModalContent from "./ProgessModalContent";
+import ProgressModalContent from "./ProgessModalContent";
 import CompletionModalContent from "./CompletionModal";
 import eventHelperInstance from "@/lib/event";
-// import { useTokenDeleteModalStore } from "@/stores/token-delete-modal";
 
 export const performDeletionLogic = async ({
   wallet,
@@ -21,17 +20,17 @@ export const performDeletionLogic = async ({
 }) => {
   try {
     // Completion Modal
-    // setAppModal({
-    //   isOpen: true,
-    //   size: "xl",
-    //   modalContent: (
-    //     <ProgressModalContent
-    //       title="Deleting Drop"
-    //       progress={0}
-    //       message="Please wait while we delete the drop..."
-    //     />
-    //   ),
-    // });
+    setAppModal({
+      isOpen: true,
+      size: "xl",
+      modalContent: (
+        <ProgressModalContent
+          title="Deleting Drop"
+          progress={0}
+          message="Please wait while we delete the drop..."
+        />
+      ),
+    });
 
     await eventHelperInstance.deleteConferenceDrop({
       wallet,
