@@ -48,7 +48,12 @@ export function LatestAlert() {
         )}
       </Flex>
       {isLoading && <Spinner />}
-      {alerts && (alerts.length > 0 ? <AlertItem {...alerts[0]} /> : <div>No alerts found.</div>)}
+      {alerts &&
+        (alerts.length > 0 ? (
+          <AlertItem {...alerts[0]} />
+        ) : (
+          <div>No alerts found.</div>
+        ))}
       {isError && <div>{`Error: ${error.message}.`}</div>}
     </VStack>
   );

@@ -16,7 +16,7 @@ import { QRDetails } from "@/components/tickets/qr-details";
 import eventHelperInstance from "@/lib/event";
 import {
   type FunderEventMetadata,
-  type TicketInfoMetadata
+  type TicketInfoMetadata,
 } from "@/lib/eventsHelper";
 
 interface TicketQRCodeProps {

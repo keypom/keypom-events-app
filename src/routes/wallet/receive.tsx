@@ -8,7 +8,7 @@ export default function Receive() {
     account_id: "anybody.testnet", // TODO: need to modify
     display_name: "No Name Account", // TODO: need to modify
   };
-  
+
   return (
     <VStack p={4}>
       <PageHeading title="Receive" showBackButton />

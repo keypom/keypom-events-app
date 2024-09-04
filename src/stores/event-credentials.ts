@@ -12,11 +12,10 @@ export const useEventCredentials = create<EventCredentialsStore>()(
     (set) => ({
       eventId: "",
       secretKey: "",
-      setEventCredentials: (eventId, secretKey) =>
-        set({ eventId, secretKey }),
+      setEventCredentials: (eventId, secretKey) => set({ eventId, secretKey }),
     }),
     {
       name: "event-credentials", // Name of the item in localStorage
-    }
-  )
+    },
+  ),
 );

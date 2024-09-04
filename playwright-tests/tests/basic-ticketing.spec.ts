@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { DROP_ID, EVENT_ID, FACTORY_ACCOUNT, FUNDER_ID, UNSCANNED_TICKET_PRIVATE_KEY } from "../utils/constants";
+import {
+  DROP_ID,
+  EVENT_ID,
+  FACTORY_ACCOUNT,
+  FUNDER_ID,
+  UNSCANNED_TICKET_PRIVATE_KEY,
+} from "../utils/constants";
 import { mockRpcRequest } from "../utils/rpc-mock";
 
 test.describe("Basic ticketing (User shows ticket)", () => {
@@ -37,12 +43,12 @@ test.describe("Basic ticketing (User shows ticket)", () => {
       await mockRpcRequest({
         page,
         filterParams: {
-          methodName: "ft_metadata"
+          methodName: "ft_metadata",
         },
         modifyOriginalResultFunction: (result) => {
           result.symbol = "SOV3";
           return result;
-        }
+        },
       });
 
       await mockRpcRequest({
@@ -106,7 +112,7 @@ test.describe("Basic ticketing (User shows ticket)", () => {
         },
         mockedResult: {
           uses_remaining: 2,
-          drop_id: DROP_ID
+          drop_id: DROP_ID,
         },
       });
 
@@ -124,20 +130,25 @@ test.describe("Basic ticketing (User shows ticket)", () => {
           filterParams: {
             request_type: "view_account",
           },
-          mockedResult: { // account already exists
+          mockedResult: {
+            // account already exists
             account_id: "testing123",
             balance: "0",
           },
-        })
-        await page.getByPlaceholder('Username').fill('testing123');
+        });
+        await page.getByPlaceholder("Username").fill("testing123");
 
         // NEED TO BLUR TO TRIGGER VALIDATION
-        await page.getByPlaceholder('Username').blur();
+        await page.getByPlaceholder("Username").blur();
 
-        const errorMessage = page.getByText("Username is invalid or already taken.");
+        const errorMessage = page.getByText(
+          "Username is invalid or already taken.",
+        );
         await expect(errorMessage).toBeVisible();
 
-        const continueButton = page.getByRole("button", { name: "Begin Journey" });
+        const continueButton = page.getByRole("button", {
+          name: "Begin Journey",
+        });
         expect(continueButton).not.toBeEnabled();
       });
 
@@ -148,16 +159,20 @@ test.describe("Basic ticketing (User shows ticket)", () => {
             request_type: "view_account",
           },
           mockedResult: {}, // account does not exist
-        })
-        await page.getByPlaceholder('Username').fill('basic-ticket-testing');
+        });
+        await page.getByPlaceholder("Username").fill("basic-ticket-testing");
 
         // NEED TO BLUR TO TRIGGER VALIDATION
-        await page.getByPlaceholder('Username').blur();
+        await page.getByPlaceholder("Username").blur();
 
-        const errorMessage = page.getByText("Username is invalid or already taken.");
+        const errorMessage = page.getByText(
+          "Username is invalid or already taken.",
+        );
         await expect(errorMessage).not.toBeVisible();
 
-        const continueButton = page.getByRole("button", { name: "Begin Journey" });
+        const continueButton = page.getByRole("button", {
+          name: "Begin Journey",
+        });
         expect(continueButton).toBeEnabled();
       });
     });
@@ -292,12 +307,11 @@ test.describe("Basic ticketing (User shows ticket)", () => {
         },
         modifyOriginalResultFunction: (result) => {
           result.metadata = JSON.stringify({
-            "nope": {
+            nope: {
               name: "Some other event",
               dateCreated: "1724680461141",
               id: "nope",
-              description:
-                "Join us at some other event",
+              description: "Join us at some other event",
               location: "somewhere else",
               date: {
                 startDate: 1742702400000,

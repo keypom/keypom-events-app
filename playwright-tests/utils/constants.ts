@@ -1,4 +1,3 @@
-
 export const UNSCANNED_TICKET_PRIVATE_KEY =
   "2pcZwjQnvmpUXg29D7V86oPaop5KxR2RyWiPJPXub7XiBaMNGBCTuruPwoX71nGSCSQjSGopSmENtfDNkcmao2XL";
 export const DROP_ID = "ga_pass";

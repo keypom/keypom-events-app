@@ -7,7 +7,7 @@ export interface Alert {
   linkTitle: string;
 }
 
-export const fetchAlerts: () => Promise<Alert[]>  = async () => {
+export const fetchAlerts: () => Promise<Alert[]> = async () => {
   const response = await fetch("https://example.com/alerts");
   if (!response.ok) {
     throw new Error("Network response was not ok");
