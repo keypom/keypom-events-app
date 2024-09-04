@@ -6,6 +6,7 @@ import { Root } from "@/routes/layouts/root";
 import { ComponentType } from "react";
 import { AuthWalletContextProvider } from "./contexts/AuthWalletContext";
 import { Dashboard } from "@/routes/dashboard";
+import { PageNotFound } from "./404-page";
 
 const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
@@ -123,6 +124,10 @@ const router = createBrowserRouter([
         <Dashboard />
       </AuthWalletContextProvider>
     ),
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
   },
 ]);
 
