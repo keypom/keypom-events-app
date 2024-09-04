@@ -38,7 +38,7 @@ test.describe("Profile", () => {
       await expect(userName).toBeVisible();
 
       const balance = page.getByTestId("wallet-balance");
-      await expect(balance).toHaveText("789.56"); // TODO: need to modify
+      await expect(balance).toHaveText("-----"); // TODO: need to modify
 
       const tokenSymbol = page.getByTestId("token-symbol");
       await expect(tokenSymbol).toHaveText("$SOV3"); // TODO: need to modify

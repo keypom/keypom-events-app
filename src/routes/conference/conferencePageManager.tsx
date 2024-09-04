@@ -1,21 +1,15 @@
 import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 
 import { NotFound404 } from "@/components/dashboard/NotFound404";
-import { fetchConferenceData } from "@/hooks/useConferenceData";
+import { useConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
-import { useEventCredentials } from "@/stores/event-credentials";
-import { useQuery } from "@tanstack/react-query";
 import { Navigate } from "react-router-dom";
 import WelcomePage from "./WelcomePage";
+import { useEventCredentials } from "@/stores/event-credentials";
 
 export default function ConferencePageManager() {
   const { secretKey } = useEventCredentials();
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["conferenceData", secretKey],
-    queryFn: async () => await fetchConferenceData(secretKey),
-    retry: 1,
-  });
+  const { data, isLoading, isError, error } = useConferenceData(secretKey);
 
   if (isError) {
     return <NotFound404 header="Error" subheader={error?.message} />;
@@ -40,7 +34,7 @@ export default function ConferencePageManager() {
 
   const { symbol } = tokenInfo;
 
-  const tokensToClaim = eventHelperInstance.yoctoToNear(starting_token_balance);
+  const tokensToClaim = eventHelperInstance.yoctoToNear(starting_token_balance!);
 
   switch (curStep) {
     case 2:

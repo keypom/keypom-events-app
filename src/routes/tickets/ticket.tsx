@@ -2,22 +2,18 @@ import { NotFound404 } from "@/components/dashboard/NotFound404";
 import { useTicketClaimParams } from "@/hooks/useTicketClaimParams";
 
 import TicketQRPage from "@/components/tickets/ticket-qr-code";
-import { fetchConferenceData } from "@/hooks/useConferenceData";
-import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import {
+  useConferenceData
+} from "@/hooks/useConferenceData";
 import { useEventCredentials } from "@/stores/event-credentials";
+import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 export default function Ticket() {
   const navigate = useNavigate();
   const { secretKey } = useTicketClaimParams();
   const { setEventCredentials } = useEventCredentials();
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["conferenceData", secretKey],
-    queryFn: async () => await fetchConferenceData(secretKey),
-    retry: 1,
-  });
+  const { data, isLoading, isError, error } = useConferenceData(secretKey);
 
   const onScanned = () => {
     navigate(0);
