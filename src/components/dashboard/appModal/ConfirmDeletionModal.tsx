@@ -26,13 +26,13 @@ const ConfirmDeletionModal = ({
         <Button
           background={"red.400"}
           maxWidth={"fit-content"}
-          variant="navigation"
+          variant="primary"
           onClick={onConfirm}
         >
           Delete
         </Button>
         <Button
-          variant="navigation"
+          variant="primary"
           background={"transparent"}
           color={"white"}
           border={"1px solid white"}

@@ -32,7 +32,7 @@ export function LatestAlert() {
 
         {alerts && alerts.length > 0 && (
           <Button
-            variant="navigation"
+            variant="primary"
             as={Link}
             to="/alerts"
             flexDirection="row"

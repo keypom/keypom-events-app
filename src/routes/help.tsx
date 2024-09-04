@@ -34,7 +34,7 @@ export default function Help() {
         as={Link}
         to="https://t.me/redactedbangkok"
         target="_blank"
-        variant={"redacted"}
+        variant={"custom"}
       >
         <TelegramIcon
           width={24}
