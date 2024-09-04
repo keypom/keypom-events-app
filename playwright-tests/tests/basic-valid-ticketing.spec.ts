@@ -9,7 +9,6 @@ import {
 import { mockRpcRequest } from "../utils/rpc-mock";
 
 test.describe("Basic invalid ticketing (User shows ticket)", () => {
-
   test.afterEach(async ({ page }) => {
     await page.unrouteAll({ behavior: "ignoreErrors" });
   });
