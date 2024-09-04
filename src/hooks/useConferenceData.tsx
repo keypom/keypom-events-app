@@ -7,8 +7,10 @@ import {
   TicketMetadataExtra,
 } from "@/lib/eventsHelper";
 import { AttendeeKeyItem } from "@/lib/keypom";
+import { useEventCredentials } from "@/stores/event-credentials";
 import { TokenAsset } from "@/types/common";
 import { getPubFromSecret } from "@keypom/core";
+import { useQuery } from "@tanstack/react-query";
 
 export interface ConferenceData {
   ticketInfo: TicketInfoMetadata;
@@ -16,11 +18,11 @@ export interface ConferenceData {
   keyInfo: AttendeeKeyItem;
   ticketMetadata: TicketInfoMetadata;
   ticketExtra: TicketMetadataExtra;
-  eventInfo: FunderEventMetadata | undefined;
+  eventInfo: FunderEventMetadata;
   tokenInfo: TokenAsset;
 }
 
-export const fetchConferenceData = async (secretKey: string) => {
+const fetchConferenceData = async (secretKey: string) => {
   try {
     const pubKey = getPubFromSecret(secretKey);
     const keyInfo = await eventHelperInstance.viewCall({
@@ -58,7 +60,6 @@ export const fetchConferenceData = async (secretKey: string) => {
     });
 
     if (!eventInfo) {
-      console.log("Event not found");
       throw new Error("Event not found");
     }
 
@@ -79,4 +80,17 @@ export const fetchConferenceData = async (secretKey: string) => {
     // Re-throw the error to ensure React Query handles it
     return Promise.reject(error);
   }
+};
+
+export const useConferenceData = (providedKey?: string) => {
+  const { secretKey: savedKey } = useEventCredentials();
+
+  const secretKey = providedKey ? providedKey : savedKey;
+
+  return useQuery<ConferenceData, Error>({
+    queryKey: ["conferenceData", secretKey],
+    queryFn: async () => await fetchConferenceData(secretKey),
+    retry: 1,
+    enabled: !!secretKey,
+  });
 };

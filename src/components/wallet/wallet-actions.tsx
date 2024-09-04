@@ -1,8 +1,17 @@
 import { ArrowIcon, ScanIcon } from "@/components/icons";
+import { useAccountData } from "@/hooks/useAccountData";
+import { useConferenceData } from "@/hooks/useConferenceData";
 import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 export function WalletActions() {
+  const { data, isLoading, isError } = useAccountData();
+  const { data: conferenceData } = useConferenceData();
+
+  const balance = isLoading || isError ? "-----" : data?.balance;
+
+  const symbol = conferenceData?.tokenInfo.symbol || "---";
+
   return (
     <>
       <VStack spacing={2} width={"100%"}>
@@ -14,7 +23,7 @@ export function WalletActions() {
           textAlign="center"
           data-testid="wallet-balance"
         >
-          789.56
+          {balance}
         </Heading>
         <HStack spacing={2}>
           <Box
@@ -29,7 +38,7 @@ export function WalletActions() {
             color="brand.400"
             data-testid="token-symbol"
           >
-            $SOV3
+            ${symbol}
           </Text>
           <Box
             width="115px"
