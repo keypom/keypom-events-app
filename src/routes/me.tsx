@@ -6,9 +6,14 @@ import { WalletActions } from "@/components/wallet/wallet-actions";
 import { useAccountData } from "@/hooks/useAccountData";
 
 export default function Me() {
-  const { data } = useAccountData();
+  const { data, isLoading, isError, error } = useAccountData();
 
-  const accountId = data?.accountId || "------";
+  console.log("data", data);
+  console.log("isLoading", isLoading);
+  console.log("isError", isError);
+  console.log("error", error);
+
+  const accountId = isLoading || isError ? "------" : data?.accountId;
 
   return (
     <VStack spacing={4} pt={4}>

@@ -5,8 +5,12 @@ import App from "./App";
 async function prepare() {
   // Skip if in test environment
   const isTestEnv = import.meta.env.VITE_IS_TEST;
-  if (isTestEnv) return;
+  if (isTestEnv) {
+    console.log("Skipping mock service worker in test environment");
+    return;
+  }
 
+  console.log("Starting mock service worker");
   const { worker } = await import("@/mocks/browser");
 
   return worker.start({

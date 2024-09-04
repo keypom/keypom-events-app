@@ -1,3 +1,4 @@
+import { FACTORY_ACCOUNT } from './../utils/constants';
 import test, { expect } from "@playwright/test";
 import { mockRpcRequest } from "../utils/rpc-mock";
 
@@ -8,13 +9,20 @@ test.describe("Profile", () => {
     });
 
     test.beforeEach(async ({ page }) => {
+      await page.route("https://example.com/alerts", (route) => {
+        route.fulfill({
+          status: 200,
+          body: JSON.stringify([]),
+        });
+      });
+
       await mockRpcRequest({
         page,
         filterParams: {
           method_name: "recover_account",
         },
         mockedResult: {
-          account_id: "anybody.testnet", // TODO: need to modify
+          account_id: `anybody.${FACTORY_ACCOUNT}`,
         },
       });
 
@@ -23,9 +31,7 @@ test.describe("Profile", () => {
         filterParams: {
           method_name: "ft_balance_of",
         },
-        mockedResult: {
-          balance: "100", // TODO: need to modify
-        },
+        mockedResult: "50000000000000000000000000",
       });
 
       await page.goto("/me");
@@ -34,11 +40,14 @@ test.describe("Profile", () => {
     test("should see their balance, username, and event token symbol", async ({
       page,
     }) => {
-      const userName = page.getByText("No-Name Profile"); // TODO: need to modify
+      const nickName = page.getByText("No-Name Profile"); // TODO: need to modify
+      await expect(nickName).toBeVisible();
+
+      const userName = page.getByText(`@anybody.${FACTORY_ACCOUNT}`); // TODO: need to modify
       await expect(userName).toBeVisible();
 
       const balance = page.getByTestId("wallet-balance");
-      await expect(balance).toHaveText("-----"); // TODO: need to modify
+      await expect(balance).toHaveText("50.0000"); // TODO: need to modify
 
       const tokenSymbol = page.getByTestId("token-symbol");
       await expect(tokenSymbol).toHaveText("$SOV3"); // TODO: need to modify

@@ -5,10 +5,10 @@ import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 export function WalletActions() {
-  const { data } = useAccountData();
+  const { data, isLoading, isError } = useAccountData();
   const { data: conferenceData } = useConferenceData();
 
-  const balance = data?.balance || "-----";
+  const balance = isLoading || isError ? "-----" : data?.balance;
 
   const symbol = conferenceData?.tokenInfo.symbol || "---";
 

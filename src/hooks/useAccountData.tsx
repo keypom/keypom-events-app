@@ -9,31 +9,36 @@ export interface AccountData {
   balance: string;
 }
 
-export const fetchAccountData = async (secretKey: string) => {
-  const pubKey = getPubFromSecret(secretKey);
+const fetchAccountData = async (secretKey: string) => {
+  try {
+    const pubKey = getPubFromSecret(secretKey);
 
-  const recoveredAccount = await keypomInstance.viewCall({
-    contractId: TOKEN_FACTORY_CONTRACT,
-    methodName: "recover_account",
-    args: { key_or_account_id: pubKey },
-  });
+    const recoveredAccount = await keypomInstance.viewCall({
+      contractId: TOKEN_FACTORY_CONTRACT,
+      methodName: "recover_account",
+      args: { key_or_account_id: pubKey },
+    });
 
-  if (!recoveredAccount) {
-    throw new Error("Account not found");
+    if (!recoveredAccount) {
+      throw new Error("Account not found");
+    }
+
+    const balance = await keypomInstance.viewCall({
+      contractId: TOKEN_FACTORY_CONTRACT,
+      methodName: "ft_balance_of",
+      args: { account_id: recoveredAccount.account_id },
+    });
+
+    const tokensAvailable = keypomInstance.yoctoToNearWith4Decimals(balance);
+
+    return {
+      accountId: recoveredAccount.account_id,
+      balance: tokensAvailable,
+    };
+  } catch (error) {
+    // Re-throw the error to ensure React Query handles it
+    return Promise.reject(error);
   }
-
-  const balance = await keypomInstance.viewCall({
-    contractId: TOKEN_FACTORY_CONTRACT,
-    methodName: "ft_balance_of",
-    args: { account_id: recoveredAccount.account_id },
-  });
-
-  const tokensAvailable = keypomInstance.yoctoToNearWith4Decimals(balance);
-
-  return {
-    accountId: recoveredAccount.account_id,
-    balance: tokensAvailable,
-  };
 };
 
 export const useAccountData = () => {
@@ -41,7 +46,8 @@ export const useAccountData = () => {
 
   return useQuery<AccountData, Error>({
     queryKey: ["accountData", secretKey],
-    queryFn: () => fetchAccountData(secretKey),
+    queryFn: async () => await fetchAccountData(secretKey),
     enabled: !!secretKey,
+    retry: 3,
   });
 };
