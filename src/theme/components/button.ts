@@ -67,6 +67,9 @@ const primaryVariant = {
   fontWeight: "bold",
   lineHeight: "1rem",
   fontStretch: "condensed",
+  _hover: {
+    background: "brand.600",
+  },
 };
 
 export const ButtonStyle = defineStyleConfig({
