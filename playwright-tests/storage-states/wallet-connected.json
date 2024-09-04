@@ -5,20 +5,8 @@
       "origin": "http://localhost:5173",
       "localStorage": [
         {
-          "name": "near-wallet-selector:recentlySignedInWallets",
-          "value": "[\"my-near-wallet\"]"
-        },
-        {
-          "name": "near-wallet-selector:selectedWalletId",
-          "value": "\"my-near-wallet\""
-        },
-        {
-          "name": "near_app_wallet_auth_key",
-          "value": "{\"accountId\":\"anybody.near\",\"allKeys\":[\"ed25519:CziSGowWUKiP5N5pqGUgXCJXtqpySAk29YAU6zEs5RAi\"]}"
-        },
-        {
-          "name": "near-api-js:keystore:anybody.near:mainnet",
-          "value": "ed25519:67p9ygtfVNZz5AzMkeN4bqstCck8RWxWDthcTa7JaBvxkrBRTc6A43SsuPy9LdtiR6XtSRD1HiS4KQTWCZw83FKS"
+          "name": "event-credentials",
+          "value": "{\"state\":{\"eventId\":\"aa4a7964-c917-4010-92c3-9e4b3f7dfc5e\",\"secretKey\":\"4jnvEhoX633szMWEpTy4GyshaUZ1TRepHS1QbYXHy3AtfigfWshFTLPJsFSS76UWELW6ZxMiJW1Vug5VtHTd5TA9\"},\"version\":0}"
         }
       ]
     }

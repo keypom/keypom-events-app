@@ -47,6 +47,7 @@ export function PageHeading({
       >
         {showBackButton && (
           <Button
+            data-testid="back-button"
             onClick={() => navigate(-1)}
             variant="transparent"
             position={"absolute"}

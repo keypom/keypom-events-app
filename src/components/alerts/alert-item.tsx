@@ -14,6 +14,7 @@ export function AlertItem({
 }: Alert) {
   return (
     <VStack
+      data-testid="alert-item"
       spacing={2}
       pt={2}
       width="100%"

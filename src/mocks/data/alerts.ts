@@ -8,7 +8,7 @@ export default [
       "Our system will undergo scheduled maintenance from 12:00 AM to 4:00 AM. Please save your work and log out before the maintenance window.",
     href: "/maintenance",
     linkTitle: "CUSTOM LINK TITLE",
-    creationDate: getRandomDate().toDateString(),
+    creationDate: getRandomDate().toISOString(),
   },
   {
     id: "2",
@@ -17,7 +17,7 @@ export default [
       "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!",
     href: "/features",
     linkTitle: "CUSTOM LINK TITLE",
-    creationDate: getRandomDate().toDateString(),
+    creationDate: getRandomDate().toISOString(),
   },
   {
     id: "3",
@@ -26,7 +26,7 @@ export default [
       "A critical security update has been released. Please update your software to the latest version to ensure your data remains secure.",
     href: "/updates",
     linkTitle: "CUSTOM LINK TITLE",
-    creationDate: getRandomDate().toDateString(),
+    creationDate: getRandomDate().toISOString(),
   },
   {
     id: "4",
@@ -35,7 +35,7 @@ export default [
       "To enhance security, we require you to verify your account. Follow the link to complete the verification process.",
     href: "/verify",
     linkTitle: "CUSTOM LINK TITLE",
-    creationDate: getRandomDate().toDateString(),
+    creationDate: getRandomDate().toISOString(),
   },
   {
     id: "5",
@@ -44,6 +44,6 @@ export default [
       "Join us for a live webinar where we’ll share tips and tricks to help you get the most out of our platform. Don’t miss out on this opportunity!",
     href: "/webinar",
     linkTitle: "CUSTOM LINK TITLE",
-    creationDate: getRandomDate().toDateString(),
+    creationDate: getRandomDate().toISOString(),
   },
 ];

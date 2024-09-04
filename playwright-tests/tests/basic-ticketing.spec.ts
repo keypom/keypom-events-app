@@ -1,12 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { DROP_ID, EVENT_ID, FACTORY_ACCOUNT, FUNDER_ID, UNSCANNED_TICKET_PRIVATE_KEY } from "../utils/constants";
 import { mockRpcRequest } from "../utils/rpc-mock";
-
-const UNSCANNED_TICKET_PRIVATE_KEY =
-  "2pcZwjQnvmpUXg29D7V86oPaop5KxR2RyWiPJPXub7XiBaMNGBCTuruPwoX71nGSCSQjSGopSmENtfDNkcmao2XL";
-const DROP_ID = "ga_pass";
-const FUNDER_ID = "benjiman.testnet";
-const EVENT_ID = "aa4a7964-c917-4010-92c3-9e4b3f7dfc5e";
-const FACTORY_ACCOUNT = "1724680439172-factory.testnet";
 
 test.describe("Basic ticketing (User shows ticket)", () => {
   test.describe("Ticket has not been scanned, ticket exists", () => {
