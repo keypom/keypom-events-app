@@ -2,9 +2,7 @@ import { NotFound404 } from "@/components/dashboard/NotFound404";
 import { useTicketClaimParams } from "@/hooks/useTicketClaimParams";
 
 import TicketQRPage from "@/components/tickets/ticket-qr-code";
-import {
-  useConferenceData
-} from "@/hooks/useConferenceData";
+import { useConferenceData } from "@/hooks/useConferenceData";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";

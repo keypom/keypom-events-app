@@ -11,7 +11,7 @@ export function WalletActions() {
   const balance = data?.balance || "-----";
 
   const symbol = conferenceData?.tokenInfo.symbol || "---";
-  
+
   return (
     <>
       <VStack spacing={2} width={"100%"}>
@@ -23,7 +23,7 @@ export function WalletActions() {
           textAlign="center"
           data-testid="wallet-balance"
         >
-          {balance} 
+          {balance}
         </Heading>
         <HStack spacing={2}>
           <Box

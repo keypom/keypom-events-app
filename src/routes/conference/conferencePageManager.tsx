@@ -34,7 +34,9 @@ export default function ConferencePageManager() {
 
   const { symbol } = tokenInfo;
 
-  const tokensToClaim = eventHelperInstance.yoctoToNear(starting_token_balance!);
+  const tokensToClaim = eventHelperInstance.yoctoToNear(
+    starting_token_balance!,
+  );
 
   switch (curStep) {
     case 2:
