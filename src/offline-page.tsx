@@ -27,16 +27,10 @@ export function OfflinePage() {
       <Heading>Oops!</Heading>
       <Text>You are not connected to the internet</Text>
       <HStack>
-        <Button
-          variant="primary"
-          onClick={handleRetry}
-        >
+        <Button variant="primary" onClick={handleRetry}>
           Retry
         </Button>
-        <Button
-          variant="primary"
-          onClick={handleGoHome}
-        >
+        <Button variant="primary" onClick={handleGoHome}>
           Go to Home
         </Button>
       </HStack>

@@ -1,7 +1,5 @@
 import { Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
-import {
-  useNavigate
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function PageNotFound() {
   const navigate = useNavigate();
@@ -16,10 +14,7 @@ export function PageNotFound() {
       <Heading>404</Heading>
       <Text>Page not found.</Text>
       <HStack>
-        <Button
-          variant="primary"
-          onClick={() => navigate("/")}
-        >
+        <Button variant="primary" onClick={() => navigate("/")}>
           Go to Home
         </Button>
       </HStack>

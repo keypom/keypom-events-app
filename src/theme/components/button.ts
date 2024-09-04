@@ -69,7 +69,7 @@ const primaryVariant = {
   fontStretch: "condensed",
   _hover: {
     background: "brand.600",
-  }
+  },
 };
 
 export const ButtonStyle = defineStyleConfig({
