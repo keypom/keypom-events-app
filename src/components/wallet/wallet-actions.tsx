@@ -1,5 +1,5 @@
-import { VStack, Heading, HStack, Box, Text, Button } from "@chakra-ui/react";
 import { ArrowIcon, ScanIcon } from "@/components/icons";
+import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 export function WalletActions() {
@@ -12,6 +12,7 @@ export function WalletActions() {
           color="white"
           fontWeight="400"
           textAlign="center"
+          data-testid="wallet-balance"
         >
           789.56
         </Heading>
@@ -26,6 +27,7 @@ export function WalletActions() {
             fontSize="2xl"
             fontWeight="medium"
             color="brand.400"
+            data-testid="token-symbol"
           >
             $SOV3
           </Text>

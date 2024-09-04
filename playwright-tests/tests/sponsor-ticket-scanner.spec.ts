@@ -20,6 +20,10 @@ test.describe("Basic ticketing (Sponsor scans ticket)", () => {
     await page.waitForSelector("text=Scanning Tickets For");
   });
 
+  test.afterEach(async ({ page }) => {
+    await page.unrouteAll({ behavior: "ignoreErrors" });
+  });
+
   test.describe("Ticket has not been scanned, single ticket exists", () => {
     test("should successfuly scan a valid ticket", async ({ page }) => {
       await mockTicketScan(page, NOT_SCANNED_KEY, 3, DROP_ID, 3);
@@ -34,7 +38,6 @@ test.describe("Basic ticketing (Sponsor scans ticket)", () => {
       await mockTicketScan(page, NOT_SCANNED_KEY, 3, DROP_ID, 3);
       await expect(page.getByText("Success")).toBeVisible();
       await mockTicketScan(page, ANOTHER_UNSCANNED_KEY, 3, DROP_ID, 3);
-      await page.unrouteAll({ behavior: "ignoreErrors" });
     });
 
     test("should display an error when ticket just scanned", async ({

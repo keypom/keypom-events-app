@@ -7,23 +7,21 @@ import {
   Skeleton,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
 import { getPubFromSecret } from "@keypom/core";
+import { useEffect } from "react";
 
 import { IconBox } from "@/components/dashboard/iconBox";
-import { BoxWithShape } from "@/components/tickets/BoxWithShape";
-import { QrDetails } from "@/components/tickets/QrDetails";
-import {
-  type TicketInfoMetadata,
-  type TicketMetadataExtra,
-  type FunderEventMetadata,
-} from "@/lib/eventsHelper";
+import { BoxWithShape } from "@/components/tickets/box-with-shape";
+import { QRDetails } from "@/components/tickets/qr-details";
 import eventHelperInstance from "@/lib/event";
+import {
+  type FunderEventMetadata,
+  type TicketInfoMetadata,
+} from "@/lib/eventsHelper";
 
-interface TicketQRPageProps {
+interface TicketQRCodeProps {
   eventInfo?: FunderEventMetadata;
   ticketInfo?: TicketInfoMetadata;
-  ticketInfoExtra?: TicketMetadataExtra;
   isLoading: boolean;
   eventId: string;
   funderId: string;
@@ -31,13 +29,13 @@ interface TicketQRPageProps {
   onScanned: () => void;
 }
 
-export default function TicketQRPage({
+export default function TicketQRCode({
   eventInfo,
   ticketInfo,
   isLoading,
   secretKey,
   onScanned,
-}: TicketQRPageProps) {
+}: TicketQRCodeProps) {
   // Effect to check for QR scan and reload if necessary
   useEffect(() => {
     const checkForQRScanned = async () => {
@@ -106,7 +104,7 @@ export default function TicketQRPage({
                 {isLoading ? (
                   <Skeleton height="200px" width="full" />
                 ) : (
-                  <QrDetails
+                  <QRDetails
                     eventInfo={eventInfo!}
                     qrValue={secretKey}
                     ticketInfo={ticketInfo!}

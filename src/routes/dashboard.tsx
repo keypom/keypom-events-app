@@ -122,7 +122,7 @@ const capitalizeFirstLetter = (string) => {
   return `${string.charAt(0).toUpperCase() as string}${string.slice(1).toString() as string}`;
 };
 
-export default function Dashboard() {
+export function Dashboard() {
   const { setAppModal } = useAppContext();
   const { selector, account } = useAuthWalletContext();
 

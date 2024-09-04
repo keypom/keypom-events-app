@@ -22,15 +22,4 @@ export const fetchAlerts: () => Promise<Alert[]> = async () => {
   );
 
   return alerts;
-  return response.json();
-};
-
-export const fetchMostRecentAlert: () => Promise<Alert | null> = async () => {
-  try {
-    const alerts = await fetchAlerts();
-    return alerts[0] || null; // Return the most recent alert or null if no alerts
-  } catch (error) {
-    console.error("Failed to fetch alerts:", error);
-    return null; // Return null if there's an error
-  }
 };

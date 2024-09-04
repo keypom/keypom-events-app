@@ -6,13 +6,13 @@ import {
 } from "@/lib/eventsHelper";
 import { dateAndTimeToText } from "@/utils/parseDates";
 
-interface QrDetailsProps {
+interface QRDetailsProps {
   qrValue: string;
   eventInfo: FunderEventMetadata;
   ticketInfo: TicketInfoMetadata;
 }
 
-export const QrDetails = ({ qrValue, eventInfo }: QrDetailsProps) => {
+export const QRDetails = ({ qrValue, eventInfo }: QRDetailsProps) => {
   return (
     <Flex
       align="center"

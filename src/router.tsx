@@ -4,6 +4,8 @@ import { ErrorPage } from "@/error-page";
 import { OfflinePage } from "@/offline-page";
 import { Root } from "@/routes/layouts/root";
 import { ComponentType } from "react";
+import { AuthWalletContextProvider } from "./contexts/AuthWalletContext";
+import { Dashboard } from "@/routes/dashboard";
 
 const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
@@ -29,15 +31,10 @@ const router = createBrowserRouter([
         lazy: lazyWithOfflineCheck(() => import("@/routes/home")),
       },
       {
-        path: "conference",
-        children: [
-          {
-            path: "app/:id", // Match /events/event/:id
-            lazy: lazyWithOfflineCheck(
-              () => import("@/routes/conference/conferencePageManager"),
-            ),
-          },
-        ],
+        path: "/app",
+        lazy: lazyWithOfflineCheck(
+          () => import("@/routes/conference/conferencePageManager"),
+        ),
       },
       {
         path: "/help",
@@ -113,9 +110,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "ticket/:id", // Match /events/event/:id
-            lazy: lazyWithOfflineCheck(
-              () => import("@/routes/tickets/ticketPage"),
-            ),
+            lazy: lazyWithOfflineCheck(() => import("@/routes/tickets/ticket")),
           },
         ],
       },
@@ -123,7 +118,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    lazy: lazyWithOfflineCheck(() => import("@/routes/dashboard")),
+    element: (
+      <AuthWalletContextProvider>
+        <Dashboard />
+      </AuthWalletContextProvider>
+    ),
   },
 ]);
 
