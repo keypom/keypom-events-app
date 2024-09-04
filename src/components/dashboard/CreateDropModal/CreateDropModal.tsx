@@ -117,7 +117,9 @@ export const CreateDropModal = ({ modalType, isOpen, onClose }) => {
             </Button>
             <Button
               variant="navigation"
-              width="full"
+              background={"transparent"}
+              color={"white"}
+              border={"1px solid white"}
               onClick={handleCancelDrop}
             >
               Cancel
