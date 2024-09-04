@@ -9,6 +9,10 @@ import {
 import { mockRpcRequest } from "../utils/rpc-mock";
 
 test.describe("Basic ticketing (User shows ticket)", () => {
+  test.afterEach(async ({ page }) => {
+    await page.unrouteAll({ behavior: "ignoreErrors" });
+  });
+
   test.describe("Ticket has not been scanned, ticket exists", () => {
     test.beforeEach(async ({ page }) => {
       await mockRpcRequest({
@@ -93,10 +97,6 @@ test.describe("Basic ticketing (User shows ticket)", () => {
       await page.goto(
         `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_PRIVATE_KEY}`,
       );
-    });
-
-    test.afterEach(async ({ page }) => {
-      await page.unrouteAll({ behavior: "ignoreErrors" });
     });
 
     test("should show the ticket QR page", async ({ page }) => {
