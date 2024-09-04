@@ -1,4 +1,4 @@
-import { FACTORY_ACCOUNT } from './../utils/constants';
+import { FACTORY_ACCOUNT } from "./../utils/constants";
 import test, { expect } from "@playwright/test";
 import { mockRpcRequest } from "../utils/rpc-mock";
 
