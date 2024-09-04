@@ -99,6 +99,8 @@ test.describe("Alerts", () => {
       await test.step("should navigate to alerts page when clicking on view all", async () => {
         await viewAllButton.click();
 
+        await page.waitForURL("**/alerts");
+
         // get all alerts
         const alertItems = await page.getByTestId("alert-item").all();
         expect(alertItems).toHaveLength(3);
