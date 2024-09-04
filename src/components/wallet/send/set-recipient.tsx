@@ -18,7 +18,7 @@ export function SetRecipient({
       <Box
         mt={12}
         w="100%"
-        bg="url(/redacted-button.webp) 50% / cover no-repeat"
+        bg="url(/assets/redacted/redacted-button.webp) 50% / cover no-repeat"
         p={4}
       >
         <Input

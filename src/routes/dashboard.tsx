@@ -402,7 +402,7 @@ export function Dashboard() {
         left: 0,
         width: "100%",
         height: "100%",
-        backgroundImage: "url(/background.webp)",
+        backgroundImage: "url(/assets/redacted/background.webp)",
         backgroundSize: "cover",
         backgroundPosition: "top center",
         backgroundRepeat: "no-repeat",

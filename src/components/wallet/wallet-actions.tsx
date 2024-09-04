@@ -29,7 +29,7 @@ export function WalletActions() {
           <Box
             width="115px"
             height="5.25px"
-            bg="url(/redacted-wallet.webp) 100% / cover no-repeat"
+            bg="url(/assets/redacted/redacted-wallet.webp) 100% / cover no-repeat"
           />
           <Text
             fontFamily="mono"
@@ -43,7 +43,7 @@ export function WalletActions() {
           <Box
             width="115px"
             height="5.25px"
-            bg="url(/redacted-wallet.webp) 100% / cover no-repeat"
+            bg="url(/assets/redacted/redacted-wallet.webp) 100% / cover no-repeat"
           />
         </HStack>
       </VStack>
@@ -51,7 +51,7 @@ export function WalletActions() {
         spacing={2}
         width="100%"
         p={4}
-        bg="url(/redacted-button.webp) 50% / cover no-repeat"
+        bg="url(/assets/redacted/redacted-button.webp) 50% / cover no-repeat"
       >
         <Button variant="primary" as={Link} to={`/wallet/send`}>
           <ArrowIcon width={24} height={24} direction="up" />
