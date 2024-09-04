@@ -252,7 +252,7 @@ export function Dashboard() {
         <HStack justify="right" spacing={8} w="100%">
           <Button
             size="md"
-            variant="navigation"
+            variant="primary"
             maxWidth={"max-content"}
             onClick={(e) => {
               e.stopPropagation();
@@ -495,7 +495,7 @@ const DropActionsSection = ({ onCreateDrop, setDropType }) => (
           All Drops
         </Heading>
         <Menu>
-          <MenuButton as={Button} variant="navigation" maxWidth={"max-content"}>
+          <MenuButton as={Button} variant="primary" maxWidth={"max-content"}>
             Create Drop
           </MenuButton>
           <MenuList

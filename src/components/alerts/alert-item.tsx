@@ -62,7 +62,7 @@ export function AlertItem({
         {description}
       </Text>
       <Button
-        variant="navigation"
+        variant="primary"
         as={Link}
         to={href}
         flexDirection="row"

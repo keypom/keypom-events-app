@@ -331,7 +331,7 @@ export default function WelcomePage({
           <Button
             isDisabled={!isValidUsername || !username}
             isLoading={isClaiming}
-            variant="navigation"
+            variant="primary"
             onClick={handleBeginJourney}
             width="100%"
           >
