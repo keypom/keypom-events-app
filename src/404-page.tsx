@@ -17,11 +17,7 @@ export function PageNotFound() {
       <Text>Page not found.</Text>
       <HStack>
         <Button
-          background={"brand.400"}
-          color={"black"}
-          _hover={{
-            background: "brand.600",
-          }}
+          variant="primary"
           onClick={() => navigate("/")}
         >
           Go to Home

@@ -22,27 +22,19 @@ export function OfflinePage() {
       fontFamily={"mono"}
     >
       <Box width="112px" height="144px" overflow="clip">
-        <DinoIcon color={"var(--chakra-colors-brand-400)"} />
+        <DinoIcon color={"brand.400"} />
       </Box>
       <Heading>Oops!</Heading>
       <Text>You are not connected to the internet</Text>
       <HStack>
         <Button
-          background={"brand.400"}
-          color={"black"}
-          _hover={{
-            background: "brand.600",
-          }}
+          variant="primary"
           onClick={handleRetry}
         >
           Retry
         </Button>
         <Button
-          background={"brand.400"}
-          color={"black"}
-          _hover={{
-            background: "brand.600",
-          }}
+          variant="primary"
           onClick={handleGoHome}
         >
           Go to Home
