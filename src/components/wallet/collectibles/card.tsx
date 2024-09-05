@@ -14,19 +14,6 @@ export function CollectibleCard({
 }: Collectible & {
   disabled?: boolean;
 }) {
-  const imageStyles = {
-    position: "absolute" as const,
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    objectFit: "cover" as const,
-    borderRadius: "md",
-    opacity: disabled ? 0.5 : 1,
-    filter: "auto",
-    blur: disabled ? "8px" : "0px",
-  };
-
   return (
     <VStack
       as={Link}
@@ -42,7 +29,19 @@ export function CollectibleCard({
         maxWidth="210px"
         maxHeight="210px"
       >
-        <ImageWithFallback src={imageSrc} {...imageStyles} />
+        <ImageWithFallback
+          src={imageSrc}
+          position="absolute"
+          top={0}
+          left={0}
+          width="100%"
+          height="100%"
+          objectFit="cover"
+          borderRadius="md"
+          opacity={disabled ? 0.5 : 1}
+          filter="auto"
+          blur={disabled ? "8px" : "0px"}
+        />
         {disabled && (
           <Box
             position="absolute"

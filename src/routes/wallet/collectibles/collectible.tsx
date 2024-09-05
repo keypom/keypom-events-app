@@ -10,17 +10,16 @@ import { useParams } from "react-router-dom";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 const CollectibleDetails = ({ title, description, imageSrc }: Collectible) => {
-  const imageStyles = {
-    width: "100%",
-    height: "100%",
-    aspectRatio: "1/1",
-    borderRadius: "md",
-    objectFit: "cover" as const,
-  };
-
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
-      <ImageWithFallback src={imageSrc} {...imageStyles} />
+      <ImageWithFallback
+        src={imageSrc}
+        width={"100%"}
+        height={"100%"}
+        aspectRatio={"1/1"}
+        borderRadius={"md"}
+        objectFit={"cover"}
+      />
       <VStack alignItems="flex-start" gap={3}>
         <Heading
           as="h3"
