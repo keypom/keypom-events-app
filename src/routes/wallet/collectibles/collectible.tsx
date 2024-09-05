@@ -1,4 +1,4 @@
-import { Heading, Image, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, Image, Spinner, Text, VStack } from "@chakra-ui/react";
 
 import { PageHeading } from "@/components/ui/page-heading";
 
@@ -14,14 +14,30 @@ const CollectibleDetails = ({
   imageSrc,
   bgColor,
 }: Collectible) => {
+  const imageStyles = {
+    width: "100%",
+    height: "100%",
+    aspectRatio: "1/1",
+    borderRadius: "md",
+    objectFit: "cover" as const,
+  };
+
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
       <Image
         src={imageSrc}
-        width={"100%"}
-        height={"100%"}
+        {...imageStyles}
         bg={bgColor}
-        borderRadius={"md"}
+        fallback={
+          <Box
+            {...imageStyles}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Spinner size="xl" />
+          </Box>
+        }
       />
       <VStack alignItems="flex-start" gap={3}>
         <Heading
