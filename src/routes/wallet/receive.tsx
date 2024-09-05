@@ -1,20 +1,26 @@
-import { Heading, Text, VStack } from "@chakra-ui/react";
+import { Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import QRCode from "react-qr-code";
 
 import { PageHeading } from "@/components/ui/page-heading";
+import { useAccountData } from "@/hooks/useAccountData";
 
 export default function Receive() {
-  const account = {
-    account_id: "anybody.testnet", // TODO: need to modify
-    display_name: "No Name Account", // TODO: need to modify
-  };
+  const { data } = useAccountData();
+
+  const { accountId, displayName } = data!;
+  const qrValue = `${window.origin}/wallet/send?to=${accountId}`;
 
   return (
     <VStack p={4}>
       <PageHeading title="Receive" showBackButton />
-      <VStack p={4}>
+      <Flex
+        align="center"
+        flexDir="column"
+        p={{ base: "6", md: "8" }}
+        pt={{ base: "12", md: "16" }}
+      >
         <QRCode
-          value={account.account_id}
+          value={qrValue}
           bgColor="transparent"
           fgColor="var(--chakra-colors-brand-400)"
         />
@@ -26,7 +32,7 @@ export default function Receive() {
             color="white"
             noOfLines={1}
           >
-            {account.display_name || "No Name Account"}
+            {displayName || "No Name Account"}
           </Heading>
           <Text
             fontFamily="mono"
@@ -34,10 +40,10 @@ export default function Receive() {
             textAlign={"center"}
             noOfLines={1}
           >
-            {account.account_id}
+            {accountId}
           </Text>
         </VStack>
-      </VStack>
+      </Flex>
     </VStack>
   );
 }
