@@ -8,11 +8,10 @@ export function Header() {
     <Box
       p={0}
       height="60px"
-      background="black"
+      bg="bg.primary"
       display={"flex"}
       alignItems={"center"}
       justifyContent={"center"}
-      bg="black"
       borderTopRadius={"md"}
     >
       <header

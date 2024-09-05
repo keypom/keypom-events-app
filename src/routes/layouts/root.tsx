@@ -71,7 +71,7 @@ export function Root() {
           height="100%"
           position="relative"
           overflowY="auto"
-          bg="black"
+          bg="bg.primary"
           zIndex={5}
           _before={{
             content: '""',

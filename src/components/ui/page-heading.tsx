@@ -35,7 +35,7 @@ export function PageHeading({
         textTransform={"uppercase"}
         fontWeight={"bold"}
         textAlign={"center"}
-        color={"white"}
+        color="primary"
         height="32px"
         display={"flex"}
         alignItems={"center"}

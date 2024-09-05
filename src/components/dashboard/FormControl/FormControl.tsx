@@ -35,7 +35,7 @@ export const FormControlComponent = ({
         display={"flex"}
         fontSize={{ base: "sm", md: "base" }}
         m="0"
-        color="white"
+        color="primary"
         fontFamily={"mono"}
         {...labelProps}
       >

@@ -11,14 +11,14 @@ export const LoadingOverlay = ({ isVisible, status }: LoadingOverlayProps) => {
   if (!isVisible) return null;
 
   let backgroundColor = "rgba(0, 0, 0, 0.5)"; // Default semi-transparent background
-  let content = <Spinner color="white" size="xl" />;
+  let content = <Spinner color="primary" size="xl" />;
 
   if (status === "success") {
     backgroundColor = "rgba(0, 255, 0, 0.5)"; // Green for success
-    content = <Icon as={CheckIcon} boxSize="4rem" color="white" />;
+    content = <Icon as={CheckIcon} boxSize="4rem" color="primary" />;
   } else if (status === "error") {
     backgroundColor = "rgba(255, 0, 0, 0.5)"; // Red for error
-    content = <Icon as={CloseIcon} boxSize="4rem" color="white" />;
+    content = <Icon as={CloseIcon} boxSize="4rem" color="primary" />;
   }
 
   return (

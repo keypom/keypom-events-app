@@ -12,7 +12,7 @@ export const CameraSwitchButton = ({
     <Button
       onClick={useNextDevice}
       background="brand.400"
-      color="black"
+      color="secondary"
       borderRadius={"lg"}
       padding="0px"
       display="flex"
@@ -31,7 +31,7 @@ export const CameraSwitchButton = ({
         color: "black",
       }}
     >
-      <FlipIcon width={24} height={24} color={"black"} />
+      <FlipIcon width={24} height={24} color="var(--chakra-colors-secondary)" />
     </Button>
   );
 };

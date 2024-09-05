@@ -59,7 +59,7 @@ export function CollectibleCard({
         )}
       </Box>
       <VStack alignItems="flex-start" gap={0}>
-        <Heading as="h3" fontSize="sm" fontFamily={"mono"} color="white">
+        <Heading as="h3" fontSize="sm" fontFamily={"mono"} color="primary">
           {title}
         </Heading>
         <Text color="brand.400" fontSize="10px" fontWeight={700}>

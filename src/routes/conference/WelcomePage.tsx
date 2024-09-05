@@ -183,7 +183,7 @@ export default function WelcomePage({
       </Skeleton>
       <Box h="full">
         <BoxWithShape
-          color="white"
+          color="primary"
           borderTopRadius="8xl"
           showNotch={false}
           w="full"
@@ -204,14 +204,14 @@ export default function WelcomePage({
               </Text>
               <FormControl isInvalid={!isValidUsername} mb="5">
                 <Input
-                  backgroundColor="white"
+                  backgroundColor="primary"
                   border="1px solid"
                   borderColor={!isValidUsername ? "red.500" : "event.h1"}
                   autoFocus
                   transition="all 0.3s ease-in-out"
-                  color="black"
+                  color="secondary"
                   fontFamily="mono"
-                  background="#F2F1EA"
+                  background="tertiary"
                   variant="outline"
                   fontWeight="700"
                   borderRadius="md"
@@ -220,7 +220,7 @@ export default function WelcomePage({
                   px={4}
                   py={2}
                   _placeholder={{
-                    color: "var(--black, #000)",
+                    color: "secondary",
                     fontFamily: "mono",
                     fontSize: "16px",
                     fontStyle: "normal",
@@ -237,7 +237,7 @@ export default function WelcomePage({
                 </FormErrorMessage>
               </FormControl>
               <Text
-                color="white"
+                color="primary"
                 fontFamily="heading"
                 fontSize="sm"
                 fontWeight="400"
@@ -278,7 +278,7 @@ export default function WelcomePage({
         </BoxWithShape>
         <Flex align="center" pt={8} flexDir="column" gap={4}>
           <Text
-            color="white"
+            color="primary"
             fontFamily="heading"
             fontSize={fontSize.h1}
             fontWeight="600"
@@ -295,7 +295,7 @@ export default function WelcomePage({
             wrap={"wrap"}
           >
             <VStack alignItems="flex-start" gap={4}>
-              <Heading as="h3" fontSize="2xl" color="white">
+              <Heading as="h3" fontSize="2xl" color="primary">
                 Earn:
               </Heading>
               <UnorderedList
@@ -311,7 +311,7 @@ export default function WelcomePage({
               </UnorderedList>
             </VStack>
             <VStack alignItems="flex-start" gap={4}>
-              <Heading as="h3" fontSize="2xl" color="white">
+              <Heading as="h3" fontSize="2xl" color="primary">
                 Spend:
               </Heading>
               <UnorderedList

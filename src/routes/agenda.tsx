@@ -32,13 +32,14 @@ function FilterTitle({
       alignItems="center"
       p={2}
       borderRadius="4px"
-      bg="#F2F1EA"
+      bg="tertiary"
       width="100%"
       cursor="pointer"
       onClick={handleFilterOpen}
     >
       <Heading as="h4" fontSize="md" fontFamily="mono" color="brand.600">
-        Filter by: <span style={{ color: "#000" }}>{title}</span>
+        Filter by:{" "}
+        <span style={{ color: "var(--chakra-colors-secondary)" }}>{title}</span>
       </Heading>
       <Chevron direction={isOpen ? "up" : "down"} width={24} height={24} />
     </Flex>
@@ -57,7 +58,7 @@ function FilterCheckbox({
   return (
     <Flex
       width="100%"
-      bg="#F2F1EA"
+      bg="tertiary"
       p={2}
       borderRadius="4px"
       onClick={() => onChange(!checked)}
@@ -69,7 +70,7 @@ function FilterCheckbox({
         as={"h4"}
         fontSize="md"
         fontFamily="mono"
-        color="black"
+        color="secondary"
         display="flex"
         alignItems="center"
         gap={2}
@@ -184,8 +185,8 @@ export default function Agenda() {
           <Input
             fontFamily={"mono"}
             placeholder="Search..."
-            color="black"
-            background={"#F2F1EA"}
+            color="secondary"
+            background={"tertiary"}
             variant="outline"
             borderRadius="md"
             fontWeight="700"
@@ -196,7 +197,7 @@ export default function Agenda() {
             value={searchKey}
             onChange={(e) => setSearchKey(e.target.value)}
             _placeholder={{
-              color: "var(--black, #000)",
+              color: "secondary",
               fontFamily: "mono",
               fontSize: "16px",
               fontStyle: "normal",

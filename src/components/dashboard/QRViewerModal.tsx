@@ -116,7 +116,7 @@ const QRViewerModal: React.FC<QRCodeModalProps> = ({
         <Button
           variant="primary"
           background={"transparent"}
-          color={"white"}
+          color="primary"
           border={"1px solid white"}
           maxWidth={"fit-content"}
           height={"48px"}

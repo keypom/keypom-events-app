@@ -26,7 +26,7 @@ export const QRDetails = ({ qrValue, eventInfo }: QRDetailsProps) => {
         borderRadius="12px"
         mb={{ base: "2", md: "2" }}
         p="5"
-        bg={"white"}
+        bg={"secondary"}
       >
         <QRCode
           size={240}
@@ -36,7 +36,7 @@ export const QRDetails = ({ qrValue, eventInfo }: QRDetailsProps) => {
         />
       </Box>
       <Text
-        color="white"
+        color="primary"
         fontFamily="heading"
         fontWeight="600"
         mb="1"

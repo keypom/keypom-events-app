@@ -23,7 +23,7 @@ export default function Receive() {
             as="h3"
             fontSize="2xl"
             textAlign={"center"}
-            color="white"
+            color="primary"
             noOfLines={1}
           >
             {account.display_name || "No Name Account"}

@@ -70,7 +70,7 @@ export default function Scan() {
           wrap={"wrap"}
         >
           <VStack alignItems="flex-start" gap={4}>
-            <Heading as="h3" fontSize="2xl" color="white">
+            <Heading as="h3" fontSize="2xl" color="primary">
               Earn:
             </Heading>
             <UnorderedList color="brand.400" fontFamily="mono">
@@ -82,7 +82,7 @@ export default function Scan() {
             </UnorderedList>
           </VStack>
           <VStack alignItems="flex-start" gap={4}>
-            <Heading as="h3" fontSize="2xl" color="white">
+            <Heading as="h3" fontSize="2xl" color="primary">
               Spend:
             </Heading>
             <UnorderedList color="brand.400" fontFamily="mono">

@@ -18,7 +18,7 @@ export function WalletActions() {
         <Heading
           fontFamily="mono"
           fontSize="64px"
-          color="white"
+          color="primary"
           fontWeight="400"
           textAlign="center"
           data-testid="wallet-balance"

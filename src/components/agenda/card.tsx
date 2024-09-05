@@ -21,7 +21,7 @@ export function AgendaCard(event: AgendaEvent) {
             fontSize={"sm"}
             fontFamily={"mono"}
             fontWeight={"bold"}
-            color={"white"}
+            color="primary"
           >
             {title}
           </Heading>

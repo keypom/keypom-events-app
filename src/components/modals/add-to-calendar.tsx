@@ -108,7 +108,7 @@ export function AddToCalendarModal() {
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent
-          background="black"
+          bg="bg.primary"
           border={"1px solid var(--chakra-colors-brand-400)"}
           maxWidth={{
             base: "90%",

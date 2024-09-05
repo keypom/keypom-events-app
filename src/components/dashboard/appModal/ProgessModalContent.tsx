@@ -20,7 +20,7 @@ const ProgressModalContent = ({
 }: ProgressModalContentProps) => (
   <ModalContent
     padding={6}
-    background={"black"}
+    bg="bg.primary"
     border={"1px solid var(--chakra-colors-brand-400)"}
     fontFamily={"mono"}
   >

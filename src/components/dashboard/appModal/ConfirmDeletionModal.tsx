@@ -13,7 +13,7 @@ const ConfirmDeletionModal = ({
 }: ConfirmDeletionModalProps) => (
   <ModalContent
     padding={6}
-    background={"black"}
+    bg="bg.primary"
     border={"1px solid var(--chakra-colors-brand-400)"}
     fontFamily={"mono"}
   >
@@ -34,7 +34,7 @@ const ConfirmDeletionModal = ({
         <Button
           variant="primary"
           background={"transparent"}
-          color={"white"}
+          color="primary"
           border={"1px solid white"}
           maxWidth={"fit-content"}
           height={"48px"}

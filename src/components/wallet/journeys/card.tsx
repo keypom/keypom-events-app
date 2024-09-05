@@ -22,7 +22,7 @@ export function JourneyCard({
       width="100%"
       gap={4}
       p={2}
-      bg="black"
+      bg="bg.primary"
       borderRadius={"md"}
       as={Link}
       to={`/wallet/journeys/${id}`}
@@ -43,7 +43,7 @@ export function JourneyCard({
           as="h3"
           fontSize="md"
           fontFamily={"mono"}
-          color="white"
+          color="primary"
           display={"flex"}
           width={"100%"}
           alignItems={"center"}
@@ -62,7 +62,7 @@ export function JourneyCard({
               <ArrowIcon
                 width={24}
                 height={24}
-                color={"white"}
+                color="primary"
                 direction="right"
               />
             )}

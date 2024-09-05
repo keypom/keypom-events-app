@@ -89,15 +89,15 @@ export const ImageFileInputSmall = ({
               w="full"
               zIndex="1"
             >
-              <ImageIcon color="white" h={{ base: "6" }} w={{ base: "6" }} />
+              <ImageIcon color="primary" h={{ base: "6" }} w={{ base: "6" }} />
               <Show above="md">
-                <Text color="white">{ctaText}</Text>
+                <Text color="primary">{ctaText}</Text>
               </Show>
               <Center
                 border="1px solid"
                 borderColor="brand.400"
                 borderRadius="md"
-                color="white"
+                color="primary"
                 px={{ base: "3" }}
                 py={{ base: "1" }}
               >

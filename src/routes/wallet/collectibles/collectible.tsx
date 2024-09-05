@@ -26,7 +26,7 @@ const CollectibleDetails = ({ title, description, imageSrc }: Collectible) => {
           fontSize="20px"
           fontFamily={"mono"}
           fontWeight="700"
-          color="white"
+          color="primary"
         >
           {title}
         </Heading>

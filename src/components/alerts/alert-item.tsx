@@ -58,7 +58,7 @@ export function AlertItem({
           {timeAgo(creationDate)}
         </Text>
       </Flex>
-      <Text color="white" fontSize="xs">
+      <Text color="primary" fontSize="xs">
         {description}
       </Text>
       <Button
@@ -70,7 +70,7 @@ export function AlertItem({
         maxWidth={"max-content"}
         width="100%"
         fontSize="xs"
-        background="black"
+        bg="bg.primary"
         border="1px solid var(--chakra-colors-brand-400)"
         color="brand.400"
         gap="8px"

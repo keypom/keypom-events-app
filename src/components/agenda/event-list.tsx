@@ -37,7 +37,7 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
           >
             <VStack
               align="stretch"
-              color={"black"}
+              color="secondary"
               fontFamily={"mono"}
               fontWeight={700}
               fontSize={"16px"}

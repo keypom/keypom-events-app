@@ -37,7 +37,7 @@ export function OfflineBanner() {
             >
               <Text
                 fontFamily="mono"
-                color="black"
+                color="secondary"
                 textAlign="center"
                 fontSize="lg"
                 fontWeight="bold"

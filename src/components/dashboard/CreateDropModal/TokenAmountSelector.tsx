@@ -116,8 +116,8 @@ export default function DropTokenAmountSelector({
             size={{ base: "xs", md: "sm" }}
             sx={{
               bg: !presetAmounts.includes(Number(currentDrop.amount))
-                ? "#F2F1EA"
-                : "#F2F1EA",
+                ? "tertiary"
+                : "tertiary",
             }}
             textAlign="center"
             type="number"

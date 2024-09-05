@@ -128,7 +128,7 @@ export const DataTable = ({
                     <Tr>
                       {columns.map((col, index) => (
                         <Th
-                          color={"white"}
+                          color="primary"
                           key={col.id}
                           fontFamily="body"
                           {...col.thProps}

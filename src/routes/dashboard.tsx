@@ -276,7 +276,7 @@ export function Dashboard() {
               handleDeleteClick(item.base.id);
             }}
           >
-            <DeleteIcon color="white" />
+            <DeleteIcon color="primary" />
           </Button>
         </HStack>
       ),
@@ -393,7 +393,7 @@ export function Dashboard() {
       position={"relative"}
       width="100%"
       minHeight="100dvh"
-      bg="black"
+      bg="bg.primary"
       zIndex={5}
       _before={{
         content: '""',
@@ -419,7 +419,7 @@ export function Dashboard() {
         {isLoading ? (
           <Skeleton height="40px" mb="4" width="200px" />
         ) : (
-          <Heading fontFamily={"mono"} color={"white"} textAlign={"center"}>
+          <Heading fontFamily={"mono"} color="primary" textAlign={"center"}>
             Welcome{" "}
             {account?.display_name
               ? capitalizeFirstLetter(account.display_name)
@@ -499,14 +499,14 @@ const DropActionsSection = ({ onCreateDrop, setDropType }) => (
             Create Drop
           </MenuButton>
           <MenuList
-            background={"black"}
+            bg="bg.primary"
             borderRadius={"md"}
             border={"1px solid var(--chakra-colors-brand-400)"}
             fontFamily={"mono"}
           >
             <MenuItem
-              background="black"
-              color="white"
+              bg="bg.primary"
+              color="primary"
               _hover={{
                 background: "black",
                 color: "brand.400",
@@ -521,8 +521,8 @@ const DropActionsSection = ({ onCreateDrop, setDropType }) => (
               Token Drop
             </MenuItem>
             <MenuItem
-              background="black"
-              color="white"
+              bg="bg.primary"
+              color="primary"
               _hover={{
                 background: "black",
                 color: "brand.400",

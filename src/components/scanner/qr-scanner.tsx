@@ -121,7 +121,7 @@ export const QrScanner = ({
         alignItems="center"
         aspectRatio="1/1"
         position="relative"
-        bg={"black"}
+        bg="bg.primary"
         z-index={0}
         border="3px solid red"
         borderRadius="1rem"
@@ -174,8 +174,8 @@ export const QrScanner = ({
           },
           video: {
             borderRadius: "1rem",
-            border: `3px solid ${showAnimation ? "red" : "var(--green, #00EC97)"}`,
-            background: "#00ec97",
+            border: `3px solid ${showAnimation ? "red" : "var(--chakra-colors-brand-400, #00EC97)"}`,
+            background: "var(--chakra-colors-brand-400, #00ec97)",
             objectFit: "cover",
             aspectRatio: "1/1",
           },

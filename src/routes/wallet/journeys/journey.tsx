@@ -66,7 +66,7 @@ const JourneyDetails = ({ title, description, imageSrc, steps }: Journey) => {
           fontSize="20px"
           fontFamily={"mono"}
           fontWeight="700"
-          color="white"
+          color="primary"
         >
           {title}
         </Heading>

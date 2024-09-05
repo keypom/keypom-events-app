@@ -21,7 +21,7 @@ export function SetRecipient({
       >
         <Input
           bg="var(--chakra-colors-brand-400)"
-          color="black"
+          color="secondary"
           borderRadius="md"
           textAlign="center"
           fontWeight="bold"
