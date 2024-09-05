@@ -4,10 +4,10 @@ import { PageHeading } from "@/components/ui/page-heading";
 import { CheckIcon } from "@/components/icons";
 
 export function Sent({
-  reciever,
+  receiver,
   amount = 0,
 }: {
-  reciever: string;
+  receiver: string;
   amount: number;
 }) {
   return (
@@ -18,7 +18,7 @@ export function Sent({
       height="calc(100dvh - 140px)"
     >
       <CheckIcon color={"var(--chakra-colors-brand-400)"} />
-      <PageHeading title={`${amount} SENT`} description={`to ${reciever}`} />
+      <PageHeading title={`${amount} SENT`} description={`to ${receiver}`} />
     </VStack>
   );
 }

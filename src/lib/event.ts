@@ -348,7 +348,7 @@ class EventJS {
   }: {
     secretKey: string;
     sendTo: string;
-    amount: string;
+    amount: number;
   }) => {
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
     await myKeyStore.setKey(NETWORK_ID, TOKEN_FACTORY_CONTRACT, keyPair);
