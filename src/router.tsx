@@ -4,9 +4,7 @@ import { ErrorPage } from "@/error-page";
 import { OfflinePage } from "@/offline-page";
 import { Root } from "@/routes/layouts/root";
 import { ComponentType } from "react";
-import { AuthWalletContextProvider } from "./contexts/AuthWalletContext";
-import { Dashboard } from "@/routes/dashboard";
-import { PageNotFound } from "./404-page";
+import { PageNotFound } from "@/404-page";
 
 const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
@@ -119,11 +117,24 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: (
-      <AuthWalletContextProvider>
-        <Dashboard />
-      </AuthWalletContextProvider>
-    ),
+    lazy: async () => {
+      if (!navigator.onLine) {
+        return { Component: OfflinePage };
+      }
+
+      const { AuthWalletContextProvider } = await import(
+        "@/contexts/AuthWalletContext"
+      );
+      const { Dashboard } = await import("@/routes/dashboard");
+
+      return {
+        Component: () => (
+          <AuthWalletContextProvider>
+            <Dashboard />
+          </AuthWalletContextProvider>
+        ),
+      };
+    },
   },
   {
     path: "*",
