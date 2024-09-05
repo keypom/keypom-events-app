@@ -13,37 +13,37 @@ export default function Receive() {
   return (
     <VStack p={4}>
       <PageHeading title="Receive" showBackButton />
-        <Flex
-          align="center"
-          flexDir="column"
-          p={{ base: "6", md: "8" }}
-          pt={{ base: "12", md: "16" }}
-        >
-          <QRCode
-            value={qrValue}
-            bgColor="transparent"
-            fgColor="var(--chakra-colors-brand-400)"
-          />
-          <VStack alignItems="center" p={4}>
-            <Heading
-              as="h3"
-              fontSize="2xl"
-              textAlign={"center"}
-              color="white"
-              noOfLines={1}
-            >
-              {displayName || "No Name Account"}
-            </Heading>
-            <Text
-              fontFamily="mono"
-              color="brand.400"
-              textAlign={"center"}
-              noOfLines={1}
-            >
-              {accountId}
-            </Text>
-          </VStack>
-        </Flex>
+      <Flex
+        align="center"
+        flexDir="column"
+        p={{ base: "6", md: "8" }}
+        pt={{ base: "12", md: "16" }}
+      >
+        <QRCode
+          value={qrValue}
+          bgColor="transparent"
+          fgColor="var(--chakra-colors-brand-400)"
+        />
+        <VStack alignItems="center" p={4}>
+          <Heading
+            as="h3"
+            fontSize="2xl"
+            textAlign={"center"}
+            color="white"
+            noOfLines={1}
+          >
+            {displayName || "No Name Account"}
+          </Heading>
+          <Text
+            fontFamily="mono"
+            color="brand.400"
+            textAlign={"center"}
+            noOfLines={1}
+          >
+            {accountId}
+          </Text>
+        </VStack>
+      </Flex>
     </VStack>
   );
 }

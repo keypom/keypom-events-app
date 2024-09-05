@@ -11,7 +11,7 @@ test.describe("Wallet", () => {
   });
 
   test("should be able to send token", async ({ page }) => {
-    const walletSendButton = page.getByRole("link", { "name": "Send" });
+    const walletSendButton = page.getByRole("link", { name: "Send" });
     await walletSendButton.click();
 
     await test.step("should show set recipient page", async () => {
@@ -20,7 +20,7 @@ test.describe("Wallet", () => {
     });
 
     await test.step("should go back on cancel ", async () => {
-      const cancelButton = page.getByRole("button", { "name": "Cancel" });
+      const cancelButton = page.getByRole("button", { name: "Cancel" });
       await cancelButton.click();
       const walletPageTitle = page.getByRole("heading", { name: "Wallet" });
       await expect(walletPageTitle).toBeVisible();
@@ -29,7 +29,7 @@ test.describe("Wallet", () => {
     });
 
     const recipientInput = page.getByPlaceholder("account.near");
-    const continueButton = page.getByRole("button", { "name": "Continue" });
+    const continueButton = page.getByRole("button", { name: "Continue" });
 
     await test.step("should disable button for invalid recipient", async () => {
       await recipientInput.fill("test");
@@ -46,7 +46,7 @@ test.describe("Wallet", () => {
     await continueButton.click();
 
     await test.step("should go back on back button", async () => {
-      const backButton = page.getByRole("button", { "name": "Back" });
+      const backButton = page.getByRole("button", { name: "Back" });
       await backButton.click();
       const recipientPageTitle = page.getByText("choose recipient");
       await expect(recipientPageTitle).toBeVisible();
@@ -55,7 +55,7 @@ test.describe("Wallet", () => {
     });
 
     const amountInput = page.getByPlaceholder("789.56");
-    const continueSendButton = page.getByRole("button", { "name": "Send" });
+    const continueSendButton = page.getByRole("button", { name: "Send" });
 
     await test.step("send should be disabled", async () => {
       expect(amountInput).toBeEmpty();

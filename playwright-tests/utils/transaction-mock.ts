@@ -3,17 +3,14 @@ import { FACTORY_ACCOUNT, MOCK_RPC_URL } from "./constants";
 const access_keys = [
   {
     access_key: {
-      "nonce": 172893486000004,
-      "permission": {
-        "FunctionCall": {
-          "allowance": null,
-          "method_names": [
-            "claim_drop",
-            "ft_transfer"
-          ],
-          "receiver_id": FACTORY_ACCOUNT
-        }
-      }
+      nonce: 172893486000004,
+      permission: {
+        FunctionCall: {
+          allowance: null,
+          method_names: ["claim_drop", "ft_transfer"],
+          receiver_id: FACTORY_ACCOUNT,
+        },
+      },
     },
     public_key: "ed25519:8Cai5LU7KTmFmbSfv69aV2gtCPN9Qkd6cebp2rk2sLKT",
   },
@@ -61,7 +58,7 @@ export async function mockTransactionSubmitRPCResponses(page, customhandler?) {
 
         // @ts-expect-error lastViewedAccessKey may be undefined
         status.lastViewedAccessKey = access_keys.find(
-          (k) => k.public_key === requestPostData.params.public_key
+          (k) => k.public_key === requestPostData.params.public_key,
         );
         // @ts-expect-error lastViewedAccessKey may be undefined
         json.result = status.lastViewedAccessKey.access_key;
@@ -78,7 +75,7 @@ export async function mockTransactionSubmitRPCResponses(page, customhandler?) {
 
         const storage = { used_bytes: 221234, available_bytes: 1337643 };
         json.result.result = Array.from(
-          new TextEncoder().encode(JSON.stringify(storage))
+          new TextEncoder().encode(JSON.stringify(storage)),
         );
 
         await route.fulfill({ response, json });
@@ -134,7 +131,7 @@ export async function mockTransactionSubmitRPCResponses(page, customhandler?) {
       } else {
         await route.continue();
       }
-    }
+    },
   );
   return status;
 }
