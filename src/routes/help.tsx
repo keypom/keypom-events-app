@@ -2,7 +2,7 @@ import { Box, VStack, Text, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 import { PageHeading } from "@/components/ui/page-heading";
-import { TelegramIcon } from "@/components/icons";
+import { CONTACT_BUTTON } from "@/constants/common";
 
 export default function Help() {
   return (
@@ -32,16 +32,18 @@ export default function Help() {
       </Box>
       <Button
         as={Link}
-        to="https://t.me/redactedbangkok"
+        to={CONTACT_BUTTON.href}
         target="_blank"
         variant={"custom"}
       >
-        <TelegramIcon
-          width={24}
-          height={24}
-          color={"var(--chakra-colors-brand-400)"}
-        />
-        Telegram
+        {
+          <CONTACT_BUTTON.icon
+            width={24}
+            height={24}
+            color={"var(--chakra-colors-brand-400)"}
+          />
+        }
+        {CONTACT_BUTTON.label}
       </Button>
     </VStack>
   );
