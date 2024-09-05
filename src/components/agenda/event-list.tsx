@@ -61,7 +61,7 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
                 top: 0,
                 width: "16px",
                 height: "2px",
-                backgroundImage: "url(/assets/redacted/alert-line.webp)",
+                backgroundImage: "url(/assets/lines-bg.webp)",
                 backgroundSize: "cover",
                 backgroundPosition: "top center",
                 backgroundRepeat: "no-repeat",

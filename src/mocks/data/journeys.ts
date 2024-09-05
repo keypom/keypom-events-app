@@ -1,4 +1,4 @@
-const IMAGE_SRC = "/assets/redacted/collectible.webp";
+const IMAGE_SRC = "/assets/logo.webp";
 
 export default [
   {

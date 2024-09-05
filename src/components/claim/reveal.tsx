@@ -1,6 +1,6 @@
 import { Box, Heading, Image, VStack } from "@chakra-ui/react";
 
-import Boxes from "/assets/redacteds/claim-blocks.webp";
+import Boxes from "/assets/claim-blocks.webp";
 
 interface RevealProps {
   foundItem: string;

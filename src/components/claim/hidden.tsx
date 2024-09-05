@@ -1,5 +1,5 @@
 import { Box, Heading, Image, VStack, Text, Button } from "@chakra-ui/react";
-import Boxes from "/assets/redacted/boxes-background.webp";
+import Boxes from "/assets/boxes-background.webp";
 
 import { HelpIcon, ArrowIcon } from "@/components/icons";
 

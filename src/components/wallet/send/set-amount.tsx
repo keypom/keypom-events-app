@@ -16,7 +16,7 @@ export function SetAmount({
       <Box
         mt={12}
         w="100%"
-        bg="url(/assets/redacted/redacted-button.webp) 50% / cover no-repeat"
+        bg="url(/assets/custom-button-bg.webp) 50% / cover no-repeat"
         p={4}
       >
         <Input
