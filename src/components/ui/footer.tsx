@@ -50,7 +50,7 @@ export function Footer() {
               as={Link}
               key={index}
               to={route.href}
-              variant="navigation"
+              variant="primary"
               backgroundColor={pathname === route.href ? "black" : ""}
               color={pathname === route.href ? "brand.400" : "black"}
             >

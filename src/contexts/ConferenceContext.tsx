@@ -61,12 +61,12 @@ export const ConferenceProvider = ({
         const recoveredAccountId = await keypomInstance.viewCall({
           contractId: TOKEN_FACTORY_CONTRACT,
           methodName: "recover_account",
-          args: { key: getPubFromSecret(secretKey) },
+          args: { key_or_account_id: getPubFromSecret(secretKey) },
         });
         const balance = await keypomInstance.viewCall({
           contractId: TOKEN_FACTORY_CONTRACT,
           methodName: "ft_balance_of",
-          args: { account_id: recoveredAccountId },
+          args: { account_id: recoveredAccountId.account_id },
         });
         console.log("recovered account id: ", recoveredAccountId);
         console.log("balance: ", balance);

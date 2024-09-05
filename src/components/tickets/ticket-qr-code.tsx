@@ -123,7 +123,7 @@ export default function TicketQRCode({
                     borderRadius="12px"
                     height="200px"
                     objectFit="contain"
-                    src={`/ticket_image.png`}
+                    src={`/assets/redacted/ticket-image.png`}
                   />
                 </Skeleton>
               </Flex>

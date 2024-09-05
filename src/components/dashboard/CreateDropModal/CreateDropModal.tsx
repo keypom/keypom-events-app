@@ -108,20 +108,10 @@ export const CreateDropModal = ({ modalType, isOpen, onClose }) => {
           </Center>
         ) : (
           <HStack>
-            <Button
-              variant="navigation"
-              width="full"
-              onClick={handleCreateDrop}
-            >
+            <Button variant="primary" width="full" onClick={handleCreateDrop}>
               Create
             </Button>
-            <Button
-              variant="navigation"
-              background={"transparent"}
-              color={"white"}
-              border={"1px solid white"}
-              onClick={handleCancelDrop}
-            >
+            <Button variant="primary" width="full" onClick={handleCancelDrop}>
               Cancel
             </Button>
           </HStack>

@@ -23,7 +23,7 @@ const CompletionModalContent = ({
       <Text>{completionMessage}</Text>
       <Button
         autoFocus={false}
-        variant="navigation"
+        variant="primary"
         background={"transparent"}
         color={"white"}
         border={"1px solid white"}

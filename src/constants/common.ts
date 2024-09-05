@@ -1,3 +1,5 @@
+import { TelegramIcon } from "@/components/icons";
+
 // Matches with optional protocol and URL with one dot
 export const urlRegex = /(?:(?:https?:\/\/)?[\w.-]*\.[\w]{2,3})/;
 
@@ -37,7 +39,11 @@ export const PAGE_QUERY_PARAM = "page";
 export const KEYPOM_EVENTS_CONTRACT = "1724680439172-kp-ticketing.testnet";
 export const KEYPOM_MARKETPLACE_CONTRACT = "1724680439172-marketplace.testnet";
 export const TOKEN_FACTORY_CONTRACT = "1724680439172-factory.testnet";
-// export const KEYPOM_EVENTS_CONTRACT = '1711377493739-kp-ticketing.testnet';
-// export const KEYPOM_MARKETPLACE_CONTRACT = '1711377493739-marketplace.testnet';
 
 export const MIN_NEAR_SELL = 0.1;
+
+export const CONTACT_BUTTON = {
+  href: "https://t.me/redactedbangkok",
+  label: "Telegram",
+  icon: TelegramIcon,
+};
