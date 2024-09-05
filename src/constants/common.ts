@@ -49,3 +49,5 @@ export const CONTACT_BUTTON = {
   label: "Telegram",
   icon: TelegramIcon,
 };
+
+export const FALLBACK_IMAGE_URL = "/assets/offline.webp";

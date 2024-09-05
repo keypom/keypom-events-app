@@ -1,6 +1,7 @@
 import { getRandomColor } from "../utils";
 
-const IMAGE_SRC = "/assets/logo.webp";
+const IMAGE_SRC =
+  "https://builders.mypinata.cloud/ipfs/QmYXJ89PFMYEcPbqA8DTbmzZu7qKrgKBUjS6kHUovHA3k7";
 
 export default [
   {

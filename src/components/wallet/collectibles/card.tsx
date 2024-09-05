@@ -1,7 +1,10 @@
-import { Box, Heading, Image, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, Image, Skeleton, Text, VStack } from "@chakra-ui/react";
 import { LockIcon } from "@/components/icons";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+
 import { Collectible } from "@/lib/api/collectibles";
+import { FALLBACK_IMAGE_URL } from "@/constants/common";
 
 export function CollectibleCard({
   disabled,
@@ -9,18 +12,9 @@ export function CollectibleCard({
   title,
   assetType,
   imageSrc,
-  bgColor,
 }: Collectible & {
   disabled?: boolean;
 }) {
-  const containerStyles = {
-    width: "100%",
-    paddingBottom: "100%", // This creates a 1:1 aspect ratio
-    position: "relative" as const,
-    maxWidth: "210px",
-    maxHeight: "210px",
-  };
-
   const imageStyles = {
     position: "absolute" as const,
     top: 0,
@@ -34,6 +28,8 @@ export function CollectibleCard({
     blur: disabled ? "8px" : "0px",
   };
 
+  const [loading, setLoading] = useState(true);
+
   return (
     <VStack
       as={Link}
@@ -42,22 +38,22 @@ export function CollectibleCard({
       alignItems={"flex-start"}
       cursor={disabled ? "not-allowed" : "pointer"}
     >
-      <Box {...containerStyles}>
-        <Image
-          src={imageSrc}
-          bg={bgColor}
-          {...imageStyles}
-          fallback={
-            <Box
-              {...imageStyles}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Spinner />
-            </Box>
-          }
-        />
+      <Box
+        width="100%"
+        paddingBottom="100%" // This creates a 1:1 aspect ratio
+        position="relative"
+        maxWidth="210px"
+        maxHeight="210px"
+      >
+        <Skeleton isLoaded={!loading} {...imageStyles}>
+          <Image
+            src={imageSrc}
+            fallbackSrc={FALLBACK_IMAGE_URL}
+            onLoad={() => setLoading(false)}
+            onError={() => setLoading(false)}
+            {...imageStyles}
+          />
+        </Skeleton>
         {disabled && (
           <Box
             position="absolute"
