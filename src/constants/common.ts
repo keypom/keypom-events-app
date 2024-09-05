@@ -44,7 +44,7 @@ export const TOKEN_FACTORY_CONTRACT = "1724680439172-factory.testnet";
 
 export const MIN_NEAR_SELL = 0.1;
 
-export const CONTANCT_BUTTON = {
+export const CONTACT_BUTTON = {
   href: "https://t.me/redactedbangkok",
   label: "Telegram",
   icon: TelegramIcon,

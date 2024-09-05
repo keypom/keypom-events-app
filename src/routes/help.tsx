@@ -2,7 +2,7 @@ import { Box, VStack, Text, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 import { PageHeading } from "@/components/ui/page-heading";
-import { CONTANCT_BUTTON } from "@/constants/common";
+import { CONTACT_BUTTON } from "@/constants/common";
 
 export default function Help() {
   return (
@@ -32,18 +32,18 @@ export default function Help() {
       </Box>
       <Button
         as={Link}
-        to={CONTANCT_BUTTON.href}
+        to={CONTACT_BUTTON.href}
         target="_blank"
         variant={"custom"}
       >
         {
-          <CONTANCT_BUTTON.icon
+          <CONTACT_BUTTON.icon
             width={24}
             height={24}
             color={"var(--chakra-colors-brand-400)"}
           />
         }
-        {CONTANCT_BUTTON.label}
+        {CONTACT_BUTTON.label}
       </Button>
     </VStack>
   );
