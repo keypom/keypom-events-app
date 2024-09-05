@@ -1,6 +1,4 @@
 import { getRandomColor } from "../utils";
-const imageLink =
-  "https://builders.mypinata.cloud/ipfs/QmYXJ89PFMYEcPbqA8DTbmzZu7qKrgKBUjS6kHUovHA3k7";
 
 export default [
   {
@@ -9,7 +7,7 @@ export default [
     description:
       "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
-    imageSrc: imageLink,
+    imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
     isFound: true,
   },
@@ -19,7 +17,7 @@ export default [
     description:
       "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
-    imageSrc: imageLink,
+    imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
     isFound: true,
   },
@@ -29,7 +27,7 @@ export default [
     description:
       "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
-    imageSrc: imageLink,
+    imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
     isFound: false,
   },
@@ -39,7 +37,7 @@ export default [
     description:
       "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
-    imageSrc: imageLink,
+    imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
     isFound: false,
   },
@@ -49,7 +47,7 @@ export default [
     description:
       "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
-    imageSrc: imageLink,
+    imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
     isFound: false,
   },
@@ -59,7 +57,7 @@ export default [
     description:
       "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
-    imageSrc: imageLink,
+    imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
     isFound: false,
   },
@@ -69,7 +67,7 @@ export default [
     description:
       "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
-    imageSrc: imageLink,
+    imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
     isFound: false,
   },
@@ -79,7 +77,7 @@ export default [
     description:
       "Here are some instructions on how to retrieve this collectible. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas placerat mauris turpis, vel consequat mi ultricies eu. Quisque ligula neque, placerat ut dui.",
     assetType: "POAP",
-    imageSrc: imageLink,
+    imageSrc: "/collectible.webp",
     bgColor: getRandomColor(),
     isFound: false,
   },
