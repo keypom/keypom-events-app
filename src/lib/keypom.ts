@@ -1,67 +1,67 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
-  getDropInformation,
-  getEnv,
-  initKeypom,
-  type ProtocolReturnedDrop,
-  updateKeypomContractId,
-  getFTMetadata,
   claim,
-  getKeyInformation,
-  getPubFromSecret,
+  deleteDrops,
+  deleteKeys,
   formatLinkdropUrl,
   generateKeys,
-  getKeyInformationBatch,
-  getKeySupplyForDrop,
-  deleteKeys,
-  getKeysForDrop,
-  deleteDrops,
-  getDropSupplyForOwner,
+  getDropInformation,
   getDrops,
+  getDropSupplyForOwner,
+  getEnv,
+  getFTMetadata,
+  getKeyInformation,
+  getKeyInformationBatch,
+  getKeysForDrop,
+  getKeySupplyForDrop,
+  getPubFromSecret,
+  initKeypom,
+  type ProtocolReturnedDrop,
   type ProtocolReturnedKeyInfo,
+  updateKeypomContractId,
 } from "@keypom/core";
-import * as nearAPI from "near-api-js";
-import { formatNearAmount } from "near-api-js/lib/utils/format";
 import { type Wallet } from "@near-wallet-selector/core";
 import * as bs58 from "bs58";
+import * as nearAPI from "near-api-js";
+import { formatNearAmount } from "near-api-js/lib/utils/format";
 import * as nacl from "tweetnacl";
 import * as naclUtil from "tweetnacl-util";
 
-import { truncateAddress } from "@/utils/truncateAddress";
+import getConfig from "@/config/config";
 import {
   CLOUDFLARE_IPFS,
   DROP_TYPE,
   KEYPOM_EVENTS_CONTRACT,
   KEYPOM_MARKETPLACE_CONTRACT,
   MASTER_KEY,
+  NETWORK_ID,
 } from "@/constants/common";
-import getConfig from "@/config/config";
 import { get } from "@/utils/localStorage";
+import { truncateAddress } from "@/utils/truncateAddress";
 
-import {
-  type FunderEventMetadata,
-  type FunderMetadata,
-  isValidTicketNFTMetadata,
-  type TicketMetadataExtra,
-  type EventDrop,
-} from "./eventsHelper";
 import {
   decryptPrivateKey,
   decryptWithPrivateKey,
   deriveKeyFromPassword,
 } from "./cryptoHelper";
+import {
+  type EventDrop,
+  type FunderEventMetadata,
+  type FunderMetadata,
+  isValidTicketNFTMetadata,
+  type TicketMetadataExtra,
+} from "./eventsHelper";
 
 let instance: KeypomJS;
 const ACCOUNT_ID_REGEX =
   /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
-const networkId = process.env.REACT_APP_NETWORK_ID ?? "testnet";
 
 const myKeyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
 const config = getConfig();
 
 const connectionConfig = {
-  networkId,
+  networkId: NETWORK_ID,
   keyStore: myKeyStore,
   nodeUrl: config.nodeUrl,
   walletUrl: config.walletUrl,
@@ -136,6 +136,7 @@ class KeypomJS {
   > = {};
 
   constructor() {
+    // @ts-expect-error - This is a singleton class
     if (instance !== undefined) {
       throw new Error("New instance cannot be created!!");
     }
@@ -144,7 +145,7 @@ class KeypomJS {
   }
 
   async init() {
-    await initKeypom({ network: networkId });
+    await initKeypom({ network: NETWORK_ID });
     this.nearConnection = await nearAPI.connect(connectionConfig);
     this.viewAccount = await this.nearConnection.account(config.contractId);
   }
@@ -218,7 +219,7 @@ class KeypomJS {
     // const publicKey = JSON.parse(msg).linkdrop_pk;
     const keypomGlobalSecretKey = await this.GetGlobalKey();
     const keypomKeypair = nearAPI.KeyPair.fromString(keypomGlobalSecretKey);
-    myKeyStore.setKey(networkId, KEYPOM_EVENTS_CONTRACT, keypomKeypair);
+    myKeyStore.setKey(NETWORK_ID, KEYPOM_EVENTS_CONTRACT, keypomKeypair);
     const keypomAccount = new nearAPI.Account(
       this.nearConnection.connection,
       KEYPOM_EVENTS_CONTRACT,
@@ -452,7 +453,7 @@ class KeypomJS {
     factoryAccount: string;
   }) => {
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
-    await myKeyStore.setKey(networkId, accountId, keyPair);
+    await myKeyStore.setKey(NETWORK_ID, accountId, keyPair);
     const userAccount = new nearAPI.Account(
       this.nearConnection.connection,
       accountId,
@@ -476,7 +477,7 @@ class KeypomJS {
 
     const keypomGlobalSecretKey = await this.GetGlobalKey();
     const keypomKeypair = nearAPI.KeyPair.fromString(keypomGlobalSecretKey);
-    await myKeyStore.setKey(networkId, KEYPOM_EVENTS_CONTRACT, keypomKeypair);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_EVENTS_CONTRACT, keypomKeypair);
     const keypomAccount = new nearAPI.Account(
       this.nearConnection.connection,
       KEYPOM_EVENTS_CONTRACT,

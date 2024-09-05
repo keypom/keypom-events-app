@@ -1,9 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { DROP_ID, EVENT_ID, FUNDER_ID } from "../utils/constants";
 import { mockTicketScan } from "../utils/qr-mock";
-
-const FUNDER_ID = "benjiman.testnet";
-const EVENT_ID = "aa4a7964-c917-4010-92c3-9e4b3f7dfc5e";
-const DROP_ID = "ga_pass";
 
 const NOT_SCANNED_KEY =
   "2pcZwjQnvmpUXg29D7V86oPaop5KxR2RyWiPJPXub7XiBaMNGBCTuruPwoX71nGSCSQjSGopSmENtfDNkcmao2XL";
