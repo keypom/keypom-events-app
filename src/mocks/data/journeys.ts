@@ -26,7 +26,6 @@ export default [
         completed: true,
       },
     ],
-    bgColor: "#0282A2",
   },
   {
     id: "2",
@@ -52,7 +51,6 @@ export default [
         completed: false,
       },
     ],
-    bgColor: "#7269E1",
   },
   {
     id: "3",
@@ -78,7 +76,6 @@ export default [
         completed: false,
       },
     ],
-    bgColor: "#F44738",
   },
   {
     id: "4",
@@ -104,6 +101,5 @@ export default [
         completed: false,
       },
     ],
-    bgColor: "#62EBE4",
   },
 ];

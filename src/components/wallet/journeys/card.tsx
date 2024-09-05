@@ -1,17 +1,9 @@
-import {
-  Flex,
-  VStack,
-  Image,
-  Heading,
-  Text,
-  Progress,
-  Box,
-  Spinner,
-} from "@chakra-ui/react";
+import { Flex, VStack, Heading, Text, Progress } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 import { Journey } from "@/lib/api/journeys";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 export function JourneyCard({
   id,
@@ -19,7 +11,6 @@ export function JourneyCard({
   description,
   imageSrc,
   steps,
-  bgColor,
 }: Journey) {
   const progress = steps.reduce(
     (acc, step) => (step.completed ? acc + 100 / steps.length : acc),
@@ -37,24 +28,15 @@ export function JourneyCard({
       to={`/wallet/journeys/${id}`}
       cursor={"pointer"}
     >
-      <Image
+      <ImageWithFallback
         src={imageSrc}
         width={"100px"}
         height={"100px"}
-        bg={bgColor}
-        borderRadius={"md"}
-        fallback={
-          <Box
-            width={"100px"}
-            height={"100px"}
-            display={"flex"}
-            flexShrink={0}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Spinner />
-          </Box>
-        }
+        display={"flex"}
+        objectFit={"cover"}
+        flexShrink={0}
+        justifyContent={"center"}
+        alignItems={"center"}
       />
       <VStack alignItems="flex-start" width="100%" gap={4}>
         <Heading

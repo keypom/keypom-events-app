@@ -1,10 +1,9 @@
-import { Box, Heading, Image, Skeleton, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, Text, VStack } from "@chakra-ui/react";
 import { LockIcon } from "@/components/icons";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 import { Collectible } from "@/lib/api/collectibles";
-import { FALLBACK_IMAGE_URL } from "@/constants/common";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 export function CollectibleCard({
   disabled,
@@ -28,8 +27,6 @@ export function CollectibleCard({
     blur: disabled ? "8px" : "0px",
   };
 
-  const [loading, setLoading] = useState(true);
-
   return (
     <VStack
       as={Link}
@@ -45,15 +42,7 @@ export function CollectibleCard({
         maxWidth="210px"
         maxHeight="210px"
       >
-        <Skeleton isLoaded={!loading} {...imageStyles}>
-          <Image
-            src={imageSrc}
-            fallbackSrc={FALLBACK_IMAGE_URL}
-            onLoad={() => setLoading(false)}
-            onError={() => setLoading(false)}
-            {...imageStyles}
-          />
-        </Skeleton>
+        <ImageWithFallback src={imageSrc} {...imageStyles} />
         {disabled && (
           <Box
             position="absolute"

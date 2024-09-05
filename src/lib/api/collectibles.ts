@@ -4,7 +4,6 @@ export interface Collectible {
   description: string;
   assetType: string;
   imageSrc: string;
-  bgColor: string;
   isFound: boolean;
 }
 

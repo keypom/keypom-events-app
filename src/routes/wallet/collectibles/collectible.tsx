@@ -1,4 +1,4 @@
-import { Box, Heading, Image, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Heading, Text, VStack } from "@chakra-ui/react";
 
 import { PageHeading } from "@/components/ui/page-heading";
 
@@ -7,13 +7,9 @@ import { LoadingBox } from "@/components/ui/loading-box";
 import { Collectible, fetchCollectibleById } from "@/lib/api/collectibles";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
-const CollectibleDetails = ({
-  title,
-  description,
-  imageSrc,
-  bgColor,
-}: Collectible) => {
+const CollectibleDetails = ({ title, description, imageSrc }: Collectible) => {
   const imageStyles = {
     width: "100%",
     height: "100%",
@@ -24,21 +20,7 @@ const CollectibleDetails = ({
 
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
-      <Image
-        src={imageSrc}
-        {...imageStyles}
-        bg={bgColor}
-        fallback={
-          <Box
-            {...imageStyles}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Spinner size="xl" />
-          </Box>
-        }
-      />
+      <ImageWithFallback src={imageSrc} {...imageStyles} />
       <VStack alignItems="flex-start" gap={3}>
         <Heading
           as="h3"
