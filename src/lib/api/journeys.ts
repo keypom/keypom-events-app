@@ -9,7 +9,6 @@ export interface Journey {
   description: string;
   imageSrc: string;
   steps: Step[];
-  bgColor: string;
 }
 
 export const fetchJourneys: () => Promise<Journey[]> = async () => {
