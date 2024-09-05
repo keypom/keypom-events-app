@@ -8,7 +8,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import RedactedExpression from "/redacted-expression.webp";
+import RedactedExpression from "/assets/scan-bg.webp";
 
 import { QrScanner } from "@/components/scanner/qr-scanner";
 import { PageHeading } from "@/components/ui/page-heading";

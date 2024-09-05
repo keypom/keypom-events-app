@@ -1,4 +1,4 @@
-import { Flex, Heading, Image, Text, VStack } from "@chakra-ui/react";
+import { Flex, Heading, Text, VStack } from "@chakra-ui/react";
 
 import { CheckIcon } from "@/components/icons";
 import { PageHeading } from "@/components/ui/page-heading";
@@ -8,6 +8,7 @@ import { LoadingBox } from "@/components/ui/loading-box";
 import { fetchJourneyById, Journey } from "@/lib/api/journeys";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { Image } from "@/components/ui/image";
 
 function Step({
   index,
@@ -48,21 +49,16 @@ function Step({
   );
 }
 
-const JourneyDetails = ({
-  title,
-  description,
-  imageSrc,
-  bgColor,
-  steps,
-}: Journey) => {
+const JourneyDetails = ({ title, description, imageSrc, steps }: Journey) => {
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
       <Image
         src={imageSrc}
-        width={"100%"}
-        height={"100%"}
-        bg={bgColor}
-        borderRadius={"md"}
+        width="100%"
+        height="100%"
+        aspectRatio={"1/1"}
+        objectFit="cover"
+        borderRadius="md"
       />
       <VStack alignItems="flex-start" gap={3}>
         <Heading

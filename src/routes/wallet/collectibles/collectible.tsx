@@ -1,27 +1,24 @@
-import { Heading, Image, Text, VStack } from "@chakra-ui/react";
+import { Heading, Text, VStack } from "@chakra-ui/react";
 
 import { PageHeading } from "@/components/ui/page-heading";
 
 import { ErrorBox } from "@/components/ui/error-box";
+import { Image } from "@/components/ui/image";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { Collectible, fetchCollectibleById } from "@/lib/api/collectibles";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
-const CollectibleDetails = ({
-  title,
-  description,
-  imageSrc,
-  bgColor,
-}: Collectible) => {
+const CollectibleDetails = ({ title, description, imageSrc }: Collectible) => {
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
       <Image
         src={imageSrc}
-        width={"100%"}
-        height={"100%"}
-        bg={bgColor}
-        borderRadius={"md"}
+        width="100%"
+        height="100%"
+        aspectRatio={"1/1"}
+        objectFit="cover"
+        borderRadius="md"
       />
       <VStack alignItems="flex-start" gap={3}>
         <Heading

@@ -252,7 +252,7 @@ export function Dashboard() {
         <HStack justify="right" spacing={8} w="100%">
           <Button
             size="md"
-            variant="navigation"
+            variant="primary"
             maxWidth={"max-content"}
             onClick={(e) => {
               e.stopPropagation();
@@ -402,7 +402,7 @@ export function Dashboard() {
         left: 0,
         width: "100%",
         height: "100%",
-        backgroundImage: "url(/background.webp)",
+        backgroundImage: "url(/assets/background.webp)",
         backgroundSize: "cover",
         backgroundPosition: "top center",
         backgroundRepeat: "no-repeat",
@@ -496,7 +496,7 @@ const DropActionsSection = ({ onCreateDrop, setDropType }) => (
           All Drops
         </Heading>
         <Menu>
-          <MenuButton as={Button} variant="navigation" maxWidth={"max-content"}>
+          <MenuButton as={Button} variant="primary" maxWidth={"max-content"}>
             Create Drop
           </MenuButton>
           <MenuList
