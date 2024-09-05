@@ -39,8 +39,6 @@ export const PAGE_QUERY_PARAM = "page";
 export const KEYPOM_EVENTS_CONTRACT = "1724680439172-kp-ticketing.testnet";
 export const KEYPOM_MARKETPLACE_CONTRACT = "1724680439172-marketplace.testnet";
 export const TOKEN_FACTORY_CONTRACT = "1724680439172-factory.testnet";
-// export const KEYPOM_EVENTS_CONTRACT = '1711377493739-kp-ticketing.testnet';
-// export const KEYPOM_MARKETPLACE_CONTRACT = '1711377493739-marketplace.testnet';
 
 export const MIN_NEAR_SELL = 0.1;
 
@@ -49,5 +47,3 @@ export const CONTACT_BUTTON = {
   label: "Telegram",
   icon: TelegramIcon,
 };
-
-export const FALLBACK_IMAGE_URL = "/assets/offline.webp";

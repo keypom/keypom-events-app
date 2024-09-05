@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 import { Journey } from "@/lib/api/journeys";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { Image } from "@/components/ui/image";
 
 export function JourneyCard({
   id,
@@ -28,7 +28,7 @@ export function JourneyCard({
       to={`/wallet/journeys/${id}`}
       cursor={"pointer"}
     >
-      <ImageWithFallback
+      <Image
         src={imageSrc}
         width={"100px"}
         height={"100px"}

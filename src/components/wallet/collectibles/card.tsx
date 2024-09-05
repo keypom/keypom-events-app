@@ -3,7 +3,7 @@ import { LockIcon } from "@/components/icons";
 import { Link } from "react-router-dom";
 
 import { Collectible } from "@/lib/api/collectibles";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { Image } from "@/components/ui/image";
 
 export function CollectibleCard({
   disabled,
@@ -29,7 +29,7 @@ export function CollectibleCard({
         maxWidth="210px"
         maxHeight="210px"
       >
-        <ImageWithFallback
+        <Image
           src={imageSrc}
           position="absolute"
           top={0}

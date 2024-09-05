@@ -8,7 +8,7 @@ import { LoadingBox } from "@/components/ui/loading-box";
 import { fetchJourneyById, Journey } from "@/lib/api/journeys";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { Image } from "@/components/ui/image";
 
 function Step({
   index,
@@ -52,13 +52,13 @@ function Step({
 const JourneyDetails = ({ title, description, imageSrc, steps }: Journey) => {
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
-      <ImageWithFallback
+      <Image
         src={imageSrc}
-        width={"100%"}
-        height={"100%"}
+        width="100%"
+        height="100%"
         aspectRatio={"1/1"}
-        borderRadius={"md"}
-        objectFit={"cover"}
+        objectFit="cover"
+        borderRadius="md"
       />
       <VStack alignItems="flex-start" gap={3}>
         <Heading

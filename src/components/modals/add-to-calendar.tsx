@@ -13,8 +13,8 @@ import {
 import { Link } from "react-router-dom";
 import { useAddToCalendar } from "@/stores/add-to-calendar";
 
-import googleCalendarLogo from "/calendar/google-calendar.webp";
-import appleCalendar from "/calendar/apple-calendar.webp";
+import googleCalendarLogo from "/assets/calendar/google-calendar.webp";
+import appleCalendar from "/assets/calendar/apple-calendar.webp";
 import { AgendaEvent } from "@/lib/api/agendas";
 
 const TIMEZONE = "Asia/Bangkok";

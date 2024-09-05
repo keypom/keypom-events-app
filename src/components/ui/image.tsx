@@ -1,18 +1,17 @@
-import { Image, ImageProps, Skeleton } from "@chakra-ui/react";
+import { Image as ChakraImage, ImageProps, Skeleton } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { FALLBACK_IMAGE_URL } from "@/constants/common";
-
-export function ImageWithFallback({ src, fallbackSrc, ...props }: ImageProps) {
+export function Image({ src, ...props }: ImageProps) {
   const [loading, setLoading] = useState(true);
   return (
     <Skeleton isLoaded={!loading} {...props}>
-      <Image
+      <ChakraImage
         src={src}
-        fallbackSrc={fallbackSrc || FALLBACK_IMAGE_URL}
+        fallbackSrc={"./assets/image-fallback.png"}
         {...props}
         onLoad={() => setLoading(false)}
         onError={() => setLoading(false)}
+        bgColor={"gray.200"}
       />
     </Skeleton>
   );
