@@ -43,7 +43,8 @@ const customVariant = {
     position: "absolute",
     width: "100%",
     height: "100%",
-    background: "url(/redacted-button.webp) black 50% / cover no-repeat",
+    background:
+      "url(/assets/custom-button-bg.webp) black 50% / cover no-repeat",
     opacity: 0.5,
     top: 0,
     left: 0,
@@ -72,10 +73,49 @@ const primaryVariant = {
   },
 };
 
+const secondaryVariant = {
+  bg: "var(--chakra-colors-brand-400)",
+  color: "black",
+  borderRadius: "md",
+  fontFamily: "mono",
+  fontWeight: "bold",
+  flex: "1 0 0",
+  padding: "1.5rem 0",
+  _hover: {
+    bg: "var(--chakra-colors-brand-400)",
+    color: "black",
+  },
+  _active: {
+    bg: "var(--chakra-colors-brand-400)",
+    color: "black",
+  },
+};
+
+const outlineVariant = {
+  bg: "black",
+  color: "white",
+  borderRadius: "md",
+  fontFamily: "mono",
+  fontWeight: "bold",
+  flex: "1 0 0",
+  padding: "1.5rem 0",
+  border: "1px solid var(--chakra-colors-brand-400)",
+  _hover: {
+    bg: "black",
+    color: "white",
+  },
+  _active: {
+    bg: "black",
+    color: "white",
+  },
+};
+
 export const ButtonStyle = defineStyleConfig({
   variants: {
     transparent: transparentVariant,
     custom: customVariant,
     primary: primaryVariant,
+    secondary: secondaryVariant,
+    outline: outlineVariant,
   },
 });

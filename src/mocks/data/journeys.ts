@@ -1,10 +1,12 @@
+const IMAGE_SRC = "/assets/logo.webp";
+
 export default [
   {
     id: "1",
     title: "NEAR Sponsor Scavenger Hunt",
     description:
       "Here are some instructions on how to accomplish this journey and perhaps some sponsor info. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    imageSrc: "/collectible.webp",
+    imageSrc: IMAGE_SRC,
     steps: [
       {
         description: "Find the purple dragon",
@@ -30,7 +32,7 @@ export default [
     title: "NEAR Purple Scavenger Hunt",
     description:
       "Here are some instructions on how to accomplish this journey and perhaps some sponsor info. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    imageSrc: "/collectible.webp",
+    imageSrc: IMAGE_SRC,
     steps: [
       {
         description: "Find the purple dragon",
@@ -56,7 +58,7 @@ export default [
     title: "Chain Abstraction Adventure",
     description:
       "Here are some instructions on how to accomplish this journey and perhaps some sponsor info. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    imageSrc: "/collectible.webp",
+    imageSrc: IMAGE_SRC,
     steps: [
       {
         description: "Find the purple dragon",
@@ -82,7 +84,7 @@ export default [
     title: "Another Adventure",
     description:
       "Here are some instructions on how to accomplish this journey and perhaps some sponsor info. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    imageSrc: "/collectible.webp",
+    imageSrc: IMAGE_SRC,
     steps: [
       {
         description: "Find the purple dragon",
