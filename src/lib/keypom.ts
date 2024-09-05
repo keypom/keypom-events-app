@@ -136,7 +136,6 @@ class KeypomJS {
   > = {};
 
   constructor() {
-    // @ts-expect-error - This is a singleton class
     if (instance !== undefined) {
       throw new Error("New instance cannot be created!!");
     }
