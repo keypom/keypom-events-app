@@ -59,12 +59,10 @@ export function CollectibleCard({
         )}
       </Box>
       <VStack alignItems="flex-start" gap={0}>
-        <Heading as="h3" fontSize="sm" fontFamily={"mono"} color="primary">
+        <Heading as="h3" variant={"collectibles.cardTitle"}>
           {title}
         </Heading>
-        <Text color="brand.400" fontSize="10px" fontWeight={700}>
-          {assetType}
-        </Text>
+        <Text variant={"collectibles.assetType"}>{assetType}</Text>
       </VStack>
     </VStack>
   );

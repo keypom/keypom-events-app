@@ -21,18 +21,10 @@ const CollectibleDetails = ({ title, description, imageSrc }: Collectible) => {
         borderRadius="md"
       />
       <VStack alignItems="flex-start" gap={3}>
-        <Heading
-          as="h3"
-          fontSize="20px"
-          fontFamily={"mono"}
-          fontWeight="700"
-          color="primary"
-        >
+        <Heading as="h3" variant={"collectibles.title"}>
           {title}
         </Heading>
-        <Text fontSize="xs" lineHeight={"120%"}>
-          {description}
-        </Text>
+        <Text variant="collectibles.description">{description}</Text>
       </VStack>
     </VStack>
   );

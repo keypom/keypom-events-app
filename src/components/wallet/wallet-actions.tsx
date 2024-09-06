@@ -15,14 +15,7 @@ export function WalletActions() {
   return (
     <>
       <VStack spacing={2} width={"100%"}>
-        <Heading
-          fontFamily="mono"
-          fontSize="64px"
-          color="primary"
-          fontWeight="400"
-          textAlign="center"
-          data-testid="wallet-balance"
-        >
+        <Heading variant={"wallet.balance"} data-testid="wallet-balance">
           {balance}
         </Heading>
         <HStack spacing={2}>
@@ -31,13 +24,7 @@ export function WalletActions() {
             height="5.25px"
             bg="url(/assets/wallet-bg.webp) 100% / cover no-repeat"
           />
-          <Text
-            fontFamily="mono"
-            fontSize="2xl"
-            fontWeight="medium"
-            color="brand.400"
-            data-testid="token-symbol"
-          >
+          <Text variant={"wallet.tokenSymbol"} data-testid="token-symbol">
             ${symbol}
           </Text>
           <Box

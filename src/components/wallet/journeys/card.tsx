@@ -41,9 +41,7 @@ export function JourneyCard({
       <VStack alignItems="flex-start" width="100%" gap={4}>
         <Heading
           as="h3"
-          fontSize="md"
-          fontFamily={"mono"}
-          color="primary"
+          variant="journeys.cardTitle"
           display={"flex"}
           width={"100%"}
           alignItems={"center"}
@@ -69,9 +67,7 @@ export function JourneyCard({
           </span>
         </Heading>
         <Progress value={progress} width="100%" height="4px" />
-        <Text color="brand.400" fontSize="10px" fontWeight={700}>
-          {description}
-        </Text>
+        <Text variant="journeys.cardDescription">{description}</Text>
       </VStack>
     </Flex>
   );

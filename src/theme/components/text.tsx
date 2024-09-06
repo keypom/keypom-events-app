@@ -43,5 +43,38 @@ export const TextStyle = defineStyleConfig({
       color: "primary",
       fontSize: "xs",
     },
+
+    // Wallet
+    "wallet.tokenSymbol": {
+      fontFamily: "mono",
+      fontSize: "2xl",
+      fontWeight: "medium",
+      color: "brand.400",
+    },
+
+    // Collectibles
+    "collectibles.assetType": {
+      color: "brand.400",
+      fontSize: "10px",
+      fontWeight: 700,
+    },
+
+    "collectibles.description": {
+      fontSize: "xs",
+      color: "primary",
+      lineHeight: "120%",
+    },
+
+    // Journeys
+    "journeys.cardDescription": {
+      color: "brand.400",
+      fontSize: "10px",
+      fontWeight: 700,
+    },
+
+    "journeys.description": {
+      fontSize: "xs",
+      lineHeight: "120%",
+    },
   },
 });

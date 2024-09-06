@@ -30,9 +30,8 @@ function Step({
       <Flex width="100%" alignItems="center" justifyContent="space-between">
         <Heading
           as="h3"
-          fontSize="md"
-          fontFamily={"mono"}
-          color={completed ? "brand.400" : "white"}
+          variant="journeys.stepTitle"
+          color={completed ? "brand.400" : "primary"}
         >
           Step {index}
         </Heading>
@@ -61,18 +60,10 @@ const JourneyDetails = ({ title, description, imageSrc, steps }: Journey) => {
         borderRadius="md"
       />
       <VStack alignItems="flex-start" gap={3}>
-        <Heading
-          as="h3"
-          fontSize="20px"
-          fontFamily={"mono"}
-          fontWeight="700"
-          color="primary"
-        >
+        <Heading as="h3" variant="journeys.title">
           {title}
         </Heading>
-        <Text fontSize="xs" lineHeight={"120%"}>
-          {description}
-        </Text>
+        <Text variant="journeys.description">{description}</Text>
         <VStack alignItems="flex-start" gap={4} width={"100%"}>
           {steps.map((step, index) => (
             <Step key={index} {...step} index={index + 1} />

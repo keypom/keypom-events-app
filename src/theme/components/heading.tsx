@@ -57,5 +57,47 @@ export const HeadingStyle = defineStyleConfig({
       color: "primary",
       fontFamily: "mono",
     },
+
+    // Wallet
+    "wallet.balance": {
+      fontFamily: "mono",
+      fontSize: "64px",
+      color: "primary",
+      fontWeight: "400",
+      textAlign: "center",
+    },
+
+    // Collectibles
+    "collectibles.cardTitle": {
+      fontSize: "sm",
+      color: "primary",
+      fontFamily: "mono",
+    },
+
+    "collectibles.title": {
+      fontSize: "20px",
+      fontFamily: "mono",
+      color: "primary",
+      fontWeight: "700",
+    },
+
+    // Journeys
+    "journeys.cardTitle": {
+      fontSize: "md",
+      fontFamily: "mono",
+      color: "primary",
+    },
+
+    "journeys.stepTitle": {
+      fontSize: "md",
+      fontFamily: "mono",
+    },
+
+    "journeys.title": {
+      fontSize: "20px",
+      fontFamily: "mono",
+      color: "primary",
+      fontWeight: "700",
+    },
   },
 });
