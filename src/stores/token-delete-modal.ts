@@ -7,8 +7,7 @@ interface TokenDeleteModalStore {
   onOpen: () => void;
   deletionArgs: {
     wallet: Wallet;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dropId: any;
+    dropId: string;
     getAccountInformation: () => Promise<void>;
   };
   setDeletionArgs: (args: TokenDeleteModalStore["deletionArgs"]) => void;

@@ -186,10 +186,9 @@ export function Dashboard() {
     getAccountInformation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
-  const onDeleteModalOpen = useTokenDeleteModalStore((state) => state.onOpen);
-  const setDeleteArgs = useTokenDeleteModalStore(
-    (state) => state.setDeletionArgs,
-  );
+  const { onOpen: openDeleteModal, setDeletionArgs: setDeleteArgs } =
+    useTokenDeleteModalStore();
+
   const handleDeleteClick = async (dropId) => {
     console.log("deleting", dropId);
 
@@ -204,7 +203,7 @@ export function Dashboard() {
       getAccountInformation,
     };
 
-    onDeleteModalOpen();
+    openDeleteModal();
     setDeleteArgs(deletionArgs);
   };
 
@@ -428,7 +427,7 @@ export function Dashboard() {
     setOnDownloadAll(handleDownloadAllQrCodes);
     setModalQRCodeUrls(qrCodeUrls);
   }, [setOnDownload, setOnDownloadAll, setModalQRCodeUrls, qrCodeUrls]);
-  if (isErr) {
+  if (isErr || !account) {
     return (
       <NotFound404
         cta="Return to homepage"

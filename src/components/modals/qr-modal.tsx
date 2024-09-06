@@ -108,7 +108,6 @@ export function QRCodeModal() {
             {totalQrCodes > 1 && (
               <Button
                 variant="primary"
-                maxWidth={"fit-content"}
                 mr={3}
                 onClick={() => onDownloadAll(qrCodeUrls)}
               >
@@ -118,22 +117,13 @@ export function QRCodeModal() {
             {totalQrCodes > 0 && (
               <Button
                 variant="primary"
-                maxWidth={"fit-content"}
                 mr={3}
                 onClick={() => onDownload(qrCodeUrls[currentIndex])}
               >
                 Download
               </Button>
             )}
-            <Button
-              variant="primary"
-              background={"transparent"}
-              color={"white"}
-              border={"1px solid white"}
-              maxWidth={"fit-content"}
-              height={"48px"}
-              onClick={onClose}
-            >
+            <Button variant="outline" height={"48px"} onClick={onClose}>
               Cancel
             </Button>
           </ModalFooter>

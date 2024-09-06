@@ -139,7 +139,7 @@ export function TokenCreateModal() {
                   Create
                 </Button>
                 <Button
-                  variant="primary"
+                  variant="outline"
                   width="full"
                   onClick={() => handleCancelDrop()}
                 >
