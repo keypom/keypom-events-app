@@ -13,10 +13,6 @@ export default function Ticket() {
   const { setEventCredentials } = useEventCredentials();
   const { data, isLoading, isError, error } = useConferenceData(secretKey);
 
-  const onScanned = () => {
-    navigate(0);
-  };
-
   if (isError) {
     return <NotFound404 header="Error" subheader={error?.message} />;
   }
@@ -63,7 +59,6 @@ export default function Ticket() {
           isLoading={isLoading}
           secretKey={secretKey}
           ticketInfo={ticketInfo}
-          onScanned={onScanned}
         />
       );
     case "Sponsor":

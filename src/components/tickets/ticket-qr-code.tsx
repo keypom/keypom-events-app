@@ -18,6 +18,8 @@ import {
   type FunderEventMetadata,
   type TicketInfoMetadata,
 } from "@/lib/eventsHelper";
+import { useNavigate } from "react-router-dom";
+import { useEventCredentials } from "@/stores/event-credentials";
 
 interface TicketQRCodeProps {
   eventInfo?: FunderEventMetadata;
@@ -26,16 +28,17 @@ interface TicketQRCodeProps {
   eventId: string;
   funderId: string;
   secretKey: string;
-  onScanned: () => void;
 }
 
 export default function TicketQRCode({
+  eventId,
   eventInfo,
   ticketInfo,
   isLoading,
   secretKey,
-  onScanned,
 }: TicketQRCodeProps) {
+  const navigate = useNavigate();
+  const { setEventCredentials } = useEventCredentials();
   // Effect to check for QR scan and reload if necessary
   useEffect(() => {
     const checkForQRScanned = async () => {
@@ -46,9 +49,10 @@ export default function TicketQRCode({
           args: { key: pubKey },
         });
 
-      // if (keyInfo.uses_remaining !== 3) {
-      //   onScanned();
-      // }
+      if (keyInfo.uses_remaining !== 3) {
+        setEventCredentials(eventId, secretKey);
+        navigate("/");
+      }
     };
 
     // Set up an interval to call checkForQRScanned every 3 seconds
