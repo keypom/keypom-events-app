@@ -23,7 +23,10 @@ export default function AppLayout() {
     }
   }, [pathname]);
 
-  if (!secretKey && !["help", "agenda", "tickets"].includes(pathname.split("/")[1])) {
+  if (
+    !secretKey &&
+    !["help", "agenda", "tickets"].includes(pathname.split("/")[1])
+  ) {
     return <Navigate to="/help" replace={true} />;
   }
 

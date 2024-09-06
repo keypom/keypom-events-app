@@ -14,20 +14,20 @@ test.describe("Authentication", () => {
       await page.waitForURL("**/help");
 
       await test.step("should not see nav option auth pages", async () => {
-        const scanButton = page.getByRole('link', { name: 'Scan' });
+        const scanButton = page.getByRole("link", { name: "Scan" });
         await expect(scanButton).not.toBeVisible();
 
-        const walletButton = page.getByRole('link', { name: 'Wallet' })
+        const walletButton = page.getByRole("link", { name: "Wallet" });
         await expect(walletButton).not.toBeVisible();
 
-        const meButton = page.getByRole('link', { name: 'Me' })
+        const meButton = page.getByRole("link", { name: "Me" });
         await expect(meButton).not.toBeVisible();
       });
 
       await test.step("should see nav option to agenda and be able to navigate", async () => {
-        await page.getByRole('link', { name: 'Agenda' }).click();
+        await page.getByRole("link", { name: "Agenda" }).click();
 
-        const agendaHeader = page.getByRole('heading', { name: 'Agenda' });
+        const agendaHeader = page.getByRole("heading", { name: "Agenda" });
         await expect(agendaHeader).toBeVisible();
       });
     });
