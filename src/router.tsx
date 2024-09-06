@@ -14,7 +14,7 @@ const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
 ) => {
   return async () => {
-    if (!navigator.onLine) {
+    if (!navigator.onLine) { // Load the OfflinePage if the user is offline
       return { Component: OfflinePage };
     }
     const { default: Component } = await importCallback();
@@ -31,6 +31,9 @@ const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
+          /**
+           * Eagerly Loaded App Pages
+           */
           {
             index: true,
             element: <Me />,
@@ -47,6 +50,9 @@ const router = createBrowserRouter([
             path: "/agenda",
             element: <Agenda />,
           },
+          /**
+           * Lazily Loaded App Pages
+           */
           {
             path: "/alerts",
             lazy: lazyWithOfflineCheck(() => import("@/routes/alerts")),
@@ -95,6 +101,9 @@ const router = createBrowserRouter([
             path: "/wallet/receive",
             lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/receive")),
           },
+          /**
+           * Lazily Loaded Unauthenticated Pages
+           */
           {
             path: "/tickets",
             children: [
@@ -106,15 +115,12 @@ const router = createBrowserRouter([
               },
             ],
           },
+          {
+            path: "/welcome",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/welcome")),
+          },
         ],
       },
-      {
-        path: "/app",
-        lazy: lazyWithOfflineCheck(
-          () => import("@/routes/conference/conferencePageManager"),
-        ),
-      },
-
       {
         path: "/scan",
         children: [

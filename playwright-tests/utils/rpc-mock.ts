@@ -7,11 +7,13 @@ export async function mockRpcRequest({
   page,
   filterParams = {},
   mockedResult = {},
+  mockedError,
   modifyOriginalResultFunction,
 }: {
   page: Page;
   filterParams?: any;
   mockedResult?: any;
+  mockedError?: any;
   modifyOriginalResultFunction?: (result: any) => any | null;
 }) {
   await page.route(MOCK_RPC_URL, async (route, request) => {
@@ -23,7 +25,7 @@ export async function mockRpcRequest({
         (param) => postData.params[param] === filterParams[param],
       ).length === filterParamsKeys.length
     ) {
-      // console.log(`It's a HIT for ${filterParams.method_name}`);
+      // console.log(`It's a HIT for ${JSON.stringify(filterParams)}`);
 
       const json = await route.fetch().then((r) => r.json());
 
@@ -34,15 +36,35 @@ export async function mockRpcRequest({
         mockedResult = await modifyOriginalResultFunction(originalResult);
       }
 
-      const mockedResponse = {
+      const mockedResponse: {
+        jsonrpc: string;
+        id: string;
+        error?: {
+          code: number;
+          message: string;
+          data: any;
+        };
+        result?: {
+          result: number[];
+        };
+      } = {
         jsonrpc: "2.0",
         id: "dontcare",
-        result: {
+      };
+
+      if (mockedError) {
+        mockedResponse.error = {
+          code: -32000,
+          message: "Server error",
+          data: mockedError,
+        };
+      } else {
+        mockedResponse.result = {
           result: Array.from(
             new TextEncoder().encode(JSON.stringify(mockedResult)),
-          ),
-        },
-      };
+          )
+        };
+      }
 
       route.fulfill({
         status: 200,

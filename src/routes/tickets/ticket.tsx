@@ -40,12 +40,12 @@ export default function Ticket() {
   // Redirect if ticket has been used
   if (maxUses === 2) {
     setEventCredentials(eventId, secretKey);
-    navigate("/app");
+    navigate("/welcome");
   }
 
   if (curStep !== 1) {
     setEventCredentials(eventId, secretKey);
-    navigate("/app");
+    navigate("/welcome");
   }
 
   switch (account_type) {

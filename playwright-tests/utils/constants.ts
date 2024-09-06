@@ -12,6 +12,7 @@ export const DROP_ID = "ga_pass";
 export const FUNDER_ID = "benjiman.testnet";
 export const EVENT_ID = "aa4a7964-c917-4010-92c3-9e4b3f7dfc5e";
 export const FACTORY_ACCOUNT = "1724680439172-factory.testnet";
+export const EVENTS_CONTRACT = "1724680439172-kp-ticketing.testnet";
 
 /**
  * KEYPOM SPONSOR CONSTANTS
