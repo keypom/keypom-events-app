@@ -127,6 +127,16 @@ const alertLinkVariant = {
   gap: "8px",
 };
 
+const viewAllAlertsVariant = {
+  ...primaryVariant,
+  flexDirection: "row",
+  padding: "4px 8px",
+  maxWidth: "max-content",
+  width: "100%",
+  fontSize: "xs",
+  gap: "8px",
+};
+
 export const ButtonStyle = defineStyleConfig({
   variants: {
     transparent: transparentVariant,
@@ -135,5 +145,6 @@ export const ButtonStyle = defineStyleConfig({
     secondary: secondaryVariant,
     outline: outlineVariant,
     alertLink: alertLinkVariant,
+    viewAllAlerts: viewAllAlertsVariant,
   },
 });

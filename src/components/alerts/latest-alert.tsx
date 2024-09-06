@@ -26,22 +26,12 @@ export function LatestAlert() {
         textAlign="center"
         gap={4}
       >
-        <Heading as="h3" color="primary" fontFamily="mono" fontSize="16px">
+        <Heading as="h3" color="white" fontFamily="mono" fontSize="16px">
           [ALERTS]
         </Heading>
 
         {alerts && alerts.length > 0 && (
-          <Button
-            variant="primary"
-            as={Link}
-            to="/alerts"
-            flexDirection="row"
-            padding="4px 8px"
-            maxWidth={"max-content"}
-            width="100%"
-            fontSize="xs"
-            gap="8px"
-          >
+          <Button variant="viewAllAlerts" as={Link} to="/alerts">
             <span>VIEW ALL</span>
             <ArrowIcon direction="right" width={8} height={8} />
           </Button>
