@@ -148,7 +148,7 @@ export default function WelcomePage() {
         secretKey,
         {
           new_account_id: accountId,
-          new_public_key: getPubFromSecret(`ed25519:${secretKey}`)
+          new_public_key: getPubFromSecret(`ed25519:${secretKey}`),
         },
         true,
       );
