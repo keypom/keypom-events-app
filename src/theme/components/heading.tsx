@@ -45,6 +45,12 @@ export const HeadingStyle = defineStyleConfig({
     },
 
     // Alerts
+    alerts: {
+      color: "primary",
+      fontFamily: "mono",
+      fontSize: "16px",
+    },
+
     "alerts.title": {
       fontSize: "14px",
       fontFamily: "mono",
@@ -98,6 +104,55 @@ export const HeadingStyle = defineStyleConfig({
       fontFamily: "mono",
       color: "primary",
       fontWeight: "700",
+    },
+
+    // Claim
+    "claim.congrats": {
+      fontSize: "5xl",
+      fontFamily: "mono",
+      fontWeight: "bold",
+      color: "primary",
+      bg: "bg.primary",
+      textAlign: "left",
+    },
+
+    "reveal.itemCount": {
+      fontSize: "108px",
+      fontWeight: "bold",
+      textAlign: "center",
+      color: "primary",
+    },
+
+    "reveal.item": {
+      fontWeight: "400",
+      textAlign: "center",
+      color: "brand.400",
+      fontSize: "52px",
+    },
+
+    "reveal.claimed": {
+      fontSize: "5xl",
+      fontFamily: "mono",
+      fontWeight: "bold",
+      color: "primary",
+      bg: "bg.primary",
+      textAlign: "left",
+      textTransform: "uppercase",
+    },
+
+    // Recieve
+    "recieve.accountName": {
+      fontSize: "2xl",
+      textAlign: "center",
+      color: "primary",
+      noOfLines: 1,
+    },
+
+    // Welcome
+    "welcome.ticketInfo": {
+      color: "brand.400",
+      fontFamily: "mono",
+      textAlign: "center",
     },
   },
 });

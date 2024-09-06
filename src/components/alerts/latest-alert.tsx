@@ -26,7 +26,7 @@ export function LatestAlert() {
         textAlign="center"
         gap={4}
       >
-        <Heading as="h3" color="white" fontFamily="mono" fontSize="16px">
+        <Heading as="h3" variant="alerts">
           [ALERTS]
         </Heading>
 

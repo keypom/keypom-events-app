@@ -193,41 +193,14 @@ export default function WelcomePage({
           ) : (
             <Flex align="center" flexDir="column">
               <Heading>Welcome</Heading>
-              <Text
-                color="brand.400"
-                fontFamily="mono"
-                fontSize="sm"
-                mb="5"
-                textAlign="center"
-              >
+              <Text variant="welcome.username" mb="5">
                 To get started, enter a username.
               </Text>
               <FormControl isInvalid={!isValidUsername} mb="5">
                 <Input
-                  backgroundColor="primary"
-                  border="1px solid"
                   borderColor={!isValidUsername ? "red.500" : "event.h1"}
                   autoFocus
-                  transition="all 0.3s ease-in-out"
-                  color="secondary"
-                  fontFamily="mono"
-                  background="tertiary"
-                  variant="outline"
-                  fontWeight="700"
-                  borderRadius="md"
-                  id="username"
-                  placeholder="Username"
-                  px={4}
-                  py={2}
-                  _placeholder={{
-                    color: "secondary",
-                    fontFamily: "mono",
-                    fontSize: "16px",
-                    fontStyle: "normal",
-                    fontWeight: "700",
-                    lineHeight: "14px",
-                    textTransform: "uppercase",
-                  }}
+                  variant="custom"
                   value={username}
                   onBlur={checkUsernameAvailable}
                   onChange={handleChangeUsername}
@@ -236,21 +209,9 @@ export default function WelcomePage({
                   Username is invalid or already taken.
                 </FormErrorMessage>
               </FormControl>
-              <Text
-                color="primary"
-                fontFamily="heading"
-                fontSize="sm"
-                fontWeight="400"
-                mb="3"
-                textAlign="center"
-              >
+              <Text variant="welcome.ticketDetails" mb="3">
                 Your ticket comes with{" "}
-                <Text
-                  as="span"
-                  color="brand.400"
-                  fontWeight="400"
-                  size={{ base: "lg", md: "xl" }}
-                >
+                <Text as="span" variant="welcome.ticketDeatilsSpan">
                   {tokensToClaim} ${ticker}
                 </Text>
               </Text>
@@ -265,10 +226,8 @@ export default function WelcomePage({
                 />
               </Skeleton>
               <Heading
-                color="brand.400"
-                fontFamily="mono"
+                variant="welcome.ticketInfo"
                 fontSize={fontSize.h1}
-                textAlign="center"
                 my={4}
               >
                 {ticketInfo?.title}
@@ -277,13 +236,7 @@ export default function WelcomePage({
           )}
         </BoxWithShape>
         <Flex align="center" pt={8} flexDir="column" gap={4}>
-          <Text
-            color="primary"
-            fontFamily="heading"
-            fontSize={fontSize.h1}
-            fontWeight="600"
-            textAlign="center"
-          >
+          <Text variant="welcome.ticketInfo" fontSize={fontSize.h1}>
             ${ticker} Details
           </Text>
           {/* Start of the grid for Spork Details */}
@@ -295,14 +248,10 @@ export default function WelcomePage({
             wrap={"wrap"}
           >
             <VStack alignItems="flex-start" gap={4}>
-              <Heading as="h3" fontSize="2xl" color="primary">
+              <Heading as="h3" variant="scan.listHeading">
                 Earn:
               </Heading>
-              <UnorderedList
-                color="brand.400"
-                fontFamily="mono"
-                textAlign={"left"}
-              >
+              <UnorderedList variant="custom">
                 <ListItem>Attending Talks</ListItem>
                 <ListItem>Visiting Booths</ListItem>
                 <ListItem>Scavenger Hunts</ListItem>
@@ -311,14 +260,10 @@ export default function WelcomePage({
               </UnorderedList>
             </VStack>
             <VStack alignItems="flex-start" gap={4}>
-              <Heading as="h3" fontSize="2xl" color="primary">
+              <Heading as="h3" variant="scan.listHeading">
                 Spend:
               </Heading>
-              <UnorderedList
-                color="brand.400"
-                fontFamily="mono"
-                textAlign={"left"}
-              >
+              <UnorderedList variant="custom">
                 <ListItem>Swag</ListItem>
                 <ListItem>Food</ListItem>
                 <ListItem>Raffles</ListItem>

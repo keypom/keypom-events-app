@@ -9,6 +9,7 @@ const variants = {
     item: {
       color: "brand.400",
       fontFamily: "mono",
+      textAlign: "left",
     },
   })),
 };

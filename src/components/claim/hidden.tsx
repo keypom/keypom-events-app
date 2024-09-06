@@ -43,65 +43,15 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
           />
         </Box>
         <VStack alignItems="flex-start" gap={0} width={"100%"}>
-          <Heading
-            as="h3"
-            fontSize="5xl"
-            fontFamily="mono"
-            fontWeight="bold"
-            color="primary"
-            bg="bg.primary"
-            textAlign="left"
-            px={2}
-          >
+          <Heading as="h3" variant="claim.congrats" px={2}>
             Congrats!
           </Heading>
-          <Text
-            fontFamily="mono"
-            color="brand.400"
-            bg="bg.primary"
-            textAlign="right"
-            alignSelf={"flex-end"}
-            fontSize="xl"
-            px={2}
-            textTransform={"uppercase"}
-          >
+          <Text variant="claim.description" alignSelf={"flex-end"} px={2}>
             You've found some {foundItem}
           </Text>
         </VStack>
         <Box p={4} width={"100%"}>
-          <Button
-            onClick={onReveal}
-            width={"100%"}
-            bg="bg.primary"
-            fontFamily={"mono"}
-            textTransform={"uppercase"}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            height={"48px"}
-            color="primary"
-            fontSize="sm"
-            borderRadius={"0"}
-            position={"relative"}
-            _hover={{
-              background: "black",
-              color: "white",
-            }}
-            _active={{
-              background: "black",
-              color: "white",
-            }}
-            _before={{
-              content: '""',
-              position: "absolute",
-              width: "57px",
-              height: "37px",
-              left: -4,
-              top: -4,
-              zIndex: -1,
-              background: "black",
-            }}
-          >
+          <Button onClick={onReveal} variant="claimCongrats">
             <span>Reveal & Claim</span>
             <ArrowIcon
               width={24}

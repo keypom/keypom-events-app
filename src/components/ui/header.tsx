@@ -39,31 +39,9 @@ export function Header() {
             gap={4}
             textTransform="uppercase"
           >
-            <Text
-              fontFamily="mono"
-              textAlign="center"
-              fontSize={["xs", "sm"]}
-              fontWeight="bold"
-              lineHeight="1rem"
-              letterSpacing="2.4px"
-              color="brand.800"
-              flexShrink={0}
-            >
-              Bangkok
-            </Text>
+            <Text variant="header.text">Bangkok</Text>
             <Redacted />
-            <Text
-              fontFamily="mono"
-              textAlign="center"
-              fontSize={["xs", "sm"]}
-              fontWeight="bold"
-              lineHeight="1rem"
-              letterSpacing="2.4px"
-              color="brand.800"
-              flexShrink={0}
-            >
-              Nov9-11
-            </Text>
+            <Text variant="header.text">Nov9-11</Text>
           </Flex>
         </Box>
       </header>

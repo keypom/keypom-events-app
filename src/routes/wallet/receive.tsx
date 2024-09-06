@@ -19,23 +19,10 @@ export default function Receive() {
           fgColor="var(--chakra-colors-brand-400)"
         />
         <VStack alignItems="center" p={4}>
-          <Heading
-            as="h3"
-            fontSize="2xl"
-            textAlign={"center"}
-            color="primary"
-            noOfLines={1}
-          >
+          <Heading as="h3" variant="recieve.accountName">
             {account.display_name || "No Name Account"}
           </Heading>
-          <Text
-            fontFamily="mono"
-            color="brand.400"
-            textAlign={"center"}
-            noOfLines={1}
-          >
-            {account.account_id}
-          </Text>
+          <Text variant="recieve.accountId">{account.account_id}</Text>
         </VStack>
       </VStack>
     </VStack>

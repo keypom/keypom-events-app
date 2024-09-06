@@ -137,6 +137,39 @@ const viewAllAlertsVariant = {
   gap: "8px",
 };
 
+const claimCongratsVariant = {
+  width: "100%",
+  bg: "bg.primary",
+  fontFamily: "mono",
+  textTransform: "uppercase",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  height: "48px",
+  color: "primary",
+  fontSize: "sm",
+  borderRadius: 0,
+  position: "relative",
+  _hover: {
+    background: "black",
+    color: "white",
+  },
+  _active: {
+    background: "black",
+    color: "white",
+  },
+  _before: {
+    content: '""',
+    position: "absolute",
+    width: "57px",
+    height: "37px",
+    left: -4,
+    top: -4,
+    zIndex: -1,
+    background: "black",
+  },
+};
+
 export const ButtonStyle = defineStyleConfig({
   variants: {
     transparent: transparentVariant,
@@ -146,5 +179,6 @@ export const ButtonStyle = defineStyleConfig({
     outline: outlineVariant,
     alertLink: alertLinkVariant,
     viewAllAlerts: viewAllAlertsVariant,
+    claimCongrats: claimCongratsVariant,
   },
 });

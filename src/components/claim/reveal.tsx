@@ -32,37 +32,15 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
         spacing={8}
       >
         <Box bg="bg.primary" p={4}>
-          <Heading
-            as="h3"
-            fontSize="108px"
-            fontWeight={"bold"}
-            textAlign={"center"}
-            color="primary"
-          >
+          <Heading as="h3" variant="reveal.itemCount">
             {itemCount}
           </Heading>
-          <Heading
-            as="h4"
-            fontWeight={"normal"}
-            textAlign={"center"}
-            color={"brand.400"}
-            fontSize="52px"
-          >
+          <Heading as="h4" variant="reveal.item">
             {foundItem}
           </Heading>
         </Box>
         <VStack alignItems="center" gap={0} width={"100%"}>
-          <Heading
-            as="h3"
-            fontSize="5xl"
-            fontFamily="mono"
-            fontWeight="bold"
-            color="primary"
-            bg="bg.primary"
-            textAlign="left"
-            textTransform={"uppercase"}
-            px={4}
-          >
+          <Heading as="h3" px={4} py={2} variant="reveal.claimed">
             Claimed
           </Heading>
         </VStack>

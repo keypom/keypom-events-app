@@ -76,5 +76,73 @@ export const TextStyle = defineStyleConfig({
       fontSize: "xs",
       lineHeight: "120%",
     },
+
+    // Claim
+    "claim.description": {
+      fontFamily: "mono",
+      color: "brand.400",
+      bg: "bg.primary",
+      textAlign: "right",
+      fontSize: "xl",
+      textTransform: "uppercase",
+    },
+
+    // Header
+    "header.text": {
+      fontFamily: "mono",
+      textAlign: "center",
+      fontSize: ["xs", "sm"],
+      fontWeight: "bold",
+      lineHeight: "1rem",
+      letterSpacing: "2.4px",
+      color: "brand.800",
+      flexShrink: 0,
+    },
+
+    // Offline Page
+    "offline.heading": {
+      fontFamily: "mono",
+      color: "secondary",
+      textAlign: "center",
+      fontSize: "lg",
+      fontWeight: "bold",
+    },
+
+    // Recieve
+    "recieve.accountId": {
+      fontFamily: "mono",
+      color: "brand.400",
+      textAlign: "center",
+      noOfLines: 1,
+    },
+
+    // Welcome
+    "welcome.username": {
+      color: "brand.400",
+      fontFamily: "mono",
+      fontSize: "sm",
+      textAlign: "center",
+    },
+
+    "welcome.ticketDetails": {
+      color: "primary",
+      fontFamily: "mono",
+      fontSize: "sm",
+      fontWeight: 400,
+      textAlign: "center",
+    },
+
+    "welcome.ticketDeatilsSpan": {
+      color: "brand.400",
+      fontWeight: 400,
+      size: { base: "lg", md: "xl" },
+    },
+
+    "welcome.ticketInfo": {
+      color: "primary",
+      fontFamily: "mono",
+      fontWeight: 600,
+      textAlign: "center",
+    },
   },
 });

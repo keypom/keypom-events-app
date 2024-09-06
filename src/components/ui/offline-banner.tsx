@@ -35,15 +35,7 @@ export function OfflineBanner() {
               alignItems="center"
               justifyContent="center"
             >
-              <Text
-                fontFamily="mono"
-                color="secondary"
-                textAlign="center"
-                fontSize="lg"
-                fontWeight="bold"
-              >
-                You are offline
-              </Text>
+              <Text variant="offline.heading">You are offline</Text>
             </Box>
           </motion.div>
         )}
