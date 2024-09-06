@@ -5,8 +5,8 @@ import { DinoIcon } from "./components/icons/dino";
 export function OfflinePage() {
   const navigate = useNavigate();
 
-  const handleRetry = () => {
-    navigate(0);
+  const handleGoBack = () => {
+    navigate(-1);
   };
 
   const handleGoHome = () => {
@@ -14,26 +14,38 @@ export function OfflinePage() {
   };
 
   return (
-    <VStack
+    <Box
+      position="absolute"
+      top="50%"
+      left="50%"
+      transform="translate(-50%, -50%)"
+      width="100%"
+      height="100%"
+      display="flex"
       alignItems="center"
-      gap={4}
-      minHeight={"calc(100dvh - 168px)"}
-      justifyContent={"center"}
-      fontFamily={"mono"}
+      justifyContent="center"
+      zIndex={1}
     >
-      <Box width="112px" height="144px" overflow="clip">
-        <DinoIcon color={"brand.400"} />
-      </Box>
-      <Heading>Oops!</Heading>
-      <Text>You are not connected to the internet</Text>
-      <HStack>
-        <Button variant="primary" onClick={handleRetry}>
-          Retry
-        </Button>
-        <Button variant="primary" onClick={handleGoHome}>
-          Go to Home
-        </Button>
-      </HStack>
-    </VStack>
+      <VStack
+        gap={4}
+        alignItems="center"
+        justifyContent={"center"}
+        fontFamily={"mono"}
+      >
+        <Box width="112px" height="144px" overflow="clip">
+          <DinoIcon color={"var(--chakra-colors-brand-400)"} />
+        </Box>
+        <Heading>Oops!</Heading>
+        <Text>You are not connected to the internet</Text>
+        <HStack>
+          <Button variant="primary" onClick={handleGoBack}>
+            Back
+          </Button>
+          <Button variant="primary" onClick={handleGoHome}>
+            Go to Home
+          </Button>
+        </HStack>
+      </VStack>
+    </Box>
   );
 }

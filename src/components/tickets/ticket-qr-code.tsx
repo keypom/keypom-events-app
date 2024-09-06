@@ -45,11 +45,10 @@ export default function TicketQRCode({
           methodName: "get_key_information",
           args: { key: pubKey },
         });
-      console.log("keyInfo", keyInfo);
 
-      if (keyInfo.uses_remaining !== 3) {
-        onScanned();
-      }
+      // if (keyInfo.uses_remaining !== 3) {
+      //   onScanned();
+      // }
     };
 
     // Set up an interval to call checkForQRScanned every 3 seconds
