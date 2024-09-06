@@ -65,7 +65,7 @@ See the full [testing guide](./playwright-tests/README.md).
 
 ## Project Structure
 
-This project is a [Vite.js](https://vitejs.dev/) app made possible by [Keypom](https://github.com/keypom/keypom) contracts. 
+This project is a [Vite.js](https://vitejs.dev/) app made possible by [Keypom](https://github.com/keypom/keypom) contracts.
 
 It uses [Zustand](https://github.com/pmndrs/zustand) for global state management, [TanStack Query](https://github.com/TanStack/query) for asynchronous data fetching, and [ChakraUI](https://chakra-ui.com/) for modular and customizable styles.
 
