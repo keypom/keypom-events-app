@@ -3,12 +3,12 @@ import { createBrowserRouter } from "react-router-dom";
 import { PageNotFound } from "@/404-page";
 import { ErrorPage } from "@/error-page";
 import { OfflinePage } from "@/offline-page";
-import Agenda from "@/routes/agenda";
 import { Root } from "@/routes/layouts/root";
 import { ComponentType } from "react";
+import Agenda from "./routes/agenda";
 import Help from "./routes/help";
-import Me from "./routes/me";
 import AppLayout from "./routes/layouts/app";
+import Me from "./routes/me";
 
 const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
