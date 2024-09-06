@@ -1,4 +1,4 @@
-import { NotFound404 } from "@/components/dashboard/NotFound404";
+import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { useTicketClaimParams } from "@/hooks/useTicketClaimParams";
 
 import TicketQRPage from "@/components/tickets/ticket-qr-code";

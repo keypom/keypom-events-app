@@ -16,7 +16,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { NotFound404 } from "@/components/dashboard/NotFound404";
+import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { KEYPOM_EVENTS_CONTRACT } from "@/constants/common";
 import { useTicketScanningParams } from "@/hooks/useTicketScanningParams";
 import {

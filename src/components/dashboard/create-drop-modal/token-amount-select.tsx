@@ -2,7 +2,7 @@
 import { Box, HStack, Input, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { FormControlComponent } from "@/components/dashboard/FormControl";
+import { FormControl } from "@/components/dashboard/form-control";
 
 interface DropTokenAmountSelectorProps {
   errors: any;
@@ -44,7 +44,7 @@ export default function DropTokenAmountSelector({
   };
 
   return (
-    <FormControlComponent
+    <FormControl
       errorText={errors.amount}
       label="Token amount"
       required={true}
@@ -127,6 +127,6 @@ export default function DropTokenAmountSelector({
           />
         </HStack>
       </VStack>
-    </FormControlComponent>
+    </FormControl>
   );
 }

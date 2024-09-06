@@ -1,4 +1,4 @@
-import { NotFound404 } from "@/components/dashboard/NotFound404";
+import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { BoxWithShape } from "@/components/tickets/box-with-shape";
 import {
   EVENT_IMG_DIR_FOLDER_NAME,

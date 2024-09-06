@@ -10,7 +10,7 @@ import {
 import { getPubFromSecret } from "@keypom/core";
 import { useEffect } from "react";
 
-import { IconBox } from "@/components/dashboard/iconBox";
+import { IconBox } from "@/components/dashboard/icon-box";
 import { BoxWithShape } from "@/components/tickets/box-with-shape";
 import { QRDetails } from "@/components/tickets/qr-details";
 import eventHelperInstance from "@/lib/event";

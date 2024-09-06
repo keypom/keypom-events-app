@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState } from "react";
-import { FormControlComponent } from "@/components/dashboard/FormControl";
-import { ImageFileInputSmall } from "@/components/dashboard/ImageFileInput/ImageFileInputSmall";
+import { FormControl } from "@/components/dashboard/form-control";
+import { ImageFileInputSmall } from "@/components/dashboard/image-file-input";
 
 interface ImageInputProps {
   createdDrop: any;
@@ -40,7 +40,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   };
 
   return (
-    <FormControlComponent
+    <FormControl
       label="Image"
       required={true}
       labelProps={{ fontSize: { base: "xs", md: "md" } }}
@@ -55,6 +55,6 @@ export const ImageInput: React.FC<ImageInputProps> = ({
         selectedFile={createdDrop.artwork}
         onChange={onSelectFile}
       />
-    </FormControlComponent>
+    </FormControl>
   );
 };

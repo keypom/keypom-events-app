@@ -25,7 +25,7 @@ import {
 } from "@/components/dashboard/table/types";
 import { DataTable } from "@/components/dashboard/table";
 import { CLOUDFLARE_IPFS, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
-import { NotFound404 } from "@/components/dashboard/NotFound404";
+import { NotFound404 } from "@/components/dashboard/not-found-404";
 
 import { truncateAddress } from "@/utils/truncateAddress";
 import { formatTokensAvailable } from "@/utils/formatTokensAvailable";

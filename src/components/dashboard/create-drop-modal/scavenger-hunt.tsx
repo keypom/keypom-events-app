@@ -14,7 +14,7 @@ import {
   removeScavengerPiece,
   updateNumPieces,
   isValidNonNegativeNumber,
-} from "./dropUtils";
+} from "./drop-utils";
 import { useState } from "react";
 
 export const ScavengerHunt = ({
