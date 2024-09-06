@@ -160,12 +160,14 @@ test.describe("Basic valid ticketing (User shows ticket)", () => {
         filterParams: {
           request_type: "view_account",
         },
-        mockedError: "account testing12345.1724680439172-factory.testnet does not exist while viewing", // account does not exist
+        mockedError:
+          "account testing12345.1724680439172-factory.testnet does not exist while viewing", // account does not exist
       });
 
       await test.step("should enable begin journey if valid username submitted", async () => {
-
-        await page.getByPlaceholder("Username").fill("basic-ticket-testing-unknown");
+        await page
+          .getByPlaceholder("Username")
+          .fill("basic-ticket-testing-unknown");
 
         // NEED TO BLUR TO TRIGGER VALIDATION
         await page.getByPlaceholder("Username").blur();

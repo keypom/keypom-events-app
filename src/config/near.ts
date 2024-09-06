@@ -20,9 +20,7 @@ export interface NearConfig {
   contractId: string;
 }
 
-function getConfig(
-  network = NETWORK_ID,
-): NearConfig {
+function getConfig(network = NETWORK_ID): NearConfig {
   const defaultConfig = {
     GAS: "200000000000000",
     gas: "200000000000000",
