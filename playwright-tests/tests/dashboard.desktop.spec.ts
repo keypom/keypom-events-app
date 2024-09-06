@@ -4,7 +4,6 @@ import { mockTransactionSubmitRPCResponses } from "../utils/transaction-mock";
 import { mockRpcRequest } from "../utils/rpc-mock";
 
 test.describe("Dashboard", () => {
-
   test.describe("Sponsor is unauthenticated", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/dashboard");
@@ -24,28 +23,25 @@ test.describe("Dashboard", () => {
         },
         mockedResult: [
           {
-            "type": "token",
-            "base": {
-              "scavenger_hunt": null,
-              "name": "Testing",
-              "image": "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
-              "id": "proximity.1724680439172-factory.testnet||0",
-              "num_claimed": 0
+            type: "token",
+            base: {
+              scavenger_hunt: null,
+              name: "Testing",
+              image:
+                "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
+              id: "proximity.1724680439172-factory.testnet||0",
+              num_claimed: 0,
             },
-            "amount": "1000000000000000000000000"
-          }
+            amount: "1000000000000000000000000",
+          },
         ],
       });
-      
-      await page.goto(
-        `/dashboard?connection=${EVENT_FUNDER_KEY}`,
-      );
+
+      await page.goto(`/dashboard?connection=${EVENT_FUNDER_KEY}`);
       await page.waitForLoadState("networkidle");
     });
 
-    test("should create a token drop", async ({
-      page,
-    }) => {
+    test("should create a token drop", async ({ page }) => {
       const createDropButton = page.getByRole("button", {
         name: "CREATE DROP",
       });
@@ -88,7 +84,6 @@ test.describe("Dashboard", () => {
 
         // MOCKING THE API CALL
 
-
         await mockTransactionSubmitRPCResponses(page);
 
         await page.getByRole("button", { name: "Create" }).click();
@@ -101,9 +96,7 @@ test.describe("Dashboard", () => {
       });
     });
 
-    test("should create an nft drop", async ({
-      page,
-    }) => {
+    test("should create an nft drop", async ({ page }) => {
       const createDropButton = page.getByRole("button", {
         name: "CREATE DROP",
       });
