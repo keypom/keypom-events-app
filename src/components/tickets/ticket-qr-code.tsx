@@ -17,7 +17,7 @@ import eventHelperInstance from "@/lib/event";
 import {
   type FunderEventMetadata,
   type TicketInfoMetadata,
-} from "@/lib/eventsHelper";
+} from "@/lib/helpers/events";
 import { useNavigate } from "react-router-dom";
 import { useEventCredentials } from "@/stores/event-credentials";
 

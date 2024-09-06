@@ -6,12 +6,12 @@ import {
   TOKEN_FACTORY_CONTRACT,
 } from "@/constants/common";
 import getConfig from "@/config/config";
-import { FunderEventMetadata } from "./eventsHelper";
+import { FunderEventMetadata } from "./helpers/events";
 import {
   decryptPrivateKey,
   decryptWithPrivateKey,
   deriveKeyFromPassword,
-} from "./cryptoHelper";
+} from "./helpers/crypto";
 import { Wallet } from "@near-wallet-selector/core";
 import {
   FinalExecutionStatus,

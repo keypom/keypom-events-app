@@ -24,7 +24,7 @@ import {
   type EventDrop,
   type FunderEventMetadata,
   type TicketMetadataExtra,
-} from "@/lib/eventsHelper";
+} from "@/lib/helpers/events";
 import keypomInstance from "@/lib/keypom";
 import { dateAndTimeToText } from "@/utils/parseDates";
 

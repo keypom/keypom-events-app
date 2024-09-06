@@ -15,7 +15,7 @@ import {
   type TicketMetadataExtra,
   type FunderEventMetadata,
   type EventDrop,
-} from "@/lib/eventsHelper";
+} from "@/lib/helpers/events";
 import { TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 
 interface ConferenceContextProps {

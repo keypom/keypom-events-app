@@ -44,14 +44,14 @@ import {
   decryptPrivateKey,
   decryptWithPrivateKey,
   deriveKeyFromPassword,
-} from "./cryptoHelper";
+} from "./helpers/crypto";
 import {
   type EventDrop,
   type FunderEventMetadata,
   type FunderMetadata,
   isValidTicketNFTMetadata,
   type TicketMetadataExtra,
-} from "./eventsHelper";
+} from "./helpers/events";
 
 let instance: KeypomJS;
 const ACCOUNT_ID_REGEX =

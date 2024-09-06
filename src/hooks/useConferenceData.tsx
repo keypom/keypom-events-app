@@ -5,7 +5,7 @@ import {
   FunderEventMetadata,
   TicketInfoMetadata,
   TicketMetadataExtra,
-} from "@/lib/eventsHelper";
+} from "@/lib/helpers/events";
 import { AttendeeKeyItem } from "@/lib/keypom";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { TokenAsset } from "@/types/common";
