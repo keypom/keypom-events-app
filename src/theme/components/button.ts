@@ -110,6 +110,23 @@ const outlineVariant = {
   },
 };
 
+const alertLinkVariant = {
+  ...FLEX_CENTER,
+  borderRadius: "md",
+  fontFamily: "mono",
+  fontWeight: "bold",
+  flex: "1 0 0",
+  textAlign: "center",
+  maxWidth: "max-content",
+  padding: "4px 8px",
+  width: "100%",
+  fontSize: "xs",
+  bg: "black",
+  border: "1px solid var(--chakra-colors-brand-400)",
+  color: "brand.400",
+  gap: "8px",
+};
+
 export const ButtonStyle = defineStyleConfig({
   variants: {
     transparent: transparentVariant,
@@ -117,5 +134,6 @@ export const ButtonStyle = defineStyleConfig({
     primary: primaryVariant,
     secondary: secondaryVariant,
     outline: outlineVariant,
+    alertLink: alertLinkVariant,
   },
 });

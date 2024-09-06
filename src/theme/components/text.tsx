@@ -38,5 +38,10 @@ export const TextStyle = defineStyleConfig({
       fontWeight: 700,
       color: "brand.600",
     },
+
+    "alerts.description": {
+      color: "primary",
+      fontSize: "xs",
+    },
   },
 });

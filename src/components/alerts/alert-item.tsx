@@ -54,23 +54,8 @@ export function AlertItem({
         </Heading>
         <Text variant={"alerts.timeAgo"}>{timeAgo(creationDate)}</Text>
       </Flex>
-      <Text color="primary" fontSize="xs">
-        {description}
-      </Text>
-      <Button
-        variant="primary"
-        as={Link}
-        to={href}
-        flexDirection="row"
-        padding="4px 8px"
-        maxWidth={"max-content"}
-        width="100%"
-        fontSize="xs"
-        bg="bg.primary"
-        border="1px solid var(--chakra-colors-brand-400)"
-        color="brand.400"
-        gap="8px"
-      >
+      <Text variant={"alerts.description"}>{description}</Text>
+      <Button variant="alertLink" as={Link} to={href}>
         <span>{linkTitle}</span>
         <ArrowIcon
           direction="right"

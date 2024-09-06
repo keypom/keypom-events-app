@@ -50,11 +50,5 @@ export const HeadingStyle = defineStyleConfig({
       fontFamily: "mono",
       color: "brand.400",
     },
-
-    "alerts.timeAgo": {
-      fontSize: "10px",
-      fontWeight: 700,
-      color: "brand.600",
-    },
   },
 });
