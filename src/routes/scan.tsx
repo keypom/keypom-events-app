@@ -70,10 +70,10 @@ export default function Scan() {
           wrap={"wrap"}
         >
           <VStack alignItems="flex-start" gap={4}>
-            <Heading as="h3" fontSize="2xl" color="primary">
+            <Heading as="h3" variant={"scan.listHeading"}>
               Earn:
             </Heading>
-            <UnorderedList color="brand.400" fontFamily="mono">
+            <UnorderedList variant="custom">
               <ListItem>Attending Talks</ListItem>
               <ListItem>Visiting Booths</ListItem>
               <ListItem>Scavenger Hunts</ListItem>
@@ -82,10 +82,10 @@ export default function Scan() {
             </UnorderedList>
           </VStack>
           <VStack alignItems="flex-start" gap={4}>
-            <Heading as="h3" fontSize="2xl" color="primary">
+            <Heading as="h3" variant={"scan.listHeading"}>
               Spend:
             </Heading>
-            <UnorderedList color="brand.400" fontFamily="mono">
+            <UnorderedList variant="custom">
               <ListItem>Swag</ListItem>
               <ListItem>Food</ListItem>
               <ListItem>Raffles</ListItem>

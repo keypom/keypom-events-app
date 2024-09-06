@@ -11,6 +11,7 @@ import { SwitchStyle } from "./components/switch";
 import { HeadingStyle } from "./components/heading";
 import { TextStyle } from "./components/text";
 import { InputStyle } from "./components/input";
+import { ListStyle } from "./components/list";
 
 export const theme = extendTheme({
   colors,
@@ -24,5 +25,6 @@ export const theme = extendTheme({
     Heading: HeadingStyle,
     Text: TextStyle,
     Input: InputStyle,
+    List: ListStyle,
   },
 });

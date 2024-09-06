@@ -50,5 +50,12 @@ export const HeadingStyle = defineStyleConfig({
       fontFamily: "mono",
       color: "brand.400",
     },
+
+    // Scan
+    "scan.listHeading": {
+      fontSize: "2xl",
+      color: "primary",
+      fontFamily: "mono",
+    },
   },
 });
