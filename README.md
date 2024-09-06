@@ -51,7 +51,7 @@ pnpm run build
 
 To analyze the production build bundle using [vite-bundle-visualizer](https://www.npmjs.com/package/vite-bundle-visualizer), run:
 
-```
+```bash
 pnpm run build:analyze
 ```
 

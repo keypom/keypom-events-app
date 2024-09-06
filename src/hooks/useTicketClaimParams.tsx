@@ -7,6 +7,7 @@ export const useTicketClaimParams = () => {
 
   const dropId = dropIdParam;
   const secretKey = hash ? hash.replace("#", "") : "";
+  console.log(`Received dropId: ${dropId} and secretKey: ${secretKey}`);
 
   if (!dropId || !secretKey) {
     console.error(
