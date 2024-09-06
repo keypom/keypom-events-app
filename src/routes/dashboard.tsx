@@ -24,7 +24,7 @@ import {
   type DataItem,
 } from "@/components/dashboard/table/types";
 import { DataTable } from "@/components/dashboard/table";
-import { CLOUDFLARE_IPFS, TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+import { CLOUDFLARE_IPFS, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import { NotFound404 } from "@/components/dashboard/NotFound404";
 
 import { truncateAddress } from "@/utils/truncateAddress";
@@ -150,20 +150,20 @@ export function Dashboard() {
   const getAccountInformation = useCallback(async () => {
     try {
       const recoveredAccount = await eventHelperInstance.viewCall({
-        contractId: TOKEN_FACTORY_CONTRACT,
+        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "recover_account",
         args: { key_or_account_id: account?.public_key },
       });
 
       const tokens = await eventHelperInstance.viewCall({
-        contractId: TOKEN_FACTORY_CONTRACT,
+        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "ft_balance_of",
         args: { account_id: recoveredAccount.account_id },
       });
       setTokensAvailable(eventHelperInstance.yoctoToNearWith4Decimals(tokens));
 
       const drops = await eventHelperInstance.viewCall({
-        contractId: TOKEN_FACTORY_CONTRACT,
+        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "get_drops_created_by_account",
         args: { account_id: recoveredAccount.account_id },
       });

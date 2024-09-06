@@ -1,4 +1,4 @@
-import { TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import eventHelperInstance from "@/lib/event";
 import {
   EventDrop,
@@ -36,7 +36,7 @@ const fetchConferenceData = async (secretKey: string) => {
     });
 
     const tokenInfo = await eventHelperInstance.viewCall({
-      contractId: TOKEN_FACTORY_CONTRACT,
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "ft_metadata",
       args: { drop_id: dropInfo.drop_id },
     });

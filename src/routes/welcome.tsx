@@ -2,7 +2,7 @@ import { NotFound404 } from "@/components/dashboard/NotFound404";
 import { BoxWithShape } from "@/components/tickets/box-with-shape";
 import {
   EVENT_IMG_DIR_FOLDER_NAME,
-  TOKEN_FACTORY_CONTRACT,
+  KEYPOM_TOKEN_FACTORY_CONTRACT,
 } from "@/constants/common";
 import { useConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
@@ -141,7 +141,7 @@ export default function WelcomePage() {
       return;
     }
 
-    const accountId = `${username}.${TOKEN_FACTORY_CONTRACT}`;
+    const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
     try {
       setIsClaiming(true);
       await keypomInstance.claimEventTicket(
@@ -172,7 +172,7 @@ export default function WelcomePage() {
       return false;
     }
     try {
-      const accountId = `${username}.${TOKEN_FACTORY_CONTRACT}`;
+      const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
       console.log("Checking username", accountId);
       const doesExist = await accountExists(accountId);
       console.log("Does exist", doesExist);

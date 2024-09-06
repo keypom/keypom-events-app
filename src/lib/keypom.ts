@@ -28,7 +28,7 @@ import { formatNearAmount } from "near-api-js/lib/utils/format";
 import * as nacl from "tweetnacl";
 import * as naclUtil from "tweetnacl-util";
 
-import getConfig from "@/config/config";
+import getConfig from "@/config/near";
 import {
   CLOUDFLARE_IPFS,
   DROP_TYPE,
