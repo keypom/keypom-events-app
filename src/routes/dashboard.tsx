@@ -30,8 +30,6 @@ import { NotFound404 } from "@/components/dashboard/NotFound404";
 import { truncateAddress } from "@/utils/truncateAddress";
 import { formatTokensAvailable } from "@/utils/formatTokensAvailable";
 import eventHelperInstance from "@/lib/event";
-
-import { CreateDropModal } from "@/components/dashboard/CreateDropModal/CreateDropModal";
 import { Wallet } from "@near-wallet-selector/core";
 import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
 
@@ -129,9 +127,7 @@ export function Dashboard() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
-  const [isCreateDropModalOpen, setIsCreateDropModalOpen] = useState(false);
   const [tokensAvailable, setTokensAvailable] = useState<string>();
-  //const [accountId, setAccountId] = useState<string>();
   const [dropsCreated, setDropsCreated] = useState<CreatedConferenceDrop[]>([]);
   const toast = useToast();
   const [qrCodeUrls, setQrCodeUrls] = useState<string[]>([]);
@@ -374,7 +370,6 @@ export function Dashboard() {
           }
 
           handleModalClose();
-          setIsCreateDropModalOpen(false);
           onQRModalOpen();
         } catch (e) {
           console.error("Error creating drop:", e);
@@ -385,13 +380,11 @@ export function Dashboard() {
             isClosable: true,
           });
           handleModalClose();
-          setIsCreateDropModalOpen(false);
           handleQRModalClose();
         }
         setIsModalLoading(false);
       } else {
         handleModalClose();
-        setIsCreateDropModalOpen(false);
       }
     },
     [
@@ -409,7 +402,6 @@ export function Dashboard() {
     setHandleClose,
     onOpen: setShowTokenCreateModal,
     setTokenType,
-    tokenType: dropType,
   } = useTokenCreateModalStore();
 
   useEffect(() => {
@@ -459,11 +451,6 @@ export function Dashboard() {
       }}
     >
       <Box p={8}>
-        <CreateDropModal
-          isOpen={isCreateDropModalOpen}
-          modalType={dropType}
-          onClose={handleCreateDropClose}
-        />
         <TokenDeleteModal />
         <TokenCreateModal />
         <QRCodeModal />
@@ -497,13 +484,6 @@ export function Dashboard() {
           showMobileTitles={["price", "numTickets"]}
           type="conference-drops"
         />
-        {/* <QRViewerModal
-          isOpen={isOpen}
-          onClose={onClose}
-          qrCodeUrls={qrCodeUrls}
-          onDownload={(url) => handleDownloadQrCode(url)}
-          onDownloadAll={(urls) => handleDownloadAllQrCodes(urls)}
-        /> */}
       </Box>
     </Box>
   );
