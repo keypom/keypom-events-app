@@ -51,8 +51,6 @@ export type DROP_TYPES = (typeof DROP_TYPE)[DROP_TYPE_KEYS];
  * APPLICATION
  */
 
-export const EVENT_IMG_DIR_FOLDER_NAME = "redacted";
-
 export const CONTACT_BUTTON = {
   href: "https://t.me/redactedbangkok",
   label: "Telegram",

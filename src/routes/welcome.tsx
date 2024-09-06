@@ -1,9 +1,6 @@
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { BoxWithShape } from "@/components/tickets/box-with-shape";
-import {
-  EVENT_IMG_DIR_FOLDER_NAME,
-  KEYPOM_TOKEN_FACTORY_CONTRACT,
-} from "@/constants/common";
+import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import { useConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
 import keypomInstance from "@/lib/keypom";
