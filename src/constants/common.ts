@@ -4,7 +4,7 @@ import {
   ScanIcon,
   TelegramIcon,
   UserIcon,
-  WalletIcon
+  WalletIcon,
 } from "@/components/icons";
 import { FooterItem } from "@/components/ui/footer";
 
