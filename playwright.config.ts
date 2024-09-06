@@ -56,7 +56,7 @@ export default defineConfig({
 
   /*  Run your local dev server before starting the tests */
   webServer: {
-    command: "set VITE_IS_TEST=true && pnpm run dev",
+    command: "pnpm run dev:test",
     url: "http://localhost:5173",
     reuseExistingServer: !process.env.CI,
   },

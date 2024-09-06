@@ -14,6 +14,23 @@ const access_keys = [
     },
     public_key: "ed25519:8Cai5LU7KTmFmbSfv69aV2gtCPN9Qkd6cebp2rk2sLKT",
   },
+  {
+    access_key: {
+      "nonce": 172579845000120,
+      "permission": {
+        "FunctionCall": {
+          "allowance": null,
+          "method_names": [
+            "create_token_drop",
+            "create_nft_drop",
+            "delete_drop"
+          ],
+          "receiver_id": "1724680439172-factory.testnet"
+        }
+      }
+    },
+    public_key: "ed25519:79wz2P2qtw72bmTRQqsJCAvmGCUXc3GZP7TnU3FsqQHZ"
+  }
 ];
 
 export function decodeResultJSON(resultArray) {
