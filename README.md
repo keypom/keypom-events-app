@@ -76,6 +76,24 @@ Routes are defined using [React Router v6](https://reactrouter.com/en/main) in `
 - Routes that do not require authentication can be configured in `src/constants/common.ts` under `UNAUTHENTICATED_ROUTES`.
 - Routes that should not render the App Footer can be configured in `src/constants/common.ts` under `HIDDEN_FOOTER_ROUTES`.
 
+### Global State
+
+The application uses [Zustand](https://github.com/pmndrs/zustand) for state management. This handles the ticketed user's credentials, event data, and modules for handling modal states.
+
+The state is stored in `src/stores`. The most important is `event-credentials`, which manages the `eventId` and `secretKey` derived from the user's ticket.
+
+### Hooks
+
+The application utilizes React hooks for managing various data-fetching and parameter extraction tasks related to event tickets and user credentials.
+
+The hooks are located in `src/hooks`:
+
+- `useConferenceData`: Fetches conference-related data such as ticket info, drop info, key info, and event info based on the provided or stored secret key.
+- `useTicketClaimParams`: Extracts `dropId` and `secretKey` from the URL parameters and hash when claiming a ticket.
+- `useTicketScanningParams`: Parses the `funderId` and `eventId` from the URL parameters for scanning tickets.
+- `useAccountData`: Retrieves account information (account ID, display name, and balance) using the secret key.
+- `useConferenceClaimParams`: Manages ticket claim credentials, storing `dropId` and `secretKey` in local storage if found in the URL.
+
 ### PWA
 
 To enhance offline capabilities and provide a better user experience, this app is structured as a [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) using [@vite-pwa/plugin](https://vite-pwa-org.netlify.app/). The PWA setup ensures that essential assets are cached and available even when the user is offline, improving reliability and performance.
@@ -83,6 +101,41 @@ To enhance offline capabilities and provide a better user experience, this app i
 Some helpful commands include:
 
 - `pnpm run generate-pwa-assets`: This command uses [@vite-pwa/assets-generator](https://vite-pwa-org.netlify.app/assets-generator/) to automatically generate and optimize icons, splash screens, and other assets necessary for PWA functionality across various devices and screen sizes.
+
+## Customizing the app
+
+This application was designed in such a way to be easy for most customizations.
+
+### Theme
+
+You can customize the **Chakra UI** theme and components in `src/theme`.
+
+- **Theme:** Modify colors, fonts, and spacing in the theme configuration.
+- **Components:** Customize icons, buttons, layouts, etc. These will reflect across the app.
+
+### Constants
+
+You can customize the app's contracts, environment, and authentication in `src/common/constants`.
+
+- **Contracts:** Update the contract addresses for testnet, mainnet, and other environments.
+- **Routes:** Modify routes for controlling access and footer visibility.
+- **Environment Variables:** Set up network IDs and API keys.
+
+### Assets
+
+Replace existing assets with new ones by dropping images with the same names in the `/public/assets` folder.
+
+```txt
+├── background.webp
+├── boxes-background.webp 
+├── claim-blocks.webp
+├── custom-button-bg.webp
+├── image-fallback.png
+├── lines-bg.webp
+├── logo.webp
+├── scan-bg.webp
+├── wallet-bg.webp
+```
 
 ## Contributing
 
