@@ -31,5 +31,12 @@ export const TextStyle = defineStyleConfig({
       color: "brand.400",
       fontSize: "xs",
     },
+
+    // Alerts
+    "alerts.timeAgo": {
+      fontSize: "10px",
+      fontWeight: 700,
+      color: "brand.600",
+    },
   },
 });

@@ -43,5 +43,18 @@ export const HeadingStyle = defineStyleConfig({
       fontSize: "sm",
       fontWeight: 700,
     },
+
+    // Alerts
+    "alerts.title": {
+      fontSize: "14px",
+      fontFamily: "mono",
+      color: "brand.400",
+    },
+
+    "alerts.timeAgo": {
+      fontSize: "10px",
+      fontWeight: 700,
+      color: "brand.600",
+    },
   },
 });

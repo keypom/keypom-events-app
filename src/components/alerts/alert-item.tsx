@@ -43,9 +43,7 @@ export function AlertItem({
       >
         <Heading
           as="h3"
-          fontSize="14px"
-          fontFamily={"mono"}
-          color="brand.400"
+          variant={"alerts.title"}
           display={"flex"}
           width={"100%"}
           alignItems={"center"}
@@ -54,9 +52,7 @@ export function AlertItem({
         >
           {title}
         </Heading>
-        <Text fontSize="10px" fontWeight="700" color="brand.600">
-          {timeAgo(creationDate)}
-        </Text>
+        <Text variant={"alerts.timeAgo"}>{timeAgo(creationDate)}</Text>
       </Flex>
       <Text color="primary" fontSize="xs">
         {description}
