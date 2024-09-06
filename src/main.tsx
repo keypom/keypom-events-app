@@ -1,10 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import { isTestEnv } from "./constants/common";
 
 async function prepare() {
   // Skip if in test environment
-  const isTestEnv = import.meta.env.MODE === "test";
   if (isTestEnv) {
     console.log("Skipping mock service worker in test environment");
     return;
