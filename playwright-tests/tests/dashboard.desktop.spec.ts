@@ -73,22 +73,6 @@ test.describe("Dashboard", () => {
         // await page.getByRole("button", { name: "Get QR Code" }).first().click();
         await expect(page.getByText("QR Code", { exact: true })).toBeVisible();
       });
-
-      await test.step("should show nft drop form", async () => {
-        await createDropButton.click();
-        await page.getByRole("menuitem", { name: "NFT Drop" }).click();
-        await expect(
-          page.getByRole("heading", { name: "Create Drop" }),
-        ).toBeVisible();
-      });
-
-      await test.step("should close the nft drop modal", async () => {
-        const cancelButton = page.getByRole("button", { name: "Cancel" });
-        await cancelButton.click();
-        await expect(
-          page.getByRole("heading", { name: "Create Drop" }),
-        ).not.toBeVisible();
-      });
     });
 
     test("should create an nft drop", async ({ page }) => {

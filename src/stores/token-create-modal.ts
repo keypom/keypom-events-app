@@ -1,55 +1,57 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 
 interface TokenCreateModalStore {
   isOpen: boolean;
-  onClose: () => void;
   onOpen: () => void;
-  onCreate: () => Promise<void>;
-  dropProps: {
-    name: string;
-    artwork: undefined;
-    amount: string;
-    nftData: undefined;
-  };
-  scavengerPieces: [
-    {
-      piece: string;
-      description: string;
-    },
-    {
-      piece: string;
-      description: string;
-    },
-  ];
-  isLoading: boolean;
-  isScavengerHunt: boolean;
+  onClose: () => void;
+
+  handleClose: (
+    dropCreated: any,
+    isScavengerHunt: boolean,
+    scavengerHunt: Array<{ piece: string; description: string }>,
+    setIsModalLoading: (loading: boolean) => void,
+  ) => Promise<void>;
+  setHandleClose: (
+    value: (
+      dropCreated: any,
+      isScavengerHunt: boolean,
+      scavengerHunt: Array<{ piece: string; description: string }>,
+      setIsModalLoading: (loading: boolean) => void,
+    ) => Promise<void>,
+  ) => void;
+
+  tokenType: "token" | "nft";
+  setTokenType: (value: "token" | "nft") => void;
 }
 
 export const useTokenCreateModalStore = create<TokenCreateModalStore>(
   (set) => ({
     isOpen: false,
-    onClose: () => set(() => ({ isOpen: false })),
+
     onOpen: () => set(() => ({ isOpen: true })),
-    onCreate: async () => {
+    onClose: () => set(() => ({ isOpen: false })),
+
+    tokenType: "token",
+    setTokenType: (value: "token" | "nft") => set(() => ({ tokenType: value })),
+
+    handleClose: async (
+      _dropCreated: any,
+      _isScavengerHunt: boolean,
+      _scavengerHunt: Array<{ piece: string; description: string }>,
+      _setIsModalLoading: (loading: boolean) => void,
+    ) => {
       set(() => ({ isOpen: false }));
     },
-    dropProps: {
-      name: "",
-      artwork: undefined,
-      amount: "1",
-      nftData: undefined,
-    },
-    scavengerPieces: [
-      {
-        piece: `Piece 1`,
-        description: "",
-      },
-      {
-        piece: `Piece 2`,
-        description: "",
-      },
-    ],
-    isLoading: false,
-    isScavengerHunt: false,
+
+    setHandleClose: (
+      value: (
+        dropCreated: any,
+        isScavengerHunt: boolean,
+        scavengerHunt: Array<{ piece: string; description: string }>,
+        setIsModalLoading: (loading: boolean) => void,
+      ) => Promise<void>,
+    ) => set(() => ({ handleClose: value })),
   }),
 );

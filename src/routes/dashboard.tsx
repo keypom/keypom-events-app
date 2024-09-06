@@ -14,9 +14,8 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import QRCode from "qrcode";
 
 import { DeleteIcon, LinkIcon, NFTIcon } from "@/components/dashboard/icons";
@@ -33,12 +32,15 @@ import { formatTokensAvailable } from "@/utils/formatTokensAvailable";
 import eventHelperInstance from "@/lib/event";
 
 import { CreateDropModal } from "@/components/dashboard/CreateDropModal/CreateDropModal";
-import QRViewerModal from "@/components/dashboard/QRViewerModal";
 import { Wallet } from "@near-wallet-selector/core";
 import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
 
 import { TokenDeleteModal } from "@/components/modals/token-delete";
 import { useTokenDeleteModalStore } from "@/stores/token-delete-modal";
+import { TokenCreateModal } from "@/components/modals/token-create";
+import { useTokenCreateModalStore } from "@/stores/token-create-modal";
+import { QRCodeModal } from "@/components/modals/qr-modal";
+import { useQRModalStore } from "@/stores/qr-modal";
 
 export interface ScavengerHunt {
   piece: string;
@@ -131,9 +133,7 @@ export function Dashboard() {
   const [tokensAvailable, setTokensAvailable] = useState<string>();
   //const [accountId, setAccountId] = useState<string>();
   const [dropsCreated, setDropsCreated] = useState<CreatedConferenceDrop[]>([]);
-  const [dropType, setDropType] = useState<"nft" | "token">("token");
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [qrCodeUrls, setQrCodeUrls] = useState<string[]>([]);
   const [wallet, setWallet] = useState<Wallet>();
 
@@ -151,7 +151,7 @@ export function Dashboard() {
     fetchWallet();
   }, [selector]);
 
-  const getAccountInformation = async () => {
+  const getAccountInformation = useCallback(async () => {
     try {
       const recoveredAccount = await eventHelperInstance.viewCall({
         contractId: TOKEN_FACTORY_CONTRACT,
@@ -178,7 +178,7 @@ export function Dashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [account?.public_key]);
 
   useEffect(() => {
     if (!account) return;
@@ -206,6 +206,8 @@ export function Dashboard() {
     onDeleteModalOpen();
     setDeleteArgs(deletionArgs);
   };
+
+  const { onOpen: onQRModalOpen } = useQRModalStore();
 
   const getTableRows: GetTicketDataFn = (data, handleDeleteClick) => {
     if (!data) return [];
@@ -261,7 +263,7 @@ export function Dashboard() {
                 isTokenDrop(item) ? "token" : "nft",
                 item.base.scavenger_hunt,
               );
-              onOpen();
+              onQRModalOpen();
             }}
           >
             Get QR Code
@@ -283,28 +285,31 @@ export function Dashboard() {
     }));
   };
 
-  const generateQRCode = async (
-    dropId: string,
-    type: "nft" | "token",
-    scavengerHunt?: ScavengerHunt[],
-  ) => {
-    try {
-      if (scavengerHunt && scavengerHunt.length > 0) {
-        const qrCodes = await Promise.all(
-          scavengerHunt.map(({ piece }) =>
-            QRCode.toDataURL(`${type}:${dropId}:${piece}`),
-          ),
-        );
-        setQrCodeUrls(qrCodes);
-      } else {
-        const url = await QRCode.toDataURL(`${type}:${dropId}`);
-        setQrCodeUrls([url]);
+  const generateQRCode = useCallback(
+    async (
+      dropId: string,
+      type: "nft" | "token",
+      scavengerHunt?: ScavengerHunt[],
+    ) => {
+      try {
+        if (scavengerHunt && scavengerHunt.length > 0) {
+          const qrCodes = await Promise.all(
+            scavengerHunt.map(({ piece }) =>
+              QRCode.toDataURL(`${type}:${dropId}:${piece}`),
+            ),
+          );
+          setQrCodeUrls(qrCodes);
+        } else {
+          const url = await QRCode.toDataURL(`${type}:${dropId}`);
+          setQrCodeUrls([url]);
+        }
+        onQRModalOpen();
+      } catch (err) {
+        console.error(err);
       }
-      onOpen();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    },
+    [onQRModalOpen],
+  );
 
   const handleDownloadQrCode = (url: string) => {
     const link = document.createElement("a");
@@ -332,52 +337,96 @@ export function Dashboard() {
     [dropsCreated],
   );
 
-  const handleCreateDropClose = async (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dropCreated: any,
-    isScavengerHunt: boolean,
-    scavengerHunt: Array<{ piece: string; description: string }>,
-    setIsModalLoading: (loading: boolean) => void,
-  ) => {
-    if (dropCreated) {
-      setIsModalLoading(true);
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { dropId, completeScavengerHunt }: any =
-          await eventHelperInstance.createConferenceDrop({
-            wallet: wallet!,
-            createdDrop: dropCreated,
-            isScavengerHunt,
-            scavengerHunt,
+  const { onClose: handleModalClose } = useTokenCreateModalStore();
+  const { onClose: handleQRModalClose } = useQRModalStore();
+
+  const handleCreateDropClose = useCallback(
+    async (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      dropCreated: any,
+      isScavengerHunt: boolean,
+      scavengerHunt: Array<{ piece: string; description: string }>,
+      setIsModalLoading: (loading: boolean) => void,
+    ) => {
+      if (dropCreated) {
+        setIsModalLoading(true);
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { dropId, completeScavengerHunt }: any =
+            await eventHelperInstance.createConferenceDrop({
+              wallet: wallet!,
+              createdDrop: dropCreated,
+              isScavengerHunt,
+              scavengerHunt,
+            });
+          toast({
+            title: "Drop created successfully.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
           });
-        toast({
-          title: "Drop created successfully.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-        await getAccountInformation(); // Refresh the drop list
-        const type = isTokenDrop(dropCreated) ? "token" : "nft";
-        if (isScavengerHunt) {
-          generateQRCode(dropId, type, completeScavengerHunt);
-        } else {
-          generateQRCode(dropId, type);
+          await getAccountInformation(); // Refresh the drop list
+          const type = isTokenDrop(dropCreated) ? "token" : "nft";
+          if (isScavengerHunt) {
+            generateQRCode(dropId, type, completeScavengerHunt);
+          } else {
+            generateQRCode(dropId, type);
+          }
+
+          handleModalClose();
+          setIsCreateDropModalOpen(false);
+          onQRModalOpen();
+        } catch (e) {
+          console.error("Error creating drop:", e);
+          toast({
+            title: "Drop creation unsuccessful. Please try again.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+          handleModalClose();
+          setIsCreateDropModalOpen(false);
+          handleQRModalClose();
         }
-      } catch (e) {
-        console.error("Error creating drop:", e);
-        toast({
-          title: "Drop creation unsuccessful. Please try again.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+        setIsModalLoading(false);
+      } else {
+        handleModalClose();
+        setIsCreateDropModalOpen(false);
       }
-      setIsModalLoading(false);
-    }
+    },
+    [
+      handleModalClose,
+      onQRModalOpen,
+      wallet,
+      toast,
+      getAccountInformation,
+      generateQRCode,
+      handleQRModalClose,
+    ],
+  );
 
-    setIsCreateDropModalOpen(false);
-  };
+  const {
+    setHandleClose,
+    onOpen: setShowTokenCreateModal,
+    setTokenType,
+    tokenType: dropType,
+  } = useTokenCreateModalStore();
 
+  useEffect(() => {
+    setHandleClose(handleCreateDropClose);
+  }, [setHandleClose, handleCreateDropClose]);
+
+  const {
+    setOnDownload,
+    setOnDownloadAll,
+    setQrCodeUrls: setModalQRCodeUrls,
+  } = useQRModalStore();
+
+  useEffect(() => {
+    setOnDownload(handleDownloadQrCode);
+    setOnDownloadAll(handleDownloadAllQrCodes);
+    setModalQRCodeUrls(qrCodeUrls);
+  }, [setOnDownload, setOnDownloadAll, setModalQRCodeUrls, qrCodeUrls]);
   if (isErr) {
     return (
       <NotFound404
@@ -415,8 +464,9 @@ export function Dashboard() {
           modalType={dropType}
           onClose={handleCreateDropClose}
         />
-
         <TokenDeleteModal />
+        <TokenCreateModal />
+        <QRCodeModal />
         {isLoading ? (
           <Skeleton height="40px" mb="4" width="200px" />
         ) : (
@@ -433,9 +483,9 @@ export function Dashboard() {
           <TokensAvailableSection tokensAvailable={tokensAvailable} />
         )}
         <DropActionsSection
-          setDropType={setDropType}
+          setDropType={setTokenType}
           onCreateDrop={() => {
-            setIsCreateDropModalOpen(true);
+            setShowTokenCreateModal();
           }}
         />
         <DataTable
@@ -447,13 +497,13 @@ export function Dashboard() {
           showMobileTitles={["price", "numTickets"]}
           type="conference-drops"
         />
-        <QRViewerModal
+        {/* <QRViewerModal
           isOpen={isOpen}
           onClose={onClose}
           qrCodeUrls={qrCodeUrls}
           onDownload={(url) => handleDownloadQrCode(url)}
           onDownloadAll={(urls) => handleDownloadAllQrCodes(urls)}
-        />
+        /> */}
       </Box>
     </Box>
   );
