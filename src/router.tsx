@@ -29,6 +29,9 @@ const router = createBrowserRouter([
     element: <Root />,
     errorElement: <ErrorPage />,
     children: [
+      /**
+       * Ticketed User Routes
+       */
       {
         element: <AppLayout />,
         children: [
@@ -52,7 +55,7 @@ const router = createBrowserRouter([
             element: <Agenda />,
           },
           /**
-           * Lazily Loaded App Pages
+           * Lazily Loaded App Pages, requires event credentials
            */
           {
             path: "/alerts",
@@ -122,8 +125,11 @@ const router = createBrowserRouter([
           },
         ],
       },
+      /**
+       * Sponsor/Admin Routes
+       */
       {
-        path: "/scan",
+        path: "/scan", // scanning tickets
         children: [
           {
             path: "event/:funderAndEventId",
@@ -134,7 +140,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/dashboard",
+        path: "/dashboard", // managing drops
         lazy: async () => {
           if (!navigator.onLine) {
             return { Component: OfflinePage };

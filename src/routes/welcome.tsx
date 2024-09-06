@@ -104,7 +104,7 @@ export default function WelcomePage() {
   const curStep = maxUses - usesRemaining + 1;
 
   if (curStep === 3) {
-    navigate("me");
+    navigate("/me");
   }
 
   const { starting_token_balance } = ticketInfo;

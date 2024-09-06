@@ -73,7 +73,7 @@ export default function AppLayout() {
       >
         {state === "loading" ? <LoadingBox /> : <Outlet />}
       </Box>
-      <Footer />
+      {!["tickets", "welcome"].includes(pathname.split("/")[1]) && <Footer />}
     </Flex>
   );
 }

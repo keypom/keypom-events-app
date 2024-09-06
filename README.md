@@ -65,6 +65,14 @@ See the full [testing guide](./playwright-tests/README.md).
 
 ## Project Structure
 
+This project is a [Vite.js](https://vitejs.dev/) app made possible by [Keypom](https://github.com/keypom/keypom) contracts. 
+
+It uses [Zustand](https://github.com/pmndrs/zustand) for global state management, [TanStack Query](https://github.com/TanStack/query) for asynchronous data fetching, and [ChakraUI](https://chakra-ui.com/) for modular and customizable styles.
+
+### Routes
+
+Routes are defined using [React Router v6](https://reactrouter.com/en/main) in `src/router.tsx`. The routing structure is split into two core user functionalities: **sponsor/admin flows** and **ticketed user flows**.
+
 ### PWA
 
 To enhance offline capabilities and provide a better user experience, this app is structured as a [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) using [@vite-pwa/plugin](https://vite-pwa-org.netlify.app/). The PWA setup ensures that essential assets are cached and available even when the user is offline, improving reliability and performance.
