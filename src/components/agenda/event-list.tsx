@@ -35,16 +35,8 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
             display={"flex"}
             gap={"10px"}
           >
-            <VStack
-              align="stretch"
-              color="secondary"
-              fontFamily={"mono"}
-              fontWeight={700}
-              fontSize={"16px"}
-              lineHeight={"14px"}
-              textTransform={"uppercase"}
-            >
-              <Box>{date}</Box>
+            <VStack align="stretch">
+              <Text variant={"agenda.eventDate"}>{date}</Text>
             </VStack>
           </Box>
           {Object.entries(timeslots).map(([timeKey, timeEvents]) => (
@@ -68,13 +60,9 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
                 zIndex: -1,
               }}
             >
-              <VStack gap={0} fontFamily={"mono"} alignItems={"flex-start"}>
-                <Text color={"brand.400"} fontSize={"sm"} fontWeight={700}>
-                  {timeKey.split("-")[0]}-
-                </Text>
-                <Text color={"brand.400"} fontSize={"sm"} fontWeight={700}>
-                  {timeKey.split("-")[1]}
-                </Text>
+              <VStack gap={0} alignItems={"flex-start"}>
+                <Text variant="agenda.eventTime">{timeKey.split("-")[0]}-</Text>
+                <Text variant="agenda.eventTime">{timeKey.split("-")[1]}</Text>
               </VStack>
               <VStack flexGrow={1} gap={8}>
                 {timeEvents.map((event, index) => (

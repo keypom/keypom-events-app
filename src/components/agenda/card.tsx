@@ -16,21 +16,10 @@ export function AgendaCard(event: AgendaEvent) {
     <VStack width={"100%"} alignItems={"flex-start"} gap={2}>
       <Flex width={"100%"} justifyContent={"space-between"}>
         <VStack width={"100%"} alignItems={"flex-start"} gap={1}>
-          <Heading
-            as="h3"
-            fontSize={"sm"}
-            fontFamily={"mono"}
-            fontWeight={"bold"}
-            color="primary"
-          >
+          <Heading as="h3" variant={"agenda.eventTitle"}>
             {title}
           </Heading>
-          <Heading
-            as="h4"
-            color={"brand.400"}
-            fontSize={"sm"}
-            fontWeight={"bold"}
-          >
+          <Heading as="h4" variant={"agenda.eventPresenter"}>
             {presenter}
           </Heading>
         </VStack>
@@ -42,10 +31,8 @@ export function AgendaCard(event: AgendaEvent) {
           />
         </Button>
       </Flex>
-      <Text color={"brand.600"} fontSize={"xs"}>
-        {description}
-      </Text>
-      <Heading as="h4" color={"brand.400"} fontSize={"sm"} fontWeight={"bold"}>
+      <Text variant="agenda.eventDescription">{description}</Text>
+      <Heading as="h4" variant="agenda.eventStage">
         {stage}
       </Heading>
     </VStack>

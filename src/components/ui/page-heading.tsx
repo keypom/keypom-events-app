@@ -31,19 +31,13 @@ export function PageHeading({
     >
       <Heading
         as="h2"
-        size="lg"
-        textTransform={"uppercase"}
-        fontWeight={"bold"}
-        textAlign={"center"}
-        color="primary"
-        height="32px"
+        fontSize={titleSize}
+        variant="page-heading"
         display={"flex"}
         alignItems={"center"}
         justifyContent={"center"}
-        fontSize={titleSize}
-        width={"100%"}
-        letterSpacing={"-0.48px"}
         position="relative"
+        width={"100%"}
       >
         {showBackButton && (
           <Button
@@ -85,17 +79,7 @@ export function PageHeading({
         )}
         <span>{title}</span>
       </Heading>
-      {description && (
-        <Text
-          fontFamily={"mono"}
-          fontSize={"sm"}
-          fontWeight={700}
-          textAlign={"center"}
-          color={"brand.400"}
-        >
-          {description}
-        </Text>
-      )}
+      {description && <Text variant={"page-description"}>{description}</Text>}
     </VStack>
   );
 }

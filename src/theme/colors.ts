@@ -6,7 +6,7 @@ export const colors = {
   },
   primary: "#fff",
   secondary: "#000",
-  tertiary: "#tertiary",
+  tertiary: "#F2F1EA",
 
   // Backgrounds
   bg: {

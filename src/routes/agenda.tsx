@@ -37,7 +37,7 @@ function FilterTitle({
       cursor="pointer"
       onClick={handleFilterOpen}
     >
-      <Heading as="h4" fontSize="md" fontFamily="mono" color="brand.600">
+      <Heading as="h4" variant={"agenda.filterTitle"}>
         Filter by:{" "}
         <span style={{ color: "var(--chakra-colors-secondary)" }}>{title}</span>
       </Heading>
@@ -68,12 +68,10 @@ function FilterCheckbox({
     >
       <Heading
         as={"h4"}
-        fontSize="md"
-        fontFamily="mono"
-        color="secondary"
-        display="flex"
-        alignItems="center"
+        variant={"agenda.filterCheckbox"}
+        display={"flex"}
         gap={2}
+        alignItems="center"
       >
         {checked ? <CheckedIcon /> : <SquareIcon />} {title}
       </Heading>
@@ -183,28 +181,11 @@ export default function Agenda() {
       <VStack spacing={4} align="start" pt={4}>
         {showSearch && (
           <Input
-            fontFamily={"mono"}
             placeholder="Search..."
-            color="secondary"
-            background={"tertiary"}
-            variant="outline"
-            borderRadius="md"
-            fontWeight="700"
-            px={4}
-            py={2}
             autoFocus
-            transition="all 0.3s ease-in-out"
             value={searchKey}
             onChange={(e) => setSearchKey(e.target.value)}
-            _placeholder={{
-              color: "secondary",
-              fontFamily: "mono",
-              fontSize: "16px",
-              fontStyle: "normal",
-              fontWeight: "700",
-              lineHeight: "14px",
-              textTransform: "uppercase",
-            }}
+            variant="custom"
           />
         )}
         {showFilter && (
