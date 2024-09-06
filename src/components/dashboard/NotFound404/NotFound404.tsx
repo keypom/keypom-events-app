@@ -1,13 +1,4 @@
-import {
-  Button,
-  Center,
-  Divider,
-  Hide,
-  HStack,
-  Show,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Button, Center, Hide, Show, Text, VStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 export const NotFound404 = ({
@@ -23,13 +14,19 @@ export const NotFound404 = ({
   return (
     <Center h="calc(100vh - 64px)">
       <Show above="md">
-        <VStack spacing="40px">
-          <HStack gap="4">
-            <Text size="4xl">{header}</Text>
-            <Divider borderColor="black" h="12" orientation="vertical" w="1" />
-            <Text size="md">{subheader}</Text>
-          </HStack>
+        <VStack
+          spacing="40px"
+          border={"1px solid var(--chakra-colors-brand-400)"}
+          p={4}
+          borderRadius={"lg"}
+        >
+          <VStack fontFamily={"mono"} gap={8}>
+            <Text fontSize={"4xl"}>{header}</Text>
+
+            <Text fontSize="md">{subheader}</Text>
+          </VStack>
           <Button
+            variant={"primary"}
             onClick={() => {
               navigate("/");
             }}
@@ -40,11 +37,12 @@ export const NotFound404 = ({
       </Show>
       <Hide above="md">
         <VStack>
-          <Text size="4xl">{header}</Text>
+          <Text fontSize="4xl">{header}</Text>
           <Text pb="20px" size="md">
             {subheader}
           </Text>
           <Button
+            variant={"primary"}
             onClick={() => {
               navigate("/");
             }}

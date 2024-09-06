@@ -8,12 +8,11 @@ import { useAccountData } from "@/hooks/useAccountData";
 export default function Me() {
   const { data, isLoading, isError, error } = useAccountData();
 
-  console.log("data", data);
-  console.log("isLoading", isLoading);
-  console.log("isError", isError);
-  console.log("error", error);
-
   const accountId = isLoading || isError ? "------" : data?.accountId;
+
+  if (isError) {
+    console.error("Error loading account data: ", error);
+  }
 
   return (
     <VStack spacing={4} pt={4}>

@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test";
+import { MOCK_RPC_URL } from "./constants";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const MOCK_RPC_URL = "https://rpc.testnet.near.org/";
 
 export async function mockRpcRequest({
   page,

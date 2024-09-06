@@ -29,6 +29,7 @@ test.describe("Alerts", () => {
 
       // const errorMessage = page.getByText("Error: Failed to fetch.");
       // await expect(errorMessage).toBeVisible();
+      await page.unrouteAll({ behavior: "ignoreErrors" });
     });
 
     test("should handle no alerts found", async ({ page }) => {
@@ -47,6 +48,8 @@ test.describe("Alerts", () => {
 
       const noAlertsMessage = page.getByText("No alerts found.");
       await expect(noAlertsMessage).toBeVisible();
+
+      await page.unrouteAll({ behavior: "ignoreErrors" });
     });
 
     test("should show latest alert, navigate to alerts page and back", async ({
@@ -112,6 +115,8 @@ test.describe("Alerts", () => {
         await backButton.click();
         await page.waitForURL("**/me");
       });
+
+      await page.unrouteAll({ behavior: "ignoreErrors" });
     });
   });
 });

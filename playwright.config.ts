@@ -35,20 +35,28 @@ export default defineConfig({
     {
       name: "Mobile Chrome",
       use: { ...devices["Pixel 5"] },
+      testIgnore: /.*\.desktop\.spec\.ts/, // Ignore desktop-specific tests
     },
     {
       name: "Mobile Safari",
       use: { ...devices["iPhone 12"] },
+      testIgnore: /.*\.desktop\.spec\.ts/, // Ignore desktop-specific tests
     },
     {
       name: "Tablet",
       use: { ...devices["iPad (gen 7)"] },
+      testIgnore: /.*\.desktop\.spec\.ts/, // Ignore desktop-specific tests
+    },
+    {
+      name: "Desktop",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: /.*\.desktop\.spec\.ts/, // Only run desktop-specific tests
     },
   ],
 
   /*  Run your local dev server before starting the tests */
   webServer: {
-    command: "VITE_IS_TEST=true pnpm run dev",
+    command: "pnpm run dev:test",
     url: "http://localhost:5173",
     reuseExistingServer: !process.env.CI,
   },

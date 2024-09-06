@@ -20,7 +20,7 @@ export function OfflineBanner() {
   }, []);
 
   return (
-    <Box background="brand.400" width={"100%"}>
+    <Box background="brand.400" width={"100%"} zIndex={10}>
       <AnimatePresence>
         {!onlineStatus && (
           <motion.div

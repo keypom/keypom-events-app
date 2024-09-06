@@ -1,13 +1,15 @@
-import { Box, Input, Button, ButtonGroup } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Input } from "@chakra-ui/react";
 
 export function SetAmount({
   amount,
   setAmount,
   setStep,
+  onSend,
 }: {
   amount: number;
   setAmount: (value: number) => void;
   setStep: (value: string) => void;
+  onSend: () => void;
 }) {
   return (
     <>
@@ -39,7 +41,7 @@ export function SetAmount({
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              setStep("sent");
+              onSend();
             }
           }}
         />
@@ -48,7 +50,7 @@ export function SetAmount({
         <Button variant="outline" onClick={() => setStep("recipient")}>
           BACK
         </Button>
-        <Button variant="secondary" onClick={() => setStep("sent")}>
+        <Button variant="secondary" onClick={onSend} isDisabled={!amount}>
           SEND
         </Button>
       </ButtonGroup>

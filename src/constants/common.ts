@@ -1,8 +1,7 @@
 import { TelegramIcon } from "@/components/icons";
 
-// Matches with optional protocol and URL with one dot
-export const urlRegex = /(?:(?:https?:\/\/)?[\w.-]*\.[\w]{2,3})/;
-
+export const NETWORK_ID = import.meta.env.VITE_NETWORK_ID ?? "testnet";
+export const isTestEnv = import.meta.env.MODE === "test";
 export const CLOUDFLARE_IPFS = "https://cloudflare-ipfs.com/ipfs";
 
 export const DROP_TYPE = {
@@ -36,6 +35,10 @@ export const EMAIL_WORKER_BASE = "https://email-worker.kp-capstone.workers.dev";
 export const PAGE_SIZE_LIMIT = 5;
 export const NFT_ATTEMPT_KEY = "NFT_ATTEMPT";
 export const PAGE_QUERY_PARAM = "page";
+
+/**
+ * KEYPOM CONTRACTS
+ */
 export const KEYPOM_EVENTS_CONTRACT = "1724680439172-kp-ticketing.testnet";
 export const KEYPOM_MARKETPLACE_CONTRACT = "1724680439172-marketplace.testnet";
 export const TOKEN_FACTORY_CONTRACT = "1724680439172-factory.testnet";
