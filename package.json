@@ -6,7 +6,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "vite",
-    "dev:test": "set VITE_IS_TEST=true && pnpm run dev",
+    "dev:test": "VITE_IS_TEST=true pnpm run dev",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
