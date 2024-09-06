@@ -12,7 +12,7 @@ export const NotFound404 = ({
 }) => {
   const navigate = useNavigate();
   return (
-    <Center h="calc(100vh - 64px)">
+    <Center h="calc(100vh - 64px)" zIndex={5}>
       <Show above="md">
         <VStack
           spacing="40px"
