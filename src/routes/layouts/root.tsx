@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { OfflineBanner } from "@/components/ui/offline-banner";
 import { Outlet } from "react-router-dom";
 
-export function Root() {
+export function RootLayout() {
   return (
     <Box
       minH="100dvh"

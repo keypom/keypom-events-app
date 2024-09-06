@@ -22,7 +22,7 @@ export function JourneyCard({
       width="100%"
       gap={4}
       p={2}
-      bg="black"
+      bg="bg.primary"
       borderRadius={"md"}
       as={Link}
       to={`/wallet/journeys/${id}`}

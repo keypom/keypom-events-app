@@ -38,13 +38,13 @@ export function Footer() {
   }
 
   return (
-    <Box p={0} width="100%" bg="black" borderBottomRadius={"md"}>
+    <Box p={0} width="100%" bg="bg.primary" borderBottomRadius={"md"}>
       <footer>
         <Flex
           justifyContent="space-between"
           alignItems="center"
           as="nav"
-          bg={"black"}
+          bg={"bg.primary"}
           borderBottomRadius={"md"}
         >
           {routes.map((route, index) => {

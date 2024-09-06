@@ -51,6 +51,16 @@ export type DROP_TYPES = (typeof DROP_TYPE)[DROP_TYPE_KEYS];
  * APPLICATION
  */
 
+// Routes that are accessible if the user is not authenticated
+export const UNAUTHENTICATED_ROUTES = ["/welcome", "/tickets/ticket", "/agenda", "/help"];
+
+// Routes that should hide the footer
+export const HIDDEN_FOOTER_ROUTES = [
+  "/welcome",
+  "/tickets/ticket",
+  "/scan/event"
+];
+
 export const CONTACT_BUTTON = {
   href: "https://t.me/redactedbangkok",
   label: "Telegram",

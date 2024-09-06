@@ -12,8 +12,7 @@ export function Header() {
       display={"flex"}
       alignItems={"center"}
       justifyContent={"center"}
-      bg="black"
-      borderTopRadius={"md"}
+      bg="bg.primary"
     >
       <header
         style={{

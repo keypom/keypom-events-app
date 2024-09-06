@@ -64,12 +64,7 @@ export default function Send() {
     [STEPS.SENT]: <Sent receiver={receiver} amount={amount} />,
     [STEPS.ERROR]: (
       <Box p={4} height="100%" maxWidth={"100%"}>
-        <VStack
-          height={"100%"}
-          alignItems="center"
-          justifyContent="center"
-          spacing={4}
-        >
+        <VStack alignItems="center" justifyContent="center" spacing={4}>
           <Box
             background={"red.400"}
             border={"1px solid red.400"}

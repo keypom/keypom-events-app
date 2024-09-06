@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { PageNotFound } from "@/404-page";
 import { ErrorPage } from "@/error-page";
 import { OfflinePage } from "@/offline-page";
-import { Root } from "@/routes/layouts/root";
+import { RootLayout } from "@/routes/layouts/root";
 import { ComponentType } from "react";
 import Agenda from "./routes/agenda";
 import Help from "./routes/help";
@@ -26,7 +26,7 @@ const lazyWithOfflineCheck = (
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
       /**
@@ -123,22 +123,25 @@ const router = createBrowserRouter([
             path: "/welcome",
             lazy: lazyWithOfflineCheck(() => import("@/routes/welcome")),
           },
+          /**
+           * Sponsor/Admin Routes
+           */
+          {
+            path: "/scan", // scanning tickets
+            children: [
+              {
+                path: "event/:funderAndEventId",
+                lazy: lazyWithOfflineCheck(
+                  () => import("@/routes/adminScan/adminScan"),
+                ),
+              },
+            ],
+          },
         ],
       },
       /**
        * Sponsor/Admin Routes
        */
-      {
-        path: "/scan", // scanning tickets
-        children: [
-          {
-            path: "event/:funderAndEventId",
-            lazy: lazyWithOfflineCheck(
-              () => import("@/routes/adminScan/adminScan"),
-            ),
-          },
-        ],
-      },
       {
         path: "/dashboard", // managing drops
         lazy: async () => {
