@@ -57,7 +57,6 @@ export const ConferenceProvider = ({
   useEffect(() => {
     const recoverAccount = async () => {
       if (!isLoading && dropInfo.drop_id !== "loading") {
-        console.log("Secret Key: ", secretKey);
         const recoveredAccountId = await keypomInstance.viewCall({
           contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
           methodName: "recover_account",
@@ -68,8 +67,6 @@ export const ConferenceProvider = ({
           methodName: "ft_balance_of",
           args: { account_id: recoveredAccountId.account_id },
         });
-        console.log("recovered account id: ", recoveredAccountId);
-        console.log("balance: ", balance);
         setTokensAvailable(keypomInstance.yoctoToNearWith4Decimals(balance));
         setAccountId(recoveredAccountId);
       }

@@ -16,7 +16,6 @@ export default function DropTokenAmountSelector({
   setCurrentDrop,
 }: DropTokenAmountSelectorProps) {
   const [customAmount, setCustomAmount] = useState("");
-  console.log("Incoming drop: ", currentDrop);
   const presetAmounts = [1, 5, 10, 50];
 
   const handleCustomAmountSubmit = () => {
@@ -29,7 +28,7 @@ export default function DropTokenAmountSelector({
     } catch (e) {
       amount = "";
       setCustomAmount("");
-      console.log("Error parsing float: ", e);
+      console.error("Error parsing float: ", e);
     }
     setCurrentDrop({ ...currentDrop, amount: amount });
   };

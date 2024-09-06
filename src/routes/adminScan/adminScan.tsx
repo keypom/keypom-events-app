@@ -150,7 +150,6 @@ export default function Scanner() {
   const handleScanResult = async (secretKey: string) => {
     setIsScanning(true);
     try {
-      console.log("Scanning result:", secretKey);
       const dropInfo = await getDropFromSecretKey(secretKey);
       if (dropInfo) {
         const { drop, usesRemaining, maxKeyUses } = dropInfo;

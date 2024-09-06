@@ -7,7 +7,6 @@ export const validateForm = (
   createdDrop: any,
   setErrors: React.Dispatch<React.SetStateAction<any>>,
 ) => {
-  console.log("Validating form", createdDrop);
   const errors: any = {};
   if (!createdDrop.name) errors.name = "Name is required";
   if (!createdDrop.artwork) errors.artwork = "Artwork is required";

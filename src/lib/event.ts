@@ -276,7 +276,7 @@ class EventJS {
         }
         return { dropId, completeScavengerHunt: scavenger_hunt };
       } else {
-        console.log("SuccessValue is not available");
+        console.error("SuccessValue is not available");
       }
     }
 
@@ -312,7 +312,7 @@ class EventJS {
       }
       return { dropId, completeScavengerHunt: scavenger_hunt };
     } else {
-      console.log("SuccessValue is not available");
+      console.error("SuccessValue is not available");
     }
   };
 
@@ -377,7 +377,6 @@ class EventJS {
       methodName: "get_num_drops",
       args: {},
     });
-    console.log("Num drops: ", numDrops);
 
     let allDrops: ExtDropData[] = [];
     for (let i = 0; i < numDrops; i += 50) {
@@ -386,12 +385,10 @@ class EventJS {
         methodName: "get_drops",
         args: { from_index: i.toString(), limit: 50 },
       });
-      console.log("Drop batch: ", dropBatch);
       allDrops = allDrops.concat(dropBatch);
     }
 
     this.dropCache = allDrops;
-    console.log("ALL DROPS: ", allDrops);
     return allDrops;
   };
 

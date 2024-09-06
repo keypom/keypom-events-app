@@ -52,7 +52,6 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
     if (!activeAccount) {
       return null;
     }
-    console.log("Active account: ", activeAccount);
 
     const provider = new providers.JsonRpcProvider({
       url: selector?.options?.network.nodeUrl ?? "",
@@ -99,7 +98,6 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
 
     getAccount()
       .then((nextAccount) => {
-        console.log("Next account: ", nextAccount);
         sessionStorage.setItem("account", JSON.stringify(nextAccount));
         setAccount(nextAccount);
         // setLoading(false);
@@ -111,7 +109,6 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
     const newAccountState: AccountState[] = selector.store.getState().accounts;
     setAccounts(newAccountState);
     getAccount().then((nextAccount) => {
-      console.log(nextAccount);
       sessionStorage.setItem("account", JSON.stringify(nextAccount));
       setAccount(nextAccount);
     });

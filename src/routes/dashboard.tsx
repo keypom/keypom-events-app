@@ -167,7 +167,6 @@ export function Dashboard() {
         methodName: "get_drops_created_by_account",
         args: { account_id: recoveredAccount.account_id },
       });
-      console.log("Drops created by account:", drops);
       setDropsCreated(drops);
     } catch (e) {
       console.error(e);
@@ -186,8 +185,6 @@ export function Dashboard() {
     useTokenDeleteModalStore();
 
   const handleDeleteClick = async (dropId) => {
-    console.log("deleting", dropId);
-
     if (!wallet) {
       console.error("Wallet is undefined, unable to delete.");
       return;

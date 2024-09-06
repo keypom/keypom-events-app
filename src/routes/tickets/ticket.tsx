@@ -50,7 +50,6 @@ export default function Ticket() {
 
   switch (account_type) {
     case "Basic":
-      console.log("Rendering basic ticket");
       return (
         <TicketQRPage
           eventId={eventId}
@@ -62,10 +61,8 @@ export default function Ticket() {
         />
       );
     case "Sponsor":
-      console.log("Rendering Sponsor ticket");
       return <div>Sponsor</div>;
     case "Admin":
-      console.log("Rendering Admin ticket");
       return <div>Admin</div>;
     default:
       return <div>Unknown ticket type</div>;

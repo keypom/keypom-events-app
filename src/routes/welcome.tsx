@@ -173,9 +173,7 @@ export default function WelcomePage() {
     }
     try {
       const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
-      console.log("Checking username", accountId);
       const doesExist = await accountExists(accountId);
-      console.log("Does exist", doesExist);
       if (doesExist) {
         setIsValidUsername(false);
         return false;

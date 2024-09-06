@@ -419,7 +419,6 @@ class KeypomJS {
       methodName: "get_key_information",
       args: { key: publicKey },
     });
-    console.log("keyinfo: ", keyInfo);
 
     if (keyInfo === null || keyInfo === undefined) {
       throw new Error("Key does not exist");
@@ -647,7 +646,6 @@ class KeypomJS {
       methodName: "event_stripe_status",
       args: { event_id: eventId },
     });
-    console.log("res", res);
     return res;
   };
 
@@ -1292,9 +1290,6 @@ class KeypomJS {
   }) => {
     try {
       // Initialize the cache for this drop if it doesn't exist
-      console.log(dropId);
-      console.log(this.keyStore[dropId]);
-      console.log(this.keyStore);
       if (this.keyStore[dropId] == null || this.keyStore[dropId] === undefined)
         throw new Error("Drop is null or undefined");
 
@@ -1326,7 +1321,7 @@ class KeypomJS {
       // Return the requested slice from the cache
       return this.keyStore[dropId].dropKeyItems.slice(start, endIndex);
     } catch (e) {
-      console.log("Error getting key info: ", e);
+      console.error("Error getting key info: ", e);
       throw new Error("Failed to get keys info: " + e);
     }
   };
