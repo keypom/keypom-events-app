@@ -1,4 +1,4 @@
-import { Agenda, AgendaEvent } from "./api/agendas";
+import { Agenda, AgendaEvent } from "../api/agendas";
 
 export const filterAgenda = (
   agendaData: Agenda,

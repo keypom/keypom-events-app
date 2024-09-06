@@ -15,10 +15,10 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-import { IconBox } from "../iconBox";
+import { IconBox } from "../icon-box";
 
 import { EMPTY_TABLE_TEXT_MAP } from "./constants";
-import { MobileDataTable } from "./mobileDataTable";
+import { MobileDataTable } from "./mobile-data-table";
 import { type ColumnItem, type DataItem } from "./types";
 
 /**

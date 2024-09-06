@@ -3,7 +3,7 @@ import QRCode from "react-qr-code";
 import {
   type FunderEventMetadata,
   type TicketInfoMetadata,
-} from "@/lib/eventsHelper";
+} from "@/lib/helpers/events";
 import { dateAndTimeToText } from "@/utils/parseDates";
 
 interface QRDetailsProps {

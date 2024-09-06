@@ -10,7 +10,7 @@ import { AddToCalendarModal } from "@/components/modals/add-to-calendar";
 import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
-import { filterAgenda, findAllDays, findAllStages } from "@/lib/agenda";
+import { filterAgenda, findAllDays, findAllStages } from "@/lib/helpers/agenda";
 import { AgendaEvent, fetchAgenda } from "@/lib/api/agendas";
 import { formatDate } from "@/utils/date";
 import { Box, Button, Flex, Heading, Input, VStack } from "@chakra-ui/react";

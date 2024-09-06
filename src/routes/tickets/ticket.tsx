@@ -1,4 +1,4 @@
-import { NotFound404 } from "@/components/dashboard/NotFound404";
+import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { useTicketClaimParams } from "@/hooks/useTicketClaimParams";
 
 import TicketQRPage from "@/components/tickets/ticket-qr-code";
@@ -40,17 +40,16 @@ export default function Ticket() {
   // Redirect if ticket has been used
   if (maxUses === 2) {
     setEventCredentials(eventId, secretKey);
-    navigate("/app");
+    navigate("/welcome");
   }
 
   if (curStep !== 1) {
     setEventCredentials(eventId, secretKey);
-    navigate("/app");
+    navigate("/welcome");
   }
 
   switch (account_type) {
     case "Basic":
-      console.log("Rendering basic ticket");
       return (
         <TicketQRPage
           eventId={eventId}
@@ -62,10 +61,8 @@ export default function Ticket() {
         />
       );
     case "Sponsor":
-      console.log("Rendering Sponsor ticket");
       return <div>Sponsor</div>;
     case "Admin":
-      console.log("Rendering Admin ticket");
       return <div>Admin</div>;
     default:
       return <div>Unknown ticket type</div>;

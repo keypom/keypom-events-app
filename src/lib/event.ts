@@ -1,17 +1,17 @@
 import * as nearAPI from "near-api-js";
 import {
   CLOUDFLARE_IPFS,
-  KEYPOM_EVENTS_CONTRACT,
   NETWORK_ID,
-  TOKEN_FACTORY_CONTRACT,
+  KEYPOM_EVENTS_CONTRACT,
+  KEYPOM_TOKEN_FACTORY_CONTRACT,
 } from "@/constants/common";
-import getConfig from "@/config/config";
-import { FunderEventMetadata } from "./eventsHelper";
+import getConfig from "@/config/near";
+import { FunderEventMetadata } from "./helpers/events";
 import {
   decryptPrivateKey,
   decryptWithPrivateKey,
   deriveKeyFromPassword,
-} from "./cryptoHelper";
+} from "./helpers/crypto";
 import { Wallet } from "@near-wallet-selector/core";
 import {
   FinalExecutionStatus,
@@ -190,7 +190,7 @@ class EventJS {
 
     await wallet.signAndSendTransaction({
       signerId: accounts[0].accountId,
-      receiverId: TOKEN_FACTORY_CONTRACT,
+      receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       actions: [
         {
           type: "FunctionCall",
@@ -243,7 +243,7 @@ class EventJS {
     if (createdDrop.nftData) {
       res = await wallet.signAndSendTransaction({
         signerId: accounts[0].accountId,
-        receiverId: TOKEN_FACTORY_CONTRACT,
+        receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         actions: [
           {
             type: "FunctionCall",
@@ -276,13 +276,13 @@ class EventJS {
         }
         return { dropId, completeScavengerHunt: scavenger_hunt };
       } else {
-        console.log("SuccessValue is not available");
+        console.error("SuccessValue is not available");
       }
     }
 
     res = await wallet.signAndSendTransaction({
       signerId: accounts[0].accountId,
-      receiverId: TOKEN_FACTORY_CONTRACT,
+      receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       actions: [
         {
           type: "FunctionCall",
@@ -312,7 +312,7 @@ class EventJS {
       }
       return { dropId, completeScavengerHunt: scavenger_hunt };
     } else {
-      console.log("SuccessValue is not available");
+      console.error("SuccessValue is not available");
     }
   };
 
@@ -326,13 +326,13 @@ class EventJS {
     scavId: string | null;
   }) => {
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
-    await myKeyStore.setKey(NETWORK_ID, TOKEN_FACTORY_CONTRACT, keyPair);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
     const userAccount = new nearAPI.Account(
       this.nearConnection.connection,
-      TOKEN_FACTORY_CONTRACT,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
     await userAccount.functionCall({
-      contractId: TOKEN_FACTORY_CONTRACT,
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "claim_drop",
       args: {
         drop_id: dropId,
@@ -351,13 +351,13 @@ class EventJS {
     amount: number;
   }) => {
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
-    await myKeyStore.setKey(NETWORK_ID, TOKEN_FACTORY_CONTRACT, keyPair);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
     const userAccount = new nearAPI.Account(
       this.nearConnection.connection,
-      TOKEN_FACTORY_CONTRACT,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
     await userAccount.functionCall({
-      contractId: TOKEN_FACTORY_CONTRACT,
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "ft_transfer",
       args: {
         receiver_id: sendTo,
@@ -373,25 +373,22 @@ class EventJS {
     }
 
     const numDrops = await this.viewCall({
-      contractId: TOKEN_FACTORY_CONTRACT,
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "get_num_drops",
       args: {},
     });
-    console.log("Num drops: ", numDrops);
 
     let allDrops: ExtDropData[] = [];
     for (let i = 0; i < numDrops; i += 50) {
       const dropBatch = await this.viewCall({
-        contractId: TOKEN_FACTORY_CONTRACT,
+        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "get_drops",
         args: { from_index: i.toString(), limit: 50 },
       });
-      console.log("Drop batch: ", dropBatch);
       allDrops = allDrops.concat(dropBatch);
     }
 
     this.dropCache = allDrops;
-    console.log("ALL DROPS: ", allDrops);
     return allDrops;
   };
 

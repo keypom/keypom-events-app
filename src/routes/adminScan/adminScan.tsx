@@ -16,7 +16,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { NotFound404 } from "@/components/dashboard/NotFound404";
+import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { KEYPOM_EVENTS_CONTRACT } from "@/constants/common";
 import { useTicketScanningParams } from "@/hooks/useTicketScanningParams";
 import {
@@ -24,7 +24,7 @@ import {
   type EventDrop,
   type FunderEventMetadata,
   type TicketMetadataExtra,
-} from "@/lib/eventsHelper";
+} from "@/lib/helpers/events";
 import keypomInstance from "@/lib/keypom";
 import { dateAndTimeToText } from "@/utils/parseDates";
 
@@ -150,7 +150,6 @@ export default function Scanner() {
   const handleScanResult = async (secretKey: string) => {
     setIsScanning(true);
     try {
-      console.log("Scanning result:", secretKey);
       const dropInfo = await getDropFromSecretKey(secretKey);
       if (dropInfo) {
         const { drop, usesRemaining, maxKeyUses } = dropInfo;

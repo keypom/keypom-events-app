@@ -25,7 +25,7 @@ export default function AppLayout() {
 
   if (
     !secretKey &&
-    !["help", "agenda", "tickets"].includes(pathname.split("/")[1])
+    !["help", "agenda", "tickets", "welcome"].includes(pathname.split("/")[1])
   ) {
     return <Navigate to="/help" replace={true} />;
   }

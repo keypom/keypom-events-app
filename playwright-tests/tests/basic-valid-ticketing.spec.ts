@@ -7,6 +7,7 @@ import {
   UNSCANNED_TICKET_PRIVATE_KEY,
 } from "../utils/constants";
 import { mockRpcRequest } from "../utils/rpc-mock";
+// import { mockTransactionSubmitRPCResponses } from "../utils/transaction-mock";
 
 test.describe("Basic valid ticketing (User shows ticket)", () => {
   test.describe("Ticket has not been scanned, ticket exists", () => {
@@ -100,8 +101,6 @@ test.describe("Basic valid ticketing (User shows ticket)", () => {
         "You're attending Redacted 2025",
       );
       await expect(QRPageTitle).toBeVisible();
-
-      await page.unrouteAll({ behavior: "ignoreErrors" });
     });
 
     test("should navigate to welcome page after successful scan", async ({
@@ -115,6 +114,7 @@ test.describe("Basic valid ticketing (User shows ticket)", () => {
         mockedResult: {
           uses_remaining: 2,
           drop_id: DROP_ID,
+          message_nonce: 1,
         },
       });
 
@@ -124,6 +124,10 @@ test.describe("Basic valid ticketing (User shows ticket)", () => {
       await test.step("should show appropriate token balance", async () => {
         const tokenBalance = await page.getByText("50 $SOV3");
         await expect(tokenBalance).toBeVisible();
+      });
+
+      const continueButton = page.getByRole("button", {
+        name: "Begin Journey",
       });
 
       await test.step("should not enable begin journey if invalid username submitted", async () => {
@@ -148,35 +152,58 @@ test.describe("Basic valid ticketing (User shows ticket)", () => {
         );
         await expect(errorMessage).toBeVisible();
 
-        const continueButton = page.getByRole("button", {
-          name: "Begin Journey",
-        });
         expect(continueButton).not.toBeEnabled();
       });
 
+      await mockRpcRequest({
+        page,
+        filterParams: {
+          request_type: "view_account",
+        },
+        mockedError: "account testing12345.1724680439172-factory.testnet does not exist while viewing", // account does not exist
+      });
+
       await test.step("should enable begin journey if valid username submitted", async () => {
-        await mockRpcRequest({
-          page,
-          filterParams: {
-            request_type: "view_account",
-          },
-          mockedResult: {}, // account does not exist
-        });
-        await page.getByPlaceholder("Username").fill("basic-ticket-testing");
+
+        await page.getByPlaceholder("Username").fill("basic-ticket-testing-unknown");
 
         // NEED TO BLUR TO TRIGGER VALIDATION
         await page.getByPlaceholder("Username").blur();
+
+        await page.waitForTimeout(1000);
 
         const errorMessage = page.getByText(
           "Username is invalid or already taken.",
         );
         await expect(errorMessage).not.toBeVisible();
 
-        const continueButton = page.getByRole("button", {
-          name: "Begin Journey",
-        });
         expect(continueButton).toBeEnabled();
       });
+
+      // TODO: I can't seem to mock the get_key_information, maybe because of an outdated contract?
+      // If we can mock this, then the rest should validate the username and navigate to the me page
+
+      // await mockRpcRequest({
+      //   page,
+      //   filterParams: {
+      //     method_name: "get_key_information",
+      //   },
+      //   mockedResult: {
+      //     uses_remaining: 2,
+      //     drop_id: DROP_ID,
+      //     message_nonce: 1,
+      //     required_gas: "100000000000000",
+      //   },
+      // })
+
+      // await test.step("should navigate to the me page after successful username submission", async () => {
+      //   await mockTransactionSubmitRPCResponses(page);
+
+      //   await continueButton.click();
+
+      //   const mePageTitle = page.getByText("basic-ticket-testing-unknown");
+      //   await expect(mePageTitle).toBeVisible();
+      // });
 
       await page.unrouteAll({ behavior: "ignoreErrors" });
     });

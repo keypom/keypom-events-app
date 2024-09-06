@@ -6,7 +6,7 @@ import {
   type FormLabelProps,
   Text,
 } from "@chakra-ui/react";
-import React, { type PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 
 export interface FormControlProps extends CFormControlProps {
   label?: string;
@@ -18,7 +18,7 @@ export interface FormControlProps extends CFormControlProps {
   required?: boolean;
 }
 
-export const FormControlComponent = ({
+export const FormControl = ({
   label,
   helperText,
   errorText,
@@ -60,5 +60,3 @@ export const FormControlComponent = ({
     </CFormControl>
   );
 };
-
-export const FormControl = React.memo(FormControlComponent);

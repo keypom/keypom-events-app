@@ -1,4 +1,4 @@
-import { FACTORY_ACCOUNT, MOCK_RPC_URL } from "./constants";
+import { EVENTS_CONTRACT, FACTORY_ACCOUNT, MOCK_RPC_URL } from "./constants";
 
 const access_keys = [
   {
@@ -21,12 +21,25 @@ const access_keys = [
         FunctionCall: {
           allowance: null,
           method_names: ["create_token_drop", "create_nft_drop", "delete_drop"],
-          receiver_id: "1724680439172-factory.testnet",
+          receiver_id: FACTORY_ACCOUNT,
         },
       },
     },
     public_key: "ed25519:79wz2P2qtw72bmTRQqsJCAvmGCUXc3GZP7TnU3FsqQHZ",
   },
+  {
+    access_key: {
+      nonce: 172579845000119,
+      permission: {
+        FunctionCall: {
+          allowance: null,
+          method_names: ["claim", "create_account_and_claim"],
+          receiver_id: EVENTS_CONTRACT,
+        },
+      },
+    },
+    public_key: "ed25519:BFEKs5zLT3wL1tAGtjM6eGbHsRe3nV77FzKhn1qrZqK3"
+  }
 ];
 
 export function decodeResultJSON(resultArray) {

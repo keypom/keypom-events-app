@@ -1,17 +1,16 @@
-const CONTRACT_NAME = import.meta.env.VITE_CONTRACT_ID ?? "v2.keypom.testnet";
+import { KEYPOM_CONTRACTS, NETWORK_ID } from "@/constants/common";
 
 console.log(
-  "Network and Contract IDs: ",
+  "Configured with NEAR Network and Contract ID: ",
   import.meta.env.VITE_NETWORK_ID,
   import.meta.env.VITE_CONTRACT_ID,
 );
 
-export interface Config {
+export interface NearConfig {
   networkId: string;
   nodeUrl: string;
   walletUrl: string;
   helperUrl: string;
-  contractName: string;
   explorerUrl: string;
   GAS: string;
   gas: string;
@@ -22,22 +21,21 @@ export interface Config {
 }
 
 function getConfig(
-  network = import.meta.env.VITE_NETWORK_ID ?? "testnet",
-): Config {
+  network = NETWORK_ID,
+): NearConfig {
   const defaultConfig = {
     GAS: "200000000000000",
     gas: "200000000000000",
     attachedDeposit: "10000000000000000000000", // 0.01 N (1kb storage)
     NEW_ACCOUNT_AMOUNT: "1000000000000000000000000",
     NEW_CONTRACT_AMOUNT: "5000000000000000000000000",
-    contractId: CONTRACT_NAME,
   };
 
   switch (network) {
     case "testnet":
       return {
         ...defaultConfig,
-        contractName: CONTRACT_NAME,
+        contractId: KEYPOM_CONTRACTS["testnet"].CORE_CONTRACT,
         networkId: "testnet",
         nodeUrl: "https://rpc.testnet.near.org",
         walletUrl: "https://testnet.mynearwallet.com",
@@ -48,7 +46,7 @@ function getConfig(
     case "mainnet":
       return {
         ...defaultConfig,
-        contractName: CONTRACT_NAME,
+        contractId: KEYPOM_CONTRACTS["mainnet"].CORE_CONTRACT,
         networkId: "mainnet",
         nodeUrl: "https://rpc.mainnet.near.org",
         walletUrl: "https://app.mynearwallet.com",
@@ -57,7 +55,7 @@ function getConfig(
       };
     default:
       throw Error(
-        `Unconfigured environment '${network}'. Can be configured in src/config.ts.`,
+        `Unconfigured environment '${network}'. Please configure in src/config/near.ts.`,
       );
   }
 }

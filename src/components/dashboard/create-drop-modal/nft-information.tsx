@@ -2,8 +2,8 @@
 
 import React from "react";
 import { VStack, HStack, Textarea } from "@chakra-ui/react";
-import { FormControlComponent } from "@/components/dashboard/FormControl";
-import { ImageInput } from "./ImageInput";
+import { FormControl } from "@/components/dashboard/form-control";
+import { ImageInput } from "./image-input";
 
 interface NFTInformationProps {
   createdDrop: any;
@@ -28,7 +28,7 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
     <>
       <VStack spacing={0} w="100%">
         <HStack spacing={6} w="100%">
-          <FormControlComponent
+          <FormControl
             label="NFT Title"
             required={true}
             errorText={errors.nft?.title}
@@ -55,8 +55,8 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
               isInvalid={!!errors.nft?.title}
               placeholder="Coolest NFT ever"
             />
-          </FormControlComponent>
-          <FormControlComponent
+          </FormControl>
+          <FormControl
             label="NFT Description"
             required={true}
             errorText={errors.nft?.description}
@@ -82,7 +82,7 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
               isInvalid={!!errors.nft?.description}
               placeholder="One of a kind proof of touch"
             />
-          </FormControlComponent>
+          </FormControl>
         </HStack>
         <ImageInput
           createdDrop={createdDrop}

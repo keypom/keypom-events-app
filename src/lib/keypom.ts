@@ -28,13 +28,13 @@ import { formatNearAmount } from "near-api-js/lib/utils/format";
 import * as nacl from "tweetnacl";
 import * as naclUtil from "tweetnacl-util";
 
-import getConfig from "@/config/config";
+import getConfig from "@/config/near";
 import {
   CLOUDFLARE_IPFS,
   DROP_TYPE,
   KEYPOM_EVENTS_CONTRACT,
   KEYPOM_MARKETPLACE_CONTRACT,
-  MASTER_KEY,
+  KEYPOM_MASTER_KEY,
   NETWORK_ID,
 } from "@/constants/common";
 import { get } from "@/utils/localStorage";
@@ -44,14 +44,14 @@ import {
   decryptPrivateKey,
   decryptWithPrivateKey,
   deriveKeyFromPassword,
-} from "./cryptoHelper";
+} from "./helpers/crypto";
 import {
   type EventDrop,
   type FunderEventMetadata,
   type FunderMetadata,
   isValidTicketNFTMetadata,
   type TicketMetadataExtra,
-} from "./eventsHelper";
+} from "./helpers/events";
 
 let instance: KeypomJS;
 const ACCOUNT_ID_REGEX =
@@ -263,7 +263,7 @@ class KeypomJS {
   GenerateTicketKeys = async (numKeys) => {
     const { publicKeys, secretKeys } = await generateKeys({
       numKeys,
-      // rootEntropy: `${get(MASTER_KEY) as string}-${dropId}`,
+      // rootEntropy: `${get(KEYPOM_MASTER_KEY) as string}-${dropId}`,
       // autoMetaNonceStart: start,
     });
 
@@ -419,7 +419,6 @@ class KeypomJS {
       methodName: "get_key_information",
       args: { key: publicKey },
     });
-    console.log("keyinfo: ", keyInfo);
 
     if (keyInfo === null || keyInfo === undefined) {
       throw new Error("Key does not exist");
@@ -647,7 +646,6 @@ class KeypomJS {
       methodName: "event_stripe_status",
       args: { event_id: eventId },
     });
-    console.log("res", res);
     return res;
   };
 
@@ -1200,7 +1198,7 @@ class KeypomJS {
     const drop = await this.getDropInfo({ dropId });
     const { secretKeys } = await generateKeys({
       numKeys: drop.next_key_id,
-      rootEntropy: `${get(MASTER_KEY) as string}-${dropId as string}`,
+      rootEntropy: `${get(KEYPOM_MASTER_KEY) as string}-${dropId as string}`,
       autoMetaNonceStart: 0,
     });
 
@@ -1216,7 +1214,7 @@ class KeypomJS {
   fetchKeyBatch = async (dropId: string, start: number, limit: number) => {
     const { publicKeys, secretKeys } = await generateKeys({
       numKeys: limit,
-      rootEntropy: `${get(MASTER_KEY) as string}-${dropId}`,
+      rootEntropy: `${get(KEYPOM_MASTER_KEY) as string}-${dropId}`,
       autoMetaNonceStart: start,
     });
 
@@ -1292,9 +1290,6 @@ class KeypomJS {
   }) => {
     try {
       // Initialize the cache for this drop if it doesn't exist
-      console.log(dropId);
-      console.log(this.keyStore[dropId]);
-      console.log(this.keyStore);
       if (this.keyStore[dropId] == null || this.keyStore[dropId] === undefined)
         throw new Error("Drop is null or undefined");
 
@@ -1326,7 +1321,7 @@ class KeypomJS {
       // Return the requested slice from the cache
       return this.keyStore[dropId].dropKeyItems.slice(start, endIndex);
     } catch (e) {
-      console.log("Error getting key info: ", e);
+      console.error("Error getting key info: ", e);
       throw new Error("Failed to get keys info: " + e);
     }
   };

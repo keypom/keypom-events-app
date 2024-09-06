@@ -1,2 +1,2 @@
-export * from "./dataTable";
-export * from "./mobileDataTable";
+export * from "./data-table";
+export * from "./mobile-data-table";

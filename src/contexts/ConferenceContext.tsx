@@ -15,8 +15,8 @@ import {
   type TicketMetadataExtra,
   type FunderEventMetadata,
   type EventDrop,
-} from "@/lib/eventsHelper";
-import { TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+} from "@/lib/helpers/events";
+import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 
 interface ConferenceContextProps {
   eventInfo: FunderEventMetadata;
@@ -57,19 +57,16 @@ export const ConferenceProvider = ({
   useEffect(() => {
     const recoverAccount = async () => {
       if (!isLoading && dropInfo.drop_id !== "loading") {
-        console.log("Secret Key: ", secretKey);
         const recoveredAccountId = await keypomInstance.viewCall({
-          contractId: TOKEN_FACTORY_CONTRACT,
+          contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
           methodName: "recover_account",
           args: { key_or_account_id: getPubFromSecret(secretKey) },
         });
         const balance = await keypomInstance.viewCall({
-          contractId: TOKEN_FACTORY_CONTRACT,
+          contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
           methodName: "ft_balance_of",
           args: { account_id: recoveredAccountId.account_id },
         });
-        console.log("recovered account id: ", recoveredAccountId);
-        console.log("balance: ", balance);
         setTokensAvailable(keypomInstance.yoctoToNearWith4Decimals(balance));
         setAccountId(recoveredAccountId);
       }

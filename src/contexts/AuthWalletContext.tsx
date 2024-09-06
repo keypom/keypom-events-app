@@ -4,7 +4,6 @@ import {
 } from "@near-wallet-selector/core";
 import { providers } from "near-api-js";
 import { type AccountView } from "near-api-js/lib/providers/provider";
-import { type WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import {
   createContext,
   type PropsWithChildren,
@@ -14,12 +13,11 @@ import {
   useState,
 } from "react";
 
-import { NearWalletSelector } from "@/lib/walletSelector";
+import { NearWalletSelector } from "@/lib/wallet-selector";
 
 declare global {
   interface Window {
     selector: WalletSelector;
-    modal: WalletSelectorModal;
   }
 }
 
@@ -30,7 +28,6 @@ type Account = AccountView & {
 };
 
 interface AuthWalletContextValues {
-  modal: WalletSelectorModal;
   selector: WalletSelector;
   accounts: KeypomAccountState[];
   accountId: string | null;
@@ -46,7 +43,6 @@ interface KeypomAccountState extends AccountState {
 
 export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
   const [selector, setSelector] = useState<WalletSelector | null>(null);
-  const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accounts, setAccounts] = useState<KeypomAccountState[]>([]);
   const [account, setAccount] = useState<Account | null>(null);
 
@@ -56,7 +52,6 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
     if (!activeAccount) {
       return null;
     }
-    console.log("Active account: ", activeAccount);
 
     const provider = new providers.JsonRpcProvider({
       url: selector?.options?.network.nodeUrl ?? "",
@@ -81,12 +76,10 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
       const walletSelector = new NearWalletSelector();
       await walletSelector.init();
 
-      setModal(walletSelector.modal);
       setSelector(walletSelector.selector);
       setAccounts(walletSelector.accounts);
 
       if (typeof window !== "undefined") {
-        window.modal = walletSelector.modal;
         window.selector = walletSelector.selector;
       }
     };
@@ -105,7 +98,6 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
 
     getAccount()
       .then((nextAccount) => {
-        console.log("Next account: ", nextAccount);
         sessionStorage.setItem("account", JSON.stringify(nextAccount));
         setAccount(nextAccount);
         // setLoading(false);
@@ -117,7 +109,6 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
     const newAccountState: AccountState[] = selector.store.getState().accounts;
     setAccounts(newAccountState);
     getAccount().then((nextAccount) => {
-      console.log(nextAccount);
       sessionStorage.setItem("account", JSON.stringify(nextAccount));
       setAccount(nextAccount);
     });
@@ -128,7 +119,6 @@ export const AuthWalletContextProvider = ({ children }: PropsWithChildren) => {
   });
 
   const value = {
-    modal: modal as WalletSelectorModal,
     selector: selector as WalletSelector,
     accounts,
     accountId: activeAccount?.accountId || null,

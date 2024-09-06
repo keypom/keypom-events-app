@@ -2,7 +2,7 @@
 import { Box, HStack, Input, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { FormControlComponent } from "@/components/dashboard/FormControl";
+import { FormControl } from "@/components/dashboard/form-control";
 
 interface DropTokenAmountSelectorProps {
   errors: any;
@@ -16,7 +16,6 @@ export default function DropTokenAmountSelector({
   setCurrentDrop,
 }: DropTokenAmountSelectorProps) {
   const [customAmount, setCustomAmount] = useState("");
-  console.log("Incoming drop: ", currentDrop);
   const presetAmounts = [1, 5, 10, 50];
 
   const handleCustomAmountSubmit = () => {
@@ -29,7 +28,7 @@ export default function DropTokenAmountSelector({
     } catch (e) {
       amount = "";
       setCustomAmount("");
-      console.log("Error parsing float: ", e);
+      console.error("Error parsing float: ", e);
     }
     setCurrentDrop({ ...currentDrop, amount: amount });
   };
@@ -45,7 +44,7 @@ export default function DropTokenAmountSelector({
   };
 
   return (
-    <FormControlComponent
+    <FormControl
       errorText={errors.amount}
       label="Token amount"
       required={true}
@@ -128,6 +127,6 @@ export default function DropTokenAmountSelector({
           />
         </HStack>
       </VStack>
-    </FormControlComponent>
+    </FormControl>
   );
 }

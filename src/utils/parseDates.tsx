@@ -1,4 +1,4 @@
-import { type DateAndTimeInfo } from "@/lib/eventsHelper";
+import { type DateAndTimeInfo } from "@/lib/helpers/events";
 
 export const dateAndTimeToText = (
   date: DateAndTimeInfo,

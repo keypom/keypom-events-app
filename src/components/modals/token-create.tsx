@@ -12,12 +12,12 @@ import {
 
 import { useTokenCreateModalStore } from "@/stores/token-create-modal";
 import { useState } from "react";
-import { validateForm } from "../dashboard/CreateDropModal/dropUtils";
-import { NameInput } from "../dashboard/CreateDropModal/NameInput";
-import { NFTInformation } from "../dashboard/CreateDropModal/NFTInformation";
-import { ImageInput } from "../dashboard/CreateDropModal/ImageInput";
-import DropTokenAmountSelector from "../dashboard/CreateDropModal/TokenAmountSelector";
-import { ScavengerHunt } from "../dashboard/CreateDropModal/ScavengerHunt";
+import { validateForm } from "../dashboard/create-drop-modal/drop-utils";
+import { NameInput } from "../dashboard/create-drop-modal/name-input";
+import { NFTInformation } from "../dashboard/create-drop-modal/nft-information";
+import { ImageInput } from "../dashboard/create-drop-modal/image-input";
+import DropTokenAmountSelector from "../dashboard/create-drop-modal/token-amount-select";
+import { ScavengerHunt } from "../dashboard/create-drop-modal/scavenger-hunt";
 
 const defaultDrop = {
   name: "",

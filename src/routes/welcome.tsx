@@ -1,33 +1,35 @@
+import { NotFound404 } from "@/components/dashboard/not-found-404";
+import { BoxWithShape } from "@/components/tickets/box-with-shape";
+import {
+  EVENT_IMG_DIR_FOLDER_NAME,
+  KEYPOM_TOKEN_FACTORY_CONTRACT,
+} from "@/constants/common";
+import { useConferenceData } from "@/hooks/useConferenceData";
+import eventHelperInstance from "@/lib/event";
+import keypomInstance from "@/lib/keypom";
+import { useEventCredentials } from "@/stores/event-credentials";
 import {
   Box,
   Button,
+  Center,
   Flex,
   FormControl,
   FormErrorMessage,
   Heading,
+  HStack,
   Image,
   Input,
+  ListItem,
   Skeleton,
+  Spinner,
   Text,
+  UnorderedList,
+  useMediaQuery,
   useToast,
   VStack,
-  useMediaQuery,
-  UnorderedList,
-  ListItem,
-  HStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { accountExists, getPubFromSecret } from "@keypom/core";
-import { BoxWithShape } from "@/components/tickets/box-with-shape";
-import {
-  type TicketInfoMetadata,
-  type FunderEventMetadata,
-} from "@/lib/eventsHelper";
-import keypomInstance from "@/lib/keypom";
-import {
-  EVENT_IMG_DIR_FOLDER_NAME,
-  TOKEN_FACTORY_CONTRACT,
-} from "@/constants/common";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const sizeConfig = {
@@ -70,25 +72,11 @@ const getImgSize = (isLargerThan768, isLargerThan1024) => {
   return sizeConfig.img.base;
 };
 
-interface WelcomePageProps {
-  eventInfo: FunderEventMetadata;
-  ticketInfo?: TicketInfoMetadata;
-  ticker: string;
-  tokensToClaim: string;
-  isLoading: boolean;
-  secretKey: string;
-}
-
 const accountAddressPatternNoSubaccount = /^([a-z\d]+[-_])*[a-z\d]+$/;
 
-export default function WelcomePage({
-  eventInfo,
-  ticketInfo,
-  isLoading,
-  ticker,
-  tokensToClaim,
-  secretKey,
-}: WelcomePageProps) {
+export default function WelcomePage() {
+  const { secretKey } = useEventCredentials();
+  const { data, isLoading, isError, error } = useConferenceData(secretKey);
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [isValidUsername, setIsValidUsername] = useState<boolean>(true);
@@ -97,6 +85,38 @@ export default function WelcomePage({
 
   const [isLargerThan768] = useMediaQuery("(min-height: 768px)");
   const [isLargerThan1024] = useMediaQuery("(min-height: 1024px)");
+
+  if (isError) {
+    return <NotFound404 header="Error" subheader={error?.message} />;
+  }
+
+  if (isLoading) {
+    return (
+      <Center minH="100vh">
+        <VStack spacing={4}>
+          <Spinner size="xl" />
+          <Text>Loading ticket information...</Text>
+        </VStack>
+      </Center>
+    );
+  }
+
+  const { ticketInfo, dropInfo, tokenInfo, keyInfo, eventInfo } = data!;
+  const maxUses = dropInfo.max_key_uses;
+  const usesRemaining = keyInfo.uses_remaining;
+  const curStep = maxUses - usesRemaining + 1;
+
+  if (curStep === 3) {
+    navigate("me");
+  }
+
+  const { starting_token_balance } = ticketInfo;
+
+  const { symbol } = tokenInfo;
+
+  const tokensToClaim = eventHelperInstance.yoctoToNear(
+    starting_token_balance!,
+  );
 
   const fontSize = getFontSize(isLargerThan768, isLargerThan1024);
   const imgSize = getImgSize(isLargerThan768, isLargerThan1024);
@@ -121,7 +141,7 @@ export default function WelcomePage({
       return;
     }
 
-    const accountId = `${username}.${TOKEN_FACTORY_CONTRACT}`;
+    const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
     try {
       setIsClaiming(true);
       await keypomInstance.claimEventTicket(
@@ -152,10 +172,8 @@ export default function WelcomePage({
       return false;
     }
     try {
-      const accountId = `${username}.${TOKEN_FACTORY_CONTRACT}`;
-      console.log("Checking username", accountId);
+      const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
       const doesExist = await accountExists(accountId);
-      console.log("Does exist", doesExist);
       if (doesExist) {
         setIsValidUsername(false);
         return false;
@@ -251,7 +269,7 @@ export default function WelcomePage({
                   fontWeight="400"
                   size={{ base: "lg", md: "xl" }}
                 >
-                  {tokensToClaim} ${ticker}
+                  {tokensToClaim} ${symbol}
                 </Text>
               </Text>
               <Skeleton borderRadius="12px" isLoaded={!isLoading}>
@@ -284,7 +302,7 @@ export default function WelcomePage({
             fontWeight="600"
             textAlign="center"
           >
-            ${ticker} Details
+            ${symbol} Details
           </Text>
           {/* Start of the grid for Spork Details */}
           <HStack

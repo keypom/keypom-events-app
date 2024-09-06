@@ -1,4 +1,4 @@
-import { FormControlComponent } from "@/components/dashboard/FormControl";
+import { FormControl } from "@/components/dashboard/form-control";
 import { Input } from "@chakra-ui/react";
 
 export const NameInput = ({
@@ -7,7 +7,7 @@ export const NameInput = ({
   errors,
   setErrors,
 }) => (
-  <FormControlComponent
+  <FormControl
     errorText={errors.name}
     label="Name"
     required={true}
@@ -39,5 +39,5 @@ export const NameInput = ({
         setCreatedDrop({ ...createdDrop, name: e.target.value });
       }}
     />
-  </FormControlComponent>
+  </FormControl>
 );
