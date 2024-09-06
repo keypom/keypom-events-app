@@ -3,7 +3,6 @@ import { EVENT_FUNDER_KEY } from "../utils/constants";
 import { mockTransactionSubmitRPCResponses } from "../utils/transaction-mock";
 
 test.describe("Dashboard", () => {
-
   test.describe("Sponsor is unauthenticated", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/dashboard");
@@ -16,15 +15,11 @@ test.describe("Dashboard", () => {
 
   test.describe("Sponsor is authenticated", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto(
-        `/dashboard?connection=${EVENT_FUNDER_KEY}`,
-      );
+      await page.goto(`/dashboard?connection=${EVENT_FUNDER_KEY}`);
       await page.waitForLoadState("networkidle");
     });
 
-    test("should create a token drop", async ({
-      page,
-    }) => {
+    test("should create a token drop", async ({ page }) => {
       const createDropButton = page.getByRole("button", {
         name: "CREATE DROP",
       });
@@ -96,9 +91,7 @@ test.describe("Dashboard", () => {
       });
     });
 
-    test("should create an nft drop", async ({
-      page,
-    }) => {
+    test("should create an nft drop", async ({ page }) => {
       const createDropButton = page.getByRole("button", {
         name: "CREATE DROP",
       });
