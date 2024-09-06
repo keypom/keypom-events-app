@@ -48,7 +48,7 @@ test.describe("Alerts", () => {
 
       const noAlertsMessage = page.getByText("No alerts found.");
       await expect(noAlertsMessage).toBeVisible();
-      
+
       await page.unrouteAll({ behavior: "ignoreErrors" });
     });
 
@@ -115,7 +115,7 @@ test.describe("Alerts", () => {
         await backButton.click();
         await page.waitForURL("**/me");
       });
-      
+
       await page.unrouteAll({ behavior: "ignoreErrors" });
     });
   });
