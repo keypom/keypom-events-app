@@ -1,10 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import { PageNotFound } from "@/404-page";
 import { ErrorPage } from "@/error-page";
 import { OfflinePage } from "@/offline-page";
 import { Root } from "@/routes/layouts/root";
 import { ComponentType } from "react";
-import { PageNotFound } from "@/404-page";
+import Agenda from "./routes/agenda";
+import Help from "./routes/help";
+import AppLayout from "./routes/layouts/app";
+import Me from "./routes/me";
 
 const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
@@ -25,9 +29,84 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
-        index: true,
-        lazy: lazyWithOfflineCheck(() => import("@/routes/home")),
+        element: <AppLayout />,
+        children: [
+          {
+            index: true,
+            element: <Me />,
+          },
+          {
+            path: "/me",
+            element: <Me />,
+          },
+          {
+            path: "/help",
+            element: <Help />,
+          },
+          {
+            path: "/agenda",
+            element: <Agenda />,
+          },
+          {
+            path: "/alerts",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/alerts")),
+          },
+          {
+            path: "/scan",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/scan")),
+          },
+          {
+            path: "/scan/:data",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/scan/claim")),
+          },
+          {
+            path: "/wallet",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/wallet")),
+          },
+          {
+            path: "/wallet/collectibles",
+            lazy: lazyWithOfflineCheck(
+              () => import("@/routes/wallet/collectibles"),
+            ),
+          },
+          {
+            path: "/wallet/collectibles/:id",
+            lazy: lazyWithOfflineCheck(
+              () => import("@/routes/wallet/collectibles/collectible"),
+            ),
+          },
+          {
+            path: "/wallet/journeys",
+            lazy: lazyWithOfflineCheck(
+              () => import("@/routes/wallet/journeys"),
+            ),
+          },
+          {
+            path: "/wallet/journeys/:id",
+            lazy: lazyWithOfflineCheck(
+              () => import("@/routes/wallet/journeys/journey"),
+            ),
+          },
+          {
+            path: "/wallet/send",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/send")),
+          },
+          {
+            path: "/wallet/receive",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/receive")),
+          },
+          {
+            path: "/tickets",
+            children: [
+              {
+                path: "ticket/:id", // Match /events/event/:id
+                lazy: lazyWithOfflineCheck(
+                  () => import("@/routes/tickets/ticket"),
+                ),
+              },
+            ],
+          },
+        ],
       },
       {
         path: "/app",
@@ -35,22 +114,7 @@ const router = createBrowserRouter([
           () => import("@/routes/conference/conferencePageManager"),
         ),
       },
-      {
-        path: "/help",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/help")),
-      },
-      {
-        path: "/agenda",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/agenda")),
-      },
-      {
-        path: "/scan",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/scan")),
-      },
-      {
-        path: "/scan/:data",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/scan/claim")),
-      },
+
       {
         path: "/scan",
         children: [
@@ -63,78 +127,27 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/wallet",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/wallet")),
-      },
-      {
-        path: "/wallet/collectibles",
-        lazy: lazyWithOfflineCheck(
-          () => import("@/routes/wallet/collectibles"),
-        ),
-      },
-      {
-        path: "/wallet/collectibles/:id",
-        lazy: lazyWithOfflineCheck(
-          () => import("@/routes/wallet/collectibles/collectible"),
-        ),
-      },
-      {
-        path: "/wallet/journeys",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/journeys")),
-      },
-      {
-        path: "/wallet/journeys/:id",
-        lazy: lazyWithOfflineCheck(
-          () => import("@/routes/wallet/journeys/journey"),
-        ),
-      },
-      {
-        path: "/wallet/send",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/send")),
-      },
-      {
-        path: "/wallet/receive",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/wallet/receive")),
-      },
-      {
-        path: "/me",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/me")),
-      },
-      {
-        path: "/alerts",
-        lazy: lazyWithOfflineCheck(() => import("@/routes/alerts")),
-      },
-      {
-        path: "/tickets",
-        children: [
-          {
-            path: "ticket/:id", // Match /events/event/:id
-            lazy: lazyWithOfflineCheck(() => import("@/routes/tickets/ticket")),
-          },
-        ],
+        path: "/dashboard",
+        lazy: async () => {
+          if (!navigator.onLine) {
+            return { Component: OfflinePage };
+          }
+
+          const { AuthWalletContextProvider } = await import(
+            "@/contexts/AuthWalletContext"
+          );
+          const { Dashboard } = await import("@/routes/dashboard");
+
+          return {
+            Component: () => (
+              <AuthWalletContextProvider>
+                <Dashboard />
+              </AuthWalletContextProvider>
+            ),
+          };
+        },
       },
     ],
-  },
-  {
-    path: "/dashboard",
-    lazy: async () => {
-      if (!navigator.onLine) {
-        return { Component: OfflinePage };
-      }
-
-      const { AuthWalletContextProvider } = await import(
-        "@/contexts/AuthWalletContext"
-      );
-      const { Dashboard } = await import("@/routes/dashboard");
-
-      return {
-        Component: () => (
-          <AuthWalletContextProvider>
-            <Dashboard />
-          </AuthWalletContextProvider>
-        ),
-      };
-    },
   },
   {
     path: "*",
