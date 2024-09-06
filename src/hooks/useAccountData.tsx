@@ -12,7 +12,7 @@ export interface AccountData {
 
 const fetchAccountData = async (secretKey: string) => {
   try {
-    const pubKey = getPubFromSecret(secretKey);
+    const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
 
     const recoveredAccount = await keypomInstance.viewCall({
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,

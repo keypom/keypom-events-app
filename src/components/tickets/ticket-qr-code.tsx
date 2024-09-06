@@ -42,7 +42,7 @@ export default function TicketQRCode({
   // Effect to check for QR scan and reload if necessary
   useEffect(() => {
     const checkForQRScanned = async () => {
-      const pubKey = getPubFromSecret(secretKey);
+      const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
       const keyInfo: { drop_id: string; uses_remaining: number } =
         await eventHelperInstance.viewCall({
           methodName: "get_key_information",

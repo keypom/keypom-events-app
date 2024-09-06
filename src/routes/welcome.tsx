@@ -148,7 +148,7 @@ export default function WelcomePage() {
         secretKey,
         {
           new_account_id: accountId,
-          new_public_key: getPubFromSecret(secretKey),
+          new_public_key: getPubFromSecret(`ed25519:${secretKey}`)
         },
         true,
       );
@@ -279,7 +279,7 @@ export default function WelcomePage() {
                   height={imgSize.h}
                   mb="2"
                   objectFit="contain"
-                  src={`/assets/${EVENT_IMG_DIR_FOLDER_NAME}/${ticketInfo?.media}`}
+                  src={`/assets/logo.webp`}
                 />
               </Skeleton>
               <Heading

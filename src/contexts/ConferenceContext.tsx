@@ -60,7 +60,7 @@ export const ConferenceProvider = ({
         const recoveredAccountId = await keypomInstance.viewCall({
           contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
           methodName: "recover_account",
-          args: { key_or_account_id: getPubFromSecret(secretKey) },
+          args: { key_or_account_id: getPubFromSecret(`ed25519:${secretKey}`) },
         });
         const balance = await keypomInstance.viewCall({
           contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,

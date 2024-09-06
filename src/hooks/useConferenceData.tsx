@@ -25,7 +25,6 @@ export interface ConferenceData {
 const fetchConferenceData = async (secretKey: string) => {
   try {
     const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
-    console.log(`Derived publicKey: ${pubKey} from secretKey: ${secretKey}`);
     const keyInfo = await eventHelperInstance.viewCall({
       methodName: "get_key_information",
       args: { key: pubKey },
@@ -87,8 +86,6 @@ export const useConferenceData = (providedKey?: string) => {
   const { secretKey: savedKey } = useEventCredentials();
 
   const secretKey = providedKey ? providedKey : savedKey;
-
-  console.log(`Using secretKey: ${secretKey}`);
 
   return useQuery<ConferenceData, Error>({
     queryKey: ["conferenceData", secretKey],
