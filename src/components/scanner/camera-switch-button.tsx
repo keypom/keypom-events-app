@@ -11,9 +11,7 @@ export const CameraSwitchButton = ({
   return (
     <Button
       onClick={useNextDevice}
-      background="brand.400"
-      color="black"
-      borderRadius={"lg"}
+      variant={"primary"}
       padding="0px"
       display="flex"
       alignItems="center"
@@ -21,17 +19,10 @@ export const CameraSwitchButton = ({
       position={"absolute"}
       bottom="1rem"
       right="1rem"
+      height={"40px"}
       hidden={devices.length < 2}
-      _hover={{
-        background: "brand.400",
-        color: "black",
-      }}
-      _active={{
-        background: "brand.400",
-        color: "black",
-      }}
     >
-      <FlipIcon width={24} height={24} color={"black"} />
+      <FlipIcon width={24} height={24} />
     </Button>
   );
 };
