@@ -9,9 +9,9 @@ test.describe("Dashboard", () => {
       await page.goto("/dashboard");
     });
 
-    // test("should show error, please connect page", async ({ page }) => {
-    //   // TODO: Add test for this
-    // });
+    test("should show error, please connect page", async ({ page }) => {
+      await expect(page.getByText("Account Unauthorized")).toBeVisible();
+    });
   });
 
   test.describe("Sponsor is authenticated", () => {
