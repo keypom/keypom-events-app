@@ -171,6 +171,7 @@ export function Dashboard() {
         methodName: "get_drops_created_by_account",
         args: { account_id: recoveredAccount.account_id },
       });
+      console.log("Drops created by account:", drops);
       setDropsCreated(drops);
     } catch (e) {
       console.error(e);

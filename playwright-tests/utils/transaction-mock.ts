@@ -104,13 +104,12 @@ export async function mockTransactionSubmitRPCResponses(page, customhandler?) {
         status.last_transaction = requestPostData;
 
         await page.waitForTimeout(1000);
-
         await route.fulfill({
           json: {
             jsonrpc: "2.0",
             result: {
               status: {
-                SuccessValue: "",
+                SuccessValue: "whatever",
               },
               transaction: {
                 receiver_id: status.last_receiver_id,
