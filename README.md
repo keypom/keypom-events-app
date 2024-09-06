@@ -49,6 +49,12 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to see the r
 pnpm run build
 ```
 
+To analyze the production build bundle using [vite-bundle-visualizer](https://www.npmjs.com/package/vite-bundle-visualizer), run:
+
+```
+pnpm run build:analyze
+```
+
 ### Running tests
 
 ```bash
