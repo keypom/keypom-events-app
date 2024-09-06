@@ -34,7 +34,7 @@ import {
   DROP_TYPE,
   KEYPOM_EVENTS_CONTRACT,
   KEYPOM_MARKETPLACE_CONTRACT,
-  MASTER_KEY,
+  KEYPOM_MASTER_KEY,
   NETWORK_ID,
 } from "@/constants/common";
 import { get } from "@/utils/localStorage";
@@ -263,7 +263,7 @@ class KeypomJS {
   GenerateTicketKeys = async (numKeys) => {
     const { publicKeys, secretKeys } = await generateKeys({
       numKeys,
-      // rootEntropy: `${get(MASTER_KEY) as string}-${dropId}`,
+      // rootEntropy: `${get(KEYPOM_MASTER_KEY) as string}-${dropId}`,
       // autoMetaNonceStart: start,
     });
 
@@ -1200,7 +1200,7 @@ class KeypomJS {
     const drop = await this.getDropInfo({ dropId });
     const { secretKeys } = await generateKeys({
       numKeys: drop.next_key_id,
-      rootEntropy: `${get(MASTER_KEY) as string}-${dropId as string}`,
+      rootEntropy: `${get(KEYPOM_MASTER_KEY) as string}-${dropId as string}`,
       autoMetaNonceStart: 0,
     });
 
@@ -1216,7 +1216,7 @@ class KeypomJS {
   fetchKeyBatch = async (dropId: string, start: number, limit: number) => {
     const { publicKeys, secretKeys } = await generateKeys({
       numKeys: limit,
-      rootEntropy: `${get(MASTER_KEY) as string}-${dropId}`,
+      rootEntropy: `${get(KEYPOM_MASTER_KEY) as string}-${dropId}`,
       autoMetaNonceStart: start,
     });
 
