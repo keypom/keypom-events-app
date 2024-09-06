@@ -62,7 +62,7 @@ export async function mockRpcRequest({
         mockedResponse.result = {
           result: Array.from(
             new TextEncoder().encode(JSON.stringify(mockedResult)),
-          )
+          ),
         };
       }
 

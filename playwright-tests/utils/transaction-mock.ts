@@ -38,8 +38,8 @@ const access_keys = [
         },
       },
     },
-    public_key: "ed25519:BFEKs5zLT3wL1tAGtjM6eGbHsRe3nV77FzKhn1qrZqK3"
-  }
+    public_key: "ed25519:BFEKs5zLT3wL1tAGtjM6eGbHsRe3nV77FzKhn1qrZqK3",
+  },
 ];
 
 export function decodeResultJSON(resultArray) {

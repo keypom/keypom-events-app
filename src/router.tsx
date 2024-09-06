@@ -14,7 +14,8 @@ const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
 ) => {
   return async () => {
-    if (!navigator.onLine) { // Load the OfflinePage if the user is offline
+    if (!navigator.onLine) {
+      // Load the OfflinePage if the user is offline
       return { Component: OfflinePage };
     }
     const { default: Component } = await importCallback();
