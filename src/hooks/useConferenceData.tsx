@@ -88,6 +88,8 @@ export const useConferenceData = (providedKey?: string) => {
 
   const secretKey = providedKey ? providedKey : savedKey;
 
+  console.log(`Using secretKey: ${secretKey}`);
+
   return useQuery<ConferenceData, Error>({
     queryKey: ["conferenceData", secretKey],
     queryFn: async () => await fetchConferenceData(secretKey),
