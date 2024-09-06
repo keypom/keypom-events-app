@@ -24,7 +24,7 @@ export interface ConferenceData {
 
 const fetchConferenceData = async (secretKey: string) => {
   try {
-    const pubKey = getPubFromSecret(secretKey);
+    const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
     const keyInfo = await eventHelperInstance.viewCall({
       methodName: "get_key_information",
       args: { key: pubKey },

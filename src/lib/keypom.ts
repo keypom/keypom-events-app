@@ -471,7 +471,7 @@ class KeypomJS {
     args: any,
     createAccount = false,
   ) => {
-    const pubKey = getPubFromSecret(secretKey);
+    const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
 
     const keypomGlobalSecretKey = await this.GetGlobalKey();
     const keypomKeypair = nearAPI.KeyPair.fromString(keypomGlobalSecretKey);

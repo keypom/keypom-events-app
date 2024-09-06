@@ -29,7 +29,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
         spacing={8}
       >
         <Box
-          bg="black"
+          bg="bg.primary"
           width={"170px"}
           height={"170px"}
           display={"flex"}
@@ -49,7 +49,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             fontFamily="mono"
             fontWeight="bold"
             color="white"
-            bg="black"
+            bg="bg.primary"
             textAlign="left"
             px={2}
           >
@@ -58,7 +58,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
           <Text
             fontFamily="mono"
             color="brand.400"
-            bg="black"
+            bg="bg.primary"
             textAlign="right"
             alignSelf={"flex-end"}
             fontSize="xl"
@@ -72,7 +72,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
           <Button
             onClick={onReveal}
             width={"100%"}
-            bg="black"
+            bg="bg.primary"
             fontFamily={"mono"}
             textTransform={"uppercase"}
             display={"flex"}

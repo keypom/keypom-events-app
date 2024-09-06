@@ -9,7 +9,7 @@ export default function Help() {
     <VStack p={4} spacing={4}>
       <PageHeading title="Help" />
       <Box
-        bg="black"
+        bg="bg.primary"
         width="100%"
         aspectRatio={"1/1.025"}
         display="flex"

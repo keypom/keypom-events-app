@@ -17,7 +17,7 @@ export const getDropFromSecretKey = async (
   maxKeyUses: number;
 } | null> => {
   try {
-    const pubKey = getPubFromSecret(secretKey);
+    const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
     const keyInfo: { drop_id: string; uses_remaining: number } =
       await keypomInstance.viewCall({
         methodName: "get_key_information",

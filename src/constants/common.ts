@@ -1,4 +1,12 @@
-import { TelegramIcon } from "@/components/icons";
+import {
+  AgendaIcon,
+  HelpIcon,
+  ScanIcon,
+  TelegramIcon,
+  UserIcon,
+  WalletIcon,
+} from "@/components/icons";
+import { FooterItem } from "@/components/ui/footer";
 
 /**
  * ENVIRONMENT
@@ -51,8 +59,33 @@ export type DROP_TYPES = (typeof DROP_TYPE)[DROP_TYPE_KEYS];
  * APPLICATION
  */
 
-export const EVENT_IMG_DIR_FOLDER_NAME = "redacted";
+// Routes that are accessible if the user is not authenticated
+export const UNAUTHENTICATED_ROUTES = [
+  "/agenda",
+  "/help",
+  // Do not modify below
+  "/welcome",
+  "/tickets/ticket",
+  "/scan/event",
+];
 
+// Routes that should hide the footer
+export const HIDDEN_FOOTER_ROUTES = [
+  "/welcome",
+  "/tickets/ticket",
+  "/scan/event",
+];
+
+// Footer navigation items for app
+export const FOOTER_ITEMS: FooterItem[] = [
+  { name: "Help", href: "/help", icon: HelpIcon },
+  { name: "Agenda", href: "/agenda", icon: AgendaIcon },
+  { name: "Scan", href: "/scan", icon: ScanIcon },
+  { name: "Wallet", href: "/wallet", icon: WalletIcon },
+  { name: "Me", href: "/me", icon: UserIcon },
+];
+
+// Contact button on help page
 export const CONTACT_BUTTON = {
   href: "https://t.me/redactedbangkok",
   label: "Telegram",

@@ -31,7 +31,7 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
         p={4}
         spacing={8}
       >
-        <Box bg="black" p={4}>
+        <Box bg="bg.primary" p={4}>
           <Heading
             as="h3"
             fontSize="108px"
@@ -58,7 +58,7 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
             fontFamily="mono"
             fontWeight="bold"
             color="white"
-            bg="black"
+            bg="bg.primary"
             textAlign="left"
             textTransform={"uppercase"}
             px={4}

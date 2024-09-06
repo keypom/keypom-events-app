@@ -5,6 +5,10 @@ import { Footer } from "@/components/ui/footer";
 import { Header } from "@/components/ui/header";
 
 import { LoadingBox } from "@/components/ui/loading-box";
+import {
+  HIDDEN_FOOTER_ROUTES,
+  UNAUTHENTICATED_ROUTES,
+} from "@/constants/common";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { useEffect, useRef } from "react";
 
@@ -24,11 +28,17 @@ export default function AppLayout() {
   }, [pathname]);
 
   if (
+    // no secret key
     !secretKey &&
-    !["help", "agenda", "tickets", "welcome"].includes(pathname.split("/")[1])
+    // not in unauthenticated routes
+    !UNAUTHENTICATED_ROUTES.some((path) => pathname.startsWith(path))
   ) {
     return <Navigate to="/help" replace={true} />;
   }
+
+  const shouldRenderFooter = !HIDDEN_FOOTER_ROUTES.some((path) =>
+    pathname.startsWith(path),
+  );
 
   return (
     <Flex
@@ -55,7 +65,7 @@ export default function AppLayout() {
         height="100%"
         position="relative"
         overflowY="auto"
-        bg="black"
+        bg="bg.primary"
         zIndex={5}
         _before={{
           content: '""',
@@ -73,7 +83,7 @@ export default function AppLayout() {
       >
         {state === "loading" ? <LoadingBox /> : <Outlet />}
       </Box>
-      <Footer />
+      {shouldRenderFooter && <Footer />}
     </Flex>
   );
 }

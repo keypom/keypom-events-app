@@ -1,9 +1,6 @@
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { BoxWithShape } from "@/components/tickets/box-with-shape";
-import {
-  EVENT_IMG_DIR_FOLDER_NAME,
-  KEYPOM_TOKEN_FACTORY_CONTRACT,
-} from "@/constants/common";
+import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import { useConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
 import keypomInstance from "@/lib/keypom";
@@ -107,7 +104,7 @@ export default function WelcomePage() {
   const curStep = maxUses - usesRemaining + 1;
 
   if (curStep === 3) {
-    navigate("me");
+    navigate("/me");
   }
 
   const { starting_token_balance } = ticketInfo;
@@ -148,7 +145,7 @@ export default function WelcomePage() {
         secretKey,
         {
           new_account_id: accountId,
-          new_public_key: getPubFromSecret(secretKey),
+          new_public_key: getPubFromSecret(`ed25519:${secretKey}`),
         },
         true,
       );
@@ -279,7 +276,7 @@ export default function WelcomePage() {
                   height={imgSize.h}
                   mb="2"
                   objectFit="contain"
-                  src={`/assets/${EVENT_IMG_DIR_FOLDER_NAME}/${ticketInfo?.media}`}
+                  src={`/assets/logo.webp`}
                 />
               </Skeleton>
               <Heading

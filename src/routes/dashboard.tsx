@@ -434,7 +434,7 @@ export function Dashboard() {
       position={"relative"}
       width="100%"
       minHeight="100dvh"
-      bg="black"
+      bg="bg.primary"
       zIndex={5}
       _before={{
         content: '""',
