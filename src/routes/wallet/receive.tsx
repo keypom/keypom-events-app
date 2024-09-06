@@ -26,7 +26,7 @@ export default function Receive() {
         />
         <VStack alignItems="center" p={4}>
           <Heading as="h3" variant="recieve.accountName">
-          {displayName || "No Name Account"}
+            {displayName || "No Name Account"}
           </Heading>
           <Text variant="recieve.accountId">{accountId}</Text>
         </VStack>
