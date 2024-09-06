@@ -1,3 +1,11 @@
+/**
+ * TEST ENVIRONMENT
+ */
+export const MOCK_RPC_URL = "https://rpc.testnet.near.org/";
+
+/**
+ * KEYPOM EVENT CONSTANTS
+ */
 export const UNSCANNED_TICKET_PRIVATE_KEY =
   "2pcZwjQnvmpUXg29D7V86oPaop5KxR2RyWiPJPXub7XiBaMNGBCTuruPwoX71nGSCSQjSGopSmENtfDNkcmao2XL";
 export const DROP_ID = "ga_pass";

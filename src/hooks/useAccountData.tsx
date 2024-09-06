@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export interface AccountData {
   accountId: string;
+  displayName: string;
   balance: string;
 }
 
@@ -33,6 +34,7 @@ const fetchAccountData = async (secretKey: string) => {
 
     return {
       accountId: recoveredAccount.account_id,
+      displayName: recoveredAccount.display_name, // TODO
       balance: tokensAvailable,
     };
   } catch (error) {

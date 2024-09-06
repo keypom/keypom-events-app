@@ -1,37 +1,10 @@
-import { type IToken, type IWalletOption } from "@/types/common";
-
-const contractName = process.env.REACT_APP_CONTRACT_ID ?? "v2.keypom.testnet";
-const cloudflareIfps =
-  process.env.REACT_APP_CLOUDFLARE_IFPS ?? "https://cloudflare-ipfs.com/ipfs";
+const CONTRACT_NAME = import.meta.env.VITE_CONTRACT_ID ?? "v2.keypom.testnet";
 
 console.log(
   "Network and Contract IDs: ",
-  process.env.REACT_APP_NETWORK_ID,
-  process.env.REACT_APP_CONTRACT_ID,
+  import.meta.env.VITE_NETWORK_ID,
+  import.meta.env.VITE_CONTRACT_ID,
 );
-
-const SUPPORTED_WALLET_OPTIONS: IWalletOption[] = [
-  {
-    name: "mintbasewallet",
-    title: "Mintbase Wallet",
-  },
-  {
-    name: "meteorwallet",
-    title: "Meteor Wallet",
-  },
-  {
-    name: "mynearwallet",
-    title: "My Near Wallet",
-  },
-];
-
-const DEFAULT_WALLET = SUPPORTED_WALLET_OPTIONS[0];
-
-// used in create drops
-const DEFAULT_TOKEN: IToken = {
-  amount: "",
-  symbol: "NEAR",
-};
 
 export interface Config {
   networkId: string;
@@ -46,15 +19,10 @@ export interface Config {
   NEW_ACCOUNT_AMOUNT: string;
   NEW_CONTRACT_AMOUNT: string;
   contractId: string;
-  isBrowser: boolean;
-  cloudflareIfps: string;
-  supportedWallets: IWalletOption[];
-  defaultWallet: IWalletOption;
-  defaultToken: IToken;
 }
 
 function getConfig(
-  network = process.env.REACT_APP_NETWORK_ID ?? "testnet",
+  network = import.meta.env.VITE_NETWORK_ID ?? "testnet",
 ): Config {
   const defaultConfig = {
     GAS: "200000000000000",
@@ -62,19 +30,14 @@ function getConfig(
     attachedDeposit: "10000000000000000000000", // 0.01 N (1kb storage)
     NEW_ACCOUNT_AMOUNT: "1000000000000000000000000",
     NEW_CONTRACT_AMOUNT: "5000000000000000000000000",
-    contractId: contractName,
-    isBrowser: typeof window !== "undefined",
-    cloudflareIfps,
-    supportedWallets: SUPPORTED_WALLET_OPTIONS,
-    defaultWallet: DEFAULT_WALLET,
-    defaultToken: DEFAULT_TOKEN,
+    contractId: CONTRACT_NAME,
   };
 
   switch (network) {
     case "testnet":
       return {
         ...defaultConfig,
-        contractName,
+        contractName: CONTRACT_NAME,
         networkId: "testnet",
         nodeUrl: "https://rpc.testnet.near.org",
         walletUrl: "https://testnet.mynearwallet.com",
@@ -85,7 +48,7 @@ function getConfig(
     case "mainnet":
       return {
         ...defaultConfig,
-        contractName,
+        contractName: CONTRACT_NAME,
         networkId: "mainnet",
         nodeUrl: "https://rpc.mainnet.near.org",
         walletUrl: "https://app.mynearwallet.com",

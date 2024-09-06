@@ -2,6 +2,7 @@ import * as nearAPI from "near-api-js";
 import {
   CLOUDFLARE_IPFS,
   KEYPOM_EVENTS_CONTRACT,
+  NETWORK_ID,
   TOKEN_FACTORY_CONTRACT,
 } from "@/constants/common";
 import getConfig from "@/config/config";
@@ -18,7 +19,6 @@ import {
 } from "near-api-js/lib/providers";
 
 let instance: EventJS | undefined;
-const networkId = process.env.REACT_APP_NETWORK_ID ?? "testnet";
 
 const myKeyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
 const config = getConfig();
@@ -59,7 +59,7 @@ interface NftMetadata {
 }
 
 const connectionConfig = {
-  networkId,
+  networkId: NETWORK_ID,
   keyStore: myKeyStore,
   nodeUrl: config.nodeUrl,
   walletUrl: config.walletUrl,
@@ -326,7 +326,7 @@ class EventJS {
     scavId: string | null;
   }) => {
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
-    await myKeyStore.setKey(networkId, TOKEN_FACTORY_CONTRACT, keyPair);
+    await myKeyStore.setKey(NETWORK_ID, TOKEN_FACTORY_CONTRACT, keyPair);
     const userAccount = new nearAPI.Account(
       this.nearConnection.connection,
       TOKEN_FACTORY_CONTRACT,
@@ -348,10 +348,10 @@ class EventJS {
   }: {
     secretKey: string;
     sendTo: string;
-    amount: string;
+    amount: number;
   }) => {
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
-    await myKeyStore.setKey(networkId, TOKEN_FACTORY_CONTRACT, keyPair);
+    await myKeyStore.setKey(NETWORK_ID, TOKEN_FACTORY_CONTRACT, keyPair);
     const userAccount = new nearAPI.Account(
       this.nearConnection.connection,
       TOKEN_FACTORY_CONTRACT,

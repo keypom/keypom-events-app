@@ -2,12 +2,12 @@ import { Box, Input, Button, ButtonGroup } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 export function SetRecipient({
-  reciever,
-  setReciever,
+  receiver,
+  setReceiver,
   setStep,
 }: {
-  reciever: string;
-  setReciever: (value: string) => void;
+  receiver: string;
+  setReceiver: (value: string) => void;
   setStep: (value: string) => void;
 }) {
   const navigate = useNavigate();
@@ -26,13 +26,13 @@ export function SetRecipient({
           textAlign="center"
           fontWeight="bold"
           fontFamily={"mono"}
-          value={reciever}
+          value={receiver}
           type="text"
           fontSize="24px"
           height="54px"
           padding="1rem 0"
           autoFocus
-          onChange={(e) => setReciever(e.target.value)}
+          onChange={(e) => setReceiver(e.target.value)}
           _placeholder={{
             color: "black",
             opacity: 0.5,
@@ -51,7 +51,7 @@ export function SetRecipient({
         </Button>
         <Button
           isDisabled={
-            !reciever.endsWith(".near") && !reciever.endsWith(".testnet")
+            !receiver.endsWith(".near") && !receiver.endsWith(".testnet")
           }
           _disabled={{
             opacity: 0.5,
