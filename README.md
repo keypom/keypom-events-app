@@ -127,7 +127,7 @@ Replace existing assets with new ones by dropping images with the same names in 
 
 ```txt
 ├── background.webp
-├── boxes-background.webp 
+├── boxes-background.webp
 ├── claim-blocks.webp
 ├── custom-button-bg.webp
 ├── image-fallback.png
