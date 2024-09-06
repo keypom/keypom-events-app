@@ -5,6 +5,6 @@ export const colors = {
     800: "#096D50",
   },
   bg: {
-    primary: "#000"
-  }
+    primary: "#000",
+  },
 };

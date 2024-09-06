@@ -5,7 +5,10 @@ import { Footer } from "@/components/ui/footer";
 import { Header } from "@/components/ui/header";
 
 import { LoadingBox } from "@/components/ui/loading-box";
-import { HIDDEN_FOOTER_ROUTES, UNAUTHENTICATED_ROUTES } from "@/constants/common";
+import {
+  HIDDEN_FOOTER_ROUTES,
+  UNAUTHENTICATED_ROUTES,
+} from "@/constants/common";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { useEffect, useRef } from "react";
 
@@ -23,7 +26,6 @@ export default function AppLayout() {
       ref.current.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [pathname]);
-
 
   if (
     // no secret key

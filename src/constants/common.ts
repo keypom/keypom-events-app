@@ -52,13 +52,18 @@ export type DROP_TYPES = (typeof DROP_TYPE)[DROP_TYPE_KEYS];
  */
 
 // Routes that are accessible if the user is not authenticated
-export const UNAUTHENTICATED_ROUTES = ["/welcome", "/tickets/ticket", "/agenda", "/help"];
+export const UNAUTHENTICATED_ROUTES = [
+  "/welcome",
+  "/tickets/ticket",
+  "/agenda",
+  "/help",
+];
 
 // Routes that should hide the footer
 export const HIDDEN_FOOTER_ROUTES = [
   "/welcome",
   "/tickets/ticket",
-  "/scan/event"
+  "/scan/event",
 ];
 
 export const CONTACT_BUTTON = {
