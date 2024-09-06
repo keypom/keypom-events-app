@@ -73,6 +73,9 @@ It uses [Zustand](https://github.com/pmndrs/zustand) for global state management
 
 Routes are defined using [React Router v6](https://reactrouter.com/en/main) in `src/router.tsx`. The routing structure is split into two core user functionalities: **sponsor/admin flows** and **ticketed user flows**.
 
+- Routes that do not require authentication can be configured in `src/constants/common.ts` under `UNAUTHENTICATED_ROUTES`.
+- Routes that should not render the App Footer can be configured in `src/constants/common.ts` under `HIDDEN_FOOTER_ROUTES`.
+
 ### PWA
 
 To enhance offline capabilities and provide a better user experience, this app is structured as a [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) using [@vite-pwa/plugin](https://vite-pwa-org.netlify.app/). The PWA setup ensures that essential assets are cached and available even when the user is offline, improving reliability and performance.
