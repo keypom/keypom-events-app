@@ -1,6 +1,7 @@
 import { TelegramIcon } from "@/components/icons";
 
 export const NETWORK_ID = import.meta.env.VITE_NETWORK_ID ?? "testnet";
+export const isTestEnv = import.meta.env.MODE === "test";
 export const CLOUDFLARE_IPFS = "https://cloudflare-ipfs.com/ipfs";
 
 export const DROP_TYPE = {

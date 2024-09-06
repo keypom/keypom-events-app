@@ -92,21 +92,41 @@ const secondaryVariant = {
 };
 
 const outlineVariant = {
-  bg: "black",
+  ...FLEX_CENTER,
+  bg: "transparent",
   color: "white",
-  borderRadius: "md",
-  fontFamily: "mono",
-  fontWeight: "bold",
+  flexDirection: "column",
+  height: "100%",
+  padding: "1rem 1.5rem",
+  gap: 2,
   flex: "1 0 0",
-  padding: "1.5rem 0",
-  border: "1px solid var(--chakra-colors-brand-400)",
+  borderRadius: "md",
+  textAlign: "center",
+  ...MONO_FONT,
+  fontSize: "xs",
+  fontWeight: "bold",
+  lineHeight: "1rem",
+  fontStretch: "condensed",
+};
+
+const dangerVariant = {
+  ...FLEX_CENTER,
+  bg: "red.400",
+  color: "white",
+  flexDirection: "column",
+  height: "100%",
+  padding: "1rem 1.5rem",
+  gap: 2,
+  flex: "1 0 0",
+  borderRadius: "md",
+  textAlign: "center",
+  ...MONO_FONT,
+  fontSize: "xs",
+  fontWeight: "bold",
+  lineHeight: "1rem",
+  fontStretch: "condensed",
   _hover: {
-    bg: "black",
-    color: "white",
-  },
-  _active: {
-    bg: "black",
-    color: "white",
+    background: "red.600",
   },
 };
 
@@ -117,5 +137,6 @@ export const ButtonStyle = defineStyleConfig({
     primary: primaryVariant,
     secondary: secondaryVariant,
     outline: outlineVariant,
+    danger: dangerVariant,
   },
 });
