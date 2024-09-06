@@ -4,7 +4,7 @@ import App from "./App";
 
 async function prepare() {
   // Skip if in test environment
-  const isTestEnv = import.meta.env.VITE_IS_TEST;
+  const isTestEnv = import.meta.env.MODE === "test";
   if (isTestEnv) {
     console.log("Skipping mock service worker in test environment");
     return;
