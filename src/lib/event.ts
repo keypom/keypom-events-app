@@ -7,6 +7,7 @@ import {
   FinalExecutionOutcome,
 } from "near-api-js/lib/providers";
 import { AttendeeKeyInfo } from "./helpers/events";
+import { initKeypom } from "@keypom/core";
 
 let instance: EventJS | undefined;
 
@@ -121,6 +122,22 @@ class EventJS {
       args,
     });
     return res;
+  };
+
+  accountExists = async (accountId: string) => {
+    try {
+      const userAccount = new nearAPI.Account(
+        this.nearConnection.connection,
+        accountId,
+      );
+      await userAccount.state();
+      return true;
+    } catch (e) {
+      if (!/no such file|does not exist/.test((e as any).toString())) {
+        throw e;
+      }
+      return false;
+    }
   };
 
   deleteConferenceDrop = async ({

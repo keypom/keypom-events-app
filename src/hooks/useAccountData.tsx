@@ -1,6 +1,6 @@
 import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import eventHelperInstance from "@/lib/event";
-import { decryptOnChainData, decryptStoredData } from "@/lib/helpers/crypto";
+import { decryptStoredData } from "@/lib/helpers/crypto";
 import { RecoveredAccountInfo } from "@/lib/helpers/events";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { getPubFromSecret } from "@keypom/core";

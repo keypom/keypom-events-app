@@ -1,4 +1,8 @@
+import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+import { useAccountData } from "@/hooks/useAccountData";
+import eventHelperInstance from "@/lib/event";
 import { Box, Input, Button, ButtonGroup } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function SetRecipient({
@@ -10,7 +14,53 @@ export function SetRecipient({
   setReceiver: (value: string) => void;
   setStep: (value: string) => void;
 }) {
+  const { data, isLoading, isError } = useAccountData();
+  const displayName = isLoading || isError ? "------" : data?.displayAccountId;
+
   const navigate = useNavigate();
+
+  const [isValidUsername, setIsValidUsername] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    setIsValidUsername(true);
+    setError("");
+  }, [receiver]);
+
+  const handleClick = async () => {
+    if (receiver === "") {
+      setIsValidUsername(false);
+      setError("");
+      return;
+    }
+
+    if (receiver === displayName) {
+      setIsValidUsername(false);
+      setError("You cannot send tokens to your own account.");
+      return;
+    }
+
+    try {
+      const isValid = await eventHelperInstance.accountExists(
+        `${receiver}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`,
+      );
+      if (!isValid) {
+        setError("User does not exist.");
+        setIsValidUsername(false);
+        return;
+      }
+      setIsValidUsername(true);
+      setError("");
+    } catch (e) {
+      console.log(e);
+      setIsValidUsername(false);
+      setError("An error occurred while validating the account.");
+      return;
+    }
+
+    setStep("amount");
+  };
+
   return (
     <>
       <Box
@@ -37,7 +87,7 @@ export function SetRecipient({
             color: "black",
             opacity: 0.5,
           }}
-          placeholder="account.near"
+          placeholder="username"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               setStep("amount");
@@ -50,19 +100,29 @@ export function SetRecipient({
           CANCEL
         </Button>
         <Button
-          isDisabled={
-            !receiver.endsWith(".near") && !receiver.endsWith(".testnet")
-          }
+          isDisabled={!isValidUsername || receiver === ""}
           _disabled={{
             opacity: 0.5,
             cursor: "not-allowed",
           }}
           variant="secondary"
-          onClick={() => setStep("amount")}
+          onClick={() => handleClick()}
         >
           CONTINUE
         </Button>
       </ButtonGroup>
+      {error && (
+        <Box
+          mt={4}
+          mx={2}
+          color="red.400"
+          textAlign="center"
+          fontSize="sm"
+          fontFamily="mono"
+        >
+          {error}
+        </Box>
+      )}
     </>
   );
 }
