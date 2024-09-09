@@ -14,26 +14,17 @@ import { IconBox } from "@/components/dashboard/icon-box";
 import { BoxWithShape } from "@/components/tickets/box-with-shape";
 import { QRDetails } from "@/components/tickets/qr-details";
 import eventHelperInstance from "@/lib/event";
-import {
-  type FunderEventMetadata,
-  type TicketInfoMetadata,
-} from "@/lib/helpers/events";
+import { AttendeeKeyInfo } from "@/lib/helpers/events";
 import { useNavigate } from "react-router-dom";
 import { useEventCredentials } from "@/stores/event-credentials";
+import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 
 interface TicketQRCodeProps {
-  eventInfo?: FunderEventMetadata;
-  ticketInfo?: TicketInfoMetadata;
   isLoading: boolean;
-  eventId: string;
-  funderId: string;
   secretKey: string;
 }
 
 export default function TicketQRCode({
-  eventId,
-  eventInfo,
-  ticketInfo,
   isLoading,
   secretKey,
 }: TicketQRCodeProps) {
@@ -43,14 +34,17 @@ export default function TicketQRCode({
   useEffect(() => {
     const checkForQRScanned = async () => {
       const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
-      const keyInfo: { drop_id: string; uses_remaining: number } =
-        await eventHelperInstance.viewCall({
-          methodName: "get_key_information",
-          args: { key: pubKey },
-        });
+      const keyInfo: AttendeeKeyInfo = await eventHelperInstance.viewCall({
+        methodName: "get_key_information",
+        args: { key: pubKey },
+      });
 
-      if (keyInfo.uses_remaining !== 3) {
-        setEventCredentials(eventId, secretKey);
+      if (keyInfo === undefined) {
+        throw new Error("Invalid ticket");
+      }
+
+      if (keyInfo.has_scanned === true) {
+        setEventCredentials(secretKey);
         navigate("/");
       }
     };
@@ -81,7 +75,7 @@ export default function TicketQRCode({
         width="100%"
       >
         <Heading mb={8} textAlign="center">
-          You're attending {eventInfo?.name}!
+          You're attending {GLOBAL_EVENT_INFO.name}!
         </Heading>
       </Box>
 
@@ -107,11 +101,7 @@ export default function TicketQRCode({
                 {isLoading ? (
                   <Skeleton height="200px" width="full" />
                 ) : (
-                  <QRDetails
-                    eventInfo={eventInfo!}
-                    qrValue={secretKey}
-                    ticketInfo={ticketInfo!}
-                  />
+                  <QRDetails qrValue={secretKey} />
                 )}
               </BoxWithShape>
               <Flex
@@ -122,7 +112,7 @@ export default function TicketQRCode({
               >
                 <Skeleton borderRadius="12px" isLoaded={!isLoading}>
                   <Image
-                    alt={`Event image for ${eventInfo?.name}`}
+                    alt={`Event image for ${GLOBAL_EVENT_INFO.name}`}
                     borderRadius="12px"
                     height="200px"
                     objectFit="contain"

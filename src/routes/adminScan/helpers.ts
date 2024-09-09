@@ -1,42 +1,6 @@
 import { DateTime } from "luxon";
-import { getPubFromSecret } from "@keypom/core";
 
-import {
-  type TicketMetadataExtra,
-  type DateAndTimeInfo,
-  type EventDrop,
-} from "@/lib/helpers/events";
-import keypomInstance from "@/lib/keypom";
 import { dateAndTimeToText } from "@/utils/parseDates";
-
-export const getDropFromSecretKey = async (
-  secretKey: string,
-): Promise<{
-  drop: EventDrop;
-  usesRemaining: number;
-  maxKeyUses: number;
-} | null> => {
-  try {
-    const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
-    const keyInfo: { drop_id: string; uses_remaining: number } =
-      await keypomInstance.viewCall({
-        methodName: "get_key_information",
-        args: { key: pubKey },
-      });
-    const drop: EventDrop = await keypomInstance.viewCall({
-      methodName: "get_drop_information",
-      args: { drop_id: keyInfo.drop_id },
-    });
-    return {
-      usesRemaining: keyInfo.uses_remaining,
-      drop,
-      maxKeyUses: drop.max_key_uses,
-    };
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-};
 
 export const getTimeAsMinutes = (timeString) => {
   // Assuming the format is 'h:mm a', e.g., '9:00 AM'

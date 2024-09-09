@@ -22,9 +22,9 @@ export const CLOUDFLARE_IPFS = "https://cloudflare-ipfs.com/ipfs";
 export const KEYPOM_CONTRACTS = {
   testnet: {
     CORE_CONTRACT: import.meta.env.VITE_CONTRACT_ID || "v2.keypom.testnet",
-    EVENTS_CONTRACT: "1724680439172-kp-ticketing.testnet",
+    EVENTS_CONTRACT: "1725893914604-factory.testnet",
     MARKETPLACE_CONTRACT: "1724680439172-marketplace.testnet",
-    TOKEN_FACTORY_CONTRACT: "1724680439172-factory.testnet",
+    TOKEN_FACTORY_CONTRACT: "1725893914604-factory.testnet",
   },
   mainnet: {
     CORE_CONTRACT: import.meta.env.VITE_CONTRACT_ID || "TODO",
@@ -66,14 +66,14 @@ export const UNAUTHENTICATED_ROUTES = [
   // Do not modify below
   "/welcome",
   "/tickets/ticket",
-  "/scan/event",
+  "/scan/tickets",
 ];
 
 // Routes that should hide the footer
 export const HIDDEN_FOOTER_ROUTES = [
   "/welcome",
   "/tickets/ticket",
-  "/scan/event",
+  "/scan/tickets",
 ];
 
 // Footer navigation items for app

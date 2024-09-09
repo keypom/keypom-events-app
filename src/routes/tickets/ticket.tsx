@@ -28,38 +28,19 @@ export default function Ticket() {
     );
   }
 
-  const { ticketInfo, dropInfo, keyInfo, ticketExtra, eventInfo } = data!;
+  const { ticketInfo, keyInfo } = data!;
 
-  const maxUses = dropInfo.max_key_uses;
-  const usesRemaining = keyInfo.uses_remaining;
-  const curStep = maxUses - usesRemaining + 1;
-  const { funder_id } = dropInfo;
-  const { eventId } = ticketExtra;
   const { account_type } = ticketInfo;
 
   // Redirect if ticket has been used
-  if (maxUses === 2) {
-    setEventCredentials(eventId, secretKey);
-    navigate("/welcome");
-  }
-
-  if (curStep !== 1) {
-    setEventCredentials(eventId, secretKey);
+  if (keyInfo.has_scanned === true) {
+    setEventCredentials(secretKey);
     navigate("/welcome");
   }
 
   switch (account_type) {
     case "Basic":
-      return (
-        <TicketQRPage
-          eventId={eventId}
-          eventInfo={eventInfo}
-          funderId={funder_id}
-          isLoading={isLoading}
-          secretKey={secretKey}
-          ticketInfo={ticketInfo}
-        />
-      );
+      return <TicketQRPage isLoading={isLoading} secretKey={secretKey} />;
     case "Sponsor":
       return <div>Sponsor</div>;
     case "Admin":

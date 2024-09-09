@@ -1,9 +1,9 @@
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { BoxWithShape } from "@/components/tickets/box-with-shape";
 import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 import { useConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
-import keypomInstance from "@/lib/keypom";
 import { useEventCredentials } from "@/stores/event-credentials";
 import {
   Box,
@@ -25,7 +25,7 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { accountExists, getPubFromSecret } from "@keypom/core";
+import { accountExists } from "@keypom/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -98,17 +98,14 @@ export default function WelcomePage() {
     );
   }
 
-  const { ticketInfo, dropInfo, tokenInfo, keyInfo, eventInfo } = data!;
-  const maxUses = dropInfo.max_key_uses;
-  const usesRemaining = keyInfo.uses_remaining;
-  const curStep = maxUses - usesRemaining + 1;
+  const { tokenInfo, ticketInfo, keyInfo } = data!;
 
-  if (curStep === 3) {
+  // Redirect if ticket has been used
+  if (keyInfo.account_id !== null) {
     navigate("/me");
   }
 
   const { starting_token_balance } = ticketInfo;
-
   const { symbol } = tokenInfo;
 
   const tokensToClaim = eventHelperInstance.yoctoToNear(
@@ -141,14 +138,10 @@ export default function WelcomePage() {
     const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
     try {
       setIsClaiming(true);
-      await keypomInstance.claimEventTicket(
+      await eventHelperInstance.handleCreateEventAccount({
         secretKey,
-        {
-          new_account_id: accountId,
-          new_public_key: getPubFromSecret(`ed25519:${secretKey}`),
-        },
-        true,
-      );
+        accountId,
+      });
       setIsClaiming(false);
       navigate(0);
     } catch (e) {
@@ -271,7 +264,7 @@ export default function WelcomePage() {
               </Text>
               <Skeleton borderRadius="12px" isLoaded={!isLoading}>
                 <Image
-                  alt={`Event image for ${eventInfo?.name}`}
+                  alt={`Event image for ${GLOBAL_EVENT_INFO.name}`}
                   borderRadius={imgSize.borderRadius}
                   height={imgSize.h}
                   mb="2"
@@ -286,7 +279,7 @@ export default function WelcomePage() {
                 textAlign="center"
                 my={4}
               >
-                {ticketInfo?.title}
+                General Admission
               </Heading>
             </Flex>
           )}

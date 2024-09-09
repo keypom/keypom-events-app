@@ -28,7 +28,7 @@
     "@near-wallet-selector/core": "^8.9.5",
     "@tanstack/react-query": "^5.52.2",
     "@yudiel/react-qr-scanner": "^2.0.8",
-    "bs58": "^4.0.0",
+    "bs58": "^6.0.0",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.3.28",
     "luxon": "^3.5.0",

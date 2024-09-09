@@ -1,22 +1,12 @@
 import * as nearAPI from "near-api-js";
-import {
-  CLOUDFLARE_IPFS,
-  NETWORK_ID,
-  KEYPOM_EVENTS_CONTRACT,
-  KEYPOM_TOKEN_FACTORY_CONTRACT,
-} from "@/constants/common";
+import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import getConfig from "@/config/near";
-import { FunderEventMetadata } from "./helpers/events";
-import {
-  decryptPrivateKey,
-  decryptWithPrivateKey,
-  deriveKeyFromPassword,
-} from "./helpers/crypto";
 import { Wallet } from "@near-wallet-selector/core";
 import {
   FinalExecutionStatus,
   FinalExecutionOutcome,
 } from "near-api-js/lib/providers";
+import { AttendeeKeyInfo } from "./helpers/events";
 
 let instance: EventJS | undefined;
 
@@ -121,7 +111,7 @@ class EventJS {
   nearToYocto = (near: string) => nearAPI.utils.format.parseNearAmount(near);
 
   viewCall = async ({
-    contractId = KEYPOM_EVENTS_CONTRACT,
+    contractId = KEYPOM_TOKEN_FACTORY_CONTRACT,
     methodName,
     args,
   }) => {
@@ -131,52 +121,6 @@ class EventJS {
       args,
     });
     return res;
-  };
-
-  getDerivedPrivKey = async ({ encryptedPk, pw, saltBase64, ivBase64 }) => {
-    const symmetricKey = await deriveKeyFromPassword(pw, saltBase64);
-    const decryptedPrivateKey = await decryptPrivateKey(
-      encryptedPk,
-      ivBase64,
-      symmetricKey,
-    );
-    return decryptedPrivateKey;
-  };
-
-  decryptMetadata = async ({ privKey, data }) => {
-    const decryptedData = await decryptWithPrivateKey(data, privKey);
-    return decryptedData;
-  };
-
-  getEventInfo = async ({
-    accountId,
-    eventId,
-  }: {
-    accountId: string;
-    eventId: string;
-  }): Promise<FunderEventMetadata | null> => {
-    try {
-      const funderInfo = await this.viewCall({
-        methodName: "get_funder_info",
-        args: { account_id: accountId },
-      });
-
-      const funderMeta: Record<string, FunderEventMetadata> = JSON.parse(
-        funderInfo.metadata,
-      );
-      const eventInfo: FunderEventMetadata = funderMeta[eventId];
-
-      if (eventInfo === undefined || eventInfo === null) {
-        throw new Error(`Event ${String(eventId)} not exist`);
-      }
-
-      eventInfo.artwork = `${CLOUDFLARE_IPFS}/${eventInfo.artwork}`;
-
-      return eventInfo;
-    } catch (error) {
-      console.warn("Error getting event info", error);
-      return null;
-    }
   };
 
   deleteConferenceDrop = async ({
@@ -362,6 +306,42 @@ class EventJS {
       args: {
         receiver_id: sendTo,
         amount,
+      },
+    });
+  };
+
+  handleScanIntoEvent = async ({ secretKey }: { secretKey: string }) => {
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
+    await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "scan_ticket",
+      args: {},
+    });
+  };
+
+  handleCreateEventAccount = async ({
+    secretKey,
+    accountId,
+  }: {
+    secretKey: string;
+    accountId: string;
+  }) => {
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
+    await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "create_account",
+      args: {
+        new_account_id: accountId,
       },
     });
   };
