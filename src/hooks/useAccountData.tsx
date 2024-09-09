@@ -1,5 +1,5 @@
 import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
-import eventHelperInstance from "@/lib/event";
+import eventHelperInstance, { ExtClaimedDrop, ExtDropData } from "@/lib/event";
 import { decryptStoredData } from "@/lib/helpers/crypto";
 import { RecoveredAccountInfo } from "@/lib/helpers/events";
 import { useEventCredentials } from "@/stores/event-credentials";
@@ -15,6 +15,8 @@ export interface AccountData {
   accountId: string;
   displayAccountId: string;
   userData: UserData;
+  ownedCollectibles: ExtClaimedDrop[];
+  unownedCollectibles: ExtDropData[];
   balance: string;
 }
 
@@ -27,10 +29,12 @@ const fetchAccountData = async (secretKey: string) => {
         methodName: "recover_account",
         args: { key_or_account_id: pubKey },
       });
-
     if (!recoveredAccount) {
       throw new Error("Account not found");
     }
+    const tokensAvailable = eventHelperInstance.yoctoToNearWith4Decimals(
+      recoveredAccount.ft_balance,
+    );
 
     const attendeeKeyInfo = await eventHelperInstance.viewCall({
       methodName: "get_key_information",
@@ -42,14 +46,18 @@ const fetchAccountData = async (secretKey: string) => {
     );
     const userData = JSON.parse(decryptedMetadata);
 
-    const tokensAvailable = eventHelperInstance.yoctoToNearWith4Decimals(
-      recoveredAccount.ft_balance,
-    );
-
     const accountId = recoveredAccount.account_id;
+    const owned: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
+      methodName: "get_claimed_nfts_for_account",
+      args: { account_id: accountId },
+    });
+    const unownedCollectibles = await eventHelperInstance.getCachedNFTDrops();
+
     return {
       accountId,
       userData,
+      ownedCollectibles: owned,
+      unownedCollectibles: unownedCollectibles,
       displayAccountId: accountId
         .split(".")[0]
         .substring(KEYPOM_TOKEN_FACTORY_CONTRACT),

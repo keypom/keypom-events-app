@@ -17,9 +17,9 @@ export default function Me() {
   return (
     <VStack spacing={4} pt={4}>
       <PageHeading
-        title={data?.userData ? data.userData.name : "Loading..."}
+        title={`Welcome ${data?.userData ? data.userData.name : "Loading..."}`}
         titleSize="24px"
-        description={`@${displayName}`}
+        description={`Username: @${displayName}`}
       />
       <WalletActions />
       <LatestAlert />

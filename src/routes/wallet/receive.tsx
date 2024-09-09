@@ -7,7 +7,7 @@ import { useAccountData } from "@/hooks/useAccountData";
 export default function Receive() {
   const { data } = useAccountData();
 
-  const { accountId, displayName } = data!;
+  const { accountId, displayAccountId } = data!;
   const qrValue = `${window.origin}/wallet/send?to=${accountId}`;
 
   return (
@@ -32,7 +32,7 @@ export default function Receive() {
             color="white"
             noOfLines={1}
           >
-            {displayName || "No Name Account"}
+            {displayAccountId || "No Name Account"}
           </Heading>
           <Text
             fontFamily="mono"
