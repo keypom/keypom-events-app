@@ -1,11 +1,6 @@
 import { defineStyleConfig } from "@chakra-ui/react";
 
 // Common Styles
-const TRANSPARENT_STYLE = {
-  bg: "transparent",
-  color: "brand.400",
-};
-
 const FLEX_CENTER = {
   display: "flex",
   justifyContent: "center",
@@ -19,13 +14,20 @@ const MONO_FONT = {
 
 // Button Variants
 const transparentVariant = {
-  ...TRANSPARENT_STYLE,
+  bg: "transparent",
+  color: "brand.400",
   padding: 0,
-  _hover: TRANSPARENT_STYLE,
-  _active: TRANSPARENT_STYLE,
+  _hover: {
+    bg: "transparent",
+    color: "brand.400",
+  },
+  _active: {
+    bg: "transparent",
+    color: "brand.400",
+  },
 };
 
-const customVariant = {
+const secondaryVariant = {
   ...FLEX_CENTER,
   width: "100%",
   padding: "2rem 0",
@@ -69,38 +71,29 @@ const primaryVariant = {
   lineHeight: "1rem",
   fontStretch: "condensed",
   _hover: {
-    background: "brand.600",
-  },
-};
-
-const secondaryVariant = {
-  bg: "var(--chakra-colors-brand-400)",
-  color: "black",
-  borderRadius: "md",
-  fontFamily: "mono",
-  fontWeight: "bold",
-  flex: "1 0 0",
-  padding: "1.5rem 0",
-  _hover: {
-    bg: "var(--chakra-colors-brand-400)",
-    color: "black",
+    bg: "brand.600 !important",
   },
   _active: {
-    bg: "var(--chakra-colors-brand-400)",
-    color: "black",
+    bg: "bg.primary",
+    color: "brand.400",
   },
+  _disabled: {
+    opacity: 0.5,
+    cursor: "not-allowed",
+  }
 };
 
 const outlineVariant = {
   ...FLEX_CENTER,
   bg: "transparent",
-  color: "white",
+  color: "brand.400",
   flexDirection: "column",
   height: "100%",
   padding: "1rem 1.5rem",
   gap: 2,
   flex: "1 0 0",
   borderRadius: "md",
+  borderColor: "brand.400",
   textAlign: "center",
   ...MONO_FONT,
   fontSize: "xs",
@@ -133,7 +126,6 @@ const dangerVariant = {
 export const ButtonStyle = defineStyleConfig({
   variants: {
     transparent: transparentVariant,
-    custom: customVariant,
     primary: primaryVariant,
     secondary: secondaryVariant,
     outline: outlineVariant,

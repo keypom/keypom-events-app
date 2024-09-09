@@ -34,7 +34,7 @@ export default function Help() {
         as={Link}
         to={CONTACT_BUTTON.href}
         target="_blank"
-        variant={"custom"}
+        variant={"secondary"}
       >
         {
           <CONTACT_BUTTON.icon

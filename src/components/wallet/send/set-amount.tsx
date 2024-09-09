@@ -50,7 +50,7 @@ export function SetAmount({
         <Button variant="outline" onClick={() => setStep("recipient")}>
           BACK
         </Button>
-        <Button variant="secondary" onClick={onSend} isDisabled={!amount}>
+        <Button variant="primary" onClick={onSend} isDisabled={!amount}>
           SEND
         </Button>
       </ButtonGroup>
