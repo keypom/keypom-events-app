@@ -33,7 +33,7 @@ function getConfig(network = NETWORK_ID): NearConfig {
     case "testnet":
       return {
         ...defaultConfig,
-        contractId: KEYPOM_CONTRACTS["testnet"].CORE_CONTRACT,
+        contractId: KEYPOM_CONTRACTS["testnet"].TOKEN_FACTORY_CONTRACT,
         networkId: "testnet",
         nodeUrl: "https://rpc.testnet.near.org",
         walletUrl: "https://testnet.mynearwallet.com",
@@ -44,7 +44,7 @@ function getConfig(network = NETWORK_ID): NearConfig {
     case "mainnet":
       return {
         ...defaultConfig,
-        contractId: KEYPOM_CONTRACTS["mainnet"].CORE_CONTRACT,
+        contractId: KEYPOM_CONTRACTS["mainnet"].TOKEN_FACTORY_CONTRACT,
         networkId: "mainnet",
         nodeUrl: "https://rpc.mainnet.near.org",
         walletUrl: "https://app.mynearwallet.com",

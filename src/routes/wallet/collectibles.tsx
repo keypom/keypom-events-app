@@ -4,9 +4,6 @@ import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
 import { CollectibleCard } from "@/components/wallet/collectibles/card";
-import { Collectible, fetchCollectibles } from "@/lib/api/collectibles";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
 import { useAccountData } from "@/hooks/useAccountData";
 import { ExtClaimedDrop, ExtDropData } from "@/lib/event";
 
@@ -27,8 +24,8 @@ const CollectiblesGrid = ({
   lockedItems,
   unlockedItems,
 }: {
-  lockedItems: ExtClaimedDrop[];
-  unlockedItems: ExtDropData[];
+  lockedItems: ExtDropData[];
+  unlockedItems: ExtClaimedDrop[];
 }) => {
   return (
     <>

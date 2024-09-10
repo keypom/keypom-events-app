@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
 import { useSwipeable } from "react-swipeable";
 import Boxes from "/assets/boxes-background.webp";
@@ -11,7 +11,6 @@ interface HiddenProps {
 
 export function Hidden({ foundItem, onReveal }: HiddenProps) {
   const [swipeProgress, setSwipeProgress] = useState(0);
-  const [isRevealed, setIsRevealed] = useState(false);
 
   // Define the maximum swipe distance (e.g., 100% of the button's width)
   const maxSwipeDistance = 300; // You can adjust this value based on your design
@@ -26,11 +25,9 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
     },
     onSwipedRight: () => {
       if (swipeProgress >= maxSwipeDistance) {
-        setIsRevealed(true);
         onReveal();
       }
     },
-    preventDefaultTouchmoveEvent: true,
     trackTouch: true,
     trackMouse: false,
   });

@@ -6,8 +6,6 @@ import {
   FinalExecutionStatus,
   FinalExecutionOutcome,
 } from "near-api-js/lib/providers";
-import { AttendeeKeyInfo } from "./helpers/events";
-import { initKeypom } from "@keypom/core";
 
 let instance: EventJS | undefined;
 
@@ -36,7 +34,6 @@ export interface ExtClaimedDrop {
 export interface ExtDropData {
   type: "token" | "nft";
   name: string;
-  image: string;
   drop_id: string;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   amount?: string; // Only present if the drop is a token
@@ -133,7 +130,7 @@ class EventJS {
       await userAccount.state();
       return true;
     } catch (e) {
-      if (!/no such file|does not exist/.test((e as any).toString())) {
+      if (!/no such file|does not exist/.test((e as string).toString())) {
         throw e;
       }
       return false;

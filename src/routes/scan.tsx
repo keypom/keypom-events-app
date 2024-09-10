@@ -94,7 +94,7 @@ export default function Scan() {
       // If the scan was successful, set success status
       setScanStatus("success");
       setStatusMessage("QR code scanned successfully");
-    } catch (error: Error) {
+    } catch (error: any) {
       console.error("Scan failed", error);
       setScanStatus("error");
       setStatusMessage(`Error scanning QR code: ${error.message}`);

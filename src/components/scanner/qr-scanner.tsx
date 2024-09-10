@@ -1,7 +1,7 @@
 import { CameraSwitchButton } from "@/components/scanner/camera-switch-button";
 import { ViewFinder } from "@/components/scanner/view-finder";
 import { isTestEnv } from "@/constants/common";
-import { Box, useToast } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";

@@ -1,7 +1,5 @@
-import { type DateAndTimeInfo } from "@/lib/helpers/events";
-
 export const dateAndTimeToText = (
-  date: DateAndTimeInfo,
+  date: any,
   placeholder = "",
   includeTimezone = true,
   excludeDash = false,

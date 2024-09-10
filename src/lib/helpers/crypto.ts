@@ -1,7 +1,6 @@
 import nacl from "tweetnacl";
 import * as naclUtil from "tweetnacl-util"; // Import the utilities properly
 import bs58 from "bs58";
-import { getPubFromSecret } from "@keypom/core";
 
 // Helper to decode NEAR base58 ed25519 secret key
 function decodeEd25519SecretKey(secretKeyString: string): Uint8Array {
@@ -148,9 +147,4 @@ function decryptStoredData(ed25519Keypair: string, storedDataJSON: string) {
   return decryptedMessage;
 }
 
-export {
-  encryptAndStoreData,
-  decodeEd25519SecretKey,
-  decryptStoredData,
-  decryptOnChainData,
-};
+export { encryptAndStoreData, decodeEd25519SecretKey, decryptStoredData };

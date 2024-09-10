@@ -3,13 +3,11 @@
 import { Box, Center, Heading, Text, VStack } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
-import { NotFound404 } from "@/components/dashboard/not-found-404";
-
 import { QrScanner } from "@/components/scanner/qr-scanner";
 import { AttendeeKeyInfo, TicketTypeInfo } from "@/lib/helpers/events";
 import eventHelperInstance from "@/lib/event";
-import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 import { getPubFromSecret } from "@keypom/core";
+import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 
 interface StateRefObject {
   isScanning: boolean;
@@ -21,9 +19,6 @@ interface StateRefObject {
 }
 
 export default function Scanner() {
-  const [isErr, setIsErr] = useState(false);
-  const [isScanning, setIsScanning] = useState(false);
-
   const stateRef = useRef<StateRefObject>({
     isScanning: false,
     isOnCooldown: false,
@@ -51,7 +46,6 @@ export default function Scanner() {
   }, [ticketsToScan]);
 
   const handleScanResult = async (secretKey: string) => {
-    setIsScanning(true);
     try {
       const pubKey = getPubFromSecret(secretKey);
       const keyInfo: AttendeeKeyInfo | undefined =
@@ -84,8 +78,6 @@ export default function Scanner() {
     } catch (err: any) {
       console.error("Scan failed", err);
       throw new Error(`${err.message}`);
-    } finally {
-      setIsScanning(false);
     }
   };
 
@@ -119,16 +111,6 @@ export default function Scanner() {
     }
   };
 
-  if (isErr) {
-    return (
-      <NotFound404
-        cta="Return to homepage"
-        header="Event Not Found"
-        subheader="Please check the URL and try again."
-      />
-    );
-  }
-
   return (
     <Box marginTop="6" mb={{ base: "5", md: "14" }} minH="100%" minW="100%">
       <Center>
@@ -150,7 +132,7 @@ export default function Scanner() {
               spacing={4}
               w="full"
             >
-              <QrScanner handleScan={handleScanResult} />
+              <QrScanner handleScan={handleScanResult} scanStatus="success" />
             </VStack>
           </Center>
           {ticketsToScan.length > 0 ? (
