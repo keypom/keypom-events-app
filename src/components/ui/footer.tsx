@@ -42,8 +42,7 @@ export function Footer() {
                   key={index}
                   to={route.href}
                   variant="primary"
-                  backgroundColor={pathname === route.href ? "bg.primary" : ""}
-                  color={pathname === route.href ? "brand.400" : "black"}
+                  isActive={pathname === route.href}
                 >
                   <route.icon
                     width={24}

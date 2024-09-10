@@ -53,11 +53,7 @@ export function SetRecipient({
           isDisabled={
             !receiver.endsWith(".near") && !receiver.endsWith(".testnet")
           }
-          _disabled={{
-            opacity: 0.5,
-            cursor: "not-allowed",
-          }}
-          variant="secondary"
+          variant="primary"
           onClick={() => setStep("amount")}
         >
           CONTINUE
