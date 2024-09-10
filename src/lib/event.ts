@@ -364,7 +364,7 @@ class EventJS {
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "ft_transfer",
       args: {
-        receiver_id: sendTo,
+        receiver_id: `${sendTo}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`,
         amount: this.nearToYocto(amount.toString()),
       },
     });
