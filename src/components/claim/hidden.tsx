@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
 import { useSwipeable } from "react-swipeable";
 import Boxes from "/assets/boxes-background.webp";
@@ -11,9 +11,19 @@ interface HiddenProps {
 
 export function Hidden({ foundItem, onReveal }: HiddenProps) {
   const [swipeProgress, setSwipeProgress] = useState(0);
+  const requestRef = useRef<number | null>(null);
 
-  // Define the maximum swipe distance (e.g., 100% of the button's width)
-  const maxSwipeDistance = 300; // You can adjust this value based on your design
+  const maxSwipeDistance = 300; // Maximum swipe distance
+
+  // To handle smooth updates via requestAnimationFrame
+  const animateSwipeProgress = (newProgress: number) => {
+    if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current);
+    }
+    requestRef.current = requestAnimationFrame(() => {
+      setSwipeProgress(newProgress);
+    });
+  };
 
   const handlers = useSwipeable({
     onSwiping: (eventData) => {
@@ -21,7 +31,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
         Math.max(0, eventData.deltaX),
         maxSwipeDistance,
       );
-      setSwipeProgress(newProgress);
+      animateSwipeProgress(newProgress);
     },
     onSwipedRight: () => {
       if (swipeProgress >= maxSwipeDistance) {
@@ -30,7 +40,16 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
     },
     trackTouch: true,
     trackMouse: false,
+    preventDefaultTouchmoveEvent: true, // Prevents touchmove event by default
   });
+
+  useEffect(() => {
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, []);
 
   return (
     <Box mt="64px" position="relative" p={4}>
@@ -51,6 +70,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
         p={4}
         spacing={8}
         {...handlers}
+        style={{ touchAction: "none" }} // Disable touch-action to prevent default behaviors like scrolling or refreshing
       >
         <Box
           bg="bg.primary"
@@ -108,6 +128,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             borderRadius={"0"}
             overflow="hidden"
             border="2px solid var(--chakra-colors-brand-400)"
+            touchAction="none" // Prevents page shifting or refresh
           >
             {/* Sliding progress */}
             <Box
@@ -115,7 +136,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
               bg="var(--chakra-colors-brand-400)"
               height="100%"
               width={`${(swipeProgress / maxSwipeDistance) * 100}%`}
-              transition="width 0.1s ease-out"
+              transition="width 0.05s ease-out"
               left={0}
               top={0}
             />
