@@ -40,5 +40,5 @@ export default function Claim() {
     return <Hidden foundItem={reward} onReveal={onReveal} />;
   }
 
-  return <Reveal foundItem={reward} itemCount={20} />;
+  return <Reveal foundItem={reward} />;
 }

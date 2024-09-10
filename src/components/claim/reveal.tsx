@@ -1,13 +1,12 @@
-import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
+import { Box, Heading, Image, VStack } from "@chakra-ui/react";
 import Boxes from "/assets/claim-blocks.webp";
 import eventHelperInstance, { ExtDropData } from "@/lib/event";
 
 interface RevealProps {
   foundItem: ExtDropData;
-  itemCount?: number;
 }
 
-export function Reveal({ foundItem, itemCount }: RevealProps) {
+export function Reveal({ foundItem }: RevealProps) {
   return (
     <Box mt="64px" position="relative" p={4}>
       <Box position="relative">
