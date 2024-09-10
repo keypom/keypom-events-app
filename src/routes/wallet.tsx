@@ -13,11 +13,11 @@ export default function Wallet() {
       </Box>
       <WalletActions />
       <VStack width="100%" p={4} pt={0} spacing={4}>
-        <Button as={Link} to="/wallet/collectibles" variant="custom">
+        <Button as={Link} to="/wallet/collectibles" variant="secondary">
           <CollectiblesIcon color="var(--chakra-colors-brand-400)" />{" "}
           COLLECTIBLES
         </Button>
-        <Button as={Link} to="/wallet/journeys" variant="custom">
+        <Button as={Link} to="/wallet/journeys" variant="secondary">
           <JourneysIcon color="var(--chakra-colors-brand-400)" /> JOURNEYS
         </Button>
       </VStack>

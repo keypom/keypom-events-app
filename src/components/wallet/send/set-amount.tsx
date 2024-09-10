@@ -55,7 +55,7 @@ export function SetAmount({
           BACK
         </Button>
         <Button
-          variant="secondary"
+          variant="primary"
           onClick={onSend}
           isDisabled={!amount || isSending} // Disable the button while sending
           isLoading={isSending} // Show spinner while sending

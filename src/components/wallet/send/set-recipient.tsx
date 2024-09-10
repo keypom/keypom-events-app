@@ -105,7 +105,7 @@ export function SetRecipient({
             opacity: 0.5,
             cursor: "not-allowed",
           }}
-          variant="secondary"
+          variant="primary"
           onClick={() => handleClick()}
         >
           CONTINUE

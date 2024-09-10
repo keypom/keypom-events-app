@@ -62,18 +62,11 @@ export function AlertItem({
         {description}
       </Text>
       <Button
-        variant="primary"
+        variant="outline"
         as={Link}
         to={href}
         flexDirection="row"
         padding="4px 8px"
-        maxWidth={"max-content"}
-        width="100%"
-        fontSize="xs"
-        background="black"
-        border="1px solid var(--chakra-colors-brand-400)"
-        color="brand.400"
-        gap="8px"
       >
         <span>{linkTitle}</span>
         <ArrowIcon
