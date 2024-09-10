@@ -3,15 +3,19 @@ import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
 import { useSwipeable } from "react-swipeable";
 import Boxes from "/assets/boxes-background.webp";
 import { HelpIcon, ArrowIcon } from "@/components/icons";
+import { ExtDropData } from "@/lib/event";
 
 interface HiddenProps {
-  foundItem: string;
+  foundItem: ExtDropData;
   onReveal: () => void;
 }
 
 export function Hidden({ foundItem, onReveal }: HiddenProps) {
   const [swipeProgress, setSwipeProgress] = useState(0);
   const requestRef = useRef<number | null>(null);
+
+  const isNFT = foundItem.type === "nft";
+  const rewardMessage = isNFT ? "a POAP" : "some SOV3";
 
   const maxSwipeDistance = 300; // Maximum swipe distance
 
@@ -117,7 +121,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             px={2}
             textTransform={"uppercase"}
           >
-            You've found {foundItem}
+            You've found {rewardMessage}
           </Text>
         </VStack>
         <Box p={4} width={"100%"}>

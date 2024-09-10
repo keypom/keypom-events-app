@@ -365,7 +365,7 @@ class EventJS {
       methodName: "ft_transfer",
       args: {
         receiver_id: sendTo,
-        amount,
+        amount: this.nearToYocto(amount.toString()),
       },
     });
   };
