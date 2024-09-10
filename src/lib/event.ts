@@ -277,15 +277,61 @@ class EventJS {
     }
   };
 
-  claimEventTokenDrop = async ({
+  claimEventDrop = async ({
     secretKey,
+    accountId,
     dropId,
     scavId,
   }: {
     secretKey: string;
     dropId: string;
     scavId: string | null;
+    accountId?: string;
   }) => {
+    // Fetch the drop information
+    const claimedDropInfo = await eventHelperInstance.viewCall({
+      methodName: "get_drop_information",
+      args: { drop_id: dropId },
+    });
+
+    // Fetch claimed drops for the account
+    const claimsForAccount = await eventHelperInstance.viewCall({
+      methodName: "get_claimed_drops_for_account",
+      args: { account_id: accountId, drop_id: dropId },
+    });
+
+    const curDropClaimData = claimsForAccount.find(
+      (drop) => drop.drop_id === dropId,
+    );
+    console.log("Cur drop claim data: ", curDropClaimData);
+
+    let alreadyClaimed = false;
+
+    // If drop has no scavenger hunt, check if it was already claimed
+    if (
+      !claimedDropInfo?.base?.scavenger_hunt ||
+      claimedDropInfo === undefined
+    ) {
+      alreadyClaimed = curDropClaimData !== undefined;
+    } else {
+      // Validate scavenger ID
+      const validScavengerIds = claimedDropInfo.base.scavenger_hunt.map(
+        (item) => item.piece,
+      );
+      const isValidScavengerId = validScavengerIds.includes(scavId);
+      if (!isValidScavengerId) {
+        throw new Error("Invalid scavenger piece");
+      }
+
+      // Check if the scavenger piece has already been claimed
+      const piecesToCheck = curDropClaimData?.found_scavenger_ids || [];
+      alreadyClaimed = piecesToCheck.includes(scavId);
+    }
+
+    if (alreadyClaimed) {
+      throw new Error("You already scanned this drop");
+    }
+
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
     await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
     const userAccount = new nearAPI.Account(

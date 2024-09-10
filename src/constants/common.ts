@@ -21,26 +21,15 @@ export const CLOUDFLARE_IPFS = "https://cloudflare-ipfs.com/ipfs";
  */
 export const KEYPOM_CONTRACTS = {
   testnet: {
-    CORE_CONTRACT: import.meta.env.VITE_CONTRACT_ID || "v2.keypom.testnet",
-    EVENTS_CONTRACT: "1725907929524-factory.testnet",
-    MARKETPLACE_CONTRACT: "1724680439172-marketplace.testnet",
-    TOKEN_FACTORY_CONTRACT: "1725907929524-factory.testnet",
+    TOKEN_FACTORY_CONTRACT:
+      import.meta.env.VITE_CONTRACT_ID || "1725979998774-factory.testnet",
   },
   mainnet: {
-    CORE_CONTRACT: import.meta.env.VITE_CONTRACT_ID || "TODO",
-    EVENTS_CONTRACT: "TODO",
-    MARKETPLACE_CONTRACT: "TODO",
-    TOKEN_FACTORY_CONTRACT: "TODO",
+    TOKEN_FACTORY_CONTRACT: import.meta.env.VITE_CONTRACT_ID || "TODO",
   },
 };
-export const KEYPOM_EVENTS_CONTRACT =
-  KEYPOM_CONTRACTS[NETWORK_ID].EVENTS_CONTRACT;
-export const KEYPOM_MARKETPLACE_CONTRACT =
-  KEYPOM_CONTRACTS[NETWORK_ID].MARKETPLACE_CONTRACT;
 export const KEYPOM_TOKEN_FACTORY_CONTRACT =
   KEYPOM_CONTRACTS[NETWORK_ID].TOKEN_FACTORY_CONTRACT;
-
-export const KEYPOM_MASTER_KEY = "MASTER_KEY";
 
 export const DROP_TYPE = {
   TOKEN: "TOKEN",

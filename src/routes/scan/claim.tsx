@@ -11,15 +11,8 @@ export default function Claim() {
     setRevealed(true);
   };
 
-  useEffect(() => {
-    if (data) {
-      // DO SOMETHING TO CLAIM DATA
-      onReveal();
-    }
-  }, [data]);
-
   if (!revealed) {
-    return <Hidden foundItem={"SOV3"} onReveal={onReveal} />;
+    return <Hidden foundItem={"some SOV3"} onReveal={onReveal} />;
   }
 
   return <Reveal foundItem={"SOV3"} itemCount={20} />;

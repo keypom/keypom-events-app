@@ -1,6 +1,7 @@
-import { Box, Heading, Image, VStack, Text, Button } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
+import { useSwipeable } from "react-swipeable";
 import Boxes from "/assets/boxes-background.webp";
-
 import { HelpIcon, ArrowIcon } from "@/components/icons";
 
 interface HiddenProps {
@@ -9,6 +10,31 @@ interface HiddenProps {
 }
 
 export function Hidden({ foundItem, onReveal }: HiddenProps) {
+  const [swipeProgress, setSwipeProgress] = useState(0);
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  // Define the maximum swipe distance (e.g., 100% of the button's width)
+  const maxSwipeDistance = 300; // You can adjust this value based on your design
+
+  const handlers = useSwipeable({
+    onSwiping: (eventData) => {
+      const newProgress = Math.min(
+        Math.max(0, eventData.deltaX),
+        maxSwipeDistance,
+      );
+      setSwipeProgress(newProgress);
+    },
+    onSwipedRight: () => {
+      if (swipeProgress >= maxSwipeDistance) {
+        setIsRevealed(true);
+        onReveal();
+      }
+    },
+    preventDefaultTouchmoveEvent: true,
+    trackTouch: true,
+    trackMouse: false,
+  });
+
   return (
     <Box mt="64px" position="relative" p={4}>
       <Image
@@ -27,6 +53,7 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
         width={"100%"}
         p={4}
         spacing={8}
+        {...handlers}
       >
         <Box
           bg="bg.primary"
@@ -65,12 +92,12 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             px={2}
             textTransform={"uppercase"}
           >
-            You've found some {foundItem}
+            You've found {foundItem}
           </Text>
         </VStack>
         <Box p={4} width={"100%"}>
-          <Button
-            onClick={onReveal}
+          <Box
+            position="relative"
             width={"100%"}
             bg="bg.primary"
             fontFamily={"mono"}
@@ -82,34 +109,29 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             color={"white"}
             fontSize="sm"
             borderRadius={"0"}
-            position={"relative"}
-            _hover={{
-              background: "black",
-              color: "white",
-            }}
-            _active={{
-              background: "black",
-              color: "white",
-            }}
-            _before={{
-              content: '""',
-              position: "absolute",
-              width: "57px",
-              height: "37px",
-              left: -4,
-              top: -4,
-              zIndex: -1,
-              background: "black",
-            }}
+            overflow="hidden"
+            border="2px solid var(--chakra-colors-brand-400)"
           >
-            <span>Reveal & Claim</span>
-            <ArrowIcon
-              width={24}
-              direction="right"
-              height={24}
-              color={"var(--chakra-colors-brand-400)"}
+            {/* Sliding progress */}
+            <Box
+              position="absolute"
+              bg="var(--chakra-colors-brand-400)"
+              height="100%"
+              width={`${(swipeProgress / maxSwipeDistance) * 100}%`}
+              transition="width 0.1s ease-out"
+              left={0}
+              top={0}
             />
-          </Button>
+            <Box zIndex={1} position="relative" width="100%">
+              <span>Slide to Reveal & Claim</span>
+              <ArrowIcon
+                width={24}
+                direction="right"
+                height={24}
+                color={"var(--chakra-colors-brand-400)"}
+              />
+            </Box>
+          </Box>
         </Box>
       </VStack>
     </Box>
