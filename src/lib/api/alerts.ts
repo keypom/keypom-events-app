@@ -1,4 +1,3 @@
-import { getPubFromSecret } from "@keypom/core";
 import eventHelperInstance from "../event";
 
 export interface Alert {
@@ -40,8 +39,6 @@ export const fetchAlerts: () => Promise<Alert[]> = async () => {
     href: alert["Redirects To"] || "", // Mapping 'Redirects To' to href, with a fallback
     linkTitle: alert["Custom Link Title"] || "", // Mapping 'Custom Link Title' to linkTitle
   }));
-
-  console.log("Mapped Alerts: ", mappedAlerts);
 
   return mappedAlerts;
 };

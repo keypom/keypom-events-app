@@ -91,6 +91,8 @@ export default function Agenda() {
     queryFn: fetchAgenda,
   });
 
+  console.log(agendaData);
+
   const [showSearch, setShowSearch] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
