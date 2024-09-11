@@ -95,7 +95,7 @@ export default function Collectibles() {
         showBackButton
       />
       {isLoading && <LoadingBox />}
-      {lockedItems.length > 0 && (
+      {lockedItems.length + unlockedItems.length > 0 && (
         <CollectiblesGrid
           lockedItems={lockedItems}
           unlockedItems={unlockedItems}

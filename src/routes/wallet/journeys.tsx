@@ -1,48 +1,35 @@
 import { VStack } from "@chakra-ui/react";
-
 import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
 import { JourneyCard } from "@/components/wallet/journeys/card";
-import { fetchJourneys, Journey } from "@/lib/api/journeys";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useAccountData } from "@/hooks/useAccountData";
 
 export default function Journeys() {
-  const {
-    data: journeys,
-    error,
-    isError,
-    isLoading,
-  } = useQuery({ queryKey: ["journeys"], queryFn: fetchJourneys });
+  const { data, isLoading, isError, error } = useAccountData();
 
-  const isJourneyCompleted = (journey: Journey) => {
-    return journey.steps.every((step) => step.completed);
-  };
+  const journeys = data?.journeys || [];
 
-  const completedJourneys = useMemo(
-    () => (journeys ? journeys.filter((it) => isJourneyCompleted(it)) : []),
-    [journeys],
-  );
-
-  const getProgressDescription = (journeys: Journey[]) => {
-    const completed = completedJourneys.length;
-    return `${completed}/${journeys.length} completed`;
-  };
+  // Calculate total number of completed journeys
+  const completedJourneys = journeys.filter((journey) => journey.completed);
+  const completedCount = completedJourneys.length;
+  const totalCount = journeys.length;
 
   return (
     <VStack spacing={4} p={4}>
       <PageHeading
         title="Journeys"
         titleSize="24px"
-        description={journeys ? getProgressDescription(journeys) : ""}
+        description={
+          totalCount ? `${completedCount} / ${totalCount} completed` : ""
+        }
         showBackButton
       />
       {isLoading && <LoadingBox />}
-      {journeys && (
+      {journeys.length > 0 && (
         <VStack width="100%" spacing={4}>
-          {journeys.map((journey, index) => (
-            <JourneyCard key={index} {...journey} />
+          {journeys.map((journey) => (
+            <JourneyCard key={journey.id} {...journey} />
           ))}
         </VStack>
       )}
