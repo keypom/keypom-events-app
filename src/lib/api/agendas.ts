@@ -13,7 +13,7 @@ export type Agenda = {
   events: AgendaEvent[];
 };
 
-export const fetchAgenda: () => Promise<Agenda[]> = async () => {
+export const fetchAgenda: () => Promise<Agenda> = async () => {
   const [stringifiedAgenda] = await eventHelperInstance.viewCall({
     methodName: "get_agenda",
     args: {},
