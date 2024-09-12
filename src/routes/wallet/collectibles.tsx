@@ -84,20 +84,26 @@ export default function Collectibles() {
   const lockedItems =
     !data || isLoading || isError ? [] : data.unownedCollectibles;
 
+  // Filter out locked items that have the same drop_id as any unlocked item
+  const filteredLockedItems = lockedItems.filter(
+    (lockedItem) =>
+      !unlockedItems.some(
+        (unlockedItem) => unlockedItem.drop_id === lockedItem.drop_id,
+      ),
+  );
+
   return (
     <VStack spacing={4} p={4}>
       <PageHeading
         title="Collectibles"
         titleSize="24px"
-        description={`${unlockedItems.length}/${
-          lockedItems.length + unlockedItems.length
-        } found`}
+        description={`${unlockedItems.length}/${lockedItems.length} found`}
         showBackButton
       />
       {isLoading && <LoadingBox />}
-      {lockedItems.length + unlockedItems.length > 0 && (
+      {lockedItems.length > 0 && (
         <CollectiblesGrid
-          lockedItems={lockedItems}
+          lockedItems={filteredLockedItems}
           unlockedItems={unlockedItems}
         />
       )}
