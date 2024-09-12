@@ -23,6 +23,7 @@ export default function Claim() {
       if (split.length === 2) {
         dropId = split[1];
         scavId = split[0];
+        console.log("Scavenger drop: ", dropId, "Scavenger ID: ", scavId);
       }
 
       const dropInfo = await eventHelperInstance.viewCall({
