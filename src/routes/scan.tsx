@@ -44,7 +44,7 @@ export default function Scan() {
   return (
     <Box py={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
-      <VStack spacing={8} width="100%">
+      <VStack spacing={8} width="100%" transform="scale(calc(100dvh     ))">
         <Box width="100%" height="100%" position={"relative"} px={4}>
           <Image
             src={RedactedExpression}
@@ -59,7 +59,9 @@ export default function Scan() {
             transform="translateY(-50%)"
             zIndex={-1}
           />
-          <QrScanner handleScan={handleScan} />
+          <Box display={"flex"} justifyContent={"center"} alignItems="center">
+            <QrScanner handleScan={handleScan} />
+          </Box>
         </Box>
         <HStack
           width="100%"
