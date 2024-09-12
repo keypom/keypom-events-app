@@ -72,7 +72,11 @@ export default function Scan() {
             dropId: data,
             scavId,
           });
-          navigate(`/scan/${data}`);
+          if (isScavenger) {
+            navigate(`/scan/${scavId}%%${data}`);
+          } else {
+            navigate(`/scan/${data}`);
+          }
           break;
         case "food":
         case "merch":

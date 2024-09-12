@@ -17,9 +17,17 @@ export default function Claim() {
         return;
       }
 
+      const split = data.split("%%");
+      let dropId = split[0];
+      let scavId: string | null = null;
+      if (split.length === 2) {
+        dropId = split[1];
+        scavId = split[0];
+      }
+
       const dropInfo = await eventHelperInstance.viewCall({
         methodName: "get_drop_information",
-        args: { drop_id: data },
+        args: { drop_id: dropId },
       });
       console.log("Drop info: ", dropInfo);
       setReward(dropInfo);
