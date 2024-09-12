@@ -42,7 +42,7 @@ const mapOwnedJourneyToJourney = (drop: ExtClaimedDrop): Journey => {
     id: drop.drop_id, // Use drop ID as journey ID
     title: drop.name,
     description: `${foundCount} of ${totalCount} found`, // Shows pieces found
-    imageSrc: drop.image, // Assuming this field holds the image URL
+    imageSrc: drop.nft_metadata?.media || "", // Use media from nft_metadata for image
     steps,
     completed, // Add completed flag
   };
@@ -97,28 +97,37 @@ const fetchAccountData = async (secretKey: string) => {
     const userData = JSON.parse(decryptedMetadata);
 
     const accountId = recoveredAccount.account_id;
+    const allNFTs = await eventHelperInstance.getCachedNFTDrops();
     const ownedCollectibles: ExtClaimedDrop[] =
       await eventHelperInstance.viewCall({
         methodName: "get_claimed_nfts_for_account",
         args: { account_id: accountId },
       });
-    const ownedJourneys: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
-      methodName: "get_claimed_scavengers_for_account",
-      args: { account_id: accountId },
-    });
-    const allNFTs = await eventHelperInstance.getCachedNFTDrops();
     const unownedCollectibles = allNFTs.filter(
       (nft) => nft.scavenger_hunt === null,
     );
 
+    const ownedJourneys: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
+      methodName: "get_claimed_scavengers_for_account",
+      args: { account_id: accountId },
+    });
     const unownedJourneys = allNFTs.filter(
       (nft) => nft.scavenger_hunt !== null,
+    );
+    // Filter out locked items that have the same drop_id as any unlocked item
+    const filteredUnownedJourneys = unownedJourneys.filter(
+      (journey) =>
+        !ownedJourneys.some(
+          (unlockedItem) => unlockedItem.drop_id === journey.drop_id,
+        ),
     );
 
     // Consolidate owned and unowned journeys
     const allJourneys: Journey[] = [
       ...ownedJourneys.map((journey) => mapOwnedJourneyToJourney(journey)),
-      ...unownedJourneys.map((journey) => mapUnownedJourneyToJourney(journey)),
+      ...filteredUnownedJourneys.map((journey) =>
+        mapUnownedJourneyToJourney(journey),
+      ),
     ];
     console.log("Journeys: ", allJourneys);
 

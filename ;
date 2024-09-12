@@ -185,7 +185,7 @@ export function Hidden({
               top={0}
             />
             <Box zIndex={1} position="relative" width="100%">
-              <span>{ctaMessage()}</span>
+              <span>Swipe to reveal and claim</span>
               <ArrowIcon
                 width={24}
                 direction="right"

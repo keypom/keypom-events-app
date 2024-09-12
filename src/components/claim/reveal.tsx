@@ -4,9 +4,28 @@ import eventHelperInstance, { ExtDropData } from "@/lib/event";
 
 interface RevealProps {
   foundItem: ExtDropData;
+  numFound: number;
+  numRequired: number;
 }
 
-export function Reveal({ foundItem }: RevealProps) {
+export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
+  const amountToDisplay = eventHelperInstance.yoctoToNearWithMinDecimals(
+    foundItem.amount || "0",
+  );
+
+  // Determine the number of decimal places
+  const split = amountToDisplay.split(".");
+  const decimalLength = split.length > 1 ? split[1].length : 0;
+
+  // Adjust font size based on the number of decimals
+  let fontSize;
+  if (decimalLength === 0) {
+    fontSize = "108px";
+  } else if (decimalLength <= 2) {
+    fontSize = "78px";
+  } else {
+    fontSize = "68px";
+  }
   return (
     <Box mt="64px" position="relative" p={4}>
       <Box position="relative">
@@ -67,14 +86,12 @@ export function Reveal({ foundItem }: RevealProps) {
             {/* Display the token amount */}
             <Heading
               as="h3"
-              fontSize="108px"
+              fontSize={fontSize}
               fontWeight={"bold"}
               textAlign={"center"}
               color={"white"}
             >
-              {eventHelperInstance.yoctoToNearWith4Decimals(
-                foundItem.amount || "0",
-              )}
+              {amountToDisplay}
             </Heading>
             <Heading
               as="h4"

@@ -96,6 +96,26 @@ class EventJS {
   yoctoToNear = (yocto: string) =>
     nearAPI.utils.format.formatNearAmount(yocto, 4);
 
+  yoctoToNearWithMinDecimals = (yoctoString: string) => {
+    const divisor = 1e24;
+    const near =
+      (BigInt(yoctoString) / BigInt(divisor)).toString() +
+      "." +
+      (BigInt(yoctoString) % BigInt(divisor)).toString().padStart(24, "0");
+
+    const split = near.split(".");
+    const integerPart = split[0];
+    let decimalPart = split[1].substring(0, 4);
+
+    // Remove trailing zeros in the decimal part, but keep meaningful ones
+    decimalPart = decimalPart.replace(/0+$/, "");
+
+    // If there's no remaining decimal part after removing zeros, return only the integer part
+    return decimalPart.length > 0
+      ? `${integerPart}.${decimalPart}`
+      : integerPart;
+  };
+
   yoctoToNearWith4Decimals = (yoctoString: string) => {
     const divisor = 1e24;
     const near =
