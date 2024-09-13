@@ -6,6 +6,8 @@ import {
   FinalExecutionStatus,
   FinalExecutionOutcome,
 } from "near-api-js/lib/providers";
+import { UserData } from "@/hooks/useAccountData";
+import { getPubFromSecret } from "@keypom/core";
 
 let instance: EventJS | undefined;
 
@@ -19,6 +21,11 @@ function uuidv4() {
       (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
     ).toString(16),
   );
+}
+
+export interface AttendeeTicketData {
+  ticket: string;
+  userData: UserData;
 }
 
 export interface ExtClaimedDrop {
@@ -161,6 +168,12 @@ class EventJS {
       }
       return false;
     }
+  };
+
+  getPubFromSecret = (secretKey: string) => {
+    const strippedSecretKey = secretKey.replace("ed25519:", "");
+    const pubKey = getPubFromSecret(`ed25519:${strippedSecretKey}`);
+    return pubKey;
   };
 
   deleteConferenceDrop = async ({
@@ -312,43 +325,53 @@ class EventJS {
     accountId?: string;
   }) => {
     // Fetch the drop information
-    const claimedDropInfo = await eventHelperInstance.viewCall({
+    const dropInfo = await eventHelperInstance.viewCall({
       methodName: "get_drop_information",
       args: { drop_id: dropId },
     });
+    console.log("Drop Info in scan: ", dropInfo);
+
+    if (!dropInfo) {
+      throw new Error("Drop not found");
+    }
 
     // Fetch claimed drops for the account
-    const claimsForAccount = await eventHelperInstance.viewCall({
-      methodName: "get_claimed_drops_for_account",
-      args: { account_id: accountId, drop_id: dropId },
-    });
-
-    const curDropClaimData = claimsForAccount.find(
-      (drop) => drop.drop_id === dropId,
-    );
-    console.log("Cur drop claim data: ", curDropClaimData);
-
+    let curClaim: ExtClaimedDrop | null = null;
+    try {
+      curClaim = await eventHelperInstance.viewCall({
+        methodName: "get_claimed_drop_for_account",
+        args: { account_id: accountId, drop_id: dropId },
+      });
+      console.log("Cur Claim: ", curClaim);
+    } catch (e) {
+      console.log("Error: ", e);
+    }
     let alreadyClaimed = false;
+    // At this point the drop must exist since if it didnt we panick
+    // Now, we need to check if we have already claimed the drop
+    if (curClaim) {
+      // If there is no scavenger hunt, then we already claimed so panick
+      const neededScavengerIds = curClaim.needed_scavenger_ids;
+      if (!neededScavengerIds) {
+        alreadyClaimed = true;
+      } else {
+        if (!scavId) {
+          throw new Error("No scavenger ID provided");
+        }
 
-    // If drop has no scavenger hunt, check if it was already claimed
-    if (
-      !claimedDropInfo?.base?.scavenger_hunt ||
-      claimedDropInfo === undefined
-    ) {
-      alreadyClaimed = curDropClaimData !== undefined;
-    } else {
-      // Validate scavenger ID
-      const validScavengerIds = claimedDropInfo.base.scavenger_hunt.map(
-        (item) => item.piece,
-      );
-      const isValidScavengerId = validScavengerIds.includes(scavId);
-      if (!isValidScavengerId) {
-        throw new Error("Invalid scavenger piece");
+        // Theres some scavenger hunts so we need to make sure that the one we are trying to claim is valid
+        const isValidScavengerId = neededScavengerIds
+          .map((item) => item.piece)
+          .includes(scavId);
+
+        if (!isValidScavengerId) {
+          throw new Error("Invalid scavenger piece");
+        }
+
+        // IF the scavenger ID is valid, check if it has already been claimed
+        const piecesToCheck = curClaim.found_scavenger_ids || [];
+        alreadyClaimed = piecesToCheck.includes(scavId);
       }
-
-      // Check if the scavenger piece has already been claimed
-      const piecesToCheck = curDropClaimData?.found_scavenger_ids || [];
-      alreadyClaimed = piecesToCheck.includes(scavId);
     }
 
     if (alreadyClaimed) {

@@ -1,64 +1,103 @@
 import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
-import { useAccountData } from "@/hooks/useAccountData";
 import eventHelperInstance from "@/lib/event";
 import { Box, Input, Button, ButtonGroup } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Regex to validate account ID (NEAR format: lowercase, alphanumeric, _, -, no capital letters)
+const accountIdPattern = /^([a-z\d]+[\-_])*[a-z\d]+$/;
+
+// Maximum length for username (total 64 - length of factory contract - 1 for the dot)
+const maxUsernameLength = 64 - KEYPOM_TOKEN_FACTORY_CONTRACT.length - 1;
+
 export function SetRecipient({
+  curAccountId,
   receiver,
   setReceiver,
   setStep,
 }: {
+  curAccountId: string | undefined;
   receiver: string;
   setReceiver: (value: string) => void;
   setStep: (value: string) => void;
 }) {
-  const { data, isLoading, isError } = useAccountData();
-  const displayName = isLoading || isError ? "------" : data?.displayAccountId;
-
   const navigate = useNavigate();
 
-  const [isValidUsername, setIsValidUsername] = useState<boolean>(false);
+  const [isValidUsername, setIsValidUsername] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [isChecking, setIsChecking] = useState<boolean>(false); // For checking username existence
 
-  useEffect(() => {
+  // Handle invalid characters and length while typing
+  const handleInputChange = (value: string) => {
+    const lowerCaseValue = value.toLowerCase();
+    setReceiver(lowerCaseValue);
+
+    if (!lowerCaseValue) {
+      setIsValidUsername(false);
+      setError("");
+      return;
+    }
+
+    if (lowerCaseValue.length > maxUsernameLength) {
+      setIsValidUsername(false);
+      setError(`Username must be less than ${maxUsernameLength} characters.`);
+      return;
+    }
+
+    if (!accountIdPattern.test(lowerCaseValue)) {
+      setIsValidUsername(false);
+      setError("The username contains invalid characters");
+      return;
+    }
+
     setIsValidUsername(true);
     setError("");
-  }, [receiver]);
+  };
 
-  const handleClick = async () => {
-    if (receiver === "") {
-      setIsValidUsername(false);
-      setError("");
-      return;
-    }
+  // Handle blur or "Continue" click - check username existence
+  const handleCheckUsername = async () => {
+    if (!isValidUsername) return;
 
-    if (receiver === displayName) {
-      setIsValidUsername(false);
-      setError("You cannot send tokens to your own account.");
-      return;
-    }
-
+    setIsChecking(true); // Indicate that the check is in progress
     try {
-      const isValid = await eventHelperInstance.accountExists(
+      const doesExist = await eventHelperInstance.accountExists(
         `${receiver}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`,
       );
-      if (!isValid) {
+      console.log("doesExist: ", doesExist);
+      if (!doesExist) {
         setError("User does not exist.");
         setIsValidUsername(false);
-        return;
+      } else {
+        setError("");
+        setIsValidUsername(true);
       }
-      setIsValidUsername(true);
-      setError("");
+      return doesExist;
     } catch (e) {
       console.log(e);
       setIsValidUsername(false);
       setError("An error occurred while validating the account.");
+      return false;
+    } finally {
+      setIsChecking(false); // Reset checking state
+    }
+  };
+
+  const handleClick = async () => {
+    if (!curAccountId) return;
+
+    console.log("curAccountId: ", curAccountId);
+    if (curAccountId === `${receiver}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`) {
+      setIsValidUsername(false);
+      setError("You cannot send tokens to yourself.");
       return;
     }
 
-    setStep("amount");
+    if (isValidUsername && !isChecking) {
+      const doesExist = await handleCheckUsername();
+      if (doesExist) {
+        setStep("amount");
+      }
+    }
   };
 
   return (
@@ -82,15 +121,15 @@ export function SetRecipient({
           height="54px"
           padding="1rem 0"
           autoFocus
-          onChange={(e) => setReceiver(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)} // Check invalid characters as user types
           _placeholder={{
             color: "black",
             opacity: 0.5,
           }}
           placeholder="username"
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              setStep("amount");
+            if (e.key === "Enter" && isValidUsername) {
+              handleClick();
             }
           }}
         />
@@ -100,15 +139,15 @@ export function SetRecipient({
           CANCEL
         </Button>
         <Button
-          isDisabled={!isValidUsername || receiver === ""}
+          isDisabled={!isValidUsername || receiver === "" || isChecking}
           _disabled={{
             opacity: 0.5,
             cursor: "not-allowed",
           }}
           variant="primary"
-          onClick={() => handleClick()}
+          onClick={handleClick}
         >
-          CONTINUE
+          {isChecking ? "Checking..." : "CONTINUE"}
         </Button>
       </ButtonGroup>
       {error && (

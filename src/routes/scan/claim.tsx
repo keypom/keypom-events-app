@@ -67,5 +67,7 @@ export default function Claim() {
     );
   }
 
-  return <Reveal foundItem={reward} />;
+  return (
+    <Reveal foundItem={reward} numFound={numFound} numRequired={numRequired} />
+  );
 }

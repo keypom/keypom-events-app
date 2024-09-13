@@ -2,6 +2,18 @@ import nacl from "tweetnacl";
 import * as naclUtil from "tweetnacl-util"; // Import the utilities properly
 import bs58 from "bs58";
 
+// Utility function to decode base64 and parse JSON
+const decodeAndParseBase64 = (base64String: string) => {
+  // Step 1: Decode the base64 string to get the JSON string
+  const jsonString = Buffer.from(base64String, "base64").toString("utf-8");
+
+  // Step 2: Parse the JSON string to get back the original object
+  const jsonObject = JSON.parse(jsonString);
+
+  // Step 3: Return the parsed object
+  return jsonObject;
+};
+
 // Helper to decode NEAR base58 ed25519 secret key
 function decodeEd25519SecretKey(secretKeyString: string): Uint8Array {
   const keyWithoutPrefix = secretKeyString.replace("ed25519:", "");
@@ -147,4 +159,9 @@ function decryptStoredData(ed25519Keypair: string, storedDataJSON: string) {
   return decryptedMessage;
 }
 
-export { encryptAndStoreData, decodeEd25519SecretKey, decryptStoredData };
+export {
+  encryptAndStoreData,
+  decodeEd25519SecretKey,
+  decryptStoredData,
+  decodeAndParseBase64,
+};

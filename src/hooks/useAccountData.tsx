@@ -4,18 +4,11 @@ import eventHelperInstance, { ExtClaimedDrop, ExtDropData } from "@/lib/event";
 import { decryptStoredData } from "@/lib/helpers/crypto";
 import { RecoveredAccountInfo } from "@/lib/helpers/events";
 import { useEventCredentials } from "@/stores/event-credentials";
-import { getPubFromSecret } from "@keypom/core";
 import { useQuery } from "@tanstack/react-query";
-
-export interface UserData {
-  name: string;
-  email: string;
-}
 
 export interface AccountData {
   accountId: string;
   displayAccountId: string;
-  userData: UserData;
   ownedCollectibles: ExtClaimedDrop[];
   unownedCollectibles: ExtDropData[];
   journeys: Journey[];
@@ -72,7 +65,7 @@ const mapUnownedJourneyToJourney = (drop: ExtDropData): Journey => {
 
 const fetchAccountData = async (secretKey: string) => {
   try {
-    const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
+    const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
 
     const recoveredAccount: RecoveredAccountInfo =
       await eventHelperInstance.viewCall({
@@ -85,16 +78,6 @@ const fetchAccountData = async (secretKey: string) => {
     const tokensAvailable = eventHelperInstance.yoctoToNearWith4Decimals(
       recoveredAccount.ft_balance,
     );
-
-    const attendeeKeyInfo = await eventHelperInstance.viewCall({
-      methodName: "get_key_information",
-      args: { key: pubKey },
-    });
-    const decryptedMetadata = decryptStoredData(
-      secretKey,
-      attendeeKeyInfo.metadata,
-    );
-    const userData = JSON.parse(decryptedMetadata);
 
     const accountId = recoveredAccount.account_id;
     const allNFTs = await eventHelperInstance.getCachedNFTDrops();
@@ -133,7 +116,6 @@ const fetchAccountData = async (secretKey: string) => {
 
     return {
       accountId,
-      userData,
       ownedCollectibles,
       unownedCollectibles,
       journeys: allJourneys,

@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Ticket() {
   const navigate = useNavigate();
-  const { secretKey } = useTicketClaimParams();
+  const { secretKey, userData } = useTicketClaimParams();
   const { setEventCredentials } = useEventCredentials();
   const { data, isLoading, isError, error } = useConferenceData(secretKey);
 
@@ -34,13 +34,23 @@ export default function Ticket() {
 
   // Redirect if ticket has been used
   if (keyInfo.has_scanned === true) {
-    setEventCredentials(secretKey);
-    navigate("/welcome");
+    setEventCredentials(secretKey, userData);
+    if (keyInfo.account_id === null) {
+      navigate("/welcome");
+    } else {
+      navigate("/");
+    }
   }
 
   switch (account_type) {
     case "Basic":
-      return <TicketQRPage isLoading={isLoading} secretKey={secretKey} />;
+      return (
+        <TicketQRPage
+          isLoading={isLoading}
+          secretKey={secretKey}
+          userData={userData}
+        />
+      );
     case "Sponsor":
       return <div>Sponsor</div>;
     case "Admin":

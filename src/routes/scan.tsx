@@ -88,7 +88,7 @@ export default function Scan() {
           break;
         default:
           console.error("Unhandled QR data type:", type);
-          throw new Error("Invalid data type");
+          throw new Error("Unrecognized QR type");
       }
 
       // If the scan was successful, set success status

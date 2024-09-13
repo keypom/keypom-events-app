@@ -77,6 +77,7 @@ export default function Send() {
   const stepComponents = {
     [STEPS.RECIPIENT]: (
       <SetRecipient
+        curAccountId={data?.accountId}
         receiver={receiver}
         setReceiver={setReceiver}
         setStep={setStep}

@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import { QrScanner } from "@/components/scanner/qr-scanner";
 import { AttendeeKeyInfo, TicketTypeInfo } from "@/lib/helpers/events";
 import eventHelperInstance from "@/lib/event";
-import { getPubFromSecret } from "@keypom/core";
 import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 
 interface StateRefObject {
@@ -47,7 +46,7 @@ export default function Scanner() {
 
   const handleScanResult = async (secretKey: string) => {
     try {
-      const pubKey = getPubFromSecret(secretKey);
+      const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
       const keyInfo: AttendeeKeyInfo | undefined =
         await eventHelperInstance.viewCall({
           methodName: "get_key_information",

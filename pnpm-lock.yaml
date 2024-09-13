@@ -38,9 +38,6 @@ importers:
       '@yudiel/react-qr-scanner':
         specifier: ^2.0.8
         version: 2.0.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      bn.js:
-        specifier: ^5.2.1
-        version: 5.2.1
       bs58:
         specifier: ^6.0.0
         version: 6.0.0
@@ -50,6 +47,9 @@ importers:
       framer-motion:
         specifier: ^11.3.28
         version: 11.3.28(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      headbreaker:
+        specifier: ^3.0.0
+        version: 3.0.0
       luxon:
         specifier: ^3.5.0
         version: 3.5.0
@@ -2837,6 +2837,9 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  headbreaker@3.0.0:
+    resolution: {integrity: sha512-CTpmUsgGflDOurrbRvjpuhBd0Cz6pHx82z29X0j0+0EUL8ikqTZqRyP205Qt/DN6eFDhXvmrgXkrug9z733Vtw==}
+
   headers-polyfill@4.0.3:
     resolution: {integrity: sha512-IScLbePpkvO846sIwOtOTDjutRMWdXdJmXdMvk6gCBHxFO8d+QKOQedyZSxFTTFYRSmlgSTDtXqqq4pcenBXLQ==}
 
@@ -3098,6 +3101,9 @@ packages:
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
+
+  konva@6.0.0:
+    resolution: {integrity: sha512-YTwmtz3KzbzdC0KDRHWLzuk0KXB4NUdaQqytrxacXE1C39V6wCk7Nnu0wgq+GdGbG6m8A1qiEU9TSJ19qdIzDw==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -7704,6 +7710,10 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
+  headbreaker@3.0.0:
+    optionalDependencies:
+      konva: 6.0.0
+
   headers-polyfill@4.0.3: {}
 
   hmac-drbg@1.0.1:
@@ -7939,6 +7949,9 @@ snapshots:
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
+
+  konva@6.0.0:
+    optional: true
 
   leven@3.1.0: {}
 

@@ -2,7 +2,6 @@ import eventHelperInstance from "@/lib/event";
 import { AttendeeKeyInfo, TicketTypeInfo } from "@/lib/helpers/events";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { TokenAsset } from "@/types/common";
-import { getPubFromSecret } from "@keypom/core";
 import { useQuery } from "@tanstack/react-query";
 
 export interface ConferenceData {
@@ -13,7 +12,8 @@ export interface ConferenceData {
 
 const fetchConferenceData = async (secretKey: string) => {
   try {
-    const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
+    const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
+    console.log("pubKey", pubKey);
     const keyInfo: AttendeeKeyInfo | undefined =
       await eventHelperInstance.viewCall({
         methodName: "get_key_information",

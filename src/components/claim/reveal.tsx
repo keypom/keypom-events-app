@@ -1,6 +1,7 @@
 import { Box, Heading, Image, VStack } from "@chakra-ui/react";
 import Boxes from "/assets/claim-blocks.webp";
 import eventHelperInstance, { ExtDropData } from "@/lib/event";
+import { ImageReveal } from "./reward-image";
 
 interface RevealProps {
   foundItem: ExtDropData;
@@ -60,15 +61,12 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
             justifyContent="center"
           >
             {/* Display the NFT image */}
-
-            <Image
-              src={foundItem.nft_metadata.media}
-              width="250px"
-              height="250px"
-              aspectRatio={"1/1"}
-              objectFit="cover"
-              borderRadius="md"
+            <ImageReveal
+              imageSrc="https://azure-used-penguin-119.mypinata.cloud/ipfs/bafybeifrcuygwadhrsowc4ngbs2t6n3gx2kwununa27v7wplr5ou2cjfka"
+              numFound={1}
+              numRequired={4}
             />
+
             <Heading
               as="h4"
               width={"250px"}

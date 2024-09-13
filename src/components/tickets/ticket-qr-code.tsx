@@ -7,7 +7,6 @@ import {
   Skeleton,
   VStack,
 } from "@chakra-ui/react";
-import { getPubFromSecret } from "@keypom/core";
 import { useEffect } from "react";
 
 import { IconBox } from "@/components/dashboard/icon-box";
@@ -18,22 +17,26 @@ import { AttendeeKeyInfo } from "@/lib/helpers/events";
 import { useNavigate } from "react-router-dom";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
+import { UserData } from "@/hooks/useAccountData";
 
 interface TicketQRCodeProps {
   isLoading: boolean;
   secretKey: string;
+  userData: UserData;
 }
 
 export default function TicketQRCode({
   isLoading,
   secretKey,
+  userData,
 }: TicketQRCodeProps) {
   const navigate = useNavigate();
   const { setEventCredentials } = useEventCredentials();
   // Effect to check for QR scan and reload if necessary
   useEffect(() => {
     const checkForQRScanned = async () => {
-      const pubKey = getPubFromSecret(`ed25519:${secretKey}`);
+      console.log("Checking for QR scanned: ", secretKey);
+      const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
       const keyInfo: AttendeeKeyInfo = await eventHelperInstance.viewCall({
         methodName: "get_key_information",
         args: { key: pubKey },
@@ -44,8 +47,12 @@ export default function TicketQRCode({
       }
 
       if (keyInfo.has_scanned === true) {
-        setEventCredentials(secretKey);
-        navigate("/");
+        setEventCredentials(secretKey, userData);
+        if (keyInfo.account_id === null) {
+          navigate("/welcome");
+        } else {
+          navigate("/");
+        }
       }
     };
 
