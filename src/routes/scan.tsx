@@ -119,7 +119,7 @@ export default function Scan() {
   return (
     <Box py={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
-      <VStack spacing={8} width="100%">
+      <VStack spacing={8} width="100%" transform="scale(calc(100dvh     ))">
         <Box width="100%" height="100%" position={"relative"} px={4}>
           <Image
             src={RedactedExpression}
@@ -137,7 +137,9 @@ export default function Scan() {
           {isLoading && <LoadingBox />}
           {isError && <ErrorBox message={`Error: ${error?.message}`} />}{" "}
           {/* Error Handling */}
+          <Box display={"flex"} justifyContent={"center"} alignItems="center">
           <QrScanner handleScan={handleScan} scanStatus={scanStatus} />
+          </Box>
         </Box>
         <HStack
           width="100%"
