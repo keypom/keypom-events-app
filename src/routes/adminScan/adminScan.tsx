@@ -46,9 +46,8 @@ export default function Scanner() {
   }, [ticketsToScan]);
 
   const handleScanResult = async (qrData: string) => {
-    console.log("Scan result", qrData);
-    const { ticket: secretKey } = decodeAndParseBase64(qrData);
-    console.log("Scan result", secretKey);
+    const { ticket: secretKey, userData } = decodeAndParseBase64(qrData);
+    console.log(userData);
     try {
       const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
       const keyInfo: AttendeeKeyInfo | undefined =
@@ -56,7 +55,6 @@ export default function Scanner() {
           methodName: "get_key_information",
           args: { key: pubKey },
         });
-      console.log("Scan result", keyInfo);
       if (keyInfo) {
         // Check if the ticket has already been scanned
         if (stateRef.current.ticketsToScan.includes(secretKey)) {
