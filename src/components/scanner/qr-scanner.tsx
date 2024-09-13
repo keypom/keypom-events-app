@@ -116,6 +116,8 @@ export const QrScanner = ({
       <Box
         width="100%"
         height="100%"
+        maxWidth="300px"
+        maxHeight="300px"
         display="flex"
         justifyContent="center"
         alignItems="center"
@@ -140,6 +142,8 @@ export const QrScanner = ({
       animate={showAnimation ? "open" : "closed"}
       width="100%"
       height="100%"
+      maxWidth="300px"
+      maxHeight="300px"
     >
       <Scanner
         onScan={onScan}
