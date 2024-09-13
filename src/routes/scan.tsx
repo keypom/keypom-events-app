@@ -138,7 +138,7 @@ export default function Scan() {
           {isError && <ErrorBox message={`Error: ${error?.message}`} />}{" "}
           {/* Error Handling */}
           <Box display={"flex"} justifyContent={"center"} alignItems="center">
-          <QrScanner handleScan={handleScan} scanStatus={scanStatus} />
+            <QrScanner handleScan={handleScan} scanStatus={scanStatus} />
           </Box>
         </Box>
         <HStack
