@@ -1,13 +1,97 @@
 import { Box, Heading, Image, VStack } from "@chakra-ui/react";
-
 import Boxes from "/assets/claim-blocks.webp";
+import eventHelperInstance, { ExtDropData } from "@/lib/event";
+import { ImageSplit } from "./reward-image";
+import { TokenScavRewardImage } from "../wallet/journeys/token-scav-image";
 
 interface RevealProps {
-  foundItem: string;
-  itemCount?: number;
+  foundItem: ExtDropData;
+  numFound: number | undefined;
+  numRequired: number | undefined;
 }
 
-export function Reveal({ foundItem, itemCount }: RevealProps) {
+export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
+  const amountToDisplay = eventHelperInstance.yoctoToNearWithMinDecimals(
+    foundItem.amount || "0",
+  );
+
+  // Determine the number of decimal places
+  const split = amountToDisplay.split(".");
+  const decimalLength = split.length > 1 ? split[1].length : 0;
+  const isScavenger = numFound !== undefined && numRequired !== undefined;
+  const rewardMessage = () => {
+    if (isScavenger) {
+      if (numFound === numRequired) {
+        return "Claimed";
+      }
+
+      return `${numRequired - numFound} Left`;
+    }
+
+    return "Claimed";
+  };
+
+  // Adjust font size based on the number of decimals
+  let fontSize;
+  if (decimalLength === 0) {
+    fontSize = "108px";
+  } else if (decimalLength <= 2) {
+    fontSize = "78px";
+  } else {
+    fontSize = "68px";
+  }
+
+  const rewardComponent = () => {
+    // For NFTs we can just use the image split component
+    if (foundItem.type === "nft" && foundItem.nft_metadata) {
+      return (
+        <Box
+          bg="bg.primary"
+          p={4}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <ImageSplit numPieces={numRequired || 1} numFound={numFound || 1}>
+            <Box bg="gray.200" borderRadius="12px">
+              <Image
+                src={foundItem.nft_metadata.media}
+                alt="Masked Image"
+                objectFit="cover"
+              />
+            </Box>
+          </ImageSplit>
+          <Heading
+            as="h4"
+            width={"250px"}
+            fontWeight={"normal"}
+            textAlign={"center"}
+            color={"brand.400"}
+            fontSize="18px"
+            mt={4}
+          >
+            {foundItem.nft_metadata.title}
+          </Heading>
+        </Box>
+      );
+    }
+
+    // For tokens we can use the token image component
+    return (
+      <TokenScavRewardImage
+        tokenAmount={amountToDisplay}
+        boxWidth="200px"
+        boxHeight="250px"
+        bgColor="black"
+        tokenFontSize={fontSize}
+        labelFontSize="52px"
+        tokenColor="white"
+        labelColor="brand.400"
+      />
+    );
+  };
+
   return (
     <Box mt="64px" position="relative" p={4}>
       <Box position="relative">
@@ -24,33 +108,15 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
       </Box>
       <VStack
         position="absolute"
-        top="50%"
+        top="45%"
         left="50%"
         transform="translate(-50%, -50%)"
         width={"100%"}
         p={4}
         spacing={8}
       >
-        <Box bg="bg.primary" p={4}>
-          <Heading
-            as="h3"
-            fontSize="108px"
-            fontWeight={"bold"}
-            textAlign={"center"}
-            color={"white"}
-          >
-            {itemCount}
-          </Heading>
-          <Heading
-            as="h4"
-            fontWeight={"normal"}
-            textAlign={"center"}
-            color={"brand.400"}
-            fontSize="52px"
-          >
-            {foundItem}
-          </Heading>
-        </Box>
+        {rewardComponent()}
+
         <VStack alignItems="center" gap={0} width={"100%"}>
           <Heading
             as="h3"
@@ -63,7 +129,7 @@ export function Reveal({ foundItem, itemCount }: RevealProps) {
             textTransform={"uppercase"}
             px={4}
           >
-            Claimed
+            {rewardMessage()}
           </Heading>
         </VStack>
       </VStack>

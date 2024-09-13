@@ -163,7 +163,7 @@ export function Dashboard() {
         methodName: "ft_balance_of",
         args: { account_id: recoveredAccount.account_id },
       });
-      setTokensAvailable(eventHelperInstance.yoctoToNearWith4Decimals(tokens));
+      setTokensAvailable(eventHelperInstance.yoctoToNearWith2Decimals(tokens));
 
       const drops = await eventHelperInstance.viewCall({
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
@@ -236,7 +236,7 @@ export function Dashboard() {
         ? item.base.scavenger_hunt.length
         : "None",
       reward: isTokenDrop(item) ? (
-        eventHelperInstance.yoctoToNearWith4Decimals(item.amount)
+        eventHelperInstance.yoctoToNearWith2Decimals(item.amount)
       ) : (
         <Image
           alt={`Event image for ${item.base.id}`}

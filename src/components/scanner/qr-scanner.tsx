@@ -1,7 +1,7 @@
 import { CameraSwitchButton } from "@/components/scanner/camera-switch-button";
 import { ViewFinder } from "@/components/scanner/view-finder";
 import { isTestEnv } from "@/constants/common";
-import { Box, useToast } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -10,23 +10,18 @@ import { LoadingOverlay } from "./loading-overlay";
 
 export const QrScanner = ({
   handleScan,
+  scanStatus,
 }: {
   handleScan: (value: string) => Promise<{ message: string } | void>;
+  scanStatus: "success" | "error" | undefined;
 }) => {
   const [selectedDevice, setSelectedDevice] = useState<string | undefined>(
     undefined,
   );
   const [isOnCooldown, setIsOnCooldown] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
-  const [scanStatus, setScanStatus] = useState<"success" | "error" | undefined>(
-    undefined,
-  );
-  const [statusMessage, setStatusMessage] = useState<string | undefined>(
-    undefined,
-  );
   const [showAnimation, setShowAnimation] = useState(false);
   const devices = useDevices();
-  const toast = useToast();
 
   const variants = {
     open: { x: [0, -50, 50, -50, 50, -50, 50, 0] },
@@ -34,16 +29,14 @@ export const QrScanner = ({
   };
   const onScan = async (result) => {
     if (isOnCooldown || isScanning) return;
-    setScanStatus(undefined); // Reset status
     setIsScanning(true);
     try {
       const value = result[0].rawValue;
-      const response = await handleScan(value);
+      await handleScan(value);
 
-      onSuccess(response);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      onError(error);
+      console.error(error);
     } finally {
       setIsScanning(false);
       enableCooldown();
@@ -63,35 +56,6 @@ export const QrScanner = ({
       devices.findIndex((device) => device.deviceId === selectedDevice) || 0;
     setSelectedDevice(devices[currentIndex + (1 % devices.length)]?.deviceId);
   };
-
-  const onError = (error: { message: string }) => {
-    setShowAnimation(true);
-    setScanStatus("error");
-    setStatusMessage(error.message);
-  };
-
-  const onSuccess = (result: { message: string } | void) => {
-    setScanStatus("success");
-    if (result) {
-      setStatusMessage(result.message);
-    }
-  };
-
-  useEffect(() => {
-    if (scanStatus) {
-      toast({
-        title: scanStatus === "success" ? "Success" : "Error",
-        description: statusMessage,
-        status: scanStatus,
-        duration: 5000,
-        isClosable: true,
-      });
-      // Reset the status after showing the message
-      setTimeout(() => {
-        setScanStatus(undefined);
-      }, 5000);
-    }
-  }, [scanStatus, statusMessage, toast]);
 
   // DO NOT REMOVE: Exposes the triggerTestScan function to the window in test environment
   useEffect(() => {

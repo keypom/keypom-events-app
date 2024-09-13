@@ -4,11 +4,13 @@ import { LatestAlert } from "@/components/alerts/latest-alert";
 import { PageHeading } from "@/components/ui/page-heading";
 import { WalletActions } from "@/components/wallet/wallet-actions";
 import { useAccountData } from "@/hooks/useAccountData";
+import { useEventCredentials } from "@/stores/event-credentials";
 
 export default function Me() {
+  const { userData } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
 
-  const accountId = isLoading || isError ? "------" : data?.accountId;
+  const displayName = isLoading || isError ? "------" : data?.displayAccountId;
 
   if (isError) {
     console.error("Error loading account data: ", error);
@@ -17,9 +19,9 @@ export default function Me() {
   return (
     <VStack spacing={4} pt={4}>
       <PageHeading
-        title={"No-Name Profile"}
+        title={`Welcome ${userData.name}`}
         titleSize="24px"
-        description={`@${accountId}`}
+        description={`Username: @${displayName}`}
       />
       <WalletActions />
       <LatestAlert />

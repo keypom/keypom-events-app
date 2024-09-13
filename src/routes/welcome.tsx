@@ -1,9 +1,8 @@
 import { NotFound404 } from "@/components/dashboard/not-found-404";
-import { BoxWithShape } from "@/components/tickets/box-with-shape";
+import { PageHeading } from "@/components/ui/page-heading";
 import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import { useConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
-import keypomInstance from "@/lib/keypom";
 import { useEventCredentials } from "@/stores/event-credentials";
 import {
   Box,
@@ -17,59 +16,20 @@ import {
   Image,
   Input,
   ListItem,
-  Skeleton,
   Spinner,
   Text,
   UnorderedList,
-  useMediaQuery,
-  useToast,
   VStack,
 } from "@chakra-ui/react";
-import { accountExists, getPubFromSecret } from "@keypom/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const sizeConfig = {
-  img: {
-    base: { borderRadius: "8px", h: "80px" },
-    md: { borderRadius: "12px", h: "100px" },
-    lg: { borderRadius: "16px", h: "120px" },
-  },
-  font: {
-    base: {
-      h1: "24px",
-      h2: "20px",
-      h3: "16px",
-      button: "16px",
-    },
-    md: {
-      h1: "28px",
-      h2: "22px",
-      h3: "18px",
-      button: "18px",
-    },
-    lg: {
-      h1: "32px",
-      h2: "24px",
-      h3: "20px",
-      button: "20px",
-    },
-  },
-};
+// Full Account ID regex
+const accountIdPattern =
+  /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
 
-const getFontSize = (isLargerThan768, isLargerThan1024) => {
-  if (isLargerThan1024) return sizeConfig.font.lg;
-  if (isLargerThan768) return sizeConfig.font.md;
-  return sizeConfig.font.base;
-};
-
-const getImgSize = (isLargerThan768, isLargerThan1024) => {
-  if (isLargerThan1024) return sizeConfig.img.lg;
-  if (isLargerThan768) return sizeConfig.img.md;
-  return sizeConfig.img.base;
-};
-
-const accountAddressPatternNoSubaccount = /^([a-z\d]+[-_])*[a-z\d]+$/;
+// Maximum length for username (total 64 - length of factory contract - 1 for the dot)
+const maxUsernameLength = 64 - KEYPOM_TOKEN_FACTORY_CONTRACT.length - 1;
 
 export default function WelcomePage() {
   const { secretKey } = useEventCredentials();
@@ -77,11 +37,9 @@ export default function WelcomePage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [isValidUsername, setIsValidUsername] = useState<boolean>(true);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>(""); // Error message state variable
   const [isClaiming, setIsClaiming] = useState<boolean>(false);
-  const toast = useToast();
-
-  const [isLargerThan768] = useMediaQuery("(min-height: 768px)");
-  const [isLargerThan1024] = useMediaQuery("(min-height: 1024px)");
 
   if (isError) {
     return <NotFound404 header="Error" subheader={error?.message} />;
@@ -98,31 +56,49 @@ export default function WelcomePage() {
     );
   }
 
-  const { ticketInfo, dropInfo, tokenInfo, keyInfo, eventInfo } = data!;
-  const maxUses = dropInfo.max_key_uses;
-  const usesRemaining = keyInfo.uses_remaining;
-  const curStep = maxUses - usesRemaining + 1;
+  const { tokenInfo, ticketInfo, keyInfo } = data!;
 
-  if (curStep === 3) {
+  // Redirect if ticket has been used
+  if (keyInfo.account_id !== null) {
     navigate("/me");
   }
 
   const { starting_token_balance } = ticketInfo;
-
   const { symbol } = tokenInfo;
 
   const tokensToClaim = eventHelperInstance.yoctoToNear(
     starting_token_balance!,
   );
 
-  const fontSize = getFontSize(isLargerThan768, isLargerThan1024);
-  const imgSize = getImgSize(isLargerThan768, isLargerThan1024);
+  // Function to validate username and full account ID
+  const validateAccountId = (username: string) => {
+    const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
 
+    // Check length constraints (2 <= length <= 64)
+    if (accountId.length < 2 || accountId.length > 64) {
+      setErrorMessage(
+        `Username must be less than ${maxUsernameLength} characters.`,
+      );
+      return false;
+    }
+
+    // Check if the username and full account ID match the pattern
+    if (!accountIdPattern.test(accountId)) {
+      setErrorMessage("Invalid account ID format.");
+      return false;
+    }
+
+    setErrorMessage(""); // Clear error message if valid
+    return true;
+  };
+
+  // Usage in your handleChangeUsername function
   const handleChangeUsername = (event) => {
     const userInput = event.target.value.toLowerCase();
+    setIsUsernameAvailable(true);
 
     if (userInput.length !== 0) {
-      const isValid = accountAddressPatternNoSubaccount.test(userInput);
+      const isValid = validateAccountId(userInput);
       setIsValidUsername(isValid);
     } else {
       setIsValidUsername(true);
@@ -134,6 +110,7 @@ export default function WelcomePage() {
   const handleBeginJourney = async () => {
     const isAvailable = await checkUsernameAvailable();
     if (!isAvailable) {
+      setErrorMessage("Username is not available.");
       setIsValidUsername(false);
       return;
     }
@@ -141,25 +118,15 @@ export default function WelcomePage() {
     const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
     try {
       setIsClaiming(true);
-      await keypomInstance.claimEventTicket(
+      await eventHelperInstance.handleCreateEventAccount({
         secretKey,
-        {
-          new_account_id: accountId,
-          new_public_key: getPubFromSecret(`ed25519:${secretKey}`),
-        },
-        true,
-      );
+        accountId,
+      });
       setIsClaiming(false);
       navigate(0);
     } catch (e) {
       setIsClaiming(false);
-      toast({
-        title: "Error claiming ticket",
-        description: "Please contact support.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      setErrorMessage("Error claiming ticket. Please contact support.");
       console.error(e);
     }
   };
@@ -170,190 +137,180 @@ export default function WelcomePage() {
     }
     try {
       const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
-      const doesExist = await accountExists(accountId);
+      const doesExist = await eventHelperInstance.accountExists(accountId);
+      setIsUsernameAvailable(!doesExist);
       if (doesExist) {
-        setIsValidUsername(false);
-        return false;
+        setErrorMessage("Username is already taken.");
       }
-
-      return true;
+      return !doesExist;
     } catch {
-      setIsValidUsername(true);
+      setIsUsernameAvailable(true);
       return true;
     }
   };
 
   return (
-    <Flex direction="column" p={4} width="100%">
-      <Skeleton isLoaded={!isLoading}>
-        <Image
-          mx="auto"
-          borderRadius="full"
-          height={{ base: "14", md: "12" }}
-          width={{ base: "14", md: "12" }}
-          objectFit={"cover"}
-          src={`/logo.svg`}
-          mb="4"
-        />
-      </Skeleton>
-      <Box h="full">
-        <BoxWithShape
-          color="white"
-          borderTopRadius="8xl"
-          showNotch={false}
-          w="full"
-        >
-          {isLoading ? (
-            <Skeleton height="200px" width="full" />
-          ) : (
-            <Flex align="center" flexDir="column">
-              <Heading>Welcome</Heading>
-              <Text
-                color="brand.400"
-                fontFamily="mono"
-                fontSize="sm"
-                mb="5"
-                textAlign="center"
-              >
-                To get started, enter a username.
-              </Text>
-              <FormControl isInvalid={!isValidUsername} mb="5">
-                <Input
-                  backgroundColor="white"
-                  border="1px solid"
-                  borderColor={!isValidUsername ? "red.500" : "event.h1"}
-                  autoFocus
-                  transition="all 0.3s ease-in-out"
-                  color="black"
-                  fontFamily="mono"
-                  background="#F2F1EA"
-                  variant="outline"
-                  fontWeight="700"
-                  borderRadius="md"
-                  id="username"
-                  placeholder="Username"
-                  px={4}
-                  py={2}
-                  _placeholder={{
-                    color: "var(--black, #000)",
-                    fontFamily: "mono",
-                    fontSize: "16px",
-                    fontStyle: "normal",
-                    fontWeight: "700",
-                    lineHeight: "14px",
-                    textTransform: "uppercase",
-                  }}
-                  value={username}
-                  onBlur={checkUsernameAvailable}
-                  onChange={handleChangeUsername}
-                />
-                <FormErrorMessage>
-                  Username is invalid or already taken.
-                </FormErrorMessage>
-              </FormControl>
-              <Text
-                color="white"
-                fontFamily="heading"
-                fontSize="sm"
-                fontWeight="400"
-                mb="3"
-                textAlign="center"
-              >
-                Your ticket comes with{" "}
-                <Text
-                  as="span"
-                  color="brand.400"
-                  fontWeight="400"
-                  size={{ base: "lg", md: "xl" }}
-                >
-                  {tokensToClaim} ${symbol}
-                </Text>
-              </Text>
-              <Skeleton borderRadius="12px" isLoaded={!isLoading}>
-                <Image
-                  alt={`Event image for ${eventInfo?.name}`}
-                  borderRadius={imgSize.borderRadius}
-                  height={imgSize.h}
-                  mb="2"
-                  objectFit="contain"
-                  src={`/assets/logo.webp`}
-                />
-              </Skeleton>
-              <Heading
-                color="brand.400"
-                fontFamily="mono"
-                fontSize={fontSize.h1}
-                textAlign="center"
-                my={4}
-              >
-                {ticketInfo?.title}
-              </Heading>
-            </Flex>
-          )}
-        </BoxWithShape>
-        <Flex align="center" pt={8} flexDir="column" gap={4}>
-          <Text
-            color="white"
-            fontFamily="heading"
-            fontSize={fontSize.h1}
-            fontWeight="600"
-            textAlign="center"
-          >
-            ${symbol} Details
-          </Text>
-          {/* Start of the grid for Spork Details */}
-          <HStack
-            width="100%"
-            justifyContent={"space-between"}
-            alignItems="flex-start"
-            gap={4}
-            wrap={"wrap"}
-          >
-            <VStack alignItems="flex-start" gap={4}>
-              <Heading as="h3" fontSize="2xl" color="white">
-                Earn:
-              </Heading>
-              <UnorderedList
-                color="brand.400"
-                fontFamily="mono"
-                textAlign={"left"}
-              >
-                <ListItem>Attending Talks</ListItem>
-                <ListItem>Visiting Booths</ListItem>
-                <ListItem>Scavenger Hunts</ListItem>
-                <ListItem>Sponsor Quizzes</ListItem>
-                <ListItem>and more.</ListItem>
-              </UnorderedList>
-            </VStack>
-            <VStack alignItems="flex-start" gap={4}>
-              <Heading as="h3" fontSize="2xl" color="white">
-                Spend:
-              </Heading>
-              <UnorderedList
-                color="brand.400"
-                fontFamily="mono"
-                textAlign={"left"}
-              >
-                <ListItem>Swag</ListItem>
-                <ListItem>Food</ListItem>
-                <ListItem>Raffles</ListItem>
-                <ListItem>NFTs</ListItem>
-                <ListItem>and more.</ListItem>
-              </UnorderedList>
-            </VStack>
-          </HStack>
-
-          <Button
-            isDisabled={!isValidUsername || !username}
-            isLoading={isClaiming}
-            variant="primary"
-            onClick={handleBeginJourney}
-            width="100%"
-          >
-            BEGIN JOURNEY
-          </Button>
-        </Flex>
+    <VStack spacing={4}>
+      <Box p={4} pb={0}>
+        <PageHeading title="Welcome" />
       </Box>
-    </Flex>
+      <Image
+        mx="auto"
+        borderRadius="full"
+        height={{ base: "14", md: "12" }}
+        width={{ base: "14", md: "12" }}
+        objectFit={"cover"}
+        src={"/logo.svg"}
+        mb="4"
+      />
+
+      <Text
+        color="brand.400"
+        fontFamily="mono"
+        fontSize="sm"
+        textAlign="center"
+      >
+        To get started, enter a username.
+      </Text>
+
+      <VStack width="100%" px={4} spacing={8}>
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          width={"100%"}
+          textAlign="center"
+          gap={4}
+        >
+          <FormControl
+            isInvalid={!isValidUsername || !isUsernameAvailable}
+            mb="5"
+          >
+            <Input
+              backgroundColor="white"
+              border="1px solid"
+              borderColor={!isValidUsername ? "red.500" : "event.h1"}
+              autoFocus
+              transition="all 0.3s ease-in-out"
+              color="black"
+              fontFamily="mono"
+              background="#F2F1EA"
+              variant="outline"
+              fontWeight="700"
+              borderRadius="md"
+              id="username"
+              placeholder="Username"
+              px={4}
+              py={2}
+              _placeholder={{
+                color: "var(--black, #000)",
+                fontFamily: "mono",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: "700",
+                lineHeight: "14px",
+                textTransform: "uppercase",
+              }}
+              value={username}
+              onBlur={checkUsernameAvailable}
+              onChange={handleChangeUsername}
+            />
+            <FormErrorMessage>{errorMessage}</FormErrorMessage>
+          </FormControl>
+        </Flex>
+      </VStack>
+
+      <Text
+        color="white"
+        fontFamily="heading"
+        fontSize="sm"
+        fontWeight="400"
+        pt={6}
+        textAlign="center"
+      >
+        Your ticket comes with{" "}
+        <Text
+          as="span"
+          color="brand.400"
+          fontWeight="400"
+          size={{ base: "lg", md: "xl" }}
+        >
+          {tokensToClaim} ${symbol}
+        </Text>
+      </Text>
+
+      <HStack spacing={2} pt={0}>
+        <Box
+          width="115px"
+          height="5.25px"
+          bg="url(/assets/wallet-bg.webp) 100% / cover no-repeat"
+        />
+        <Text
+          fontFamily="mono"
+          fontSize="2xl"
+          fontWeight="medium"
+          color="brand.400"
+          data-testid="token-symbol"
+        >
+          ${symbol}
+        </Text>
+        <Box
+          width="115px"
+          height="5.25px"
+          bg="url(/assets/wallet-bg.webp) 100% / cover no-repeat"
+        />
+      </HStack>
+      <VStack width="100%" p={4} pt={0} spacing={4}>
+        {/* Start of the grid for Details */}
+        <HStack
+          width="100%"
+          justifyContent={"space-between"}
+          alignItems="flex-start"
+          gap={4}
+          wrap={"wrap"}
+        >
+          <VStack alignItems="flex-start" gap={4}>
+            <Heading as="h3" fontSize="2xl" color="white">
+              Earn:
+            </Heading>
+            <UnorderedList
+              color="brand.400"
+              fontFamily="mono"
+              textAlign={"left"}
+            >
+              <ListItem>Attending Talks</ListItem>
+              <ListItem>Visiting Booths</ListItem>
+              <ListItem>Scavenger Hunts</ListItem>
+              <ListItem>and more.</ListItem>
+            </UnorderedList>
+          </VStack>
+          <VStack alignItems="flex-start" gap={4}>
+            <Heading as="h3" fontSize="2xl" color="white">
+              Spend:
+            </Heading>
+            <UnorderedList
+              color="brand.400"
+              fontFamily="mono"
+              textAlign={"left"}
+            >
+              <ListItem>Swag</ListItem>
+              <ListItem>Food</ListItem>
+              <ListItem>NFTs</ListItem>
+              <ListItem>and more.</ListItem>
+            </UnorderedList>
+          </VStack>
+        </HStack>
+
+        <Button
+          isDisabled={!isValidUsername || !username}
+          isLoading={isClaiming}
+          variant="primary"
+          mt={6}
+          onClick={handleBeginJourney}
+          width="100%"
+        >
+          BEGIN JOURNEY
+        </Button>
+      </VStack>
+    </VStack>
   );
 }

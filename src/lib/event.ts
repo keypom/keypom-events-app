@@ -1,22 +1,13 @@
 import * as nearAPI from "near-api-js";
-import {
-  CLOUDFLARE_IPFS,
-  NETWORK_ID,
-  KEYPOM_EVENTS_CONTRACT,
-  KEYPOM_TOKEN_FACTORY_CONTRACT,
-} from "@/constants/common";
+import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import getConfig from "@/config/near";
-import { FunderEventMetadata } from "./helpers/events";
-import {
-  decryptPrivateKey,
-  decryptWithPrivateKey,
-  deriveKeyFromPassword,
-} from "./helpers/crypto";
 import { Wallet } from "@near-wallet-selector/core";
 import {
   FinalExecutionStatus,
   FinalExecutionOutcome,
 } from "near-api-js/lib/providers";
+import { getPubFromSecret } from "@keypom/core";
+import { UserData } from "@/stores/event-credentials";
 
 let instance: EventJS | undefined;
 
@@ -32,24 +23,34 @@ function uuidv4() {
   );
 }
 
+export interface AttendeeTicketData {
+  ticket: string;
+  userData: UserData;
+}
+
 export interface ExtClaimedDrop {
   type: "token" | "nft";
   name: string;
   image: string;
   drop_id: string;
   found_scavenger_ids?: string[];
+  needed_scavenger_ids?: ScavengerHunt[];
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   amount?: string; // Only present if the drop is a token
+}
+
+export interface ScavengerHunt {
+  piece: string;
+  description: string;
 }
 
 export interface ExtDropData {
   type: "token" | "nft";
   name: string;
-  image: string;
   drop_id: string;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   amount?: string; // Only present if the drop is a token
-  scavenger_hunt?: string[]; // Optional scavenger hunt pieces
+  scavenger_hunt?: ScavengerHunt[]; // Optional scavenger hunt pieces
 }
 
 interface NftMetadata {
@@ -102,7 +103,27 @@ class EventJS {
   yoctoToNear = (yocto: string) =>
     nearAPI.utils.format.formatNearAmount(yocto, 4);
 
-  yoctoToNearWith4Decimals = (yoctoString: string) => {
+  yoctoToNearWithMinDecimals = (yoctoString: string) => {
+    const divisor = 1e24;
+    const near =
+      (BigInt(yoctoString) / BigInt(divisor)).toString() +
+      "." +
+      (BigInt(yoctoString) % BigInt(divisor)).toString().padStart(24, "0");
+
+    const split = near.split(".");
+    const integerPart = split[0];
+    let decimalPart = split[1].substring(0, 4);
+
+    // Remove trailing zeros in the decimal part, but keep meaningful ones
+    decimalPart = decimalPart.replace(/0+$/, "");
+
+    // If there's no remaining decimal part after removing zeros, return only the integer part
+    return decimalPart.length > 0
+      ? `${integerPart}.${decimalPart}`
+      : integerPart;
+  };
+
+  yoctoToNearWith2Decimals = (yoctoString: string) => {
     const divisor = 1e24;
     const near =
       (BigInt(yoctoString) / BigInt(divisor)).toString() +
@@ -113,7 +134,7 @@ class EventJS {
     const integerPart = split[0];
     let decimalPart = split[1];
 
-    decimalPart = decimalPart.substring(0, 4);
+    decimalPart = decimalPart.substring(0, 2);
 
     return `${integerPart}.${decimalPart}`;
   };
@@ -121,7 +142,7 @@ class EventJS {
   nearToYocto = (near: string) => nearAPI.utils.format.parseNearAmount(near);
 
   viewCall = async ({
-    contractId = KEYPOM_EVENTS_CONTRACT,
+    contractId = KEYPOM_TOKEN_FACTORY_CONTRACT,
     methodName,
     args,
   }) => {
@@ -133,50 +154,26 @@ class EventJS {
     return res;
   };
 
-  getDerivedPrivKey = async ({ encryptedPk, pw, saltBase64, ivBase64 }) => {
-    const symmetricKey = await deriveKeyFromPassword(pw, saltBase64);
-    const decryptedPrivateKey = await decryptPrivateKey(
-      encryptedPk,
-      ivBase64,
-      symmetricKey,
-    );
-    return decryptedPrivateKey;
-  };
-
-  decryptMetadata = async ({ privKey, data }) => {
-    const decryptedData = await decryptWithPrivateKey(data, privKey);
-    return decryptedData;
-  };
-
-  getEventInfo = async ({
-    accountId,
-    eventId,
-  }: {
-    accountId: string;
-    eventId: string;
-  }): Promise<FunderEventMetadata | null> => {
+  accountExists = async (accountId: string) => {
     try {
-      const funderInfo = await this.viewCall({
-        methodName: "get_funder_info",
-        args: { account_id: accountId },
-      });
-
-      const funderMeta: Record<string, FunderEventMetadata> = JSON.parse(
-        funderInfo.metadata,
+      const userAccount = new nearAPI.Account(
+        this.nearConnection.connection,
+        accountId,
       );
-      const eventInfo: FunderEventMetadata = funderMeta[eventId];
-
-      if (eventInfo === undefined || eventInfo === null) {
-        throw new Error(`Event ${String(eventId)} not exist`);
+      await userAccount.state();
+      return true;
+    } catch (e) {
+      if (!/no such file|does not exist/.test((e as string).toString())) {
+        throw e;
       }
-
-      eventInfo.artwork = `${CLOUDFLARE_IPFS}/${eventInfo.artwork}`;
-
-      return eventInfo;
-    } catch (error) {
-      console.warn("Error getting event info", error);
-      return null;
+      return false;
     }
+  };
+
+  getPubFromSecret = (secretKey: string) => {
+    const strippedSecretKey = secretKey.replace("ed25519:", "");
+    const pubKey = getPubFromSecret(`ed25519:${strippedSecretKey}`);
+    return pubKey;
   };
 
   deleteConferenceDrop = async ({
@@ -316,15 +313,71 @@ class EventJS {
     }
   };
 
-  claimEventTokenDrop = async ({
+  claimEventDrop = async ({
     secretKey,
+    accountId,
     dropId,
     scavId,
   }: {
     secretKey: string;
     dropId: string;
     scavId: string | null;
+    accountId?: string;
   }) => {
+    // Fetch the drop information
+    const dropInfo = await eventHelperInstance.viewCall({
+      methodName: "get_drop_information",
+      args: { drop_id: dropId },
+    });
+    console.log("Drop Info in scan: ", dropInfo);
+
+    if (!dropInfo) {
+      throw new Error("Drop not found");
+    }
+
+    // Fetch claimed drops for the account
+    let curClaim: ExtClaimedDrop | null = null;
+    try {
+      curClaim = await eventHelperInstance.viewCall({
+        methodName: "get_claimed_drop_for_account",
+        args: { account_id: accountId, drop_id: dropId },
+      });
+      console.log("Cur Claim: ", curClaim);
+    } catch (e) {
+      console.log("Error: ", e);
+    }
+    let alreadyClaimed = false;
+    // At this point the drop must exist since if it didnt we panick
+    // Now, we need to check if we have already claimed the drop
+    if (curClaim) {
+      // If there is no scavenger hunt, then we already claimed so panick
+      const neededScavengerIds = curClaim.needed_scavenger_ids;
+      if (!neededScavengerIds) {
+        alreadyClaimed = true;
+      } else {
+        if (!scavId) {
+          throw new Error("No scavenger ID provided");
+        }
+
+        // Theres some scavenger hunts so we need to make sure that the one we are trying to claim is valid
+        const isValidScavengerId = neededScavengerIds
+          .map((item) => item.piece)
+          .includes(scavId);
+
+        if (!isValidScavengerId) {
+          throw new Error("Invalid scavenger piece");
+        }
+
+        // IF the scavenger ID is valid, check if it has already been claimed
+        const piecesToCheck = curClaim.found_scavenger_ids || [];
+        alreadyClaimed = piecesToCheck.includes(scavId);
+      }
+    }
+
+    if (alreadyClaimed) {
+      throw new Error("You already scanned this drop");
+    }
+
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
     await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
     const userAccount = new nearAPI.Account(
@@ -360,8 +413,44 @@ class EventJS {
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "ft_transfer",
       args: {
-        receiver_id: sendTo,
-        amount,
+        receiver_id: `${sendTo}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`,
+        amount: this.nearToYocto(amount.toString()),
+      },
+    });
+  };
+
+  handleScanIntoEvent = async ({ secretKey }: { secretKey: string }) => {
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
+    await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "scan_ticket",
+      args: {},
+    });
+  };
+
+  handleCreateEventAccount = async ({
+    secretKey,
+    accountId,
+  }: {
+    secretKey: string;
+    accountId: string;
+  }) => {
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
+    await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "create_account",
+      args: {
+        new_account_id: accountId,
       },
     });
   };
@@ -393,11 +482,11 @@ class EventJS {
   };
 
   // Filter cached drops for NFTs
-  getCachedNFTDrops = async (): Promise<ExtDropData[]> => {
+  getCachedDrops = async (): Promise<ExtDropData[]> => {
     if (this.dropCache.length === 0) {
       await this.fetchDropsWithCache();
     }
-    return this.dropCache.filter((drop) => "nft_metadata" in drop);
+    return this.dropCache;
   };
 
   // Filter cached drops for Tokens

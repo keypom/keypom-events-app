@@ -1,18 +1,13 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import QRCode from "react-qr-code";
-import {
-  type FunderEventMetadata,
-  type TicketInfoMetadata,
-} from "@/lib/helpers/events";
 import { dateAndTimeToText } from "@/utils/parseDates";
+import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 
 interface QRDetailsProps {
   qrValue: string;
-  eventInfo: FunderEventMetadata;
-  ticketInfo: TicketInfoMetadata;
 }
 
-export const QRDetails = ({ qrValue, eventInfo }: QRDetailsProps) => {
+export const QRDetails = ({ qrValue }: QRDetailsProps) => {
   return (
     <Flex
       align="center"
@@ -43,7 +38,7 @@ export const QRDetails = ({ qrValue, eventInfo }: QRDetailsProps) => {
         size={{ base: "lg", md: "2xl" }}
         textAlign="center"
       >
-        {dateAndTimeToText(eventInfo.date, "", false, true)}
+        {dateAndTimeToText(GLOBAL_EVENT_INFO.date, "", false, true)}
       </Text>
       <Text
         color="brand.400"

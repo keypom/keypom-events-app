@@ -2,8 +2,8 @@ import { Box, Heading, Text, VStack } from "@chakra-ui/react";
 import { LockIcon } from "@/components/icons";
 import { Link } from "react-router-dom";
 
-import { Collectible } from "@/lib/api/collectibles";
 import { Image } from "@/components/ui/image";
+import { Collectible } from "@/lib/api/collectibles";
 
 export function CollectibleCard({
   disabled,
