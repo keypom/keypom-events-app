@@ -22,7 +22,7 @@ export const CLOUDFLARE_IPFS = "https://cloudflare-ipfs.com/ipfs";
 export const KEYPOM_CONTRACTS = {
   testnet: {
     TOKEN_FACTORY_CONTRACT:
-      import.meta.env.VITE_CONTRACT_ID || "1726239650183-factory.testnet",
+      import.meta.env.VITE_CONTRACT_ID || "1726258983645-factory.testnet",
   },
   mainnet: {
     TOKEN_FACTORY_CONTRACT: import.meta.env.VITE_CONTRACT_ID || "TODO",
