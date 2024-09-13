@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Ticket() {
   const navigate = useNavigate();
-  const { secretKey } = useTicketClaimParams();
+  const { secretKey, userData } = useTicketClaimParams();
   const { setEventCredentials } = useEventCredentials();
   const { data, isLoading, isError, error } = useConferenceData(secretKey);
 
@@ -28,36 +28,27 @@ export default function Ticket() {
     );
   }
 
-  const { ticketInfo, dropInfo, keyInfo, ticketExtra, eventInfo } = data!;
+  const { ticketInfo, keyInfo } = data!;
 
-  const maxUses = dropInfo.max_key_uses;
-  const usesRemaining = keyInfo.uses_remaining;
-  const curStep = maxUses - usesRemaining + 1;
-  const { funder_id } = dropInfo;
-  const { eventId } = ticketExtra;
   const { account_type } = ticketInfo;
 
   // Redirect if ticket has been used
-  if (maxUses === 2) {
-    setEventCredentials(eventId, secretKey);
-    navigate("/welcome");
-  }
-
-  if (curStep !== 1) {
-    setEventCredentials(eventId, secretKey);
-    navigate("/welcome");
+  if (keyInfo.has_scanned === true) {
+    setEventCredentials(secretKey, userData);
+    if (keyInfo.account_id === null) {
+      navigate("/welcome");
+    } else {
+      navigate("/");
+    }
   }
 
   switch (account_type) {
     case "Basic":
       return (
         <TicketQRPage
-          eventId={eventId}
-          eventInfo={eventInfo}
-          funderId={funder_id}
           isLoading={isLoading}
           secretKey={secretKey}
-          ticketInfo={ticketInfo}
+          userData={userData}
         />
       );
     case "Sponsor":

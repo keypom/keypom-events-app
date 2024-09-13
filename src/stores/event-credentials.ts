@@ -1,18 +1,27 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+export interface UserData {
+  name: string;
+  email: string;
+}
+
 interface EventCredentialsStore {
-  eventId: string;
   secretKey: string;
-  setEventCredentials: (eventId: string, secretKey: string) => void;
+  userData: UserData;
+  setEventCredentials: (secretKey: string, userData: UserData) => void;
 }
 
 export const useEventCredentials = create<EventCredentialsStore>()(
   persist(
     (set) => ({
-      eventId: "",
       secretKey: "",
-      setEventCredentials: (eventId, secretKey) => set({ eventId, secretKey }),
+      userData: {
+        name: "",
+        email: "",
+      },
+      setEventCredentials: (secretKey, userData) =>
+        set({ secretKey, userData }),
     }),
     {
       name: "event-credentials", // Name of the item in localStorage

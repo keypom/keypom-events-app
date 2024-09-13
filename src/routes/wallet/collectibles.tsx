@@ -4,9 +4,8 @@ import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
 import { CollectibleCard } from "@/components/wallet/collectibles/card";
-import { Collectible, fetchCollectibles } from "@/lib/api/collectibles";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useAccountData } from "@/hooks/useAccountData";
+import { ExtClaimedDrop, ExtDropData } from "@/lib/event";
 
 const Divider = () => {
   return (
@@ -21,7 +20,13 @@ const Divider = () => {
   );
 };
 
-const CollectiblesGrid = ({ lockedItems, unlockedItems }) => {
+const CollectiblesGrid = ({
+  lockedItems,
+  unlockedItems,
+}: {
+  lockedItems: ExtDropData[];
+  unlockedItems: ExtClaimedDrop[];
+}) => {
   return (
     <>
       <Grid
@@ -33,7 +38,14 @@ const CollectiblesGrid = ({ lockedItems, unlockedItems }) => {
       >
         {unlockedItems.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>
-            <CollectibleCard {...collectible} />
+            <CollectibleCard
+              id={collectible.drop_id}
+              title={collectible.nft_metadata?.title || ""}
+              description={collectible.nft_metadata?.description || ""}
+              assetType="POAP"
+              imageSrc={collectible.nft_metadata?.media || ""}
+              isFound={false}
+            />
           </GridItem>
         ))}
       </Grid>
@@ -48,7 +60,15 @@ const CollectiblesGrid = ({ lockedItems, unlockedItems }) => {
       >
         {lockedItems.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>
-            <CollectibleCard {...collectible} disabled />
+            <CollectibleCard
+              id={collectible.drop_id}
+              title={collectible.nft_metadata?.title || ""}
+              description={collectible.nft_metadata?.description || ""}
+              assetType="POAP"
+              imageSrc={collectible.nft_metadata?.media || ""}
+              isFound={false}
+              disabled
+            />
           </GridItem>
         ))}
       </Grid>
@@ -57,39 +77,33 @@ const CollectiblesGrid = ({ lockedItems, unlockedItems }) => {
 };
 
 export default function Collectibles() {
-  const {
-    data: collectibles,
-    error,
-    isError,
-    isLoading,
-  } = useQuery({ queryKey: ["collectibles"], queryFn: fetchCollectibles });
+  const { data, isLoading, isError, error } = useAccountData();
 
-  const unlockedItems = useMemo(
-    () => (collectibles ? collectibles.filter((it) => it.isFound) : []),
-    [collectibles],
-  );
-  const lockedItems = useMemo(
-    () => (collectibles ? collectibles.filter((it) => !it.isFound) : []),
-    [collectibles],
-  );
+  const unlockedItems =
+    !data || isLoading || isError ? [] : data.ownedCollectibles;
+  const lockedItems =
+    !data || isLoading || isError ? [] : data.unownedCollectibles;
 
-  const getProgressDescription = (collectibles: Collectible[]) => {
-    const completed = unlockedItems.length;
-    return `${completed}/${collectibles.length} found`;
-  };
+  // Filter out locked items that have the same drop_id as any unlocked item
+  const filteredLockedItems = lockedItems.filter(
+    (lockedItem) =>
+      !unlockedItems.some(
+        (unlockedItem) => unlockedItem.drop_id === lockedItem.drop_id,
+      ),
+  );
 
   return (
     <VStack spacing={4} p={4}>
       <PageHeading
         title="Collectibles"
         titleSize="24px"
-        description={collectibles ? getProgressDescription(collectibles) : ""}
+        description={`${unlockedItems.length}/${lockedItems.length} found`}
         showBackButton
       />
       {isLoading && <LoadingBox />}
-      {collectibles && (
+      {lockedItems.length > 0 && (
         <CollectiblesGrid
-          lockedItems={lockedItems}
+          lockedItems={filteredLockedItems}
           unlockedItems={unlockedItems}
         />
       )}

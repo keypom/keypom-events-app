@@ -1,15 +1,19 @@
-import { Box, Button, ButtonGroup, Input } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Input, Text } from "@chakra-ui/react";
 
 export function SetAmount({
   amount,
   setAmount,
   setStep,
   onSend,
+  curBalance,
+  isSending,
 }: {
   amount: number;
   setAmount: (value: number) => void;
   setStep: (value: string) => void;
   onSend: () => void;
+  curBalance: string;
+  isSending: boolean;
 }) {
   return (
     <>
@@ -46,14 +50,28 @@ export function SetAmount({
           }}
         />
       </Box>
-      <ButtonGroup width="100%" justifyContent="center" p={4}>
+      <ButtonGroup width="100%" justifyContent="center" pt={4} px={4}>
         <Button variant="outline" onClick={() => setStep("recipient")}>
           BACK
         </Button>
-        <Button variant="primary" onClick={onSend} isDisabled={!amount}>
+        <Button
+          variant="primary"
+          onClick={onSend}
+          isDisabled={!amount || isSending} // Disable the button while sending
+          isLoading={isSending} // Show spinner while sending
+        >
           SEND
         </Button>
       </ButtonGroup>
+      <Text
+        fontFamily={"mono"}
+        fontSize={"sm"}
+        fontWeight={700}
+        textAlign={"center"}
+        color={"brand.400"}
+      >
+        Balance: {curBalance} SOV3
+      </Text>
     </>
   );
 }

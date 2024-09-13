@@ -91,6 +91,8 @@ export default function Agenda() {
     queryFn: fetchAgenda,
   });
 
+  console.log(agendaData);
+
   const [showSearch, setShowSearch] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
@@ -105,10 +107,9 @@ export default function Agenda() {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
 
-  const [filteredEvents, setfilteredEvents] = useState<AgendaEvent[] | []>(
-    agendaData ? agendaData.events : [],
-  );
+  const [filteredEvents, setfilteredEvents] = useState<AgendaEvent[] | []>([]);
 
+  // UseEffect to filter events based on searchKey, selectedDay, selectedStage, and agendaData
   useEffect(() => {
     if (agendaData) {
       const filtered = filterAgenda(
@@ -119,14 +120,7 @@ export default function Agenda() {
       );
       setfilteredEvents(filtered.events);
     }
-  }, [
-    agendaData,
-    searchKey,
-    selectedDay,
-    selectedStage,
-    filteredEvents,
-    setfilteredEvents,
-  ]);
+  }, [agendaData, searchKey, selectedDay, selectedStage]); // Removed filteredEvents and setfilteredEvents from dependencies
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);

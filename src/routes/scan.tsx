@@ -6,40 +6,115 @@ import {
   ListItem,
   UnorderedList,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
-
 import RedactedExpression from "/assets/scan-bg.webp";
-
 import { QrScanner } from "@/components/scanner/qr-scanner";
 import { PageHeading } from "@/components/ui/page-heading";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import eventHelperInstance from "@/lib/event";
+import { useEventCredentials } from "@/stores/event-credentials";
+import { useAccountData } from "@/hooks/useAccountData";
+import { LoadingBox } from "@/components/ui/loading-box";
+import { ErrorBox } from "@/components/ui/error-box";
 
 export default function Scan() {
   const navigate = useNavigate();
+  const { secretKey } = useEventCredentials();
+  const { data, isLoading, isError, error } = useAccountData();
 
-  const isValidToken = (value: string) => {
-    return value.startsWith("token:");
-  };
+  // Check if data is available and destructure safely
+  const accountId = data?.accountId;
+  const displayAccountId = data?.displayAccountId;
 
-  // Handle the scan event, return false if error
-  const handleScan = async (
-    value: string,
-  ): Promise<{ message: string } | void> => {
-    if (isValidToken(value)) {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          try {
-            navigate(`/scan/${value}`);
-            resolve();
-          } catch (error) {
-            reject(error);
+  const toast = useToast();
+
+  const [scanStatus, setScanStatus] = useState<"success" | "error">();
+  const [statusMessage, setStatusMessage] = useState("");
+
+  const handleScan = async (value: string): Promise<void> => {
+    if (!accountId || !secretKey) {
+      return;
+    }
+
+    setScanStatus(undefined);
+
+    try {
+      const qrData = value;
+
+      const qrDataSplit = qrData.split("%%");
+
+      const isScavenger = qrDataSplit.length === 3;
+      const type = qrDataSplit[0];
+
+      let data = qrDataSplit[1];
+      let scavId: string | null = null;
+      if (isScavenger) {
+        scavId = qrDataSplit[1];
+        data = qrDataSplit[2];
+      }
+
+      if (!type || !data) {
+        throw new Error("QR data format is incorrect");
+      }
+
+      console.log("QR Type: ", type);
+      console.log("QR Data: ", data);
+
+      // Redirect based on the QR type, without claiming anything
+      switch (type) {
+        case "token":
+        case "nft":
+          await eventHelperInstance.claimEventDrop({
+            secretKey,
+            accountId,
+            dropId: data,
+            scavId,
+          });
+          navigate(`/scan/${encodeURIComponent(data)}`);
+          break;
+        case "food":
+        case "merch":
+          navigate(`/purchase/food`);
+          break;
+        case "profile":
+          if (data === displayAccountId) {
+            throw new Error("Cannot scan your own profile");
           }
-        }, 1000);
-      });
-    } else {
-      throw new Error("Invalid token");
+          // Wait 500ms
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          navigate(`/wallet/send?to=${data}`);
+          break;
+        default:
+          console.error("Unhandled QR data type:", type);
+          throw new Error("Unrecognized QR type");
+      }
+
+      // If the scan was successful, set success status
+      setScanStatus("success");
+      setStatusMessage("QR code scanned successfully");
+    } catch (error: any) {
+      console.error("Scan failed", error);
+      setScanStatus("error");
+      setStatusMessage(`Error scanning QR code: ${error.message}`);
     }
   };
+
+  useEffect(() => {
+    if (scanStatus) {
+      toast({
+        title: scanStatus === "success" ? "Success" : "Error",
+        description: statusMessage,
+        status: scanStatus,
+        duration: 5000,
+        isClosable: true,
+      });
+      setTimeout(() => {
+        setScanStatus(undefined);
+      }, 5000);
+    }
+  }, [scanStatus, statusMessage, toast]);
 
   return (
     <Box py={4} display={"flex"} flexDirection={"column"} gap={4}>
@@ -59,8 +134,11 @@ export default function Scan() {
             transform="translateY(-50%)"
             zIndex={-1}
           />
+          {isLoading && <LoadingBox />}
+          {isError && <ErrorBox message={`Error: ${error?.message}`} />}{" "}
+          {/* Error Handling */}
           <Box display={"flex"} justifyContent={"center"} alignItems="center">
-            <QrScanner handleScan={handleScan} />
+            <QrScanner handleScan={handleScan} scanStatus={scanStatus} />
           </Box>
         </Box>
         <HStack

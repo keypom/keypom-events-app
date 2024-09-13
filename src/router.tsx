@@ -130,7 +130,7 @@ const router = createBrowserRouter([
             path: "/scan", // scanning tickets
             children: [
               {
-                path: "event/:funderAndEventId",
+                path: "tickets",
                 lazy: lazyWithOfflineCheck(
                   () => import("@/routes/adminScan/adminScan"),
                 ),

@@ -4,12 +4,14 @@ import { Link } from "react-router-dom";
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 import { Journey } from "@/lib/api/journeys";
 import { Image } from "@/components/ui/image";
+import { TokenScavRewardImage } from "./token-scav-image";
 
 export function JourneyCard({
   id,
   title,
   description,
   imageSrc,
+  tokenReward,
   steps,
 }: Journey) {
   const progress = steps.reduce(
@@ -28,16 +30,27 @@ export function JourneyCard({
       to={`/wallet/journeys/${id}`}
       cursor={"pointer"}
     >
-      <Image
-        src={imageSrc}
-        width={"100px"}
-        height={"100px"}
-        display={"flex"}
-        objectFit={"cover"}
-        flexShrink={0}
-        justifyContent={"center"}
-        alignItems={"center"}
-      />
+      {tokenReward ? (
+        <TokenScavRewardImage
+          tokenAmount={tokenReward}
+          bgColor="gray.200"
+          tokenFontSize="40px"
+          labelFontSize="16px"
+          tokenColor="black"
+          labelColor="black"
+        />
+      ) : (
+        <Image
+          src={imageSrc}
+          width={"100px"}
+          height={"100px"}
+          display={"flex"}
+          objectFit={"cover"}
+          flexShrink={0}
+          justifyContent={"center"}
+          alignItems={"center"}
+        />
+      )}
       <VStack alignItems="flex-start" width="100%" gap={4}>
         <Heading
           as="h3"
