@@ -2,10 +2,17 @@ import nacl from "tweetnacl";
 import * as naclUtil from "tweetnacl-util"; // Import the utilities properly
 import bs58 from "bs58";
 
+// Utility function to base64 encode a JSON object
+const encodeToBase64 = (jsonObject: Record<string, any>) => {
+  const jsonString = JSON.stringify(jsonObject);
+  return Buffer.from(jsonString).toString("base64");
+};
+
 // Utility function to decode base64 and parse JSON
 const decodeAndParseBase64 = (base64String: string) => {
   // Step 1: Decode the base64 string to get the JSON string
   const jsonString = Buffer.from(base64String, "base64").toString("utf-8");
+  console.log(jsonString);
 
   // Step 2: Parse the JSON string to get back the original object
   const jsonObject = JSON.parse(jsonString);
@@ -164,4 +171,5 @@ export {
   decodeEd25519SecretKey,
   decryptStoredData,
   decodeAndParseBase64,
+  encodeToBase64,
 };

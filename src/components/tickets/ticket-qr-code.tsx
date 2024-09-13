@@ -15,9 +15,9 @@ import { QRDetails } from "@/components/tickets/qr-details";
 import eventHelperInstance from "@/lib/event";
 import { AttendeeKeyInfo } from "@/lib/helpers/events";
 import { useNavigate } from "react-router-dom";
-import { useEventCredentials } from "@/stores/event-credentials";
+import { useEventCredentials, UserData } from "@/stores/event-credentials";
 import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
-import { UserData } from "@/hooks/useAccountData";
+import { encodeToBase64 } from "@/lib/helpers/crypto";
 
 interface TicketQRCodeProps {
   isLoading: boolean;
@@ -66,6 +66,10 @@ export default function TicketQRCode({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [secretKey]);
 
+  const getQRValue = () => {
+    return encodeToBase64({ ticket: secretKey, userData });
+  };
+
   return (
     <VStack
       backgroundPosition="center"
@@ -108,7 +112,7 @@ export default function TicketQRCode({
                 {isLoading ? (
                   <Skeleton height="200px" width="full" />
                 ) : (
-                  <QRDetails qrValue={secretKey} />
+                  <QRDetails qrValue={getQRValue(secretKey)} />
                 )}
               </BoxWithShape>
               <Flex

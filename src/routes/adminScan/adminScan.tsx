@@ -7,6 +7,7 @@ import { QrScanner } from "@/components/scanner/qr-scanner";
 import { AttendeeKeyInfo, TicketTypeInfo } from "@/lib/helpers/events";
 import eventHelperInstance from "@/lib/event";
 import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
+import { decodeAndParseBase64 } from "@/lib/helpers/crypto";
 
 interface StateRefObject {
   isScanning: boolean;
@@ -44,7 +45,10 @@ export default function Scanner() {
     }
   }, [ticketsToScan]);
 
-  const handleScanResult = async (secretKey: string) => {
+  const handleScanResult = async (qrData: string) => {
+    console.log("Scan result", qrData);
+    const { ticket: secretKey } = decodeAndParseBase64(qrData);
+    console.log("Scan result", secretKey);
     try {
       const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
       const keyInfo: AttendeeKeyInfo | undefined =
