@@ -1,12 +1,16 @@
-import React, { useEffect, useRef } from "react";
-import { Box, Image } from "@chakra-ui/react";
+import { useEffect, useRef } from "react";
+import { Box } from "@chakra-ui/react";
 
-export const ImageSplit = ({ numFound, numPieces, imgSrc }) => {
-  const canvasRef = useRef(null);
+export const ImageSplit = ({ numFound, numPieces, children }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    // Ensure the canvas reference is available before continuing
     const canvas = canvasRef.current;
+    if (!canvas) return; // If the canvas is null, exit the function
+
     const ctx = canvas.getContext("2d");
+    if (!ctx) return; // If the context is null, exit the function
 
     // Clear the canvas before drawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -28,11 +32,11 @@ export const ImageSplit = ({ numFound, numPieces, imgSrc }) => {
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
       ctx.closePath();
 
-      // Color the slice: transparent for found, black for the rest
+      // Color the slice: transparent for found, semi-transparent for the rest
       if (i < numFound) {
         ctx.fillStyle = "rgba(0, 0, 0, 0)";
       } else {
-        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        ctx.fillStyle = "rgba(0, 0, 0, 0.90)";
       }
       ctx.fill();
     }
@@ -40,13 +44,10 @@ export const ImageSplit = ({ numFound, numPieces, imgSrc }) => {
 
   return (
     <Box position="relative" width="200px" height="200px">
-      {/* The Image */}
-      <Image
-        src={imgSrc}
-        alt="Masked Image"
-        boxSize="200px"
-        objectFit="cover"
-      />
+      {/* The passed component */}
+      <Box position="absolute" top={0} left={0} width="200px" height="200px">
+        {children}
+      </Box>
 
       {/* Canvas for the mask */}
       <canvas

@@ -7,8 +7,8 @@ import { ExtDropData } from "@/lib/event";
 
 interface HiddenProps {
   foundItem: ExtDropData;
-  numFound: number;
-  numRequired: number;
+  numFound: number | undefined;
+  numRequired: number | undefined;
   onReveal: () => void;
 }
 
@@ -23,15 +23,21 @@ export function Hidden({
 
   const isNFT = foundItem.type === "nft";
   const rewardMessage = () => {
+    // user is part way through a scavenge
     if (numFound !== numRequired) {
-      return "a Piece";
+      return "You found a Piece";
+    }
+
+    // user completed a scavenger hunt
+    if (numFound !== undefined && numRequired !== undefined) {
+      return "You found the pieces";
     }
 
     if (isNFT) {
-      return "a POAP";
+      return "You found a POAP";
     }
 
-    return "some SOV3";
+    return "You found some SOV3";
   };
 
   const ctaMessage = () => {
@@ -146,7 +152,7 @@ export function Hidden({
             px={2}
             textTransform={"uppercase"}
           >
-            You've found {rewardMessage()}
+            {rewardMessage()}
           </Text>
         </VStack>
         <Box p={4} width={"100%"}>

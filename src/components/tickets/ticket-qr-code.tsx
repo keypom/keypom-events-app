@@ -16,8 +16,8 @@ import eventHelperInstance from "@/lib/event";
 import { AttendeeKeyInfo } from "@/lib/helpers/events";
 import { useNavigate } from "react-router-dom";
 import { useEventCredentials, UserData } from "@/stores/event-credentials";
-import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 import { encodeToBase64 } from "@/lib/helpers/crypto";
+import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 
 interface TicketQRCodeProps {
   isLoading: boolean;
@@ -112,7 +112,7 @@ export default function TicketQRCode({
                 {isLoading ? (
                   <Skeleton height="200px" width="full" />
                 ) : (
-                  <QRDetails qrValue={getQRValue(secretKey)} />
+                  <QRDetails qrValue={getQRValue()} />
                 )}
               </BoxWithShape>
               <Flex

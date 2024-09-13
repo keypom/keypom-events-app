@@ -1,11 +1,11 @@
 import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import eventHelperInstance from "@/lib/event";
 import { Box, Input, Button, ButtonGroup } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Regex to validate account ID (NEAR format: lowercase, alphanumeric, _, -, no capital letters)
-const accountIdPattern = /^([a-z\d]+[\-_])*[a-z\d]+$/;
+const accountIdPattern = /^([a-z\d]+[-_])*[a-z\d]+$/;
 
 // Maximum length for username (total 64 - length of factory contract - 1 for the dot)
 const maxUsernameLength = 64 - KEYPOM_TOKEN_FACTORY_CONTRACT.length - 1;

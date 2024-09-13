@@ -1,8 +1,6 @@
 import { NotFound404 } from "@/components/dashboard/not-found-404";
-import { BoxWithShape } from "@/components/tickets/box-with-shape";
 import { PageHeading } from "@/components/ui/page-heading";
 import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
-import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 import { useConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
 import { useEventCredentials } from "@/stores/event-credentials";
@@ -18,7 +16,6 @@ import {
   Image,
   Input,
   ListItem,
-  Skeleton,
   Spinner,
   Text,
   UnorderedList,
@@ -29,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 
 // Full Account ID regex
 const accountIdPattern =
-  /^(([a-z\d]+[\-_])*[a-z\d]+\.)*([a-z\d]+[\-_])*[a-z\d]+$/;
+  /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
 
 // Maximum length for username (total 64 - length of factory contract - 1 for the dot)
 const maxUsernameLength = 64 - KEYPOM_TOKEN_FACTORY_CONTRACT.length - 1;

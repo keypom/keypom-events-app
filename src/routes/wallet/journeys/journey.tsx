@@ -1,4 +1,4 @@
-import { Flex, Heading, Text, VStack } from "@chakra-ui/react";
+import { Flex, HStack, Heading, Text, VStack } from "@chakra-ui/react";
 import { CheckIcon } from "@/components/icons";
 import { PageHeading } from "@/components/ui/page-heading";
 import { ErrorBox } from "@/components/ui/error-box";
@@ -47,17 +47,53 @@ function Step({
   );
 }
 
-const JourneyDetails = ({ title, description, imageSrc, steps }: Journey) => {
+const JourneyDetails = ({
+  title,
+  description,
+  imageSrc,
+  steps,
+  tokenReward,
+}: Journey) => {
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
-      <Image
-        src={imageSrc}
-        width="100%"
-        height="100%"
-        aspectRatio={"1/1"}
-        objectFit="cover"
-        borderRadius="md"
-      />
+      {tokenReward ? (
+        <HStack mt={4} gap={4} wrap="wrap">
+          {/* Token amount */}
+          <Heading
+            as="h3"
+            fontSize="50px"
+            fontWeight="bold"
+            color="white"
+            lineHeight="1"
+            isTruncated // Ensures the text is truncated if it's too long
+            maxW="100%" // Ensures it wraps if needed
+          >
+            {tokenReward}
+          </Heading>
+
+          {/* Label text (e.g., $SOV3) */}
+          <Heading
+            as="h4"
+            fontWeight="normal"
+            textAlign="center"
+            color="brand.400"
+            fontSize="50px"
+            isTruncated // Ensures the text is truncated if it's too long
+            maxW="100%" // Ensures it wraps if needed
+          >
+            $SOV3
+          </Heading>
+        </HStack>
+      ) : (
+        <Image
+          src={imageSrc}
+          width="100%"
+          height="100%"
+          aspectRatio={"1/1"}
+          objectFit="cover"
+          borderRadius="md"
+        />
+      )}
       <VStack alignItems="flex-start" gap={3}>
         <Heading
           as="h3"

@@ -1,7 +1,6 @@
 import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import { Journey } from "@/lib/api/journeys";
 import eventHelperInstance, { ExtClaimedDrop, ExtDropData } from "@/lib/event";
-import { decryptStoredData } from "@/lib/helpers/crypto";
 import { RecoveredAccountInfo } from "@/lib/helpers/events";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { useQuery } from "@tanstack/react-query";
@@ -36,6 +35,9 @@ const mapOwnedJourneyToJourney = (drop: ExtClaimedDrop): Journey => {
     title: drop.name,
     description: `${foundCount} of ${totalCount} found`, // Shows pieces found
     imageSrc: drop.nft_metadata?.media || "", // Use media from nft_metadata for image
+    tokenReward:
+      drop.amount &&
+      eventHelperInstance.yoctoToNearWithMinDecimals(drop.amount),
     steps,
     completed, // Add completed flag
   };
@@ -58,6 +60,9 @@ const mapUnownedJourneyToJourney = (drop: ExtDropData): Journey => {
     title: drop.name,
     description: `0 of ${totalCount} found`, // No pieces found for unowned journeys
     imageSrc: drop.nft_metadata?.media || "", // Use media from nft_metadata for image
+    tokenReward:
+      drop.amount &&
+      eventHelperInstance.yoctoToNearWithMinDecimals(drop.amount),
     steps,
     completed: false, // Unowned journeys are never completed
   };
@@ -75,27 +80,30 @@ const fetchAccountData = async (secretKey: string) => {
     if (!recoveredAccount) {
       throw new Error("Account not found");
     }
-    const tokensAvailable = eventHelperInstance.yoctoToNearWith4Decimals(
+    const tokensAvailable = eventHelperInstance.yoctoToNearWith2Decimals(
       recoveredAccount.ft_balance,
     );
 
     const accountId = recoveredAccount.account_id;
-    const allNFTs = await eventHelperInstance.getCachedNFTDrops();
+    const allDrops = await eventHelperInstance.getCachedDrops();
+
     const ownedCollectibles: ExtClaimedDrop[] =
       await eventHelperInstance.viewCall({
         methodName: "get_claimed_nfts_for_account",
         args: { account_id: accountId },
       });
-    const unownedCollectibles = allNFTs.filter(
-      (nft) => nft.scavenger_hunt === null,
+
+    const unownedCollectibles = allDrops.filter(
+      (drop) => "nft_metadata" in drop && drop.scavenger_hunt === null,
     );
 
     const ownedJourneys: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
       methodName: "get_claimed_scavengers_for_account",
       args: { account_id: accountId },
     });
-    const unownedJourneys = allNFTs.filter(
-      (nft) => nft.scavenger_hunt !== null,
+
+    const unownedJourneys = allDrops.filter(
+      (drop) => drop.scavenger_hunt !== null,
     );
     // Filter out locked items that have the same drop_id as any unlocked item
     const filteredUnownedJourneys = unownedJourneys.filter(

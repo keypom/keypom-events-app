@@ -29,7 +29,11 @@ export default function Journeys() {
       {journeys.length > 0 && (
         <VStack width="100%" spacing={4}>
           {journeys.map((journey) => (
-            <JourneyCard key={journey.id} {...journey} />
+            <JourneyCard
+              key={journey.id}
+              {...journey}
+              tokenReward={journey.tokenReward}
+            />
           ))}
         </VStack>
       )}

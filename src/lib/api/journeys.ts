@@ -9,5 +9,6 @@ export interface Journey {
   description: string;
   imageSrc: string;
   steps: Step[];
+  tokenReward?: string;
   completed: boolean;
 }

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { Hidden } from "@/components/claim/hidden";
 import { Reveal } from "@/components/claim/reveal";
-import eventHelperInstance, { ExtClaimedDrop, ExtDropData } from "@/lib/event";
+import eventHelperInstance, { ExtClaimedDrop } from "@/lib/event";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { ErrorBox } from "@/components/ui/error-box";
 import { useAccountData } from "@/hooks/useAccountData";
@@ -14,8 +14,8 @@ export default function Claim() {
 
   const [revealed, setRevealed] = useState(false);
   const [reward, setReward] = useState<ExtClaimedDrop>();
-  const [numFound, setNumFound] = useState<number>(1);
-  const [numRequired, setNumRequired] = useState<number>(1);
+  const [numFound, setNumFound] = useState<number | undefined>(undefined);
+  const [numRequired, setNumRequired] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const fetchReward = async () => {
@@ -67,7 +67,5 @@ export default function Claim() {
     );
   }
 
-  return (
-    <Reveal foundItem={reward} numFound={numFound} numRequired={numRequired} />
-  );
+  return <Reveal foundItem={reward} numFound={4} numRequired={6} />;
 }

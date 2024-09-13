@@ -5,13 +5,14 @@ import { PageHeading } from "@/components/ui/page-heading";
 import { useAccountData } from "@/hooks/useAccountData";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { ErrorBox } from "@/components/ui/error-box";
+import { useEventCredentials } from "@/stores/event-credentials";
 
 export default function Receive() {
+  const { userData } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
 
   // Check if data is available and destructure safely
   const displayAccountId = data?.displayAccountId;
-  const userData = data?.userData;
 
   // Generate the QR value only if data is available
   const qrValue = displayAccountId ? `profile%%${displayAccountId}` : "";
@@ -43,7 +44,7 @@ export default function Receive() {
                 color="white"
                 noOfLines={1}
               >
-                {userData?.name || "No Name Account"}
+                {userData.name}
               </Heading>
               <Text
                 fontFamily="mono"

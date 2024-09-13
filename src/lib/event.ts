@@ -6,8 +6,8 @@ import {
   FinalExecutionStatus,
   FinalExecutionOutcome,
 } from "near-api-js/lib/providers";
-import { UserData } from "@/hooks/useAccountData";
 import { getPubFromSecret } from "@keypom/core";
+import { UserData } from "@/stores/event-credentials";
 
 let instance: EventJS | undefined;
 
@@ -123,7 +123,7 @@ class EventJS {
       : integerPart;
   };
 
-  yoctoToNearWith4Decimals = (yoctoString: string) => {
+  yoctoToNearWith2Decimals = (yoctoString: string) => {
     const divisor = 1e24;
     const near =
       (BigInt(yoctoString) / BigInt(divisor)).toString() +
@@ -134,7 +134,7 @@ class EventJS {
     const integerPart = split[0];
     let decimalPart = split[1];
 
-    decimalPart = decimalPart.substring(0, 4);
+    decimalPart = decimalPart.substring(0, 2);
 
     return `${integerPart}.${decimalPart}`;
   };
@@ -482,11 +482,11 @@ class EventJS {
   };
 
   // Filter cached drops for NFTs
-  getCachedNFTDrops = async (): Promise<ExtDropData[]> => {
+  getCachedDrops = async (): Promise<ExtDropData[]> => {
     if (this.dropCache.length === 0) {
       await this.fetchDropsWithCache();
     }
-    return this.dropCache.filter((drop) => "nft_metadata" in drop);
+    return this.dropCache;
   };
 
   // Filter cached drops for Tokens
