@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { Redacted } from "@/components/icons";
 
-export function Header() {
+export function Header({ sendTo = "/" }) {
   return (
     <Box
       p={0}
@@ -31,7 +31,7 @@ export function Header() {
         >
           <Flex
             as={Link}
-            to="/"
+            to={sendTo}
             textAlign="center"
             justifyContent="center"
             alignItems="center"

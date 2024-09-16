@@ -177,46 +177,47 @@ class EventJS {
   };
 
   deleteConferenceDrop = async ({
-    wallet,
+    secretKey,
     dropId,
   }: {
-    wallet: Wallet;
+    secretKey: string;
     dropId: string;
   }) => {
-    const accounts = await wallet.getAccounts();
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
 
-    await wallet.signAndSendTransaction({
-      signerId: accounts[0].accountId,
-      receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-      actions: [
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "delete_drop",
-            args: {
-              drop_id: dropId,
-            },
-            gas: "300000000000000",
-            deposit: "0",
-          },
-        },
-      ],
+    await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "delete_drop",
+      args: {
+        drop_id: dropId,
+      },
     });
   };
 
   createConferenceDrop = async ({
-    wallet,
+    secretKey,
     scavengerHunt,
     isScavengerHunt,
     createdDrop,
   }: {
-    wallet: Wallet;
+    secretKey: string;
     isScavengerHunt: boolean;
     scavengerHunt: Array<{ piece: string; description: string }>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdDrop: any;
   }) => {
-    const accounts = await wallet.getAccounts();
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
+
     const pinnedDrop = {
       ...createdDrop,
       artwork: "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
@@ -238,31 +239,21 @@ class EventJS {
     let res: FinalExecutionOutcome | void;
 
     if (createdDrop.nftData) {
-      res = await wallet.signAndSendTransaction({
-        signerId: accounts[0].accountId,
-        receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-        actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: "create_nft_drop",
-              args: {
-                drop_data: {
-                  image: pinnedDrop.artwork,
-                  name: pinnedDrop.name,
-                  scavenger_hunt,
-                },
-                nft_metadata: {
-                  ...pinnedDrop.nftData,
-                  media:
-                    "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
-                },
-              },
-              gas: "300000000000000",
-              deposit: "0",
-            },
+      res = await userAccount.functionCall({
+        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+        methodName: "create_nft_drop",
+        args: {
+          drop_data: {
+            image: pinnedDrop.artwork,
+            name: pinnedDrop.name,
+            scavenger_hunt,
           },
-        ],
+          nft_metadata: {
+            ...pinnedDrop.nftData,
+            media:
+              "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
+          },
+        },
       });
       const status = res?.status as FinalExecutionStatus;
       if (status && status.SuccessValue) {
@@ -277,27 +268,17 @@ class EventJS {
       }
     }
 
-    res = await wallet.signAndSendTransaction({
-      signerId: accounts[0].accountId,
-      receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-      actions: [
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "create_token_drop",
-            args: {
-              drop_data: {
-                image: pinnedDrop.artwork,
-                name: pinnedDrop.name,
-                scavenger_hunt,
-              },
-              token_amount: this.nearToYocto(pinnedDrop.amount),
-            },
-            gas: "300000000000000",
-            deposit: "0",
-          },
+    res = await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "create_token_drop",
+      args: {
+        drop_data: {
+          image: pinnedDrop.artwork,
+          name: pinnedDrop.name,
+          scavenger_hunt,
         },
-      ],
+        token_amount: this.nearToYocto(pinnedDrop.amount),
+      },
     });
 
     const status = res?.status as FinalExecutionStatus;

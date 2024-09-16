@@ -112,7 +112,7 @@ const router = createBrowserRouter([
             path: "/tickets",
             children: [
               {
-                path: "ticket/:id", // Match /events/event/:id
+                path: "ticket/:id",
                 lazy: lazyWithOfflineCheck(
                   () => import("@/routes/tickets/ticket"),
                 ),
@@ -127,7 +127,7 @@ const router = createBrowserRouter([
            * Sponsor/Admin Routes
            */
           {
-            path: "/scan", // scanning tickets
+            path: "/scan",
             children: [
               {
                 path: "tickets",
@@ -143,7 +143,7 @@ const router = createBrowserRouter([
        * Sponsor/Admin Routes
        */
       {
-        path: "/dashboard", // managing drops
+        path: "/sponsorDashboard",
         lazy: async () => {
           if (!navigator.onLine) {
             return { Component: OfflinePage };
@@ -152,12 +152,46 @@ const router = createBrowserRouter([
           const { AuthWalletContextProvider } = await import(
             "@/contexts/AuthWalletContext"
           );
-          const { Dashboard } = await import("@/routes/dashboard");
+          const { sponsorDashboard } = await import(
+            "@/routes/dashboard/sponsorDashboard"
+          );
 
           return {
             Component: () => (
               <AuthWalletContextProvider>
-                <Dashboard />
+                <sponsorDashboard />
+              </AuthWalletContextProvider>
+            ),
+          };
+        },
+      },
+      /**
+       * Attendee Dashboard Route
+       */
+      {
+        path: "/adminDashboard",
+        lazy: async () => {
+          if (!navigator.onLine) {
+            return { Component: OfflinePage };
+          }
+
+          const { AdminAuthProvider } = await import(
+            "@/contexts/AdminAuthContext"
+          );
+
+          const { AuthWalletContextProvider } = await import(
+            "@/contexts/AuthWalletContext"
+          );
+          const { AdminDashboard } = await import(
+            "@/routes/dashboard/adminDashboard"
+          );
+
+          return {
+            Component: () => (
+              <AuthWalletContextProvider>
+                <AdminAuthProvider>
+                  <AdminDashboard />
+                </AdminAuthProvider>
               </AuthWalletContextProvider>
             ),
           };
