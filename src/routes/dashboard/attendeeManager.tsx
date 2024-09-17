@@ -34,6 +34,8 @@ export function AttendeeManager({ setActiveView }) {
   const [isErr, setIsErr] = useState(false);
 
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
+  // To track unique types and filtered attendees
+  const [uniqueAttendeeTypes, setUniqueAttendeeTypes] = useState<string[]>([]);
   const [filteredAttendees, setFilteredAttendees] = useState<AttendeeData[]>(
     [],
   );
@@ -88,7 +90,17 @@ export function AttendeeManager({ setActiveView }) {
     }
   }, [adminUser, fetchAttendeeData]);
 
-  // Filter attendees based on search query and attendee type
+  // Create the unique attendee types only when the attendees array changes
+  useEffect(() => {
+    const uniqueTypes = Array.from(
+      new Set(
+        attendees.flatMap((attendee) => attendee["I consider myself..."] || []),
+      ),
+    );
+
+    setUniqueAttendeeTypes(uniqueTypes); // Save unique types for the dropdown
+  }, [attendees]); // Only rerun this effect when `attendees` changes
+
   useEffect(() => {
     let filtered = attendees;
 
@@ -103,12 +115,14 @@ export function AttendeeManager({ setActiveView }) {
 
     if (attendeeTypeFilter !== "All") {
       filtered = filtered.filter(
-        (attendee) => attendee["Type of Participant"] === attendeeTypeFilter,
+        (attendee) =>
+          Array.isArray(attendee["I consider myself..."]) &&
+          attendee["I consider myself..."].includes(attendeeTypeFilter),
       );
     }
 
     setFilteredAttendees(filtered);
-  }, [searchQuery, attendeeTypeFilter, attendees]);
+  }, [searchQuery, attendeeTypeFilter, attendees]); // Run this effect when `searchQuery`, `attendeeTypeFilter`, or `attendees` change
 
   if (isErr) {
     return (
@@ -149,18 +163,11 @@ export function AttendeeManager({ setActiveView }) {
             width="300px"
           >
             <option value="All">All Types</option>
-            {/* Dynamically populate attendee types */}
-            {Array.from(
-              new Set(
-                attendees.map((attendee) => attendee["Type of Participant"]),
-              ),
-            )
-              .filter((type) => type)
-              .map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
+            {uniqueAttendeeTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
           </Select>
         </Flex>
         <AttendeeTable attendees={filteredAttendees} isLoading={isLoading} />
