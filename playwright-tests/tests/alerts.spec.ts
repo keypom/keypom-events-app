@@ -1,4 +1,5 @@
 import test, { expect } from "@playwright/test";
+import { mockRpcRequest } from "../utils/rpc-mock";
 
 test.describe("Alerts", () => {
   test.describe("User is authenticated", () => {
@@ -6,20 +7,10 @@ test.describe("Alerts", () => {
       storageState: "playwright-tests/storage-states/wallet-connected.json",
     });
 
-    test.beforeEach(async ({ page }) => {
-      await page.goto("/me");
-    });
-
     test("should handle error when fetching alerts", async ({ page }) => {
-      await page.route("https://example.com/alerts", (route) => {
-        route.fulfill({
-          status: 500,
-          body: JSON.stringify({ message: "Internal Server Error" }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-      });
+      await mockRpcRequest({ page, filterParams: { method_name: "get_alerts" }, mockedError: "Internal Server Error" });
+
+      await page.goto("/me");
 
       const alertTitle = page.getByText("[ALERTS]");
       await expect(alertTitle).toBeVisible();
@@ -33,12 +24,13 @@ test.describe("Alerts", () => {
     });
 
     test("should handle no alerts found", async ({ page }) => {
-      await page.route("https://example.com/alerts", (route) => {
-        route.fulfill({
-          status: 200,
-          body: JSON.stringify([]),
-        });
+      await mockRpcRequest({
+        page, filterParams: { method_name: "get_alerts" }, mockedResult: [
+          JSON.stringify([]),
+          1726259361706
+        ]
       });
+      await page.goto("/me");
 
       const alertTitle = page.getByText("[ALERTS]");
       await expect(alertTitle).toBeVisible();
@@ -55,40 +47,14 @@ test.describe("Alerts", () => {
     test("should show latest alert, navigate to alerts page and back", async ({
       page,
     }) => {
-      await page.route("https://example.com/alerts", (route) => {
-        route.fulfill({
-          status: 200,
-          body: JSON.stringify([
-            {
-              id: "1",
-              title: "System Maintenance Scheduled",
-              description:
-                "Our system will undergo scheduled maintenance from 12:00 AM to 4:00 AM. Please save your work and log out before the maintenance window.",
-              href: "/maintenance",
-              linkTitle: "CUSTOM LINK TITLE",
-              creationDate: "2024-09-03T22:02:36.288Z",
-            },
-            {
-              id: "2",
-              title: "New Feature Released",
-              description:
-                "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!",
-              href: "/features",
-              linkTitle: "CUSTOM LINK TITLE",
-              creationDate: "2024-09-03T05:43:13.905Z",
-            },
-            {
-              id: "3",
-              title: "Security Update Available",
-              description:
-                "A critical security update has been released. Please update your software to the latest version to ensure your data remains secure.",
-              href: "/updates",
-              linkTitle: "CUSTOM LINK TITLE",
-              creationDate: "2024-09-03T22:02:00.288Z",
-            },
-          ]),
-        });
+      await mockRpcRequest({
+        page, filterParams: { method_name: "get_alerts" }, mockedResult: [
+          JSON.stringify([{ "Title": "System Maintenance Scheduled", "Description": "Our system will undergo scheduled maintenance from 12:00 AM to 4:00 AM. Please save your work and log out before the maintenance window.", "Custom Link Title": "Check it Out", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "New Feature Released", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "Security Update Available", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE!", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "Maria is cool", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE!", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "Jake is cool", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE!", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "This is my new alert", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE!", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }]),
+          1726259361706
+        ]
       });
+
+      await page.goto("/me");
 
       const alertTitle = page.getByText("[ALERTS]");
       await expect(alertTitle).toBeVisible();
@@ -106,7 +72,7 @@ test.describe("Alerts", () => {
 
         // get all alerts
         const alertItems = await page.getByTestId("alert-item").all();
-        expect(alertItems).toHaveLength(3);
+        expect(alertItems).toHaveLength(6);
       });
 
       await test.step("should click to navigate back to profile page", async () => {
