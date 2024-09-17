@@ -94,6 +94,7 @@ export default function Scan() {
       // If the scan was successful, set success status
       setScanStatus("success");
       setStatusMessage("QR code scanned successfully");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Scan failed", error);
       setScanStatus("error");

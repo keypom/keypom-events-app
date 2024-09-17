@@ -132,7 +132,7 @@ const router = createBrowserRouter([
               {
                 path: "tickets",
                 lazy: lazyWithOfflineCheck(
-                  () => import("@/routes/adminScan/adminScan"),
+                  () => import("@/routes/scan/tickets"),
                 ),
               },
             ],
