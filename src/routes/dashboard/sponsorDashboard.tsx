@@ -1,128 +1,166 @@
-// SponsorDashboard.js
-import { useState, useEffect, useContext } from "react";
-import {
-  Box,
-  Heading,
-  Button,
-  VStack,
-  HStack,
-  useToast,
-} from "@chakra-ui/react";
-import { useAuthWalletContext } from "@/contexts/AuthWalletContext";
+import { useState, useEffect, useCallback } from "react";
+import { Box, Heading, VStack, Spinner } from "@chakra-ui/react";
 import { DropManager } from "./dropManager";
+import eventHelperInstance from "@/lib/event";
+import { NotFound404 } from "@/components/dashboard/not-found-404";
+import { Header } from "@/components/ui/header";
+import { useSponsorDashParams } from "@/hooks/useSponsorDashParams";
 
-export function AdminDashboard() {
-  const { selector, account } = useAuthWalletContext();
+export function SponsorDashboard() {
+  const { accountId, secretKey } = useSponsorDashParams();
 
+  const [sponsorAccountId, setSponsorAccountId] = useState<string | null>(null);
+  const [sponsorKey, setSponsorKey] = useState<string | null>(null);
+  const [isValidated, setIsValidated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
-  const [tokensAvailable, setTokensAvailable] = useState<string>();
-  const [dropsCreated, setDropsCreated] = useState<CreatedConferenceDrop[]>([]);
-  const toast = useToast();
-  const [qrCodeUrls, setQrCodeUrls] = useState<string[]>([]);
-  const [wallet, setWallet] = useState<Wallet>();
 
   useEffect(() => {
-    async function fetchWallet() {
-      if (!selector) return;
-      try {
-        const wallet = await selector.wallet();
-        setWallet(wallet);
-      } catch (error) {
-        console.error("Error fetching wallet:", error);
-      }
-    }
-
-    fetchWallet();
-  }, [selector]);
-
-  const getAccountInformation = useCallback(async () => {
     try {
-      const recoveredAccount = await eventHelperInstance.viewCall({
-        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-        methodName: "recover_account",
-        args: { key_or_account_id: account?.public_key },
-      });
-
-      const tokens = await eventHelperInstance.viewCall({
-        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-        methodName: "ft_balance_of",
-        args: { account_id: recoveredAccount.account_id },
-      });
-      setTokensAvailable(eventHelperInstance.yoctoToNearWith2Decimals(tokens));
-
-      const drops = await eventHelperInstance.viewCall({
-        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-        methodName: "get_drops_created_by_account",
-        args: { account_id: recoveredAccount.account_id },
-      });
-      setDropsCreated(drops);
-    } catch (e) {
-      console.error(e);
-      setIsErr(true);
+      if (accountId && secretKey) {
+        setSponsorAccountId(accountId);
+        setSponsorKey(secretKey);
+      } else {
+        const storedData = localStorage.getItem("SPONSOR_AUTH_TOKEN");
+        if (!storedData) {
+          return;
+        }
+        const { accountId: storedAccountId, secretKey: storedSecretKey } =
+          JSON.parse(storedData);
+        setSponsorAccountId(storedAccountId);
+        setSponsorKey(storedSecretKey);
+      }
+    } catch (error) {
+      console.error("Failed to parse stored sponsor data:", error);
+      localStorage.removeItem("SPONSOR_AUTH_TOKEN");
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Ensure loading state is always updated
     }
-  }, [account?.public_key]);
+  }, [setSponsorAccountId, setSponsorKey, accountId, secretKey]);
+
+  const fetchSponsorConnectionData = useCallback(
+    async (sponsorAccountId: string, sponsorKey: string) => {
+      if (!sponsorAccountId || !sponsorKey) {
+        return;
+      }
+
+      try {
+        console.log(
+          "Fetching sponsor connection data...",
+          sponsorAccountId,
+          sponsorKey,
+        );
+        const recoveredAccount = await eventHelperInstance.viewCall({
+          methodName: "recover_account",
+          args: {
+            key_or_account_id: eventHelperInstance.getPubFromSecret(sponsorKey),
+          },
+        });
+
+        if (recoveredAccount.account_id !== sponsorAccountId) {
+          throw new Error("Invalid account ID");
+        }
+
+        localStorage.setItem(
+          "SPONSOR_AUTH_TOKEN",
+          JSON.stringify({
+            accountId: sponsorAccountId,
+            secretKey: sponsorKey,
+          }),
+        );
+
+        setIsValidated(recoveredAccount.account_status === "Sponsor");
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching admin data:", error);
+        setIsErr(true);
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
-    if (!account) return;
-    getAccountInformation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account]);
+    if (sponsorAccountId && sponsorKey) {
+      fetchSponsorConnectionData(sponsorAccountId, sponsorKey);
+    }
+  }, [sponsorAccountId, fetchSponsorConnectionData, sponsorKey]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("SPONSOR_AUTH_TOKEN");
+    setSponsorAccountId(null);
+    setSponsorKey(null);
+    setIsValidated(false);
+  };
+
+  if (isErr) {
+    return (
+      <NotFound404
+        cta="Back"
+        header="Account Unauthorized"
+        subheader="Check the signed-in account and try again later."
+        onClick={() => {
+          handleLogout();
+          window.location.reload();
+        }}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Box
+        position="relative"
+        width="100%"
+        minHeight="100vh"
+        bg="bg.primary"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Spinner size="xl" color="white" />
+      </Box>
+    );
+  }
 
   return (
-    <Box
-      position="relative"
-      width="100%"
-      minHeight="100vh"
-      bg="bg.primary"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <Box p={8}>
-        {!isAuthenticated ? (
-          <VStack spacing={4}>
+    <Box position="relative" width="100%" minHeight="100vh" bg="bg.primary">
+      {/* Header */}
+      <Header sendTo="/sponsorDashboard" />
+
+      <Box
+        position="relative"
+        width="100%"
+        minHeight="100vh"
+        zIndex={5}
+        px={8}
+        _before={{
+          content: '""',
+          position: "absolute",
+          opacity: 0.7,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundImage: "url(/assets/background.webp)",
+          backgroundSize: "cover",
+          backgroundPosition: "top center",
+          backgroundRepeat: "no-repeat",
+          zIndex: -1,
+        }}
+      >
+        {!sponsorAccountId || !sponsorKey || !isValidated ? (
+          <VStack spacing={4} pt="12">
             <Heading fontFamily="mono" color="white">
-              Admin Login
+              Sponsor Login
             </Heading>
-            <GoogleLogin
-              onSuccess={handleGoogleLoginSuccess}
-              onError={handleGoogleLoginError}
-            />
-            <Button onClick={handleNEARLogin} colorScheme="blue">
-              Sign in with NEAR Wallet
-            </Button>
           </VStack>
         ) : (
           <>
-            {activeView === "main" && (
-              <VStack spacing={6}>
-                <Heading fontFamily="mono" color="white" textAlign="center">
-                  Admin Dashboard
-                </Heading>
-                <HStack spacing={4}>
-                  <Button
-                    colorScheme="teal"
-                    onClick={() => setActiveView("attendee")}
-                  >
-                    Open Attendee Dashboard
-                  </Button>
-                  <Button
-                    colorScheme="blue"
-                    onClick={() => setActiveView("drops")}
-                  >
-                    Manage Drops
-                  </Button>
-                </HStack>
-                <Button colorScheme="red" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </VStack>
-            )}
-            {activeView === "attendee" && <AttendeeManager />}
-            {activeView === "drops" && <DropManager />}
+            <DropManager
+              setIsErr={setIsErr}
+              accountId={sponsorAccountId}
+              secretKey={sponsorKey}
+            />
           </>
         )}
       </Box>

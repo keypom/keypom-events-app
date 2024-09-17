@@ -1,13 +1,16 @@
 // src/contexts/AdminAuthContext.js
 
-import React, { createContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 // Define the type for adminUser
-interface AdminUser {
-  id: string;
+export interface AdminUser {
+  idToken: string;
+}
+
+export interface AdminProfile {
   email: string;
   name: string;
-  // Add other properties as needed
+  picture: string;
 }
 
 // Define the context type
@@ -31,3 +34,16 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     </AdminAuthContext.Provider>
   );
 }
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const useAdminAuthContext = () => {
+  const context = useContext(AdminAuthContext);
+
+  if (context === null || context === undefined) {
+    throw new Error(
+      "useAdminAuthContext must be used within a AdminAuthProvider",
+    );
+  }
+
+  return context;
+};

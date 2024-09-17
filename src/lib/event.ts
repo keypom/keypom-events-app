@@ -1,7 +1,6 @@
 import * as nearAPI from "near-api-js";
 import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import getConfig from "@/config/near";
-import { Wallet } from "@near-wallet-selector/core";
 import {
   FinalExecutionStatus,
   FinalExecutionOutcome,

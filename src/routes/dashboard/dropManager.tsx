@@ -114,7 +114,19 @@ const eventTableColumns: ColumnItem[] = [
   },
 ];
 
-export function DropManager({ accountId, secretKey, setActiveView, setIsErr }) {
+interface DropManagerProps {
+  accountId: string;
+  secretKey: string;
+  setIsErr: (isErr: boolean) => void;
+  setActiveView?: (view: string) => void;
+}
+
+export function DropManager({
+  accountId,
+  secretKey,
+  setActiveView,
+  setIsErr,
+}: DropManagerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [tokensAvailable, setTokensAvailable] = useState<string>();
   const [dropsCreated, setDropsCreated] = useState<CreatedConferenceDrop[]>([]);
@@ -255,12 +267,12 @@ export function DropManager({ accountId, secretKey, setActiveView, setIsErr }) {
         if (scavengerHunt && scavengerHunt.length > 0) {
           const qrCodes = await Promise.all(
             scavengerHunt.map(({ piece }) =>
-              QRCode.toDataURL(`${type}:${dropId}:${piece}`),
+              QRCode.toDataURL(`${type}%%${piece}%%${dropId}`),
             ),
           );
           setQrCodeUrls(qrCodes);
         } else {
-          const url = await QRCode.toDataURL(`${type}:${dropId}`);
+          const url = await QRCode.toDataURL(`${type}%%${dropId}`);
           setQrCodeUrls([url]);
         }
         onQRModalOpen();
@@ -391,13 +403,15 @@ export function DropManager({ accountId, secretKey, setActiveView, setIsErr }) {
             Drop Manager
           </Heading>
           <Spacer />
-          <Button
-            colorScheme="red"
-            variant="outline"
-            onClick={() => setActiveView("main")}
-          >
-            Back
-          </Button>
+          {setActiveView && (
+            <Button
+              colorScheme="red"
+              variant="outline"
+              onClick={() => setActiveView("main")}
+            >
+              Back
+            </Button>
+          )}
         </Flex>
         <TokenDeleteModal />
         <TokenCreateModal />

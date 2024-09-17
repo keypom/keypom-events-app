@@ -61,6 +61,7 @@ const ProfileDropdown = ({ profile, handleLogout }) => {
           bg="brand.400 !important"
           borderColor="brand.600 !important"
           borderRadius="md"
+          w="full"
           py={2}
           mt={2}
           boxShadow="lg"

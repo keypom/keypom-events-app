@@ -124,7 +124,7 @@ export function QRCodeModal() {
               </Button>
             )}
             <Button variant="outline" height={"48px"} onClick={onClose}>
-              Cancel
+              Done
             </Button>
           </ModalFooter>
         </ModalContent>

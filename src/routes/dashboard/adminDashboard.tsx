@@ -1,41 +1,31 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Heading,
   Button,
   VStack,
-  HStack,
   useToast,
-  Skeleton,
   Spinner,
-  IconButton,
   Text,
   Flex,
-  Avatar,
-  MenuButton,
-  Menu,
-  MenuItem,
-  MenuList,
 } from "@chakra-ui/react";
-import { GoogleLogin } from "@react-oauth/google";
-import { AdminAuthContext } from "@/contexts/AdminAuthContext";
+import { AdminProfile, useAdminAuthContext } from "@/contexts/AdminAuthContext";
 import { AttendeeManager } from "./attendeeManager";
 import { DropManager } from "./dropManager";
 import eventHelperInstance from "@/lib/event";
-import { FiChevronDown, FiLogOut } from "react-icons/fi";
 import { jwtDecode } from "jwt-decode";
 import { AIRTABLE_WORKER_URL } from "@/constants/common";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { Header } from "@/components/ui/header";
 import GoogleSignInButton from "./google-sign-in";
-import { Image } from "@/components/ui/image";
 import ProfileDropdown from "./profile-dropdown";
 
 export function AdminDashboard() {
-  const { adminUser, setAdminUser } = useContext(AdminAuthContext);
+  const { adminUser, setAdminUser } = useAdminAuthContext();
   const [adminAccount, setAdminAccount] = useState<string | null>(null);
   const [adminKey, setAdminKey] = useState<string | null>(null);
-  const [profile, setProfile] = useState<any>(null); // Store profile information
+  const [profile, setProfile] = useState<AdminProfile | null>(null);
+
   const [isValidated, setIsValidated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState("main");
@@ -46,7 +36,7 @@ export function AdminDashboard() {
   useEffect(() => {
     const storedIdToken = localStorage.getItem("GOOGLE_AUTH_ID_TOKEN");
     if (storedIdToken && isTokenValid(storedIdToken)) {
-      const decodedToken = jwtDecode(storedIdToken);
+      const decodedToken: AdminProfile = jwtDecode(storedIdToken);
       setProfile(decodedToken); // Store decoded profile information
       console.log("Decoded token:", decodedToken);
       setAdminUser({ idToken: storedIdToken });
@@ -59,7 +49,7 @@ export function AdminDashboard() {
   const handleGoogleLoginSuccess = (credentialResponse) => {
     const idToken = credentialResponse.credential;
     localStorage.setItem("GOOGLE_AUTH_ID_TOKEN", idToken);
-    const decodedToken = jwtDecode(idToken);
+    const decodedToken: AdminProfile = jwtDecode(idToken);
     setProfile(decodedToken); // Store decoded profile information
     setAdminUser({ idToken });
   };
@@ -120,6 +110,10 @@ export function AdminDashboard() {
   const isTokenValid = (token) => {
     try {
       const decoded = jwtDecode(token);
+      if (!decoded.exp) {
+        return false;
+      }
+
       const now = Date.now() / 1000;
       return decoded.exp > now;
     } catch (error) {
@@ -233,7 +227,7 @@ export function AdminDashboard() {
             {activeView === "attendee" && (
               <AttendeeManager setActiveView={setActiveView} />
             )}
-            {activeView === "drops" && (
+            {activeView === "drops" && adminKey && adminAccount && (
               <DropManager
                 setIsErr={setIsErr}
                 accountId={adminAccount}

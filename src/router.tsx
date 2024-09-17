@@ -143,25 +143,18 @@ const router = createBrowserRouter([
        * Sponsor/Admin Routes
        */
       {
-        path: "/sponsorDashboard",
+        path: "/sponsorDashboard/:id",
         lazy: async () => {
           if (!navigator.onLine) {
             return { Component: OfflinePage };
           }
 
-          const { AuthWalletContextProvider } = await import(
-            "@/contexts/AuthWalletContext"
-          );
-          const { sponsorDashboard } = await import(
+          const { SponsorDashboard } = await import(
             "@/routes/dashboard/sponsorDashboard"
           );
 
           return {
-            Component: () => (
-              <AuthWalletContextProvider>
-                <sponsorDashboard />
-              </AuthWalletContextProvider>
-            ),
+            Component: () => <SponsorDashboard />,
           };
         },
       },
@@ -179,20 +172,15 @@ const router = createBrowserRouter([
             "@/contexts/AdminAuthContext"
           );
 
-          const { AuthWalletContextProvider } = await import(
-            "@/contexts/AuthWalletContext"
-          );
           const { AdminDashboard } = await import(
             "@/routes/dashboard/adminDashboard"
           );
 
           return {
             Component: () => (
-              <AuthWalletContextProvider>
-                <AdminAuthProvider>
-                  <AdminDashboard />
-                </AdminAuthProvider>
-              </AuthWalletContextProvider>
+              <AdminAuthProvider>
+                <AdminDashboard />
+              </AdminAuthProvider>
             ),
           };
         },

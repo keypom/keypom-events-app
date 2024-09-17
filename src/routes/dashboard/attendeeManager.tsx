@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useContext } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Heading,
@@ -12,16 +12,31 @@ import {
 } from "@chakra-ui/react";
 import { DataTable } from "@/components/dashboard/table";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
-import { AdminAuthContext } from "@/contexts/AdminAuthContext";
+import { useAdminAuthContext } from "@/contexts/AdminAuthContext";
 import { AIRTABLE_WORKER_URL } from "@/constants/common";
 
+interface AttendeeData {
+  "Full Name": string;
+  "NEAR Account": string;
+  Email: string;
+  "Type of Participant": string;
+  "I consider myself...": string[];
+  "Job Title": string;
+  "Name of Project or Company": string;
+  Country: string;
+  "By submitting this form, I acknowledge that I have read and agree to the Privacy Policy. I consent to the collection, use, and disclosure of my personal information in accordance with the policy.";
+  "Last Modified": string;
+}
+
 export function AttendeeManager({ setActiveView }) {
-  const { adminUser } = useContext(AdminAuthContext);
+  const { adminUser } = useAdminAuthContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
 
-  const [attendees, setAttendees] = useState([]);
-  const [filteredAttendees, setFilteredAttendees] = useState([]);
+  const [attendees, setAttendees] = useState<AttendeeData[]>([]);
+  const [filteredAttendees, setFilteredAttendees] = useState<AttendeeData[]>(
+    [],
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [attendeeTypeFilter, setAttendeeTypeFilter] = useState("All");
 
@@ -51,7 +66,7 @@ export function AttendeeManager({ setActiveView }) {
         setAttendees(data.attendees);
         setFilteredAttendees(data.attendees); // Initialize filtered data
         setIsLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching attendees:", error);
         setIsErr(true);
         setIsLoading(false);
