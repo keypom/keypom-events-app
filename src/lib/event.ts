@@ -1,5 +1,9 @@
 import * as nearAPI from "near-api-js";
-import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+import {
+  NETWORK_ID,
+  KEYPOM_TOKEN_FACTORY_CONTRACT,
+  IPFS_PINNING_WORKER_URL,
+} from "@/constants/common";
 import getConfig from "@/config/near";
 import {
   FinalExecutionStatus,
@@ -7,6 +11,7 @@ import {
 } from "near-api-js/lib/providers";
 import { getPubFromSecret } from "@keypom/core";
 import { UserData } from "@/stores/event-credentials";
+import { pinToIpfs } from "./helpers/ipfs";
 
 let instance: EventJS | undefined;
 
@@ -47,6 +52,8 @@ export interface ExtDropData {
   type: "token" | "nft";
   name: string;
   drop_id: string;
+  image?: string;
+  num_claimed: number;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   amount?: string; // Only present if the drop is a token
   scavenger_hunt?: ScavengerHunt[]; // Optional scavenger hunt pieces
@@ -217,10 +224,7 @@ class EventJS {
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
 
-    const pinnedDrop = {
-      ...createdDrop,
-      artwork: "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
-    };
+    console.log("Created drop: ", createdDrop);
 
     let scavenger_hunt:
       | Array<{ piece: string; description: string }>
@@ -237,20 +241,19 @@ class EventJS {
 
     let res: FinalExecutionOutcome | void;
 
+    const pinnedImage = await pinToIpfs(createdDrop.artwork);
     if (createdDrop.nftData) {
       res = await userAccount.functionCall({
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "create_nft_drop",
         args: {
           drop_data: {
-            image: pinnedDrop.artwork,
-            name: pinnedDrop.name,
+            name: createdDrop.name,
             scavenger_hunt,
           },
           nft_metadata: {
-            ...pinnedDrop.nftData,
-            media:
-              "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
+            ...createdDrop.nftData,
+            media: pinnedImage,
           },
         },
       });
@@ -272,11 +275,11 @@ class EventJS {
       methodName: "create_token_drop",
       args: {
         drop_data: {
-          image: pinnedDrop.artwork,
-          name: pinnedDrop.name,
+          image: pinnedImage,
+          name: createdDrop.name,
           scavenger_hunt,
         },
-        token_amount: this.nearToYocto(pinnedDrop.amount),
+        token_amount: this.nearToYocto(createdDrop.amount),
       },
     });
 

@@ -2,6 +2,7 @@ import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import { Journey } from "@/lib/api/journeys";
 import eventHelperInstance, { ExtClaimedDrop, ExtDropData } from "@/lib/event";
 import { RecoveredAccountInfo } from "@/lib/helpers/events";
+import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { useQuery } from "@tanstack/react-query";
 
@@ -34,7 +35,9 @@ const mapOwnedJourneyToJourney = (drop: ExtClaimedDrop): Journey => {
     id: drop.drop_id, // Use drop ID as journey ID
     title: drop.name,
     description: `${foundCount} of ${totalCount} found`, // Shows pieces found
-    imageSrc: drop.nft_metadata?.media || "", // Use media from nft_metadata for image
+    imageSrc: getIpfsImageSrcUrl(
+      drop.nft_metadata?.media || "", // Use media from nft_metadata for image
+    ),
     tokenReward:
       drop.amount &&
       eventHelperInstance.yoctoToNearWithMinDecimals(drop.amount),
@@ -59,7 +62,9 @@ const mapUnownedJourneyToJourney = (drop: ExtDropData): Journey => {
     id: drop.drop_id, // Use drop ID as journey ID
     title: drop.name,
     description: `0 of ${totalCount} found`, // No pieces found for unowned journeys
-    imageSrc: drop.nft_metadata?.media || "", // Use media from nft_metadata for image
+    imageSrc: getIpfsImageSrcUrl(
+      drop.nft_metadata?.media || "", // Use media from nft_metadata for image
+    ),
     tokenReward:
       drop.amount &&
       eventHelperInstance.yoctoToNearWithMinDecimals(drop.amount),

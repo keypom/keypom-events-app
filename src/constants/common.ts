@@ -16,6 +16,7 @@ export const NETWORK_ID = import.meta.env.VITE_NETWORK_ID ?? "testnet";
 export const isTestEnv = import.meta.env.MODE === "test";
 export const CLOUDFLARE_IPFS = "https://cloudflare-ipfs.com/ipfs";
 export const AIRTABLE_WORKER_URL = import.meta.env.VITE_AIRTABLE_WORKER_URL;
+export const IPFS_PINNING_WORKER_URL = import.meta.env.VITE_IPFS_WORKER_URL;
 
 /**
  * KEYPOM

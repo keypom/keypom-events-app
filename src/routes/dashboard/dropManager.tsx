@@ -24,11 +24,10 @@ import {
   type DataItem,
 } from "@/components/dashboard/table/types";
 import { DataTable } from "@/components/dashboard/table";
-import { CLOUDFLARE_IPFS } from "@/constants/common";
 
 import { truncateAddress } from "@/utils/truncateAddress";
 import { formatTokensAvailable } from "@/utils/formatTokensAvailable";
-import eventHelperInstance from "@/lib/event";
+import eventHelperInstance, { ExtDropData, ScavengerHunt } from "@/lib/event";
 
 import { TokenDeleteModal } from "@/components/modals/token-delete";
 import { useTokenDeleteModalStore } from "@/stores/token-delete-modal";
@@ -36,44 +35,12 @@ import { TokenCreateModal } from "@/components/modals/token-create";
 import { useTokenCreateModalStore } from "@/stores/token-create-modal";
 import { QRCodeModal } from "@/components/modals/qr-modal";
 import { useQRModalStore } from "@/stores/qr-modal";
-
-export interface ScavengerHunt {
-  piece: string;
-  description: string;
-}
-
-export interface ConferenceDropBase {
-  scavenger_hunt?: ScavengerHunt[];
-  name: string;
-  image: string;
-  num_claimed: number;
-  id: string;
-}
-
-export interface CreatedNFTConferenceDrop {
-  base: ConferenceDropBase;
-  series_id: number;
-}
-
-export interface CreatedTokenConferenceDrop {
-  base: ConferenceDropBase;
-  amount: string;
-}
-
-function isTokenDrop(
-  item: CreatedConferenceDrop,
-): item is CreatedTokenConferenceDrop {
-  return (item as CreatedTokenConferenceDrop).amount !== undefined;
-}
+import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 
 export type GetTicketDataFn = (
-  data: CreatedConferenceDrop[],
+  data: ExtDropData[],
   handleDelete: (pubKey: string) => Promise<void>,
 ) => DataItem[];
-
-export type CreatedConferenceDrop =
-  | CreatedNFTConferenceDrop
-  | CreatedTokenConferenceDrop;
 
 const eventTableColumns: ColumnItem[] = [
   {
@@ -129,7 +96,7 @@ export function DropManager({
 }: DropManagerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [tokensAvailable, setTokensAvailable] = useState<string>();
-  const [dropsCreated, setDropsCreated] = useState<CreatedConferenceDrop[]>([]);
+  const [dropsCreated, setDropsCreated] = useState<ExtDropData[]>([]);
   const toast = useToast();
   const [qrCodeUrls, setQrCodeUrls] = useState<string[]>([]);
 
@@ -141,7 +108,7 @@ export function DropManager({
       });
       setTokensAvailable(eventHelperInstance.yoctoToNearWith2Decimals(tokens));
 
-      const drops = await eventHelperInstance.viewCall({
+      const drops: ExtDropData[] = await eventHelperInstance.viewCall({
         methodName: "get_drops_created_by_account",
         args: { account_id: accountId },
       });
@@ -184,77 +151,77 @@ export function DropManager({
   const getTableRows: GetTicketDataFn = (data, handleDeleteClick) => {
     if (!data) return [];
 
-    return data.map((item) => ({
-      id: item.base.id,
-      name: (
-        <HStack spacing={4}>
-          <Image
-            alt={`Event image for ${item.base.id}`}
-            borderRadius="12px"
-            boxSize="48px"
-            objectFit="contain"
-            src={`${CLOUDFLARE_IPFS}/${item.base.image}`}
-          />
-          <VStack align="left">
-            <Heading
-              fontFamily="body"
-              fontSize={{ md: "lg" }}
-              fontWeight="bold"
+    return data.map((item) => {
+      const dropImageCid =
+        item.type === "nft" ? item.nft_metadata!.media : item.image!;
+
+      return {
+        id: item.drop_id,
+        name: (
+          <HStack spacing={4}>
+            <Image
+              alt={`Event image for ${item.drop_id}`}
+              borderRadius="12px"
+              boxSize="48px"
+              objectFit="contain"
+              src={getIpfsImageSrcUrl(dropImageCid)}
+            />
+            <VStack align="left">
+              <Heading
+                fontFamily="body"
+                fontSize={{ md: "lg" }}
+                fontWeight="bold"
+              >
+                {truncateAddress(`${item.name}`, "end", 16)}
+              </Heading>
+            </VStack>
+          </HStack>
+        ),
+        type: item.type === "token" ? "Token" : "NFT",
+        numClaimed: item.num_claimed,
+        numPieces: item.scavenger_hunt ? item.scavenger_hunt.length : "None",
+        reward:
+          item.type === "token" ? (
+            eventHelperInstance.yoctoToNearWith2Decimals(item.amount!)
+          ) : (
+            <Image
+              alt={`Event image for ${item.drop_id}`}
+              borderRadius="12px"
+              boxSize="48px"
+              objectFit="contain"
+              src={getIpfsImageSrcUrl(dropImageCid)}
+            />
+          ),
+        action: (
+          <HStack justify="right" spacing={8} w="100%">
+            <Button
+              size="md"
+              variant="primary"
+              maxWidth={"max-content"}
+              onClick={(e) => {
+                e.stopPropagation();
+                generateQRCode(item.drop_id, item.type, item.scavenger_hunt);
+                onQRModalOpen();
+              }}
             >
-              {truncateAddress(`${item.base.name}`, "end", 16)}
-            </Heading>
-          </VStack>
-        </HStack>
-      ),
-      type: isTokenDrop(item) ? "Token" : "NFT",
-      numClaimed: item.base.num_claimed,
-      numPieces: item.base.scavenger_hunt
-        ? item.base.scavenger_hunt.length
-        : "None",
-      reward: isTokenDrop(item) ? (
-        eventHelperInstance.yoctoToNearWith2Decimals(item.amount)
-      ) : (
-        <Image
-          alt={`Event image for ${item.base.id}`}
-          borderRadius="12px"
-          boxSize="48px"
-          objectFit="contain"
-          src={`${CLOUDFLARE_IPFS}/${item.base.image}`}
-        />
-      ),
-      action: (
-        <HStack justify="right" spacing={8} w="100%">
-          <Button
-            size="md"
-            variant="primary"
-            maxWidth={"max-content"}
-            onClick={(e) => {
-              e.stopPropagation();
-              generateQRCode(
-                item.base.id,
-                isTokenDrop(item) ? "token" : "nft",
-                item.base.scavenger_hunt,
-              );
-              onQRModalOpen();
-            }}
-          >
-            Get QR Code
-          </Button>
-          <Button
-            variant="icon"
-            background={"red.400"}
-            height={"48px"}
-            width={"48px"}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDeleteClick(item.base.id);
-            }}
-          >
-            <DeleteIcon color="white" />
-          </Button>
-        </HStack>
-      ),
-    }));
+              Get QR Code
+            </Button>
+            <Button
+              variant="icon"
+              background={"red.400"}
+              height={"48px"}
+              width={"48px"}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteClick(item.drop_id);
+              }}
+            >
+              <DeleteIcon color="white" />
+            </Button>
+          </HStack>
+        ),
+      };
+    });
   };
 
   const generateQRCode = useCallback(
@@ -338,7 +305,7 @@ export function DropManager({
             isClosable: true,
           });
           await getAccountInformation(); // Refresh the drop list
-          const type = isTokenDrop(dropCreated) ? "token" : "nft";
+          const type = dropCreated.nftData === undefined ? "token" : "nft";
           if (isScavengerHunt) {
             generateQRCode(dropId, type, completeScavengerHunt);
           } else {
