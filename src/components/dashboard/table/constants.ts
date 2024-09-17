@@ -43,4 +43,8 @@ export const EMPTY_TABLE_TEXT_MAP = {
     heading: `You don't have any tickets`,
     text: `Create a new ticket!`,
   },
+  "event-attendees": {
+    heading: `No attendees found with the current filters`,
+    text: `Please try different filters`,
+  },
 };

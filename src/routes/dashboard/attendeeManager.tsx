@@ -6,14 +6,20 @@ import {
   useToast,
   Button,
   Input,
-  Select,
   Flex,
   Spacer,
+  Text,
+  HStack,
 } from "@chakra-ui/react";
+import Select from "react-select"; // Import from react-select
+import makeAnimated from "react-select/animated";
 import { DataTable } from "@/components/dashboard/table";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { useAdminAuthContext } from "@/contexts/AdminAuthContext";
 import { AIRTABLE_WORKER_URL } from "@/constants/common";
+import chroma from "chroma-js"; // To handle color manipulation
+import { colors } from "@/theme/colors";
+import { truncateAddress } from "@/utils/truncateAddress";
 
 interface AttendeeData {
   "Full Name": string;
@@ -28,20 +34,82 @@ interface AttendeeData {
   "Last Modified": string;
 }
 
+const pageSizeOptions = [
+  { label: "10", value: 10 },
+  { label: "20", value: 20 },
+  { label: "50", value: 50 },
+];
+
+const animatedComponents = makeAnimated();
+// Custom color styles for react-select
+const colourStyles = {
+  control: (styles) => ({
+    ...styles,
+    backgroundColor: "transparent",
+    // Make placeholder text the same color as the main text
+    borderColor: colors.brand[400],
+    color: "white",
+    ":hover": {
+      borderColor: colors.brand[400],
+    },
+  }),
+  placeholder: (styles) => ({
+    ...styles,
+    color: "white", // Set the placeholder text color to white
+  }),
+  option: (styles, { isFocused, isSelected }) => {
+    const color = chroma(colors.brand[400]);
+    return {
+      ...styles,
+      backgroundColor: isSelected
+        ? colors.brand[600]
+        : isFocused
+          ? color.alpha(0.1).css()
+          : colors.bg.primary,
+      color: isSelected ? "white" : colors.brand[400],
+      ":hover": {
+        backgroundColor: colors.brand[600],
+        color: "white",
+      },
+    };
+  },
+  multiValue: (styles, { data }) => {
+    const color = chroma(colors.brand[400]);
+    return {
+      ...styles,
+      backgroundColor: color.alpha(0.1).css(),
+    };
+  },
+  multiValueLabel: (styles) => ({
+    ...styles,
+    color: colors.brand[400],
+  }),
+  multiValueRemove: (styles) => ({
+    ...styles,
+    color: colors.brand[400],
+    ":hover": {
+      backgroundColor: colors.brand[600],
+      color: "white",
+    },
+  }),
+};
+
 export function AttendeeManager({ setActiveView }) {
   const { adminUser } = useAdminAuthContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
 
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
-  // To track unique types and filtered attendees
   const [uniqueAttendeeTypes, setUniqueAttendeeTypes] = useState<string[]>([]);
   const [filteredAttendees, setFilteredAttendees] = useState<AttendeeData[]>(
     [],
   );
   const [searchQuery, setSearchQuery] = useState("");
-  const [attendeeTypeFilter, setAttendeeTypeFilter] = useState("All");
+  const [attendeeTypeFilter, setAttendeeTypeFilter] = useState<string[]>([]); // Allow for multiple selections
 
+  const [curPage, setCurPage] = useState(0); // Add current page state
+  const [pageSize, setPageSize] = useState(10); // Add page size state
+  const [numPages, setNumPages] = useState(0); // Add total number of pages
   const toast = useToast();
 
   // Function to fetch attendee data
@@ -101,9 +169,11 @@ export function AttendeeManager({ setActiveView }) {
     setUniqueAttendeeTypes(uniqueTypes); // Save unique types for the dropdown
   }, [attendees]); // Only rerun this effect when `attendees` changes
 
+  // Apply filtering logic across all attendees (before pagination)
   useEffect(() => {
     let filtered = attendees;
 
+    // Apply search query filter across all attendees
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
       filtered = filtered.filter((attendee) =>
@@ -113,16 +183,38 @@ export function AttendeeManager({ setActiveView }) {
       );
     }
 
-    if (attendeeTypeFilter !== "All") {
+    // Apply attendee type filter across all attendees
+    if (attendeeTypeFilter.length > 0) {
       filtered = filtered.filter(
         (attendee) =>
           Array.isArray(attendee["I consider myself..."]) &&
-          attendee["I consider myself..."].includes(attendeeTypeFilter),
+          attendeeTypeFilter.every((filter) =>
+            attendee["I consider myself..."].includes(filter),
+          ),
       );
     }
+    console.log("Filtered attendees: ", filtered);
 
+    // Update filtered attendees and reset pagination
     setFilteredAttendees(filtered);
-  }, [searchQuery, attendeeTypeFilter, attendees]); // Run this effect when `searchQuery`, `attendeeTypeFilter`, or `attendees` change
+    setNumPages(Math.ceil(filtered.length / pageSize)); // Calculate total pages
+    setCurPage(0); // Reset to first page when filters change
+  }, [searchQuery, attendeeTypeFilter, attendees, pageSize]);
+
+  const handleNextPage = () => {
+    setCurPage((prev) => Math.min(prev + 1, numPages - 1));
+  };
+
+  const handlePrevPage = () => {
+    setCurPage((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handlePageSizeChange = (newSize) => {
+    if (newSize) {
+      setPageSize(newSize);
+    }
+    setCurPage(0); // Reset to first page when page size changes
+  };
 
   if (isErr) {
     return (
@@ -133,50 +225,92 @@ export function AttendeeManager({ setActiveView }) {
     );
   }
 
+  const typeOptions = uniqueAttendeeTypes.map((type) => ({
+    label: type,
+    value: type,
+  }));
+
   return (
     <Box p={8}>
-      <>
-        <Flex alignItems="center" mb={4}>
-          <Heading fontFamily="mono" color="white">
-            Attendee Dashboard
-          </Heading>
-          <Spacer />
-          <Button
-            colorScheme="red"
-            variant="outline"
-            onClick={() => setActiveView("main")}
-          >
-            Back
-          </Button>
-        </Flex>
-        <Flex mb={4} flexWrap="wrap" gap={4}>
-          <Input
-            placeholder="Search by name"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            width="300px"
-          />
+      {/* Filters */}
+      <Flex alignItems="center" mb={4}>
+        <Heading fontFamily="mono" color="white">
+          Attendee Dashboard
+        </Heading>
+        <Spacer />
+        <Button
+          colorScheme="red"
+          variant="outline"
+          onClick={() => setActiveView("main")}
+        >
+          Back
+        </Button>
+      </Flex>
+      <Flex mb={4} flexWrap="wrap" gap={4}>
+        <Input
+          placeholder="Search by name"
+          _placeholder={{ color: "white" }}
+          borderColor="brand.400"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          width="300px"
+        />
+        <Select
+          isMulti
+          components={animatedComponents}
+          options={typeOptions}
+          styles={colourStyles}
+          placeholder="Filter by attendee type"
+          onChange={(selectedOptions) => {
+            const values = selectedOptions.map((option) => option.value);
+            setAttendeeTypeFilter(values);
+          }}
+        />
+      </Flex>
+
+      {/* Data Table */}
+      <AttendeeTable
+        attendees={filteredAttendees}
+        isLoading={isLoading}
+        curPage={curPage}
+        pageSize={pageSize}
+      />
+
+      {/* Pagination Controls */}
+      <Flex justify="space-between" alignItems="center" mt={4}>
+        <Button onClick={handlePrevPage} isDisabled={curPage === 0}>
+          Previous
+        </Button>
+        <Text>
+          Page {curPage + 1} of {numPages}
+        </Text>
+        <Button onClick={handleNextPage} isDisabled={curPage + 1 === numPages}>
+          Next
+        </Button>
+      </Flex>
+
+      {/* Page Size Selector */}
+      <Flex mt={4} justify="flex-end">
+        <HStack>
+          <Text mr={2}>Rows per page:</Text>
           <Select
-            placeholder="Filter by attendee type"
-            value={attendeeTypeFilter}
-            onChange={(e) => setAttendeeTypeFilter(e.target.value)}
-            width="300px"
-          >
-            <option value="All">All Types</option>
-            {uniqueAttendeeTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </Select>
-        </Flex>
-        <AttendeeTable attendees={filteredAttendees} isLoading={isLoading} />
-      </>
+            defaultValue={pageSizeOptions.find(
+              (option) => option.value === pageSize,
+            )} // Set default value
+            options={pageSizeOptions}
+            onChange={(selectedOption) =>
+              handlePageSizeChange(selectedOption?.value)
+            } // Handle change correctly
+            placeholder="Rows per page"
+            styles={colourStyles} // Apply the styles
+          />
+        </HStack>
+      </Flex>
     </Box>
   );
 }
 
-const AttendeeTable = ({ attendees, isLoading }) => {
+const AttendeeTable = ({ attendees, isLoading, curPage, pageSize }) => {
   const columns = [
     {
       id: "fullName",
@@ -200,20 +334,6 @@ const AttendeeTable = ({ attendees, isLoading }) => {
       sortable: true,
     },
     {
-      id: "attendeeType",
-      title: "Attendee Type",
-      selector: (row) => row["Type of Participant"] || "N/A",
-      loadingElement: <Skeleton height="30px" />,
-      sortable: true,
-    },
-    {
-      id: "ticketSent",
-      title: "Ticket Sent",
-      selector: (row) => (row["Ticket Sent"] ? "Yes" : "No"),
-      loadingElement: <Skeleton height="30px" />,
-      sortable: true,
-    },
-    {
       id: "scannedIn",
       title: "Scanned In",
       selector: (row) => (row["Scanned In"] ? "Yes" : "No"),
@@ -222,9 +342,18 @@ const AttendeeTable = ({ attendees, isLoading }) => {
     },
   ];
 
-  const data = attendees.map((attendee, index) => ({
+  // Apply pagination by slicing the data based on current page and page size
+  const paginatedData = attendees.slice(
+    curPage * pageSize,
+    (curPage + 1) * pageSize,
+  );
+
+  const data = paginatedData.map((attendee, index) => ({
     id: index,
     ...attendee,
+    "Full Name": truncateAddress(attendee["Full Name"], "end", 20),
+    "NEAR Account": truncateAddress(attendee["NEAR Account"], "end", 20),
+    Email: truncateAddress(attendee["Email"], "end", 20),
   }));
 
   return (
@@ -234,6 +363,7 @@ const AttendeeTable = ({ attendees, isLoading }) => {
       excludeMobileColumns={[]}
       loading={isLoading}
       showColumns={true}
+      type="event-attendees"
       showMobileTitles={["scannedIn"]}
     />
   );
