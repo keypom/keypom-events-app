@@ -84,6 +84,7 @@ const eventTableColumns: ColumnItem[] = [
 interface DropManagerProps {
   accountId: string;
   secretKey: string;
+  isAdmin?: boolean;
   setIsErr: (isErr: boolean) => void;
   setActiveView?: (view: string) => void;
 }
@@ -93,6 +94,7 @@ export function DropManager({
   secretKey,
   setActiveView,
   setIsErr,
+  isAdmin = false,
 }: DropManagerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [tokensAvailable, setTokensAvailable] = useState<string>();
@@ -171,6 +173,7 @@ export function DropManager({
                 fontFamily="body"
                 fontSize={{ md: "lg" }}
                 fontWeight="bold"
+                paddingRight={8}
               >
                 {truncateAddress(`${item.name}`, "end", 16)}
               </Heading>
@@ -184,13 +187,7 @@ export function DropManager({
           item.type === "token" ? (
             eventHelperInstance.yoctoToNearWith2Decimals(item.amount!)
           ) : (
-            <Image
-              alt={`Event image for ${item.drop_id}`}
-              borderRadius="12px"
-              boxSize="48px"
-              objectFit="contain"
-              src={getIpfsImageSrcUrl(dropImageCid)}
-            />
+            <>NFT</>
           ),
         action: (
           <HStack justify="right" spacing={8} w="100%">
@@ -387,6 +384,7 @@ export function DropManager({
           <Skeleton height="200px" />
         ) : (
           <DropActionsSection
+            isAdmin={isAdmin}
             tokensAvailable={tokensAvailable}
             setDropType={setTokenType}
             onCreateDrop={() => {
@@ -408,7 +406,12 @@ export function DropManager({
   );
 }
 
-const DropActionsSection = ({ tokensAvailable, onCreateDrop, setDropType }) => (
+const DropActionsSection = ({
+  tokensAvailable,
+  onCreateDrop,
+  setDropType,
+  isAdmin,
+}) => (
   <>
     <HStack justify="space-between" py={8}>
       <Box
@@ -428,7 +431,7 @@ const DropActionsSection = ({ tokensAvailable, onCreateDrop, setDropType }) => (
             Tokens Available
           </Text>
           <Heading fontWeight={"400"}>
-            {formatTokensAvailable(tokensAvailable)}
+            {isAdmin ? "∞" : formatTokensAvailable(tokensAvailable)}
           </Heading>
         </HStack>
       </Box>

@@ -16,10 +16,14 @@ import makeAnimated from "react-select/animated";
 import { DataTable } from "@/components/dashboard/table";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { useAdminAuthContext } from "@/contexts/AdminAuthContext";
-import { AIRTABLE_WORKER_URL } from "@/constants/common";
+import {
+  AIRTABLE_WORKER_URL,
+  KEYPOM_TOKEN_FACTORY_CONTRACT,
+} from "@/constants/common";
 import chroma from "chroma-js"; // To handle color manipulation
 import { colors } from "@/theme/colors";
 import { truncateAddress } from "@/utils/truncateAddress";
+import eventHelperInstance from "@/lib/event";
 
 interface AttendeeData {
   "Full Name": string;
@@ -30,6 +34,7 @@ interface AttendeeData {
   "Job Title": string;
   "Name of Project or Company": string;
   Country: string;
+  "Conference Public Key": string;
   "By submitting this form, I acknowledge that I have read and agree to the Privacy Policy. I consent to the collection, use, and disclosure of my personal information in accordance with the policy.";
   "Last Modified": string;
 }
@@ -99,6 +104,13 @@ export function AttendeeManager({ setActiveView }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
 
+  console.log(
+    "PK: ",
+    eventHelperInstance.getPubFromSecret(
+      "ed25519:67TvR1fimTfmCeanLbfqNVsRLJBZSwcXDpiGZQPTnEsXMsW1ShhFrFtzMuB338HJ7m4HUpNae4dudCbnuLGwgyiw",
+    ),
+  );
+
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
   const [uniqueAttendeeTypes, setUniqueAttendeeTypes] = useState<string[]>([]);
   const [filteredAttendees, setFilteredAttendees] = useState<AttendeeData[]>(
@@ -133,10 +145,59 @@ export function AttendeeManager({ setActiveView }) {
 
         const data = await response.json();
         console.log("Data: ", data);
-        setAttendees(data.attendees);
-        setFilteredAttendees(data.attendees); // Initialize filtered data
+        // Check if data.attendees is an array before calling map
+        const attendees = data.attendees;
+
+        if (!Array.isArray(attendees)) {
+          throw new Error(
+            "Unexpected response format: attendees is not an array",
+          );
+        }
+
+        // Process attendee data in parallel using Promise.all
+        const updatedAttendees = await Promise.all(
+          attendees.map(async (attendee) => {
+            const pubKey = attendee["Conference Public Key"];
+            if (!pubKey) {
+              return {
+                ...attendee,
+                "NEAR Account": "TBD",
+                "Scanned In": false,
+              };
+            }
+
+            // Make the view call for each attendee
+            const attendeeInfo = await eventHelperInstance.viewCall({
+              methodName: "get_key_information",
+              args: {
+                key: pubKey,
+              },
+            });
+
+            if (!attendeeInfo) {
+              return {
+                ...attendee,
+                "NEAR Account": "TBD",
+                "Scanned In": false,
+              };
+            }
+
+            // Return the updated attendee information
+            return {
+              ...attendee,
+              "NEAR Account": attendeeInfo.account_id
+                .split(".")[0]
+                .substring(KEYPOM_TOKEN_FACTORY_CONTRACT),
+
+              "Scanned In": attendeeInfo.has_scanned,
+            };
+          }),
+        );
+
+        setAttendees(updatedAttendees);
+        setFilteredAttendees(updatedAttendees); // Initialize filtered data
         setIsLoading(false);
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error fetching attendees:", error);
         setIsErr(true);
         setIsLoading(false);

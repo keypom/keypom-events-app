@@ -229,6 +229,7 @@ export function AdminDashboard() {
             )}
             {activeView === "drops" && adminKey && adminAccount && (
               <DropManager
+                isAdmin={true}
                 setIsErr={setIsErr}
                 accountId={adminAccount}
                 secretKey={adminKey}
