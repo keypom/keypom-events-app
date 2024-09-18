@@ -1,12 +1,14 @@
-import { ArrowIcon, ScanIcon } from "@/components/icons";
+import { ArrowIcon, ScanIcon, UserIcon } from "@/components/icons";
 import { useAccountData } from "@/hooks/useAccountData";
 import { useConferenceData } from "@/hooks/useConferenceData";
+import { useEventCredentials } from "@/stores/event-credentials";
 import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 export function WalletActions() {
   const { data, isLoading, isError } = useAccountData();
   const { data: conferenceData } = useConferenceData();
+  const { isAdmin } = useEventCredentials();
 
   const balance = isLoading || isError ? "-----" : data?.balance;
 
@@ -15,16 +17,23 @@ export function WalletActions() {
   return (
     <>
       <VStack spacing={2} width={"100%"}>
-        <Heading
-          fontFamily="mono"
-          fontSize="64px"
-          color="white"
-          fontWeight="400"
-          textAlign="center"
-          data-testid="wallet-balance"
-        >
-          {balance}
-        </Heading>
+        {isAdmin ? (
+          <Button variant="primary" as={Link} to={`/me/admin`}>
+            <UserIcon width={24} height={24} />
+            <span>ADMIN DASHBOARD</span>
+          </Button>
+        ) : (
+          <Heading
+            fontFamily="mono"
+            fontSize="64px"
+            color="white"
+            fontWeight="400"
+            textAlign="center"
+            data-testid="wallet-balance"
+          >
+            {balance}
+          </Heading>
+        )}
         <HStack spacing={2}>
           <Box
             width="115px"

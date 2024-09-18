@@ -1,13 +1,13 @@
 import * as nearAPI from "near-api-js";
 import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import getConfig from "@/config/near";
-import { Wallet } from "@near-wallet-selector/core";
 import {
   FinalExecutionStatus,
   FinalExecutionOutcome,
 } from "near-api-js/lib/providers";
 import { getPubFromSecret } from "@keypom/core";
 import { UserData } from "@/stores/event-credentials";
+import { pinToIpfs } from "./helpers/ipfs";
 
 let instance: EventJS | undefined;
 
@@ -48,6 +48,8 @@ export interface ExtDropData {
   type: "token" | "nft";
   name: string;
   drop_id: string;
+  image?: string;
+  num_claimed: number;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   amount?: string; // Only present if the drop is a token
   scavenger_hunt?: ScavengerHunt[]; // Optional scavenger hunt pieces
@@ -177,50 +179,48 @@ class EventJS {
   };
 
   deleteConferenceDrop = async ({
-    wallet,
+    secretKey,
     dropId,
   }: {
-    wallet: Wallet;
+    secretKey: string;
     dropId: string;
   }) => {
-    const accounts = await wallet.getAccounts();
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
 
-    await wallet.signAndSendTransaction({
-      signerId: accounts[0].accountId,
-      receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-      actions: [
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "delete_drop",
-            args: {
-              drop_id: dropId,
-            },
-            gas: "300000000000000",
-            deposit: "0",
-          },
-        },
-      ],
+    await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "delete_drop",
+      args: {
+        drop_id: dropId,
+      },
     });
   };
 
   createConferenceDrop = async ({
-    wallet,
+    secretKey,
     scavengerHunt,
     isScavengerHunt,
     createdDrop,
   }: {
-    wallet: Wallet;
+    secretKey: string;
     isScavengerHunt: boolean;
     scavengerHunt: Array<{ piece: string; description: string }>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdDrop: any;
   }) => {
-    const accounts = await wallet.getAccounts();
-    const pinnedDrop = {
-      ...createdDrop,
-      artwork: "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
-    };
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
+
+    console.log("Created drop: ", createdDrop);
 
     let scavenger_hunt:
       | Array<{ piece: string; description: string }>
@@ -237,32 +237,21 @@ class EventJS {
 
     let res: FinalExecutionOutcome | void;
 
+    const pinnedImage = await pinToIpfs(createdDrop.artwork);
     if (createdDrop.nftData) {
-      res = await wallet.signAndSendTransaction({
-        signerId: accounts[0].accountId,
-        receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-        actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: "create_nft_drop",
-              args: {
-                drop_data: {
-                  image: pinnedDrop.artwork,
-                  name: pinnedDrop.name,
-                  scavenger_hunt,
-                },
-                nft_metadata: {
-                  ...pinnedDrop.nftData,
-                  media:
-                    "bafybeibadywqnworqo5azj4rume54j5wuqgphljds7haxdf2kc45ytewpy",
-                },
-              },
-              gas: "300000000000000",
-              deposit: "0",
-            },
+      res = await userAccount.functionCall({
+        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+        methodName: "create_nft_drop",
+        args: {
+          drop_data: {
+            name: createdDrop.name,
+            scavenger_hunt,
           },
-        ],
+          nft_metadata: {
+            ...createdDrop.nftData,
+            media: pinnedImage,
+          },
+        },
       });
       const status = res?.status as FinalExecutionStatus;
       if (status && status.SuccessValue) {
@@ -277,27 +266,17 @@ class EventJS {
       }
     }
 
-    res = await wallet.signAndSendTransaction({
-      signerId: accounts[0].accountId,
-      receiverId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-      actions: [
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "create_token_drop",
-            args: {
-              drop_data: {
-                image: pinnedDrop.artwork,
-                name: pinnedDrop.name,
-                scavenger_hunt,
-              },
-              token_amount: this.nearToYocto(pinnedDrop.amount),
-            },
-            gas: "300000000000000",
-            deposit: "0",
-          },
+    res = await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "create_token_drop",
+      args: {
+        drop_data: {
+          image: pinnedImage,
+          name: createdDrop.name,
+          scavenger_hunt,
         },
-      ],
+        token_amount: this.nearToYocto(createdDrop.amount),
+      },
     });
 
     const status = res?.status as FinalExecutionStatus;
@@ -390,6 +369,31 @@ class EventJS {
       args: {
         drop_id: dropId,
         scavenger_id: scavId,
+      },
+    });
+  };
+
+  mintConferenceTokens = async ({
+    secretKey,
+    sendTo,
+    amount,
+  }: {
+    secretKey: string;
+    sendTo: string;
+    amount: number;
+  }) => {
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
+    await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "ft_mint",
+      args: {
+        account_id: `${sendTo}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`,
+        amount: this.nearToYocto(amount.toString()),
       },
     });
   };

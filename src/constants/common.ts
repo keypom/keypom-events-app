@@ -11,21 +11,27 @@ import { FooterItem } from "@/components/ui/footer";
 /**
  * ENVIRONMENT
  */
-
-export const NETWORK_ID = import.meta.env.VITE_NETWORK_ID ?? "testnet";
+export const REQUIRED_ENV_VARS = [
+  "VITE_CONTRACT_ID",
+  "VITE_NETWORK_ID",
+  "VITE_AIRTABLE_WORKER_URL",
+  "VITE_IPFS_WORKER_URL",
+  "VITE_GOOGLE_CLIENT_ID",
+];
+export const NETWORK_ID = import.meta.env.VITE_NETWORK_ID;
 export const isTestEnv = import.meta.env.MODE === "test";
-export const CLOUDFLARE_IPFS = "https://cloudflare-ipfs.com/ipfs";
+export const AIRTABLE_WORKER_URL = import.meta.env.VITE_AIRTABLE_WORKER_URL;
+export const IPFS_PINNING_WORKER_URL = import.meta.env.VITE_IPFS_WORKER_URL;
 
 /**
  * KEYPOM
  */
 export const KEYPOM_CONTRACTS = {
   testnet: {
-    TOKEN_FACTORY_CONTRACT:
-      import.meta.env.VITE_CONTRACT_ID || "1726258983645-factory.testnet",
+    TOKEN_FACTORY_CONTRACT: import.meta.env.VITE_CONTRACT_ID,
   },
   mainnet: {
-    TOKEN_FACTORY_CONTRACT: import.meta.env.VITE_CONTRACT_ID || "TODO",
+    TOKEN_FACTORY_CONTRACT: import.meta.env.VITE_CONTRACT_ID,
   },
 };
 export const KEYPOM_TOKEN_FACTORY_CONTRACT =
@@ -52,6 +58,7 @@ export type DROP_TYPES = (typeof DROP_TYPE)[DROP_TYPE_KEYS];
 export const UNAUTHENTICATED_ROUTES = [
   "/agenda",
   "/help",
+  "/me/admin",
   // Do not modify below
   "/welcome",
   "/tickets/ticket",
@@ -63,7 +70,11 @@ export const HIDDEN_FOOTER_ROUTES = [
   "/welcome",
   "/tickets/ticket",
   "/scan/tickets",
+  "/me/admin",
 ];
+
+// Routes that should not have dimension constraints
+export const NO_DIMENSION_CONSTRAINT_ROUTES = ["/me/admin"];
 
 // Footer navigation items for app
 export const FOOTER_ITEMS: FooterItem[] = [

@@ -1,4 +1,5 @@
 import eventHelperInstance, { ExtDropData } from "../event";
+import { getIpfsImageSrcUrl } from "../helpers/ipfs";
 
 export interface Collectible {
   id: string;
@@ -27,7 +28,7 @@ export const fetchCollectibleById: (
     title: dropInfo.nft_metadata.title,
     description: dropInfo.nft_metadata.description,
     assetType: "poap",
-    imageSrc: dropInfo.nft_metadata.media,
+    imageSrc: getIpfsImageSrcUrl(dropInfo.nft_metadata?.media || ""),
     isFound: true,
   };
 };

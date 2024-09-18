@@ -1,9 +1,15 @@
-export function Spinner() {
+export function Spinner({ size = "lg" }: { size?: "sm" | "lg" }) {
+  let height = "3rem";
+  let width = "3rem";
+  if (size === "sm") {
+    height = "1.5rem";
+    width = "1.5rem";
+  }
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="3rem"
-      height="3rem"
+      width={width}
+      height={height}
       viewBox="0 0 24 24"
     >
       <path

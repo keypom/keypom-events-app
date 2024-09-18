@@ -47,7 +47,7 @@ export default function TicketQRCode({
       }
 
       if (keyInfo.has_scanned === true) {
-        setEventCredentials(secretKey, userData);
+        setEventCredentials(secretKey, userData, false);
         if (keyInfo.account_id === null) {
           navigate("/welcome");
         } else {

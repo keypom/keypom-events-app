@@ -6,6 +6,7 @@ import { PageHeading } from "@/components/ui/page-heading";
 import { CollectibleCard } from "@/components/wallet/collectibles/card";
 import { useAccountData } from "@/hooks/useAccountData";
 import { ExtClaimedDrop, ExtDropData } from "@/lib/event";
+import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 
 const Divider = () => {
   return (
@@ -43,7 +44,9 @@ const CollectiblesGrid = ({
               title={collectible.nft_metadata?.title || ""}
               description={collectible.nft_metadata?.description || ""}
               assetType="POAP"
-              imageSrc={collectible.nft_metadata?.media || ""}
+              imageSrc={getIpfsImageSrcUrl(
+                collectible.nft_metadata?.media || "",
+              )}
               isFound={false}
             />
           </GridItem>
@@ -65,7 +68,9 @@ const CollectiblesGrid = ({
               title={collectible.nft_metadata?.title || ""}
               description={collectible.nft_metadata?.description || ""}
               assetType="POAP"
-              imageSrc={collectible.nft_metadata?.media || ""}
+              imageSrc={getIpfsImageSrcUrl(
+                collectible.nft_metadata?.media || "",
+              )}
               isFound={false}
               disabled
             />

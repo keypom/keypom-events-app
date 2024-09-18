@@ -10,7 +10,6 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useTokenDeleteModalStore } from "@/stores/token-delete-modal";
-import { Wallet } from "@near-wallet-selector/core";
 import { useState } from "react";
 import eventHelperInstance from "@/lib/event";
 
@@ -19,11 +18,11 @@ export function TokenDeleteModal() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleDelete = async ({
-    wallet,
+    secretKey,
     dropId,
     getAccountInformation,
   }: {
-    wallet: Wallet;
+    secretKey: string;
     dropId: string;
     getAccountInformation: () => Promise<void>;
   }) => {
@@ -31,7 +30,7 @@ export function TokenDeleteModal() {
       setCurrentStep(1);
 
       await eventHelperInstance.deleteConferenceDrop({
-        wallet,
+        secretKey,
         dropId,
       });
 
