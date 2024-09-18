@@ -15,9 +15,6 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
     foundItem.amount || "0",
   );
 
-  // Determine the number of decimal places
-  const split = amountToDisplay.split(".");
-  const decimalLength = split.length > 1 ? split[1].length : 0;
   const isScavenger = numFound !== undefined && numRequired !== undefined;
   const rewardMessage = () => {
     if (isScavenger) {
@@ -30,16 +27,6 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
 
     return "Claimed";
   };
-
-  // Adjust font size based on the number of decimals
-  let fontSize;
-  if (decimalLength === 0) {
-    fontSize = "108px";
-  } else if (decimalLength <= 2) {
-    fontSize = "78px";
-  } else {
-    fontSize = "68px";
-  }
 
   const rewardComponent = () => {
     // For NFTs we can just use the image split component
@@ -84,7 +71,6 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
         boxWidth="200px"
         boxHeight="250px"
         bgColor="black"
-        tokenFontSize={fontSize}
         labelFontSize="52px"
         tokenColor="white"
         labelColor="brand.400"

@@ -64,7 +64,6 @@ export function Hidden({
         Math.max(0, eventData.deltaX),
         maxSwipeDistance,
       );
-      // animateSwipeProgress(newProgress);
       springProgress.set(newProgress);
     },
     onSwipedRight: () => {
