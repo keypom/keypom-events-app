@@ -11,6 +11,7 @@ export default function Me() {
   const { data, isLoading, isError, error } = useAccountData();
 
   const displayName = isLoading || isError ? "------" : data?.displayAccountId;
+  console.log("display name: ", data?.accountId);
 
   if (isError) {
     console.error("Error loading account data: ", error);

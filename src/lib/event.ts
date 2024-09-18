@@ -373,6 +373,31 @@ class EventJS {
     });
   };
 
+  mintConferenceTokens = async ({
+    secretKey,
+    sendTo,
+    amount,
+  }: {
+    secretKey: string;
+    sendTo: string;
+    amount: number;
+  }) => {
+    const keyPair = nearAPI.KeyPair.fromString(secretKey);
+    await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
+    const userAccount = new nearAPI.Account(
+      this.nearConnection.connection,
+      KEYPOM_TOKEN_FACTORY_CONTRACT,
+    );
+    await userAccount.functionCall({
+      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+      methodName: "ft_mint",
+      args: {
+        account_id: `${sendTo}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`,
+        amount: this.nearToYocto(amount.toString()),
+      },
+    });
+  };
+
   sendConferenceTokens = async ({
     secretKey,
     sendTo,

@@ -1,87 +1,31 @@
 import react from "@vitejs/plugin-react";
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite"; // loadEnv to load environment variables
 
-// custom plugins
 import { nodePolyfills } from "vite-plugin-node-polyfills";
-// import { VitePWA } from "vite-plugin-pwa";
+
+const REQUIRED_ENV_VARS = [
+  "VITE_CONTRACT_ID",
+  "VITE_NETWORK_ID",
+  "VITE_AIRTABLE_WORKER_URL",
+  "VITE_IPFS_WORKER_URL",
+  "VITE_GOOGLE_CLIENT_ID",
+];
 
 // https://vitejs.dev/config/
-export default () => {
+export default ({ mode }: { mode: string }) => {
+  // Load environment variables based on the current mode (e.g., 'development' or 'production')
+  const env = loadEnv(mode, process.cwd(), "");
+
+  // Check for required environment variables
+  REQUIRED_ENV_VARS.forEach((envVar) => {
+    if (!env[envVar]) {
+      throw new Error(`Missing env var: ${envVar}`);
+    }
+  });
+
   return defineConfig({
-    plugins: [
-      react(),
-      // resolves polyfills needed by near-api-js
-      nodePolyfills({ include: ["http", "https", "buffer"] }),
-      // pwa
-      // VitePWA({
-      // registerType: "autoUpdate",
-      // workbox: {
-      //   navigateFallbackDenylist: [/^\/dashboard/],
-      //   runtimeCaching: [
-      //     {
-      //       urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-      //       handler: 'CacheFirst',
-      //       options: {
-      //         cacheName: 'google-fonts-cache',
-      //         expiration: {
-      //           maxEntries: 10,
-      //           maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-      //         },
-      //         cacheableResponse: {
-      //           statuses: [0, 200]
-      //         }
-      //       }
-      //     },
-      //     {
-      //       urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-      //       handler: 'CacheFirst',
-      //       options: {
-      //         cacheName: 'images-cache',
-      //         expiration: {
-      //           maxEntries: 60,
-      //           maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
-      //         }
-      //       }
-      //     },
-      //     {
-      //       urlPattern: /\.(?:js|css)$/,
-      //       handler: 'StaleWhileRevalidate',
-      //       options: {
-      //         cacheName: 'static-resources',
-      //         expiration: {
-      //           maxEntries: 60,
-      //           maxAgeSeconds: 24 * 60 * 60 // 24 hours
-      //         }
-      //       }
-      //     }
-      //   ]
-      // },
-      // includeAssets: [
-      //   "favicon.ico",
-      //   "apple-touch-icon.png",
-      //   "mask-icon.svg",
-      // ],
-      // manifest: {
-      //   name: "Keypom [Redacted] Event App",
-      //   short_name: "Redacted",
-      //   description: "Modular PWA with Keypom ticketing for Redacted Event",
-      //   theme_color: "#000000",
-      //   icons: [
-      //     {
-      //       src: "pwa-192x192.png",
-      //       sizes: "192x192",
-      //       type: "image/png",
-      //     },
-      //     {
-      //       src: "pwa-512x512.png",
-      //       sizes: "512x512",
-      //       type: "image/png",
-      //     },
-      //   ],
-      // },
-      // }),
-    ],
+    plugins: [react(), nodePolyfills({ include: ["http", "https", "buffer"] })],
     server: {
       port: 5173,
     },

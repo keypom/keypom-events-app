@@ -200,7 +200,7 @@ export function AdminDashboard() {
             {activeView === "main" && (
               <VStack spacing={6} align="center" pt="12">
                 <Heading fontFamily="mono" color="white" textAlign="center">
-                  Welcome, Admin
+                  Admin Dashboard
                 </Heading>
                 {/* User Profile Dropdown */}
                 {profile && (
@@ -225,7 +225,10 @@ export function AdminDashboard() {
               </VStack>
             )}
             {activeView === "attendee" && (
-              <AttendeeManager setActiveView={setActiveView} />
+              <AttendeeManager
+                setActiveView={setActiveView}
+                adminKey={adminKey}
+              />
             )}
             {activeView === "drops" && adminKey && adminAccount && (
               <DropManager

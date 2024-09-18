@@ -24,6 +24,7 @@ import chroma from "chroma-js"; // To handle color manipulation
 import { colors } from "@/theme/colors";
 import { truncateAddress } from "@/utils/truncateAddress";
 import eventHelperInstance from "@/lib/event";
+import { Spinner } from "@/components/ui/spinner";
 
 interface AttendeeData {
   "Full Name": string;
@@ -99,7 +100,7 @@ const colourStyles = {
   }),
 };
 
-export function AttendeeManager({ setActiveView }) {
+export function AttendeeManager({ setActiveView, adminKey }) {
   const { adminUser } = useAdminAuthContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
@@ -161,7 +162,7 @@ export function AttendeeManager({ setActiveView }) {
             if (!pubKey) {
               return {
                 ...attendee,
-                "NEAR Account": "TBD",
+                "NEAR Account": undefined,
                 "Scanned In": false,
               };
             }
@@ -177,7 +178,7 @@ export function AttendeeManager({ setActiveView }) {
             if (!attendeeInfo) {
               return {
                 ...attendee,
-                "NEAR Account": "TBD",
+                "NEAR Account": undefined,
                 "Scanned In": false,
               };
             }
@@ -237,11 +238,19 @@ export function AttendeeManager({ setActiveView }) {
     // Apply search query filter across all attendees
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter((attendee) =>
-        attendee["Full Name"]
-          ? attendee["Full Name"].toLowerCase().includes(lowercasedQuery)
-          : false,
-      );
+      filtered = filtered.filter((attendee) => {
+        const fullName = attendee["Full Name"]
+          ? attendee["Full Name"].toLowerCase()
+          : "";
+        const nearAccount = attendee["NEAR Account"]
+          ? attendee["NEAR Account"].toLowerCase()
+          : "";
+
+        return (
+          fullName.includes(lowercasedQuery) ||
+          nearAccount.includes(lowercasedQuery)
+        );
+      });
     }
 
     // Apply attendee type filter across all attendees
@@ -309,7 +318,7 @@ export function AttendeeManager({ setActiveView }) {
       </Flex>
       <Flex mb={4} flexWrap="wrap" gap={4}>
         <Input
-          placeholder="Search by name"
+          placeholder="Search name or username"
           _placeholder={{ color: "white" }}
           borderColor="brand.400"
           value={searchQuery}
@@ -332,6 +341,7 @@ export function AttendeeManager({ setActiveView }) {
       {/* Data Table */}
       <AttendeeTable
         attendees={filteredAttendees}
+        adminKey={adminKey}
         isLoading={isLoading}
         curPage={curPage}
         pageSize={pageSize}
@@ -370,8 +380,80 @@ export function AttendeeManager({ setActiveView }) {
     </Box>
   );
 }
+const AttendeeTable = ({
+  attendees,
+  isLoading,
+  curPage,
+  pageSize,
+  adminKey,
+}) => {
+  const [sendingTo, setSendingTo] = useState<string | null>(null); // Track which user is being sent tokens
+  const [tokenAmounts, setTokenAmounts] = useState<{ [key: string]: string }>(
+    {},
+  ); // Track token amounts per attendee, store as strings to handle decimals
+  const toast = useToast(); // Initialize the toast for notifications
 
-const AttendeeTable = ({ attendees, isLoading, curPage, pageSize }) => {
+  const handleSendTokens = async (attendeeId: string) => {
+    setSendingTo(attendeeId); // Set the attendee as the one being sent tokens
+    try {
+      const tokenAmount = parseFloat(tokenAmounts[attendeeId] || "0");
+
+      if (tokenAmount <= 0) {
+        toast({
+          title: "Invalid Token Amount",
+          description: "Please enter a valid token amount greater than 0.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      // Simulate sending tokens logic (replace with actual token sending code)
+      await eventHelperInstance.mintConferenceTokens({
+        secretKey: adminKey,
+        sendTo: attendeeId,
+        amount: tokenAmount,
+      });
+
+      // Show success toast after sending tokens
+      toast({
+        title: "Tokens sent",
+        description: `Successfully sent ${tokenAmount} tokens to ${attendeeId}`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      // Reset the state after sending tokens
+      setSendingTo(null);
+      setTokenAmounts({});
+    } catch (error) {
+      console.error("Error sending tokens", error);
+
+      // Show error toast if token sending fails
+      toast({
+        title: "Error",
+        description: `Failed to send tokens to ${attendeeId}. Please try again.`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      setSendingTo(null); // Reset the state in case of error
+    }
+  };
+
+  const handleTokenChange = (attendeeId: string, value: string) => {
+    // Allow only positive numbers and decimals
+    if (!/^\d*\.?\d*$/.test(value)) return;
+
+    setTokenAmounts((prev) => ({
+      ...prev,
+      [attendeeId]: value,
+    }));
+  };
+
   const columns = [
     {
       id: "fullName",
@@ -400,6 +482,73 @@ const AttendeeTable = ({ attendees, isLoading, curPage, pageSize }) => {
       selector: (row) => (row["Scanned In"] ? "Yes" : "No"),
       loadingElement: <Skeleton height="30px" />,
       sortable: true,
+    },
+    {
+      id: "sendTokens",
+      title: "Send Tokens",
+      selector: (row) => {
+        const nearAccount = row["NEAR Account"];
+        const isNearAccountValid = nearAccount && nearAccount !== "TBD";
+        const isCurrentSending = sendingTo === row["NEAR Account"]; // Check if this row is the one being sent tokens
+
+        return (
+          <HStack>
+            {isCurrentSending ? (
+              <>
+                {/* Show spinner and Sending... message */}
+                <Text>Sending...</Text>
+                <Spinner size="sm" />
+              </>
+            ) : (
+              <>
+                {tokenAmounts[row["NEAR Account"]] !== undefined ? (
+                  <>
+                    {/* Token input field */}
+                    <Input
+                      size="sm"
+                      width="80px"
+                      type="text"
+                      value={tokenAmounts[row["NEAR Account"]] || ""}
+                      onChange={(e) =>
+                        handleTokenChange(row["NEAR Account"], e.target.value)
+                      }
+                      isDisabled={
+                        sendingTo !== null && sendingTo !== row["NEAR Account"]
+                      } // Disable if sending to another user
+                    />
+                    {/* Confirm button */}
+                    <Button
+                      size="sm"
+                      onClick={() => handleSendTokens(row["NEAR Account"])}
+                      isDisabled={
+                        !isNearAccountValid ||
+                        sendingTo !== null ||
+                        parseFloat(tokenAmounts[row["NEAR Account"]] || "0") <=
+                          0
+                      } // Disable if invalid NEAR Account or if sending to someone else or token amount is invalid
+                    >
+                      ✔️
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      setTokenAmounts({
+                        ...tokenAmounts,
+                        [row["NEAR Account"]]: "0",
+                      })
+                    }
+                    isDisabled={!isNearAccountValid || sendingTo !== null} // Disable if invalid NEAR Account or sending to another user
+                  >
+                    Send Tokens
+                  </Button>
+                )}
+              </>
+            )}
+          </HStack>
+        );
+      },
     },
   ];
 
