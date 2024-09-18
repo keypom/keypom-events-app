@@ -10,6 +10,7 @@ interface TokenScavRewardImageProps {
   labelFontSize?: string; // Font size for label (e.g., SOV3)
   borderRadius?: string; // Border radius of the box
   labelColor?: string; // Text color for label
+  tokenFontSize?: string; // Font size for token amount
 }
 
 export const TokenScavRewardImage = ({
@@ -21,8 +22,9 @@ export const TokenScavRewardImage = ({
   tokenColor = "black", // Default token text color
   labelFontSize = "22px", // Default font size for the label
   labelColor = "black", // Default label text color
+  tokenFontSize = "108px", // Default font size for token amount
 }: TokenScavRewardImageProps) => {
-  const [tokenFontSize, setTokenFontSize] = useState<string>("108px");
+  const [responsiveFontSize, setResponsiveFontSize] = useState<string>("108px");
 
   useEffect(() => {
     const numericBoxWidth = parseFloat(boxWidth);
@@ -30,7 +32,7 @@ export const TokenScavRewardImage = ({
     const scalingFactor = 0.75;
     const newFontSize = numericBoxWidth / (tokenLength * scalingFactor);
     const fontSize = Math.max(12, Math.min(newFontSize, 108));
-    setTokenFontSize(`${fontSize}px`);
+    setResponsiveFontSize(`${fontSize}px`);
   }, [boxWidth, tokenAmount]);
 
   return (
@@ -48,7 +50,7 @@ export const TokenScavRewardImage = ({
       {/* Token amount */}
       <Heading
         as="h3"
-        fontSize={tokenFontSize}
+        fontSize={tokenFontSize || responsiveFontSize}
         fontWeight="bold"
         color={tokenColor}
         lineHeight="1.1"
