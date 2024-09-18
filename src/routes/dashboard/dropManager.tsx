@@ -85,14 +85,12 @@ interface DropManagerProps {
   accountId: string;
   secretKey: string;
   isAdmin?: boolean;
-  setIsErr: (isErr: boolean) => void;
-  setActiveView?: (view: string) => void;
+  setIsErr?: (isErr: boolean) => void;
 }
 
 export function DropManager({
   accountId,
   secretKey,
-  setActiveView,
   setIsErr,
   isAdmin = false,
 }: DropManagerProps) {
@@ -118,6 +116,7 @@ export function DropManager({
       setDropsCreated(drops);
     } catch (e) {
       console.error(e);
+      if (!setIsErr) return;
       setIsErr(true);
     } finally {
       setIsLoading(false);
@@ -367,15 +366,6 @@ export function DropManager({
             Drop Manager
           </Heading>
           <Spacer />
-          {setActiveView && (
-            <Button
-              colorScheme="red"
-              variant="outline"
-              onClick={() => setActiveView("main")}
-            >
-              Back
-            </Button>
-          )}
         </Flex>
         <TokenDeleteModal />
         <TokenCreateModal />

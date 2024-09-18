@@ -102,7 +102,7 @@ export function AdminCreateDrop() {
       <DropManager
         accountId={adminAccountId}
         secretKey={adminKey}
-        setIsErr={setIsLoading}
+        isAdmin={true}
       />
     </Box>
   );
