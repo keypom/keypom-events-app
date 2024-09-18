@@ -1,9 +1,5 @@
 import * as nearAPI from "near-api-js";
-import {
-  NETWORK_ID,
-  KEYPOM_TOKEN_FACTORY_CONTRACT,
-  IPFS_PINNING_WORKER_URL,
-} from "@/constants/common";
+import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import getConfig from "@/config/near";
 import {
   FinalExecutionStatus,

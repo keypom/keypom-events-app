@@ -78,7 +78,7 @@ const colourStyles = {
       },
     };
   },
-  multiValue: (styles, { data }) => {
+  multiValue: (styles) => {
     const color = chroma(colors.brand[400]);
     return {
       ...styles,
@@ -197,7 +197,7 @@ export function AttendeeManager({ setActiveView }) {
         setAttendees(updatedAttendees);
         setFilteredAttendees(updatedAttendees); // Initialize filtered data
         setIsLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching attendees:", error);
         setIsErr(true);
         setIsLoading(false);
@@ -322,7 +322,7 @@ export function AttendeeManager({ setActiveView }) {
           options={typeOptions}
           styles={colourStyles}
           placeholder="Filter by attendee type"
-          onChange={(selectedOptions) => {
+          onChange={(selectedOptions: any) => {
             const values = selectedOptions.map((option) => option.value);
             setAttendeeTypeFilter(values);
           }}
