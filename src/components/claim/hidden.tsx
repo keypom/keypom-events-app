@@ -100,10 +100,6 @@ export function Hidden({
     };
   }, []);
 
-  useEffect(() => {
-    console.log("swipe width", slideWidth);
-  }, [slideWidth]);
-
   return (
     <Box mt="64px" position="relative" p={4}>
       <Image
