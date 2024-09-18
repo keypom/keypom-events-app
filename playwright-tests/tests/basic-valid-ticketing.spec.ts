@@ -91,9 +91,7 @@ test.describe("Basic valid ticketing (User shows ticket)", () => {
         },
       });
 
-      await page.goto(
-        `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_HASH}`,
-      );
+      await page.goto(`/tickets/ticket/ga_pass#${UNSCANNED_TICKET_HASH}`);
     });
 
     test("should show the ticket QR page", async ({ page }) => {
