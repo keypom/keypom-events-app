@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { DROP_ID, EVENT_ID, FUNDER_ID } from "../utils/constants";
+import { DROP_ID } from "../utils/constants";
 import { mockTicketScan } from "../utils/qr-mock";
 
 const NOT_SCANNED_KEY =
@@ -12,7 +12,7 @@ const ALREADY_SCANNED_KEY =
 test.describe("Basic ticketing (Sponsor scans ticket)", () => {
   // Mock the QR code scanner
   test.beforeEach(async ({ page }) => {
-    page.goto(`/scan/event/${FUNDER_ID}:${EVENT_ID}`);
+    page.goto("/scan/tickets");
 
     await page.waitForSelector("text=Scanning Tickets For");
   });

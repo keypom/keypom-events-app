@@ -9,11 +9,10 @@ test.describe("Profile", () => {
     });
 
     test.beforeEach(async ({ page }) => {
-      await page.route("https://example.com/alerts", (route) => {
-        route.fulfill({
-          status: 200,
-          body: JSON.stringify([]),
-        });
+      await mockRpcRequest({
+        page,
+        filterParams: { method_name: "get_alerts" },
+        mockedResult: [JSON.stringify([]), 1726259361706],
       });
 
       await mockRpcRequest({
