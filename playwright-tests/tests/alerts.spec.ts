@@ -8,7 +8,11 @@ test.describe("Alerts", () => {
     });
 
     test("should handle error when fetching alerts", async ({ page }) => {
-      await mockRpcRequest({ page, filterParams: { method_name: "get_alerts" }, mockedError: "Internal Server Error" });
+      await mockRpcRequest({
+        page,
+        filterParams: { method_name: "get_alerts" },
+        mockedError: "Internal Server Error",
+      });
 
       await page.goto("/me");
 
@@ -25,10 +29,9 @@ test.describe("Alerts", () => {
 
     test("should handle no alerts found", async ({ page }) => {
       await mockRpcRequest({
-        page, filterParams: { method_name: "get_alerts" }, mockedResult: [
-          JSON.stringify([]),
-          1726259361706
-        ]
+        page,
+        filterParams: { method_name: "get_alerts" },
+        mockedResult: [JSON.stringify([]), 1726259361706],
       });
       await page.goto("/me");
 
@@ -48,10 +51,61 @@ test.describe("Alerts", () => {
       page,
     }) => {
       await mockRpcRequest({
-        page, filterParams: { method_name: "get_alerts" }, mockedResult: [
-          JSON.stringify([{ "Title": "System Maintenance Scheduled", "Description": "Our system will undergo scheduled maintenance from 12:00 AM to 4:00 AM. Please save your work and log out before the maintenance window.", "Custom Link Title": "Check it Out", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "New Feature Released", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "Security Update Available", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE!", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "Maria is cool", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE!", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "Jake is cool", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE!", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }, { "Title": "This is my new alert", "Description": "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!", "Custom Link Title": "CUSTOM LINK TITLE!", "Redirects To": "https://www.google.com/", "Time": "2024-09-13T20:29:21.992Z" }]),
-          1726259361706
-        ]
+        page,
+        filterParams: { method_name: "get_alerts" },
+        mockedResult: [
+          JSON.stringify([
+            {
+              Title: "System Maintenance Scheduled",
+              Description:
+                "Our system will undergo scheduled maintenance from 12:00 AM to 4:00 AM. Please save your work and log out before the maintenance window.",
+              "Custom Link Title": "Check it Out",
+              "Redirects To": "https://www.google.com/",
+              Time: "2024-09-13T20:29:21.992Z",
+            },
+            {
+              Title: "New Feature Released",
+              Description:
+                "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!",
+              "Custom Link Title": "CUSTOM LINK TITLE",
+              "Redirects To": "https://www.google.com/",
+              Time: "2024-09-13T20:29:21.992Z",
+            },
+            {
+              Title: "Security Update Available",
+              Description:
+                "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!",
+              "Custom Link Title": "CUSTOM LINK TITLE!",
+              "Redirects To": "https://www.google.com/",
+              Time: "2024-09-13T20:29:21.992Z",
+            },
+            {
+              Title: "Maria is cool",
+              Description:
+                "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!",
+              "Custom Link Title": "CUSTOM LINK TITLE!",
+              "Redirects To": "https://www.google.com/",
+              Time: "2024-09-13T20:29:21.992Z",
+            },
+            {
+              Title: "Jake is cool",
+              Description:
+                "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!",
+              "Custom Link Title": "CUSTOM LINK TITLE!",
+              "Redirects To": "https://www.google.com/",
+              Time: "2024-09-13T20:29:21.992Z",
+            },
+            {
+              Title: "This is my new alert",
+              Description:
+                "We are excited to announce the release of our new feature that allows you to track your activities more effectively. Check it out now!",
+              "Custom Link Title": "CUSTOM LINK TITLE!",
+              "Redirects To": "https://www.google.com/",
+              Time: "2024-09-13T20:29:21.992Z",
+            },
+          ]),
+          1726259361706,
+        ],
       });
 
       await page.goto("/me");
