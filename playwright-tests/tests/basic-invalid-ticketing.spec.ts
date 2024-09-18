@@ -90,9 +90,7 @@ test.describe("Basic invalid ticketing (User shows ticket)", () => {
         },
       });
 
-      await page.goto(
-        `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_HASH}`,
-      );
+      await page.goto(`/tickets/ticket/ga_pass#${UNSCANNED_TICKET_HASH}`);
 
       page.waitForTimeout(3000);
 
@@ -170,9 +168,7 @@ test.describe("Basic invalid ticketing (User shows ticket)", () => {
         },
       });
 
-      await page.goto(
-        `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_HASH}`,
-      );
+      await page.goto(`/tickets/ticket/ga_pass#${UNSCANNED_TICKET_HASH}`);
 
       page.waitForTimeout(3000);
 

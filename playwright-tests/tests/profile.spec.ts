@@ -10,10 +10,9 @@ test.describe("Profile", () => {
 
     test.beforeEach(async ({ page }) => {
       await mockRpcRequest({
-        page, filterParams: { method_name: "get_alerts" }, mockedResult: [
-          JSON.stringify([]),
-          1726259361706
-        ]
+        page,
+        filterParams: { method_name: "get_alerts" },
+        mockedResult: [JSON.stringify([]), 1726259361706],
       });
 
       await mockRpcRequest({
