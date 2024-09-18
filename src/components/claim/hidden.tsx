@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
 import { useSwipeable } from "react-swipeable";
 import Boxes from "/assets/boxes-background.webp";
 import { HelpIcon, ArrowIcon } from "@/components/icons";
 import { ExtDropData } from "@/lib/event";
+import { motion, useSpring, useTransform } from "framer-motion";
 
 interface HiddenProps {
   foundItem: ExtDropData;
@@ -18,9 +19,6 @@ export function Hidden({
   numFound,
   numRequired,
 }: HiddenProps) {
-  const [swipeProgress, setSwipeProgress] = useState(0);
-  const requestRef = useRef<number | null>(null);
-
   const isNFT = foundItem.type === "nft";
   const rewardMessage = () => {
     // user is part way through a scavenge
@@ -50,15 +48,15 @@ export function Hidden({
 
   const maxSwipeDistance = 300; // Maximum swipe distance
 
-  // To handle smooth updates via requestAnimationFrame
-  const animateSwipeProgress = (newProgress: number) => {
-    if (requestRef.current) {
-      cancelAnimationFrame(requestRef.current);
-    }
-    requestRef.current = requestAnimationFrame(() => {
-      setSwipeProgress(newProgress);
-    });
-  };
+  // Create a spring animation for the swipe progress
+  const springProgress = useSpring(0, { stiffness: 400, damping: 30 });
+
+  // Transform the spring progress to a percentage for the sliding bar
+  const slideWidth = useTransform(
+    springProgress,
+    [0, maxSwipeDistance],
+    ["0%", "100%"],
+  );
 
   const handlers = useSwipeable({
     onSwiping: (eventData) => {
@@ -66,11 +64,19 @@ export function Hidden({
         Math.max(0, eventData.deltaX),
         maxSwipeDistance,
       );
-      animateSwipeProgress(newProgress);
+      // animateSwipeProgress(newProgress);
+      springProgress.set(newProgress);
     },
     onSwipedRight: () => {
-      if (swipeProgress >= maxSwipeDistance) {
+      if (springProgress.get() >= maxSwipeDistance) {
         onReveal();
+      } else {
+        springProgress.set(0);
+      }
+    },
+    onSwiped: () => {
+      if (springProgress.get() < maxSwipeDistance) {
+        springProgress.set(0);
       }
     },
     trackTouch: true,
@@ -93,6 +99,10 @@ export function Hidden({
       document.removeEventListener("touchmove", preventTouchMove);
     };
   }, []);
+
+  useEffect(() => {
+    console.log("swipe width", slideWidth);
+  }, [slideWidth]);
 
   return (
     <Box mt="64px" position="relative" p={4}>
@@ -181,23 +191,42 @@ export function Hidden({
             }}
           >
             {/* Sliding progress */}
-            <Box
-              position="absolute"
-              bg="var(--chakra-colors-brand-400)"
-              height="100%"
-              width={`${(swipeProgress / maxSwipeDistance) * 100}%`}
-              transition="width 0.05s ease-out"
-              left={0}
-              top={0}
+            <motion.div
+              style={{
+                position: "absolute",
+                background: "var(--chakra-colors-brand-400)",
+                height: "100%",
+                width: slideWidth,
+                left: 0,
+                top: 0,
+              }}
             />
-            <Box zIndex={1} position="relative" width="100%">
-              <span>{ctaMessage()}</span>
-              <ArrowIcon
-                width={24}
-                direction="right"
-                height={24}
-                color={"var(--chakra-colors-brand-400)"}
-              />
+            <Box
+              zIndex={1}
+              position="relative"
+              width="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text as="span" ms="3">
+                {ctaMessage()}
+              </Text>
+              <Box
+                as="span"
+                position="absolute"
+                left="0"
+                top="50%"
+                transform="translate(0, -50%)"
+                ms="2"
+              >
+                <ArrowIcon
+                  width={24}
+                  direction="right"
+                  height={24}
+                  color={"var(--chakra-colors-brand-400)"}
+                />
+              </Box>
             </Box>
           </Box>
         </Box>
