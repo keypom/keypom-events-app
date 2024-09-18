@@ -86,7 +86,10 @@ export default function TicketQRCode({
         width="100%"
       >
         <Heading mb={8} textAlign="center">
-          You're attending {GLOBAL_EVENT_INFO.name}!
+          WELCOME TO {GLOBAL_EVENT_INFO.name}!
+        </Heading>
+        <Heading mb={8} textAlign="center">
+          THIS IS YOUR TICKET
         </Heading>
       </Box>
 

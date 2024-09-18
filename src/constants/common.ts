@@ -74,7 +74,7 @@ export const HIDDEN_FOOTER_ROUTES = [
 ];
 
 // Routes that should not have dimension constraints
-export const NO_DIMENSION_CONSTRAINT_ROUTES = ["/me/admin"];
+export const NO_DIMENSION_CONSTRAINT_ROUTES = ["/me/admin", "/tickets/ticket"];
 
 // Footer navigation items for app
 export const FOOTER_ITEMS: FooterItem[] = [

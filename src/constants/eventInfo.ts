@@ -1,5 +1,5 @@
 export const GLOBAL_EVENT_INFO = {
-  name: `Redacted 2024`,
+  name: `REDACTED`,
   description: `Join us in Bangkok this November for [REDACTED] - a convergence of visionaries, builders, and pioneers from AI x Web3 backgrounds united in shaping a future where technology belongs to the people, not corporations.`,
   location: `257 CHAROENNAKORN ROAD THONBURI BANGKOK 10600`,
   date: {
