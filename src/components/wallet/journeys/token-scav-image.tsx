@@ -22,7 +22,7 @@ export const TokenScavRewardImage = ({
   labelFontSize = "22px", // Default font size for the label
   labelColor = "black", // Default label text color
 }: TokenScavRewardImageProps) => {
-  const [tokenFontSize, setTokenFontSize] = useState<string>("50px");
+  const [tokenFontSize, setTokenFontSize] = useState<string>("108px");
 
   useEffect(() => {
     const numericBoxWidth = parseFloat(boxWidth);
