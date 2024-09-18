@@ -4,7 +4,7 @@ import {
   EVENT_ID,
   FACTORY_ACCOUNT,
   FUNDER_ID,
-  UNSCANNED_TICKET_PRIVATE_KEY,
+  UNSCANNED_TICKET_HASH,
 } from "../utils/constants";
 import { mockRpcRequest } from "../utils/rpc-mock";
 
@@ -91,7 +91,7 @@ test.describe("Basic invalid ticketing (User shows ticket)", () => {
       });
 
       await page.goto(
-        `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_PRIVATE_KEY}`,
+        `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_HASH}`,
       );
 
       page.waitForTimeout(3000);
@@ -171,7 +171,7 @@ test.describe("Basic invalid ticketing (User shows ticket)", () => {
       });
 
       await page.goto(
-        `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_PRIVATE_KEY}`,
+        `/tickets/ticket/ga_pass#${UNSCANNED_TICKET_HASH}`,
       );
 
       page.waitForTimeout(3000);

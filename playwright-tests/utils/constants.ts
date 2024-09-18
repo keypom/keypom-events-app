@@ -6,8 +6,8 @@ export const MOCK_RPC_URL = "https://rpc.testnet.near.org/";
 /**
  * KEYPOM EVENT CONSTANTS
  */
-export const UNSCANNED_TICKET_PRIVATE_KEY =
-  "2pcZwjQnvmpUXg29D7V86oPaop5KxR2RyWiPJPXub7XiBaMNGBCTuruPwoX71nGSCSQjSGopSmENtfDNkcmao2XL";
+export const UNSCANNED_TICKET_HASH =
+  "eyJ0aWNrZXQiOiJlZDI1NTE5OkhoZEdIQ0JkYWhiSHBIOHlDU251NjdyMnF4U0tFSjhKU3hVeW5MNmgyWHp5a05KOGs4dmtldkRyQmZoNjVHTUdnRWpIRUhqVE5pbk40UjlWOGFtdzRyayIsInVzZXJEYXRhIjp7Im5hbWUiOiJUZXN0IFVzZXIiLCJlbWFpbCI6InRlc3QifX0=";
 export const DROP_ID = "ga_pass";
 export const FUNDER_ID = "benjiman.testnet";
 export const EVENT_ID = "aa4a7964-c917-4010-92c3-9e4b3f7dfc5e";
