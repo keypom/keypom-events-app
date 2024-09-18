@@ -15,6 +15,7 @@ interface TokenScavRewardImageProps {
 
 export const TokenScavRewardImage = ({
   tokenAmount,
+  tokenFontSize,
   boxHeight = "100px",
   boxWidth = "100px",
   borderRadius = "0px",
@@ -22,7 +23,6 @@ export const TokenScavRewardImage = ({
   tokenColor = "black", // Default token text color
   labelFontSize = "22px", // Default font size for the label
   labelColor = "black", // Default label text color
-  tokenFontSize = "108px", // Default font size for token amount
 }: TokenScavRewardImageProps) => {
   const [responsiveFontSize, setResponsiveFontSize] = useState<string>("108px");
 
