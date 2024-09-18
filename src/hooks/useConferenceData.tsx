@@ -19,6 +19,7 @@ const fetchConferenceData = async (secretKey: string) => {
         methodName: "get_key_information",
         args: { key: pubKey },
       });
+    console.log("keyInfo", keyInfo);
 
     if (keyInfo === undefined) {
       throw new Error("Invalid ticket");
@@ -29,11 +30,19 @@ const fetchConferenceData = async (secretKey: string) => {
       args: {},
     });
 
-    const ticketInfo: TicketTypeInfo = await eventHelperInstance.viewCall({
-      methodName: "get_ticket_data",
-      args: { drop_id: keyInfo.drop_id },
-    });
-    console.log(ticketInfo);
+    let ticketInfo: TicketTypeInfo;
+    if (keyInfo.drop_id) {
+      ticketInfo = await eventHelperInstance.viewCall({
+        methodName: "get_ticket_data",
+        args: { drop_id: keyInfo.drop_id },
+      });
+    } else {
+      ticketInfo = {
+        account_type: "Admin",
+        starting_near_balance: "0",
+        starting_token_balance: "0",
+      };
+    }
 
     return {
       keyInfo,
@@ -41,6 +50,7 @@ const fetchConferenceData = async (secretKey: string) => {
       tokenInfo,
     };
   } catch (error) {
+    console.error("Error fetching conference data:", error);
     // Re-throw the error to ensure React Query handles it
     return Promise.reject(error);
   }

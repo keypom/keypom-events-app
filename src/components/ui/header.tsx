@@ -10,6 +10,7 @@ export function Header({ sendTo = "/" }) {
       height="60px"
       background="black"
       display={"flex"}
+      width="100%"
       alignItems={"center"}
       justifyContent={"center"}
       bg="bg.primary"

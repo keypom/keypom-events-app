@@ -7,6 +7,7 @@ import { Header } from "@/components/ui/header";
 import { LoadingBox } from "@/components/ui/loading-box";
 import {
   HIDDEN_FOOTER_ROUTES,
+  NO_DIMENSION_CONSTRAINT_ROUTES,
   UNAUTHENTICATED_ROUTES,
 } from "@/constants/common";
 import { useEventCredentials } from "@/stores/event-credentials";
@@ -40,11 +41,15 @@ export default function AppLayout() {
     pathname.startsWith(path),
   );
 
+  const shouldConstrainDimensions = !NO_DIMENSION_CONSTRAINT_ROUTES.some(
+    (path) => pathname.startsWith(path),
+  );
+
   return (
     <Flex
-      maxH={{ base: "100dvh" }}
+      maxH={shouldConstrainDimensions ? { base: "100dvh" } : "100%"}
       direction={"column"}
-      maxW={{ base: "100%", lg: "380px" }}
+      maxW={shouldConstrainDimensions ? { base: "100%", lg: "380px" } : "100%"}
       width={"100%"}
       marginX="auto"
       alignItems="center"
@@ -59,8 +64,12 @@ export default function AppLayout() {
         ref={ref}
         role="main"
         flexGrow={1}
-        maxW={{ base: "100%", lg: "380px" }}
-        maxH={{ base: "100dvh", lg: "700px" }}
+        maxW={
+          shouldConstrainDimensions ? { base: "100%", lg: "380px" } : "100%"
+        }
+        maxH={
+          shouldConstrainDimensions ? { base: "100dvh", lg: "700px" } : "100%"
+        }
         width="100%"
         height="100%"
         position="relative"

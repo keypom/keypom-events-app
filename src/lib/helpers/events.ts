@@ -1,8 +1,8 @@
 export interface AttendeeKeyInfo {
-  drop_id: string;
   has_scanned: boolean;
   account_id?: string;
-  metadata: string;
+  drop_id?: string;
+  metadata?: string;
 }
 
 export interface TicketTypeInfo {

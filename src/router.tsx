@@ -54,6 +54,78 @@ const router = createBrowserRouter([
             path: "/agenda",
             element: <Agenda />,
           },
+          {
+            path: "/me/admin",
+            lazy: async () => {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+
+              const { AdminAuthProvider } = await import(
+                "@/contexts/AdminAuthContext"
+              );
+
+              const { AdminDashboard } = await import(
+                "@/routes/dashboard/adminDashboard"
+              );
+
+              return {
+                Component: () => (
+                  <AdminAuthProvider>
+                    <AdminDashboard />
+                  </AdminAuthProvider>
+                ),
+              };
+            },
+          },
+          {
+            path: "/me/admin/attendees",
+            lazy: async () => {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+
+              const { AdminAuthProvider } = await import(
+                "@/contexts/AdminAuthContext"
+              );
+
+              const { AttendeeManager } = await import(
+                "@/routes/dashboard/attendeeManager"
+              );
+
+              return {
+                Component: () => (
+                  <AdminAuthProvider>
+                    <AttendeeManager />
+                  </AdminAuthProvider>
+                ),
+              };
+            },
+          },
+          {
+            path: "/me/admin/drops",
+            lazy: async () => {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+
+              const { AdminAuthProvider } = await import(
+                "@/contexts/AdminAuthContext"
+              );
+
+              const { AdminCreateDrop } = await import(
+                "@/routes/dashboard/adminCreateDrop"
+              );
+
+              return {
+                Component: () => (
+                  <AdminAuthProvider>
+                    <AdminCreateDrop />
+                  </AdminAuthProvider>
+                ),
+              };
+            },
+          },
           /**
            * Lazily Loaded App Pages, requires event credentials
            */
@@ -155,33 +227,6 @@ const router = createBrowserRouter([
 
           return {
             Component: () => <SponsorDashboard />,
-          };
-        },
-      },
-      /**
-       * Attendee Dashboard Route
-       */
-      {
-        path: "/adminDashboard",
-        lazy: async () => {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-
-          const { AdminAuthProvider } = await import(
-            "@/contexts/AdminAuthContext"
-          );
-
-          const { AdminDashboard } = await import(
-            "@/routes/dashboard/adminDashboard"
-          );
-
-          return {
-            Component: () => (
-              <AdminAuthProvider>
-                <AdminDashboard />
-              </AdminAuthProvider>
-            ),
           };
         },
       },

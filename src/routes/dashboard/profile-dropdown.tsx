@@ -19,6 +19,8 @@ const ProfileDropdown = ({ profile, handleLogout }) => {
         <MenuButton
           as={Flex}
           alignItems="center"
+          width={"100%"}
+          maxWidth="450px"
           cursor="pointer"
           bg="brand.400"
           px={3}

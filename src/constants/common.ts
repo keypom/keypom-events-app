@@ -58,6 +58,7 @@ export type DROP_TYPES = (typeof DROP_TYPE)[DROP_TYPE_KEYS];
 export const UNAUTHENTICATED_ROUTES = [
   "/agenda",
   "/help",
+  "/me/admin",
   // Do not modify below
   "/welcome",
   "/tickets/ticket",
@@ -69,7 +70,11 @@ export const HIDDEN_FOOTER_ROUTES = [
   "/welcome",
   "/tickets/ticket",
   "/scan/tickets",
+  "/me/admin",
 ];
+
+// Routes that should not have dimension constraints
+export const NO_DIMENSION_CONSTRAINT_ROUTES = ["/me/admin"];
 
 // Footer navigation items for app
 export const FOOTER_ITEMS: FooterItem[] = [

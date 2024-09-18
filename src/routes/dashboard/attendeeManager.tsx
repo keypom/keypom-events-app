@@ -1,13 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import {
   Box,
-  Heading,
   Skeleton,
   useToast,
   Button,
   Input,
   Flex,
-  Spacer,
   Text,
   HStack,
 } from "@chakra-ui/react";
@@ -25,6 +23,10 @@ import { colors } from "@/theme/colors";
 import { truncateAddress } from "@/utils/truncateAddress";
 import eventHelperInstance from "@/lib/event";
 import { Spinner } from "@/components/ui/spinner";
+import { useNavigate } from "react-router-dom";
+import { useEventCredentials } from "@/stores/event-credentials";
+import { PageHeading } from "@/components/ui/page-heading";
+import { isTokenValid } from "@/routes/dashboard/adminDashboard";
 
 interface AttendeeData {
   "Full Name": string;
@@ -58,6 +60,10 @@ const colourStyles = {
     ":hover": {
       borderColor: colors.brand[400],
     },
+  }),
+  singleValue: (styles) => ({
+    ...styles,
+    color: "white", // Ensure the selected value displays in white
   }),
   placeholder: (styles) => ({
     ...styles,
@@ -100,17 +106,13 @@ const colourStyles = {
   }),
 };
 
-export function AttendeeManager({ setActiveView, adminKey }) {
-  const { adminUser } = useAdminAuthContext();
+export function AttendeeManager() {
+  const { adminUser, setAdminUser } = useAdminAuthContext();
+  const { secretKey: adminKey, isAdmin } = useEventCredentials();
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(true);
   const [isErr, setIsErr] = useState(false);
-
-  console.log(
-    "PK: ",
-    eventHelperInstance.getPubFromSecret(
-      "ed25519:67TvR1fimTfmCeanLbfqNVsRLJBZSwcXDpiGZQPTnEsXMsW1ShhFrFtzMuB338HJ7m4HUpNae4dudCbnuLGwgyiw",
-    ),
-  );
 
   const [attendees, setAttendees] = useState<AttendeeData[]>([]);
   const [uniqueAttendeeTypes, setUniqueAttendeeTypes] = useState<string[]>([]);
@@ -124,6 +126,18 @@ export function AttendeeManager({ setActiveView, adminKey }) {
   const [pageSize, setPageSize] = useState(10); // Add page size state
   const [numPages, setNumPages] = useState(0); // Add total number of pages
   const toast = useToast();
+
+  // Step 1: retrieve admin token from google login
+  useEffect(() => {
+    const storedIdToken = localStorage.getItem("GOOGLE_AUTH_ID_TOKEN");
+    if (storedIdToken && isTokenValid(storedIdToken)) {
+      setAdminUser({ idToken: storedIdToken });
+    } else {
+      localStorage.removeItem("GOOGLE_AUTH_ID_TOKEN");
+      navigate("/me/admin");
+      setIsLoading(false);
+    }
+  }, [setAdminUser]);
 
   // Function to fetch attendee data
   const fetchAttendeeData = useCallback(
@@ -215,10 +229,21 @@ export function AttendeeManager({ setActiveView, adminKey }) {
 
   // Fetch attendee data when adminUser is available
   useEffect(() => {
+    if (!isAdmin) {
+      setIsErr(true);
+      setIsLoading(false);
+      toast({
+        title: "unauthorized",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
     if (adminUser) {
       fetchAttendeeData(adminUser.idToken);
     }
-  }, [adminUser, fetchAttendeeData]);
+  }, [adminUser, fetchAttendeeData, isAdmin]);
 
   // Create the unique attendee types only when the attendees array changes
   useEffect(() => {
@@ -301,41 +326,46 @@ export function AttendeeManager({ setActiveView, adminKey }) {
   }));
 
   return (
-    <Box p={8}>
-      {/* Filters */}
-      <Flex alignItems="center" mb={4}>
-        <Heading fontFamily="mono" color="white">
-          Attendee Dashboard
-        </Heading>
-        <Spacer />
-        <Button
-          colorScheme="red"
-          variant="outline"
-          onClick={() => setActiveView("main")}
-        >
-          Back
-        </Button>
-      </Flex>
-      <Flex mb={4} flexWrap="wrap" gap={4}>
-        <Input
-          placeholder="Search name or username"
-          _placeholder={{ color: "white" }}
-          borderColor="brand.400"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          width="300px"
-        />
-        <Select
-          isMulti
-          components={animatedComponents}
-          options={typeOptions}
-          styles={colourStyles}
-          placeholder="Filter by attendee type"
-          onChange={(selectedOptions: any) => {
-            const values = selectedOptions.map((option) => option.value);
-            setAttendeeTypeFilter(values);
-          }}
-        />
+    <Box px={8} py={4}>
+      <PageHeading title={`Admin Dashboard`} titleSize="24px" showBackButton />
+      <Flex my={4} flexWrap="wrap" gap={4} justifyContent="space-between">
+        <HStack spacing={4}>
+          <Input
+            placeholder="Search name or username"
+            _placeholder={{ color: "white" }}
+            borderColor="brand.400"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            width="300px"
+          />
+          <Select
+            isMulti
+            components={animatedComponents}
+            options={typeOptions}
+            styles={colourStyles}
+            placeholder="Filter by attendee type"
+            onChange={(selectedOptions: any) => {
+              const values = selectedOptions.map((option) => option.value);
+              setAttendeeTypeFilter(values);
+            }}
+          />
+        </HStack>
+        <HStack ml="auto">
+          {" "}
+          {/* Pushes this HStack to the far right */}
+          <Text mr={2}>Rows per page:</Text>
+          <Select
+            defaultValue={pageSizeOptions.find(
+              (option) => option.value === pageSize,
+            )}
+            options={pageSizeOptions}
+            onChange={(selectedOption) =>
+              handlePageSizeChange(selectedOption?.value)
+            }
+            placeholder="Rows per page"
+            styles={colourStyles}
+          />
+        </HStack>
       </Flex>
 
       {/* Data Table */}
@@ -361,22 +391,7 @@ export function AttendeeManager({ setActiveView, adminKey }) {
       </Flex>
 
       {/* Page Size Selector */}
-      <Flex mt={4} justify="flex-end">
-        <HStack>
-          <Text mr={2}>Rows per page:</Text>
-          <Select
-            defaultValue={pageSizeOptions.find(
-              (option) => option.value === pageSize,
-            )} // Set default value
-            options={pageSizeOptions}
-            onChange={(selectedOption) =>
-              handlePageSizeChange(selectedOption?.value)
-            } // Handle change correctly
-            placeholder="Rows per page"
-            styles={colourStyles} // Apply the styles
-          />
-        </HStack>
-      </Flex>
+      <Flex mt={4} justify="flex-end"></Flex>
     </Box>
   );
 }

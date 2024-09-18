@@ -34,7 +34,7 @@ export default function Ticket() {
 
   // Redirect if ticket has been used
   if (keyInfo.has_scanned === true) {
-    setEventCredentials(secretKey, userData);
+    setEventCredentials(secretKey, userData, false);
     if (keyInfo.account_id === null) {
       navigate("/welcome");
     } else {
