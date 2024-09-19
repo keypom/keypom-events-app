@@ -3,21 +3,22 @@ import {
   Center,
   Flex,
   Heading,
+  Text,
   Image,
   Skeleton,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
 
-import { IconBox } from "@/components/dashboard/icon-box";
-import { BoxWithShape } from "@/components/tickets/box-with-shape";
-import { QRDetails } from "@/components/tickets/qr-details";
+import { useEffect, useState } from "react";
+
+import QRCode from "react-qr-code";
 import eventHelperInstance from "@/lib/event";
 import { AttendeeKeyInfo } from "@/lib/helpers/events";
 import { useNavigate } from "react-router-dom";
 import { useEventCredentials, UserData } from "@/stores/event-credentials";
 import { encodeToBase64 } from "@/lib/helpers/crypto";
 import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
+import KeypomLogo from "/assets/keypom-logo.webp";
 
 interface TicketQRCodeProps {
   isLoading: boolean;
@@ -32,6 +33,8 @@ export default function TicketQRCode({
 }: TicketQRCodeProps) {
   const navigate = useNavigate();
   const { setEventCredentials } = useEventCredentials();
+  // State to store dynamic QR code size
+  const [qrSize, setQrSize] = useState(200);
   // Effect to check for QR scan and reload if necessary
   useEffect(() => {
     const checkForQRScanned = async () => {
@@ -70,13 +73,39 @@ export default function TicketQRCode({
     return encodeToBase64({ ticket: secretKey, userData });
   };
 
+  useEffect(() => {
+    const calculateQrSize = () => {
+      const screenHeight = window.innerHeight;
+      const minSize = 100; // Minimum QR size
+      const maxSize = 300; // Maximum QR size
+      const minHeight = 600; // Minimum screen height to start scaling
+      const maxHeight = 800; // Maximum screen height to stop scaling
+
+      // Linearly interpolate between minSize and maxSize based on the screen height
+      const interpolatedSize =
+        ((screenHeight - minHeight) * (maxSize - minSize)) /
+          (maxHeight - minHeight) +
+        minSize;
+
+      // Clamp the size between minSize and maxSize
+      const newSize = Math.min(Math.max(interpolatedSize, minSize), maxSize);
+
+      console.log("Screen height: ", screenHeight, "QR Size: ", newSize);
+      setQrSize(newSize);
+    };
+
+    // Initial calculation of QR code size
+    calculateQrSize();
+  }, []);
+
   return (
     <VStack
       backgroundPosition="center"
       backgroundRepeat="no-repeat"
       backgroundSize="cover"
       py="10"
-      //width="100vw"
+      width="100%"
+      spacing={4} // Add some spacing between items
     >
       <Box
         alignItems="center"
@@ -84,59 +113,82 @@ export default function TicketQRCode({
         flexDirection="column"
         px={4}
         width="100%"
+        flexGrow={1} // Allow this Box to stretch
       >
-        <Heading mb={8} textAlign="center">
-          WELCOME TO {GLOBAL_EVENT_INFO.name}!
+        <Heading textAlign="center" color="brand.400" size="lg">
+          WELCOME TO {GLOBAL_EVENT_INFO.name}
         </Heading>
-        <Heading mb={8} textAlign="center">
+        <Heading textAlign="center" size="lg">
           THIS IS YOUR TICKET
         </Heading>
       </Box>
 
-      <Center>
-        <VStack gap={{ base: "calc(24px + 8px)", md: "calc(32px + 10px)" }}>
-          <IconBox
-            bg="border.box"
-            h="full"
-            icon={
-              <Skeleton isLoaded={!isLoading}>
-                <Image height={{ base: "14", md: "12" }} src={`/logo.svg`} />
-              </Skeleton>
-            }
-            iconBg={"event.iconBg"}
-            iconBorder={"event.iconBorder"}
-            minW={{ base: "90vw", md: "345px" }}
-            p="0"
-            pb="0"
-            w="full"
+      <Center flexGrow={1}>
+        {" "}
+        {/* This will also stretch vertically */}
+        {isLoading ? (
+          <Skeleton height="200px" width="full" />
+        ) : (
+          <Flex
+            align="center"
+            flexDir="column"
+            p={{ base: "6", md: "8" }}
+            flexGrow={1} // Stretch the content inside
+            justifyContent="center" // Center the QR code and details
           >
-            <Box>
-              <BoxWithShape borderTopRadius="8xl" w="full">
-                {isLoading ? (
-                  <Skeleton height="200px" width="full" />
-                ) : (
-                  <QRDetails qrValue={getQRValue()} />
-                )}
-              </BoxWithShape>
-              <Flex
-                align="center"
-                borderBottomRadius="8xl"
-                flexDir="column"
-                pt={8}
-              >
-                <Skeleton borderRadius="12px" isLoaded={!isLoading}>
-                  <Image
-                    alt={`Event image for ${GLOBAL_EVENT_INFO.name}`}
-                    borderRadius="12px"
-                    height="200px"
-                    objectFit="contain"
-                    src={`/assets/redacted/ticket-image.png`}
-                  />
-                </Skeleton>
-              </Flex>
+            <Box
+              border="1px solid"
+              borderColor="brand.400"
+              borderRadius="12px"
+              mb={{ base: "10", md: "16" }}
+              p="2"
+              bg="white"
+            >
+              <QRCode
+                value={getQRValue()}
+                fgColor="black"
+                bgColor="transparent"
+                size={qrSize}
+              />
             </Box>
-          </IconBox>
-        </VStack>
+            <Text
+              color="white"
+              fontFamily="heading"
+              fontWeight="600"
+              mb="4"
+              textAlign="center"
+            >
+              Scan this at the door & gain access to the conference.
+            </Text>
+            <Text
+              color="brand.400"
+              fontFamily="body"
+              fontWeight="400"
+              fontSize="2xs"
+              mb="8"
+              textAlign="center"
+            >
+              Keep it open and watch it refresh to reveal the app.
+            </Text>
+            <Text
+              color="gray.400"
+              fontFamily="heading"
+              fontSize="xs"
+              mb="2"
+              textAlign="center"
+            >
+              Developed in partnership with
+            </Text>
+            <Image
+              src={KeypomLogo}
+              objectFit={"cover"}
+              bgColor={"transparent"}
+              position="relative"
+              loading="eager"
+              width="180px"
+            />
+          </Flex>
+        )}
       </Center>
     </VStack>
   );
