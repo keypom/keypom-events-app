@@ -9,6 +9,7 @@ import Agenda from "./routes/agenda";
 import Help from "./routes/help";
 import AppLayout from "./routes/layouts/app";
 import Me from "./routes/me";
+import Leaderboard from "./routes/leaderboard";
 
 const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Me />,
+          },
+          {
+            path: "/leaderboard",
+            element: <Leaderboard />,
           },
           {
             path: "/me",

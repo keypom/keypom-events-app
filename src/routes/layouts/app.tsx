@@ -8,6 +8,7 @@ import { LoadingBox } from "@/components/ui/loading-box";
 import {
   HIDDEN_FOOTER_ROUTES,
   NO_DIMENSION_CONSTRAINT_ROUTES,
+  NO_HEADER_ROUTES,
   UNAUTHENTICATED_ROUTES,
 } from "@/constants/common";
 import { useEventCredentials } from "@/stores/event-credentials";
@@ -45,6 +46,10 @@ export default function AppLayout() {
     (path) => pathname.startsWith(path),
   );
 
+  const shouldRenderHeader = !NO_HEADER_ROUTES.some((path) =>
+    pathname.startsWith(path),
+  );
+
   return (
     <Flex
       maxH={shouldConstrainDimensions ? { base: "100dvh" } : "100%"}
@@ -59,7 +64,7 @@ export default function AppLayout() {
       flexGrow="1"
       borderRadius={"md"}
     >
-      <Header />
+      {shouldRenderHeader && <Header />}
       <Box
         ref={ref}
         role="main"
