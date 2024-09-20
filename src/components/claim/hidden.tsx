@@ -100,14 +100,13 @@ export function Hidden({
   }, []);
 
   return (
-    <Box mt="64px" position="relative" p={4}>
+    <Box position="relative" p={4}>
       <Image
         src={Boxes}
         width="100%"
         height="100%"
-        objectFit={"cover"}
         loading="eager"
-        minH="476px"
+        maxH={"calc(100dvh - 170px)"}
       />
       <VStack
         position="absolute"
@@ -117,8 +116,6 @@ export function Hidden({
         width={"100%"}
         p={4}
         spacing={8}
-        {...handlers}
-        style={{ touchAction: "none" }} // Disable touch-action to prevent default behaviors like scrolling or refreshing
       >
         <Box
           bg="bg.primary"
@@ -203,6 +200,9 @@ export function Hidden({
               display="flex"
               alignItems="center"
               justifyContent="center"
+              height={"48px"}
+              {...handlers}
+              style={{ touchAction: "none" }} // Disable touch-action to prevent default behaviors like scrolling or refreshing
             >
               <Text as="span" ms="3">
                 {ctaMessage()}

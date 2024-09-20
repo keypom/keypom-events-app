@@ -79,16 +79,15 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
   };
 
   return (
-    <Box mt="64px" position="relative" p={4}>
+    <Box position="relative" p={4}>
       <Box position="relative">
         <Image
           src={Boxes}
           width="100%"
           height="100%"
-          objectFit={"cover"}
           position="relative"
           minW="100%"
-          minH="500px"
+          maxH={"calc(100dvh - 170px)"}
           loading="eager"
         />
       </Box>
