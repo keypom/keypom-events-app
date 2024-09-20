@@ -1,8 +1,10 @@
-import { Box, Heading, Image, VStack } from "@chakra-ui/react";
+import { Box, Heading, VStack } from "@chakra-ui/react";
 import Boxes from "/assets/claim-blocks.webp";
 import eventHelperInstance, { ExtDropData } from "@/lib/event";
 import { ImageSplit } from "./reward-image";
 import { TokenScavRewardImage } from "../wallet/journeys/token-scav-image";
+import { Image } from "../ui/image";
+import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 
 interface RevealProps {
   foundItem: ExtDropData;
@@ -43,7 +45,7 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
           <ImageSplit numPieces={numRequired || 1} numFound={numFound || 1}>
             <Box bg="gray.200" borderRadius="12px">
               <Image
-                src={foundItem.nft_metadata.media}
+                src={getIpfsImageSrcUrl(foundItem.nft_metadata?.media || "")}
                 alt="Masked Image"
                 objectFit="cover"
               />

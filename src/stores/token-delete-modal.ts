@@ -1,4 +1,3 @@
-import { Wallet } from "@near-wallet-selector/core";
 import { create } from "zustand";
 
 interface TokenDeleteModalStore {
@@ -6,7 +5,7 @@ interface TokenDeleteModalStore {
   onClose: () => void;
   onOpen: () => void;
   deletionArgs: {
-    wallet: Wallet;
+    secretKey: string;
     dropId: string;
     getAccountInformation: () => Promise<void>;
   };
@@ -19,7 +18,7 @@ export const useTokenDeleteModalStore = create<TokenDeleteModalStore>(
     onClose: () => set(() => ({ isOpen: false })),
     onOpen: () => set(() => ({ isOpen: true })),
     deletionArgs: {
-      wallet: {} as Wallet,
+      secretKey: "",
       dropId: "",
       getAccountInformation: () => Promise.resolve(),
     },

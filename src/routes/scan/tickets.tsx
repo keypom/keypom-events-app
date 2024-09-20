@@ -1,19 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { Box, Center, Heading, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  VStack,
+  useToast,
+  Spinner,
+} from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
 import { QrScanner } from "@/components/scanner/qr-scanner";
-import { AttendeeKeyInfo, TicketTypeInfo } from "@/lib/helpers/events";
+import { AttendeeKeyInfo } from "@/lib/helpers/events";
 import eventHelperInstance from "@/lib/event";
-import { GLOBAL_EVENT_INFO } from "@/constants/eventInfo";
 import { decodeAndParseBase64 } from "@/lib/helpers/crypto";
+import { UserData } from "@/stores/event-credentials";
 
 interface StateRefObject {
   isScanning: boolean;
   isOnCooldown: boolean;
-  ticketsToScan: string[];
-  allTicketOptions: TicketTypeInfo[];
+  ticketToScan: string | null;
   ticketToVerify: string;
   isProcessing: boolean;
 }
@@ -22,32 +29,53 @@ export default function Scanner() {
   const stateRef = useRef<StateRefObject>({
     isScanning: false,
     isOnCooldown: false,
-    ticketsToScan: [],
-    allTicketOptions: [],
+    ticketToScan: null,
     ticketToVerify: "",
     isProcessing: false,
   });
 
-  const [ticketsToScan, setTicketsToScan] = useState<string[]>([]);
+  const [ticketToScan, setTicketToScan] = useState<string | null>(null);
+  const [currentUserData, setCurrentUserData] = useState<UserData | null>(null);
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [scanStatus, setScanStatus] = useState<"success" | "error" | undefined>(
+    undefined,
+  );
+
+  const toast = useToast();
 
   useEffect(() => {
-    stateRef.current.ticketsToScan = ticketsToScan;
-    // Update other state variables in stateRef.current as needed
-  }, [ticketsToScan]);
-
-  useEffect(() => {
-    // Process tickets in batches but only if not currently processing
-    if (
-      !stateRef.current.isProcessing &&
-      stateRef.current.ticketsToScan.length > 0
-    ) {
-      processBatchOfTickets();
-    }
-  }, [ticketsToScan]);
+    stateRef.current.ticketToScan = ticketToScan;
+  }, [ticketToScan]);
 
   const handleScanResult = async (qrData: string) => {
-    const { ticket: secretKey, userData } = decodeAndParseBase64(qrData);
-    console.log(userData);
+    setScanStatus(undefined);
+
+    let userData: UserData | null = null;
+    let secretKey: string | null = null;
+    try {
+      const { ticket: parsedTicket, userData: parsedUserData } =
+        decodeAndParseBase64(qrData);
+      userData = parsedUserData;
+      secretKey = parsedTicket;
+    } catch (error) {
+      console.error("Scan failed", error);
+      toast({
+        title: "Ticket invalid",
+        description: "QR Code not recognized",
+        status: "error",
+        position: "top",
+        duration: 2000,
+        isClosable: true,
+      });
+      setScanStatus("error");
+    }
+
+    if (!userData || !secretKey) {
+      throw new Error("QR Code not recognized");
+    }
+    setCurrentUserData(userData);
+
     try {
       const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
       const keyInfo: AttendeeKeyInfo | undefined =
@@ -55,10 +83,9 @@ export default function Scanner() {
           methodName: "get_key_information",
           args: { key: pubKey },
         });
+
       if (keyInfo) {
-        // Check if the ticket has already been scanned
-        if (stateRef.current.ticketsToScan.includes(secretKey)) {
-          // This now correctly checks against the most up-to-date ticketsToScan
+        if (stateRef.current.ticketToScan === String(secretKey)) {
           throw new Error("Ticket already scanned.");
         }
 
@@ -66,85 +93,174 @@ export default function Scanner() {
           throw new Error("Ticket has already been used.");
         }
 
-        // Update both the ref and the state to enqueue the ticket
-        const updatedTickets = [...stateRef.current.ticketsToScan, secretKey];
-        stateRef.current.ticketsToScan = updatedTickets;
-        setTicketsToScan(updatedTickets);
+        // wait 1 second
+        await new Promise((resolve) => setTimeout(resolve, 750));
+
+        stateRef.current.ticketToScan = secretKey;
+        setTicketToScan(secretKey);
+
+        // Show toast for successful scan
+        toast({
+          title: "Ticket valid",
+          description: "Proceed with ID verification.",
+          status: "success",
+          position: "top",
+          duration: 2000,
+          isClosable: true,
+        });
+        setIsVerifying(true);
+        setScanStatus("success");
 
         return Promise.resolve({ message: "Ticket successfully scanned." });
       } else {
         throw new Error("No ticket information found.");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Scan failed", err);
+      toast({
+        title: "Ticket invalid",
+        description: err.message,
+        status: "error",
+        position: "top",
+        duration: 2000,
+        isClosable: true,
+      });
+      setScanStatus("error");
       throw new Error(`${err.message}`);
     }
   };
 
-  const processBatchOfTickets = async () => {
-    stateRef.current.isProcessing = true;
-    // Take up to 10 tickets to process
-    const ticketsToProcess = stateRef.current.ticketsToScan.slice(0, 10);
+  const processTicket = async () => {
+    setIsProcessing(true); // Start the processing animation
 
-    await Promise.all(
-      ticketsToProcess.map(async (ticket) => {
-        try {
-          // Placeholder for your actual ticket processing logic
-          await eventHelperInstance.handleScanIntoEvent({ secretKey: ticket });
-          // Process successful, remove from the ref queue
-          stateRef.current.ticketsToScan =
-            stateRef.current.ticketsToScan.filter((t) => t !== ticket);
-        } catch (error) {
-          console.error("Error processing ticket:", ticket, error);
-          // Decide how to handle errors, e.g., retry later, log, etc.
-        }
-      }),
-    );
-
-    // Update the ticketsToScan state to trigger re-render if needed
-    setTicketsToScan([...stateRef.current.ticketsToScan]);
-    stateRef.current.isProcessing = false;
-
-    // Check if more tickets are in the queue and continue processing
-    if (stateRef.current.ticketsToScan.length > 0) {
-      processBatchOfTickets();
+    const ticket = stateRef.current.ticketToScan; // Process the first ticket in the queue
+    if (!ticket) {
+      return;
     }
+
+    try {
+      await eventHelperInstance.handleScanIntoEvent({ secretKey: ticket });
+      stateRef.current.ticketToScan = null;
+    } catch (error) {
+      console.error("Error processing ticket:", ticket, error);
+    }
+
+    setIsProcessing(false); // End the processing animation
+    setIsVerifying(false); // Go back to scanning mode
+    setScanStatus(undefined);
+    setTicketToScan(null);
+    setCurrentUserData(null); // Clear user data
+  };
+
+  const handleBackClicked = () => {
+    setIsProcessing(false); // End the processing animation
+    setIsVerifying(false); // Go back to scanning mode
+    setTicketToScan(null);
+    setScanStatus(undefined);
+    setCurrentUserData(null); // Clear user data
+  };
+
+  const handleConfirmAndScanNext = () => {
+    processTicket();
   };
 
   return (
-    <Box marginTop="6" mb={{ base: "5", md: "14" }} minH="100%" minW="100%">
-      <Center>
-        <VStack spacing="0" w="100%">
-          <VStack marginBottom="6" spacing="4">
-            <Heading textAlign="center">
-              Scanning Tickets For {GLOBAL_EVENT_INFO.name}
-            </Heading>
+    <VStack
+      backgroundPosition="center"
+      backgroundRepeat="no-repeat"
+      backgroundSize="cover"
+      p="4"
+      width="100%"
+      spacing={4}
+    >
+      {isVerifying ? (
+        <Box
+          alignItems="center"
+          display="flex"
+          flexDirection="column"
+          px={4}
+          width="100%"
+          flexGrow={1}
+        >
+          <Heading textAlign="center" size="lg" pb="2">
+            VERIFY WITH ID:
+          </Heading>
+          <Heading textAlign="center" size="sm" color="brand.400">
+            You should see the following:
+          </Heading>
+
+          <VStack w="100%" alignItems="flex-start" spacing="12" mt="12" px="12">
+            <VStack w="100%" alignItems="flex-start">
+              <Heading textAlign="left" size="md" color="brand.400">
+                NAME:
+              </Heading>
+              <Heading textAlign="left" size="md">
+                {currentUserData?.name}
+              </Heading>
+            </VStack>
+            <VStack w="100%" alignItems="flex-start">
+              <Heading textAlign="left" size="md" color="brand.400">
+                EMAIL:
+              </Heading>
+              <Heading textAlign="left" size="md">
+                {currentUserData?.email}
+              </Heading>
+            </VStack>
           </VStack>
 
-          <Center marginBottom="1" marginTop="6" w="100%">
-            <VStack
-              alignItems="center"
-              h="100%"
-              maxHeight="500px"
-              maxW="500px"
-              overflow="hidden"
-              position="relative" // Ensure this container is positioned relatively
-              spacing={4}
-              w="full"
+          <VStack w="100%" alignItems="center" spacing="4" mt="12">
+            <Button
+              variant="outline"
+              onClick={handleBackClicked}
+              width="100%"
+              fontSize="md"
             >
-              <QrScanner handleScan={handleScanResult} scanStatus="success" />
+              BACK
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleConfirmAndScanNext}
+              width="100%"
+              fontSize="md"
+              isLoading={isProcessing} // Show loading animation if processing
+            >
+              {isProcessing ? (
+                <Spinner size="md" />
+              ) : (
+                "CONFIRM & SCAN NEXT TICKET"
+              )}
+            </Button>
+          </VStack>
+        </Box>
+      ) : (
+        <Center>
+          <VStack spacing="0" w="100%">
+            <VStack marginBottom="0" spacing="4">
+              <Heading textAlign="center" size="xl">
+                SCAN A TICKET
+              </Heading>
             </VStack>
-          </Center>
-          {ticketsToScan.length > 0 ? (
-            <Text color="gray.500">
-              Processing {ticketsToScan.length} tickets in the background...
-            </Text>
-          ) : (
-            <Text color="gray.500">Waiting for QR code...</Text>
-          )}
-        </VStack>
-      </Center>
-    </Box>
+
+            <Center marginBottom="1" marginTop="6" w="100%">
+              <VStack
+                alignItems="center"
+                h="100%"
+                maxHeight="500px"
+                maxW="500px"
+                overflow="hidden"
+                position="relative"
+                spacing={4}
+                w="full"
+              >
+                <QrScanner
+                  handleScan={handleScanResult}
+                  scanStatus={scanStatus}
+                />
+              </VStack>
+            </Center>
+          </VStack>
+        </Center>
+      )}
+    </VStack>
   );
 }

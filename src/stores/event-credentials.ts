@@ -9,7 +9,12 @@ export interface UserData {
 interface EventCredentialsStore {
   secretKey: string;
   userData: UserData;
-  setEventCredentials: (secretKey: string, userData: UserData) => void;
+  isAdmin: boolean;
+  setEventCredentials: (
+    secretKey: string,
+    userData: UserData,
+    isAdmin: boolean,
+  ) => void;
 }
 
 export const useEventCredentials = create<EventCredentialsStore>()(
@@ -20,8 +25,9 @@ export const useEventCredentials = create<EventCredentialsStore>()(
         name: "",
         email: "",
       },
-      setEventCredentials: (secretKey, userData) =>
-        set({ secretKey, userData }),
+      isAdmin: false,
+      setEventCredentials: (secretKey, userData, isAdmin) =>
+        set({ secretKey, userData, isAdmin }),
     }),
     {
       name: "event-credentials", // Name of the item in localStorage

@@ -1,265 +1,107 @@
-import { NotFound404 } from "@/components/dashboard/not-found-404";
-import { PageHeading } from "@/components/ui/page-heading";
-import { KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
-import { useConferenceData } from "@/hooks/useConferenceData";
-import eventHelperInstance from "@/lib/event";
-import { useEventCredentials } from "@/stores/event-credentials";
+import { useAccountData } from "@/hooks/useAccountData";
 import {
   Box,
   Button,
-  Center,
-  Flex,
-  FormControl,
-  FormErrorMessage,
   Heading,
   HStack,
   Image,
-  Input,
   ListItem,
   Spinner,
-  Text,
   UnorderedList,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Full Account ID regex
-const accountIdPattern =
-  /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
-
-// Maximum length for username (total 64 - length of factory contract - 1 for the dot)
-const maxUsernameLength = 64 - KEYPOM_TOKEN_FACTORY_CONTRACT.length - 1;
-
 export default function WelcomePage() {
-  const { secretKey } = useEventCredentials();
-  const { data, isLoading, isError, error } = useConferenceData(secretKey);
   const navigate = useNavigate();
-  const [username, setUsername] = useState<string>("");
-  const [isValidUsername, setIsValidUsername] = useState<boolean>(true);
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(true);
-  const [errorMessage, setErrorMessage] = useState<string>(""); // Error message state variable
-  const [isClaiming, setIsClaiming] = useState<boolean>(false);
+  const { data, isLoading, isError, error } = useAccountData();
 
   if (isError) {
-    return <NotFound404 header="Error" subheader={error?.message} />;
+    console.error("Error loading account data: ", error);
   }
 
   if (isLoading) {
     return (
-      <Center minH="100vh">
-        <VStack spacing={4}>
-          <Spinner size="xl" />
-          <Text>Loading ticket information...</Text>
-        </VStack>
-      </Center>
+      <Box
+        position="relative"
+        width="100%"
+        minHeight="100vh"
+        bg="bg.primary"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Spinner size="xl" color="white" />
+      </Box>
     );
   }
 
-  const { tokenInfo, ticketInfo, keyInfo } = data!;
-
-  // Redirect if ticket has been used
-  if (keyInfo.account_id !== null) {
-    navigate("/me");
-  }
-
-  const { starting_token_balance } = ticketInfo;
-  const { symbol } = tokenInfo;
-
-  const tokensToClaim = eventHelperInstance.yoctoToNear(
-    starting_token_balance!,
-  );
-
-  // Function to validate username and full account ID
-  const validateAccountId = (username: string) => {
-    const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
-
-    // Check length constraints (2 <= length <= 64)
-    if (accountId.length < 2 || accountId.length > 64) {
-      setErrorMessage(
-        `Username must be less than ${maxUsernameLength} characters.`,
-      );
-      return false;
-    }
-
-    // Check if the username and full account ID match the pattern
-    if (!accountIdPattern.test(accountId)) {
-      setErrorMessage("Invalid account ID format.");
-      return false;
-    }
-
-    setErrorMessage(""); // Clear error message if valid
-    return true;
-  };
-
-  // Usage in your handleChangeUsername function
-  const handleChangeUsername = (event) => {
-    const userInput = event.target.value.toLowerCase();
-    setIsUsernameAvailable(true);
-
-    if (userInput.length !== 0) {
-      const isValid = validateAccountId(userInput);
-      setIsValidUsername(isValid);
-    } else {
-      setIsValidUsername(true);
-    }
-
-    setUsername(userInput);
-  };
-
-  const handleBeginJourney = async () => {
-    const isAvailable = await checkUsernameAvailable();
-    if (!isAvailable) {
-      setErrorMessage("Username is not available.");
-      setIsValidUsername(false);
-      return;
-    }
-
-    const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
-    try {
-      setIsClaiming(true);
-      await eventHelperInstance.handleCreateEventAccount({
-        secretKey,
-        accountId,
-      });
-      setIsClaiming(false);
-      navigate(0);
-    } catch (e) {
-      setIsClaiming(false);
-      setErrorMessage("Error claiming ticket. Please contact support.");
-      console.error(e);
-    }
-  };
-
-  const checkUsernameAvailable = async () => {
-    if (!username) {
-      return false;
-    }
-    try {
-      const accountId = `${username}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
-      const doesExist = await eventHelperInstance.accountExists(accountId);
-      setIsUsernameAvailable(!doesExist);
-      if (doesExist) {
-        setErrorMessage("Username is already taken.");
-      }
-      return !doesExist;
-    } catch {
-      setIsUsernameAvailable(true);
-      return true;
-    }
-  };
-
   return (
-    <VStack spacing={4}>
-      <Box p={4} pb={0}>
-        <PageHeading title="Welcome" />
-      </Box>
-      <Image
-        mx="auto"
-        borderRadius="full"
-        height={{ base: "14", md: "12" }}
-        width={{ base: "14", md: "12" }}
-        objectFit={"cover"}
-        src={"/logo.svg"}
-        mb="4"
-      />
-
-      <Text
-        color="brand.400"
-        fontFamily="mono"
-        fontSize="sm"
-        textAlign="center"
+    <VStack spacing={4} maxWidth={"100%"}>
+      <Box
+        alignItems="center"
+        display="flex"
+        flexDirection="column"
+        pt={12}
+        pb={{ base: 8, iphone13: 8, iphone14ProMax: 16 }}
+        px={4}
+        width="100%"
       >
-        To get started, enter a username.
-      </Text>
-
-      <VStack width="100%" px={4} spacing={8}>
-        <Flex
-          justifyContent="space-between"
-          alignItems="center"
-          width={"100%"}
+        <Heading
           textAlign="center"
-          gap={4}
+          pb="2"
+          color="brand.400"
+          fontSize={{ base: "20px", iphone13: "22px", iphone14ProMax: "26px" }}
         >
-          <FormControl
-            isInvalid={!isValidUsername || !isUsernameAvailable}
-            mb="5"
+          WELCOME @{data!.displayAccountId}!
+        </Heading>
+        <Heading
+          textAlign="center"
+          fontSize={{ base: "20px", iphone13: "22px", iphone14ProMax: "26px" }}
+        >
+          GET READY TO RECLAIM YOUR SOVEREIGNTY
+        </Heading>
+      </Box>
+      <HStack spacing={4} width="100%" px={12}>
+        <VStack
+          width="100%"
+          textAlign="left"
+          alignItems="flex-start"
+          spacing={0}
+        >
+          <Heading
+            pb="2"
+            fontSize={{
+              base: "20px",
+              iphone13: "20px",
+              iphone14ProMax: "24px",
+            }}
           >
-            <Input
-              backgroundColor="white"
-              border="1px solid"
-              borderColor={!isValidUsername ? "red.500" : "event.h1"}
-              autoFocus
-              transition="all 0.3s ease-in-out"
-              color="black"
-              fontFamily="mono"
-              background="#F2F1EA"
-              variant="outline"
-              fontWeight="700"
-              borderRadius="md"
-              id="username"
-              placeholder="Username"
-              px={4}
-              py={2}
-              _placeholder={{
-                color: "var(--black, #000)",
-                fontFamily: "mono",
-                fontSize: "16px",
-                fontStyle: "normal",
-                fontWeight: "700",
-                lineHeight: "14px",
-                textTransform: "uppercase",
-              }}
-              value={username}
-              onBlur={checkUsernameAvailable}
-              onChange={handleChangeUsername}
-            />
-            <FormErrorMessage>{errorMessage}</FormErrorMessage>
-          </FormControl>
-        </Flex>
-      </VStack>
-
-      <Text
-        color="white"
-        fontFamily="heading"
-        fontSize="sm"
-        fontWeight="400"
-        pt={6}
-        textAlign="center"
-      >
-        Your ticket comes with{" "}
-        <Text
-          as="span"
-          color="brand.400"
-          fontWeight="400"
-          size={{ base: "lg", md: "xl" }}
-        >
-          {tokensToClaim} ${symbol}
-        </Text>
-      </Text>
-
-      <HStack spacing={2} pt={0}>
-        <Box
-          width="115px"
-          height="5.25px"
-          bg="url(/assets/wallet-bg.webp) 100% / cover no-repeat"
-        />
-        <Text
-          fontFamily="mono"
-          fontSize="2xl"
-          fontWeight="medium"
-          color="brand.400"
-          data-testid="token-symbol"
-        >
-          ${symbol}
-        </Text>
-        <Box
-          width="115px"
-          height="5.25px"
-          bg="url(/assets/wallet-bg.webp) 100% / cover no-repeat"
+            What is SOV3?
+          </Heading>
+          <Heading
+            fontSize="12px"
+            pb="2"
+            fontFamily="mono"
+            color="brand.400"
+            fontWeight="300"
+          >
+            SOV3 is the token for the Redacted Conference. You can earn, spend,
+            or send it.
+          </Heading>
+        </VStack>
+        <Image
+          mx="auto"
+          borderRadius="full"
+          height={{ base: "20", md: "12" }}
+          width={{ base: "20", md: "12" }}
+          objectFit={"cover"}
+          src={"/logo.svg"}
+          mb="4"
         />
       </HStack>
-      <VStack width="100%" p={4} pt={0} spacing={4}>
+
+      <VStack width="100%" p={4} pt={6} spacing={4} px={12}>
         {/* Start of the grid for Details */}
         <HStack
           width="100%"
@@ -269,12 +111,25 @@ export default function WelcomePage() {
           wrap={"wrap"}
         >
           <VStack alignItems="flex-start" gap={4}>
-            <Heading as="h3" fontSize="2xl" color="white">
+            <Heading
+              as="h3"
+              color="white"
+              fontSize={{
+                base: "20px",
+                iphone13: "20px",
+                iphone14ProMax: "24px",
+              }}
+            >
               Earn:
             </Heading>
             <UnorderedList
               color="brand.400"
               fontFamily="mono"
+              fontSize={{
+                base: "12px",
+                iphone13: "12px",
+                iphone14ProMax: "16px",
+              }}
               textAlign={"left"}
             >
               <ListItem>Attending Talks</ListItem>
@@ -284,12 +139,25 @@ export default function WelcomePage() {
             </UnorderedList>
           </VStack>
           <VStack alignItems="flex-start" gap={4}>
-            <Heading as="h3" fontSize="2xl" color="white">
+            <Heading
+              as="h3"
+              color="white"
+              fontSize={{
+                base: "20px",
+                iphone13: "20px",
+                iphone14ProMax: "24px",
+              }}
+            >
               Spend:
             </Heading>
             <UnorderedList
               color="brand.400"
               fontFamily="mono"
+              fontSize={{
+                base: "12px",
+                iphone13: "12px",
+                iphone14ProMax: "16px",
+              }}
               textAlign={"left"}
             >
               <ListItem>Swag</ListItem>
@@ -301,14 +169,14 @@ export default function WelcomePage() {
         </HStack>
 
         <Button
-          isDisabled={!isValidUsername || !username}
-          isLoading={isClaiming}
           variant="primary"
           mt={6}
-          onClick={handleBeginJourney}
+          onClick={() => {
+            navigate("/me");
+          }}
           width="100%"
         >
-          BEGIN JOURNEY
+          GET STARTED
         </Button>
       </VStack>
     </VStack>

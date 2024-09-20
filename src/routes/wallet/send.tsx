@@ -19,7 +19,7 @@ const STEPS = {
 };
 
 export default function Send() {
-  const { secretKey } = useEventCredentials();
+  const { secretKey, isAdmin } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
   const curBalance = data?.balance;
 
@@ -44,7 +44,7 @@ export default function Send() {
     }
 
     // Ensure balance is defined and use BN to compare balances
-    if (!curBalance || amount > parseFloat(curBalance)) {
+    if (!curBalance || (amount > parseFloat(curBalance) && !isAdmin)) {
       setErrorMessage("You don't have enough tokens to send.");
       setStep(STEPS.ERROR);
       setIsSending(false); // Reset sending status
@@ -52,11 +52,19 @@ export default function Send() {
     }
 
     try {
-      await eventHelperInstance.sendConferenceTokens({
-        secretKey,
-        sendTo: receiver,
-        amount,
-      });
+      if (isAdmin) {
+        await eventHelperInstance.mintConferenceTokens({
+          secretKey,
+          sendTo: receiver,
+          amount,
+        });
+      } else {
+        await eventHelperInstance.sendConferenceTokens({
+          secretKey,
+          sendTo: receiver,
+          amount,
+        });
+      }
       setStep(STEPS.SENT);
       setErrorMessage("");
     } catch (error) {
@@ -90,7 +98,7 @@ export default function Send() {
         setStep={setStep}
         onSend={onSend}
         isSending={isSending} // Pass sending status to SetAmount component
-        curBalance={curBalance || ""} // Pass the balance to SetAmount component for displaying it
+        curBalance={isAdmin ? "infinite" : curBalance || ""} // Pass the balance to SetAmount component for displaying it
       />
     ),
     [STEPS.SENT]: <Sent receiver={receiver} amount={amount} />,

@@ -54,6 +54,78 @@ const router = createBrowserRouter([
             path: "/agenda",
             element: <Agenda />,
           },
+          {
+            path: "/me/admin",
+            lazy: async () => {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+
+              const { AdminAuthProvider } = await import(
+                "@/contexts/AdminAuthContext"
+              );
+
+              const { AdminDashboard } = await import(
+                "@/routes/dashboard/adminDashboard"
+              );
+
+              return {
+                Component: () => (
+                  <AdminAuthProvider>
+                    <AdminDashboard />
+                  </AdminAuthProvider>
+                ),
+              };
+            },
+          },
+          {
+            path: "/me/admin/attendees",
+            lazy: async () => {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+
+              const { AdminAuthProvider } = await import(
+                "@/contexts/AdminAuthContext"
+              );
+
+              const { AttendeeManager } = await import(
+                "@/routes/dashboard/attendeeManager"
+              );
+
+              return {
+                Component: () => (
+                  <AdminAuthProvider>
+                    <AttendeeManager />
+                  </AdminAuthProvider>
+                ),
+              };
+            },
+          },
+          {
+            path: "/me/admin/drops",
+            lazy: async () => {
+              if (!navigator.onLine) {
+                return { Component: OfflinePage };
+              }
+
+              const { AdminAuthProvider } = await import(
+                "@/contexts/AdminAuthContext"
+              );
+
+              const { AdminCreateDrop } = await import(
+                "@/routes/dashboard/adminCreateDrop"
+              );
+
+              return {
+                Component: () => (
+                  <AdminAuthProvider>
+                    <AdminCreateDrop />
+                  </AdminAuthProvider>
+                ),
+              };
+            },
+          },
           /**
            * Lazily Loaded App Pages, requires event credentials
            */
@@ -112,7 +184,7 @@ const router = createBrowserRouter([
             path: "/tickets",
             children: [
               {
-                path: "ticket/:id", // Match /events/event/:id
+                path: "ticket/:id",
                 lazy: lazyWithOfflineCheck(
                   () => import("@/routes/tickets/ticket"),
                 ),
@@ -123,11 +195,15 @@ const router = createBrowserRouter([
             path: "/welcome",
             lazy: lazyWithOfflineCheck(() => import("@/routes/welcome")),
           },
+          {
+            path: "/nameselect",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/name-select")),
+          },
           /**
            * Sponsor/Admin Routes
            */
           {
-            path: "/scan", // scanning tickets
+            path: "/scan",
             children: [
               {
                 path: "tickets",
@@ -143,23 +219,18 @@ const router = createBrowserRouter([
        * Sponsor/Admin Routes
        */
       {
-        path: "/dashboard", // managing drops
+        path: "/sponsorDashboard/:id",
         lazy: async () => {
           if (!navigator.onLine) {
             return { Component: OfflinePage };
           }
 
-          const { AuthWalletContextProvider } = await import(
-            "@/contexts/AuthWalletContext"
+          const { SponsorDashboard } = await import(
+            "@/routes/dashboard/sponsorDashboard"
           );
-          const { Dashboard } = await import("@/routes/dashboard");
 
           return {
-            Component: () => (
-              <AuthWalletContextProvider>
-                <Dashboard />
-              </AuthWalletContextProvider>
-            ),
+            Component: () => <SponsorDashboard />,
           };
         },
       },

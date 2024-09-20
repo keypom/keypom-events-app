@@ -5,10 +5,12 @@ export const NotFound404 = ({
   header = "404",
   subheader = "This page could not be found.",
   cta = "back to homepage",
+  onClick,
 }: {
   header?: string;
   subheader?: string;
   cta?: string;
+  onClick?: () => void;
 }) => {
   const navigate = useNavigate();
   return (
@@ -28,7 +30,8 @@ export const NotFound404 = ({
           <Button
             variant={"primary"}
             onClick={() => {
-              navigate("/");
+              if (onClick) onClick();
+              else navigate("/");
             }}
           >
             {cta}
@@ -44,7 +47,8 @@ export const NotFound404 = ({
           <Button
             variant={"primary"}
             onClick={() => {
-              navigate("/");
+              if (onClick) onClick();
+              else navigate("/");
             }}
           >
             {cta}
