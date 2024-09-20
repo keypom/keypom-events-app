@@ -4,6 +4,7 @@ import { colors } from "./colors";
 import { config } from "./config";
 import { styles } from "./styles";
 import { fonts } from "./fonts";
+import { breakpoints } from "./breakpoints";
 
 import { ButtonStyle } from "./components/button";
 import { ProgressStyle } from "./components/progress";
@@ -14,6 +15,7 @@ export const theme = extendTheme({
   config,
   styles,
   fonts,
+  breakpoints,
   components: {
     Button: ButtonStyle,
     Progress: ProgressStyle,

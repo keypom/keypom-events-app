@@ -59,8 +59,7 @@ export const UNAUTHENTICATED_ROUTES = [
   "/agenda",
   "/help",
   "/me/admin",
-  // Do not modify below
-  "/welcome",
+
   "/tickets/ticket",
   "/scan/tickets",
 ];
@@ -68,6 +67,7 @@ export const UNAUTHENTICATED_ROUTES = [
 // Routes that should hide the footer
 export const HIDDEN_FOOTER_ROUTES = [
   "/welcome",
+  "/nameselect",
   "/tickets/ticket",
   "/scan/tickets",
   "/me/admin",

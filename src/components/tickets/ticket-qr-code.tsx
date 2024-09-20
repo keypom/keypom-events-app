@@ -52,9 +52,9 @@ export default function TicketQRCode({
       if (keyInfo.has_scanned === true) {
         setEventCredentials(secretKey, userData, false);
         if (keyInfo.account_id === null) {
-          navigate("/welcome");
+          navigate("/nameselect");
         } else {
-          navigate("/");
+          navigate("/me");
         }
       }
     };
