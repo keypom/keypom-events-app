@@ -195,6 +195,10 @@ const router = createBrowserRouter([
             path: "/welcome",
             lazy: lazyWithOfflineCheck(() => import("@/routes/welcome")),
           },
+          {
+            path: "/nameselect",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/name-select")),
+          },
           /**
            * Sponsor/Admin Routes
            */
