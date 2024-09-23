@@ -119,7 +119,8 @@ export default function Leaderboard() {
     return timeAgoShort(new Date(timestampInMs));
   };
 
-  const getUsername = (accountId: string) => {
+  const getUsername = (accountId: string | undefined) => {
+    if (!accountId) return "------";
     return accountId.split(".")[0];
   };
 
