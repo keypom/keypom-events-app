@@ -186,6 +186,20 @@ export default function Leaderboard() {
     );
   };
 
+  const rewardMessage = (tx: TransactionType) => {
+    if (tx.Claim !== undefined) {
+      if (tx.Claim.reward === "NFT" || tx.Claim.reward === "Multichain POAP") {
+        return "Collectible";
+      }
+      if (tx.Claim.reward === "Scavenger Piece") {
+        return "Scavenger Piece";
+      }
+      return eventHelperInstance.yoctoToNearWith2Decimals(tx.Claim.reward);
+    }
+
+    return eventHelperInstance.yoctoToNearWith2Decimals(tx.Transfer!.amount);
+  };
+
   const TransactionInFeed = (tx: TransactionType, index: number) => {
     // If it's a Claim transaction
     if (tx.Claim !== undefined) {
@@ -229,11 +243,7 @@ export default function Leaderboard() {
                 textAlign={"center"}
                 color={"brand.400"}
               >
-                {tx.Claim.reward === "NFT"
-                  ? "Collectible"
-                  : eventHelperInstance.yoctoToNearWith2Decimals(
-                      tx.Claim.reward,
-                    )}
+                {rewardMessage(tx)}
               </Text>
               <ArrowIcon color={"white"} width={20} />
               <Text fontWeight="700" color="brand.600">
@@ -304,9 +314,7 @@ export default function Leaderboard() {
               textAlign={"center"}
               color={"brand.400"}
             >
-              {eventHelperInstance.yoctoToNearWith2Decimals(
-                tx.Transfer!.amount,
-              )}
+              {rewardMessage(tx)}
             </Text>
             <ArrowIcon color={"white"} width={20} />
             <Text fontWeight="700" color="brand.600">
