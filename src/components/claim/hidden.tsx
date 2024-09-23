@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
 import { useSwipeable } from "react-swipeable";
 import Boxes from "/assets/boxes-background.webp";
@@ -21,12 +21,10 @@ export function Hidden({
 }: HiddenProps) {
   const isNFT = foundItem.type === "nft";
   const rewardMessage = () => {
-    // user is part way through a scavenge
     if (numFound !== numRequired) {
       return "You found a Piece";
     }
 
-    // user completed a scavenger hunt
     if (numFound !== undefined && numRequired !== undefined) {
       return "You found the pieces";
     }
@@ -42,14 +40,14 @@ export function Hidden({
     if (numFound !== numRequired) {
       return "Swipe to reveal";
     }
-
     return "Swipe to reveal and claim";
   };
 
-  const maxSwipeDistance = 300; // Maximum swipe distance
+  const maxSwipeDistance = 30; // Maximum swipe distance
+  const [startX, setStartX] = useState(0); // Track where the swipe started
 
   // Create a spring animation for the swipe progress
-  const springProgress = useSpring(0, { stiffness: 400, damping: 30 });
+  const springProgress = useSpring(0, { stiffness: 1000, damping: 30 });
 
   // Transform the spring progress to a percentage for the sliding bar
   const slideWidth = useTransform(
@@ -60,14 +58,20 @@ export function Hidden({
 
   const handlers = useSwipeable({
     onSwiping: (eventData) => {
+      // Calculate the swipe distance from the starting point
       const newProgress = Math.min(
-        Math.max(0, eventData.deltaX),
+        Math.max(0, eventData.deltaX - startX),
         maxSwipeDistance,
       );
       springProgress.set(newProgress);
     },
+    onSwipeStart: (eventData) => {
+      // Capture the starting point of the swipe
+      setStartX(eventData.initial[0]);
+    },
     onSwipedRight: () => {
-      if (springProgress.get() >= maxSwipeDistance) {
+      if (springProgress.get() >= maxSwipeDistance * 0.4) {
+        // Trigger the reveal action if the user swiped at least 80% of the max distance
         onReveal();
       } else {
         springProgress.set(0);
@@ -84,19 +88,11 @@ export function Hidden({
 
   useEffect(() => {
     // Prevent default touchmove events to stop the page from scrolling or refreshing
-    const preventTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-    };
-
-    // Add event listener for touchmove to prevent page scroll and refresh
+    const preventTouchMove = (e: TouchEvent) => e.preventDefault();
     document.addEventListener("touchmove", preventTouchMove, {
       passive: false,
     });
-
-    // Clean up on component unmount
-    return () => {
-      document.removeEventListener("touchmove", preventTouchMove);
-    };
+    return () => document.removeEventListener("touchmove", preventTouchMove);
   }, []);
 
   return (
