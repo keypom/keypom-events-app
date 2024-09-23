@@ -59,6 +59,7 @@ export const UNAUTHENTICATED_ROUTES = [
   "/agenda",
   "/help",
   "/me/admin",
+  "/leaderboard",
 
   "/tickets/ticket",
   "/scan/tickets",
@@ -70,11 +71,19 @@ export const HIDDEN_FOOTER_ROUTES = [
   "/nameselect",
   "/tickets/ticket",
   "/scan/tickets",
+  "/leaderboard",
   "/me/admin",
 ];
 
 // Routes that should not have dimension constraints
-export const NO_DIMENSION_CONSTRAINT_ROUTES = ["/me/admin", "/tickets/ticket"];
+export const NO_DIMENSION_CONSTRAINT_ROUTES = [
+  "/me/admin",
+  "/tickets/ticket",
+  "/leaderboard",
+];
+
+// Routes that should not show the header
+export const NO_HEADER_ROUTES = ["/leaderboard"];
 
 // Footer navigation items for app
 export const FOOTER_ITEMS: FooterItem[] = [
