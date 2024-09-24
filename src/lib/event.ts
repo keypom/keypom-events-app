@@ -136,9 +136,16 @@ class EventJS {
     const integerPart = split[0];
     let decimalPart = split[1];
 
+    // Format integer part with commas
+    const formattedIntegerPart = integerPart.replace(
+      /\B(?=(\d{3})+(?!\d))/g,
+      ",",
+    );
+
+    // Limit decimal part to two digits
     decimalPart = decimalPart.substring(0, 2);
 
-    return `${integerPart}.${decimalPart}`;
+    return `${formattedIntegerPart}.${decimalPart}`;
   };
 
   nearToYocto = (near: string) => nearAPI.utils.format.parseNearAmount(near);

@@ -9,7 +9,7 @@ import Agenda from "./routes/agenda";
 import Help from "./routes/help";
 import AppLayout from "./routes/layouts/app";
 import Me from "./routes/me";
-import Leaderboard from "./routes/leaderboard";
+import Leaderboard from "./routes/leaderboard/leaderboard";
 
 const lazyWithOfflineCheck = (
   importCallback: () => Promise<{ default: ComponentType<unknown> }>,
