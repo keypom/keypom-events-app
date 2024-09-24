@@ -1,6 +1,63 @@
 import nacl from "tweetnacl";
 import * as naclUtil from "tweetnacl-util"; // Import the utilities properly
+import { sha256 } from "js-sha256";
 import bs58 from "bs58";
+import { KeyPair } from "near-api-js";
+
+// Function to generate signature
+export function generateSignature(secretKeyStr: string, callerId: string) {
+  // Remove the 'ed25519:' prefix if present
+  const secretKeyBase58 = secretKeyStr.replace("ed25519:", "");
+
+  // Decode the secret key from base58
+  const secretKeyBytes = bs58.decode(secretKeyBase58);
+
+  // Generate key pair from the secret key
+  const keyPair = nacl.sign.keyPair.fromSecretKey(secretKeyBytes);
+
+  // Get the public key in base58 format
+  const publicKeyBase58 = bs58.encode(keyPair.publicKey);
+
+  // Create the message to sign
+  const message = `${callerId},${publicKeyBase58}`;
+
+  // Sign the messa:e
+  const messageBytes = new TextEncoder().encode(message);
+  const signature = nacl.sign.detached(messageBytes, keyPair.secretKey);
+
+  // Encode the signature as base64
+  const signatureBase64 = Buffer.from(signature).toString("base64");
+
+  console.log("message: ", message);
+  console.log("signature: ", signatureBase64);
+  console.log("publicKey: ", publicKeyBase58);
+
+  return {
+    signature: signatureBase64,
+    publicKey: `ed25519:${publicKeyBase58}`,
+  };
+}
+
+export function deriveKey(
+  userSecretKey: string,
+  dropName: string,
+  scavengerId?: string,
+) {
+  const entropyString = scavengerId
+    ? `${userSecretKey}${dropName}${scavengerId}`
+    : `${userSecretKey}${dropName}`;
+  const entropy = naclUtil.decodeUTF8(entropyString);
+  const hash = sha256.array(entropy);
+  const keyPair = nacl.sign.keyPair.fromSeed(new Uint8Array(hash.slice(0, 32)));
+  const secretKeyBase58 = bs58.encode(keyPair.secretKey);
+
+  const nearKeyPair = KeyPair.fromString(`ed25519:${secretKeyBase58}`);
+
+  return {
+    publicKey: nearKeyPair.getPublicKey().toString(),
+    secretKey: nearKeyPair.toString(),
+  };
+}
 
 // Utility function to base64 encode a JSON object
 const encodeToBase64 = (jsonObject: Record<string, any>) => {

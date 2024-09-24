@@ -36,7 +36,7 @@ const defaultScavengerHunt = [
   },
 ];
 
-export function TokenCreateModal() {
+export function TokenCreateModal({ existingDropNames }) {
   const {
     isOpen,
     onClose,
@@ -61,9 +61,14 @@ export function TokenCreateModal() {
     setScavengerPieces(defaultScavengerHunt);
   };
 
-  const handleCreateDrop = () => {
-    if (validateForm(createdDrop, setErrors)) {
-      handleClose(createdDrop, isScavengerHunt, scavengerPieces, setIsLoading);
+  const handleCreateDrop = async () => {
+    if (validateForm(createdDrop, setErrors, existingDropNames)) {
+      await handleClose(
+        createdDrop,
+        isScavengerHunt,
+        scavengerPieces,
+        setIsLoading,
+      );
       resetValues();
     }
   };

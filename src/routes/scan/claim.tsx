@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { Hidden } from "@/components/claim/hidden";
 import { Reveal } from "@/components/claim/reveal";
-import eventHelperInstance, { ExtClaimedDrop, ExtDropData } from "@/lib/event";
+import eventHelperInstance, { ExtClaimedDrop, DropData } from "@/lib/event";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { ErrorBox } from "@/components/ui/error-box";
 import { useAccountData } from "@/hooks/useAccountData";
@@ -59,7 +59,7 @@ export default function Claim() {
   if (!revealed) {
     return (
       <Hidden
-        foundItem={reward as ExtDropData}
+        foundItem={reward as DropData}
         onReveal={onReveal}
         numFound={numFound}
         numRequired={numRequired}
@@ -69,7 +69,7 @@ export default function Claim() {
 
   return (
     <Reveal
-      foundItem={reward as ExtDropData}
+      foundItem={reward as DropData}
       numFound={numFound}
       numRequired={numRequired}
     />

@@ -5,7 +5,7 @@ import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
 import { CollectibleCard } from "@/components/wallet/collectibles/card";
 import { useAccountData } from "@/hooks/useAccountData";
-import { ExtClaimedDrop, ExtDropData } from "@/lib/event";
+import { ExtClaimedDrop, DropData } from "@/lib/event";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 
 const Divider = () => {
@@ -25,7 +25,7 @@ const CollectiblesGrid = ({
   lockedItems,
   unlockedItems,
 }: {
-  lockedItems: ExtDropData[];
+  lockedItems: DropData[];
   unlockedItems: ExtClaimedDrop[];
 }) => {
   return (
@@ -64,7 +64,7 @@ const CollectiblesGrid = ({
         {lockedItems.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>
             <CollectibleCard
-              id={collectible.drop_id}
+              id={collectible.id}
               title={collectible.nft_metadata?.title || ""}
               description={collectible.nft_metadata?.description || ""}
               assetType="POAP"
@@ -93,7 +93,7 @@ export default function Collectibles() {
   const filteredLockedItems = lockedItems.filter(
     (lockedItem) =>
       !unlockedItems.some(
-        (unlockedItem) => unlockedItem.drop_id === lockedItem.drop_id,
+        (unlockedItem) => unlockedItem.drop_id === lockedItem.id,
       ),
   );
 

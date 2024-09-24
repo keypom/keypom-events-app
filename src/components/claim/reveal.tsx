@@ -1,13 +1,13 @@
 import { Box, Heading, VStack, Image } from "@chakra-ui/react";
 import Boxes from "/assets/claim-blocks.webp";
-import eventHelperInstance, { ExtDropData } from "@/lib/event";
+import eventHelperInstance, { DropData } from "@/lib/event";
 import { ImageSplit } from "./reward-image";
 import { TokenScavRewardImage } from "../wallet/journeys/token-scav-image";
 import { Image as FallbackImage } from "../ui/image";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 
 interface RevealProps {
-  foundItem: ExtDropData;
+  foundItem: DropData;
   numFound: number | undefined;
   numRequired: number | undefined;
 }

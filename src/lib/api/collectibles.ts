@@ -1,4 +1,4 @@
-import eventHelperInstance, { ExtDropData } from "../event";
+import eventHelperInstance, { DropData } from "../event";
 import { getIpfsImageSrcUrl } from "../helpers/ipfs";
 
 export interface Collectible {
@@ -13,7 +13,7 @@ export interface Collectible {
 export const fetchCollectibleById: (
   id: string,
 ) => Promise<Collectible> = async (id) => {
-  const dropInfo: ExtDropData = await eventHelperInstance.viewCall({
+  const dropInfo: DropData = await eventHelperInstance.viewCall({
     methodName: "get_drop_information",
     args: { drop_id: id },
   });
