@@ -82,6 +82,15 @@ const eventTableColumns: ColumnItem[] = [
   },
 ];
 
+interface DropWithKeys extends DropData {
+  dropSecretKey: string;
+  scavengerSecretKeys?: Array<{
+    id: number;
+    description: string;
+    secretKey: string;
+  }>;
+}
+
 interface DropManagerProps {
   accountId: string;
   secretKey: string;
@@ -95,15 +104,17 @@ export function DropManager({
   setIsErr,
   isAdmin = false,
 }: DropManagerProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tokensAvailable, setTokensAvailable] = useState<string>();
   const [dropsCreated, setDropsCreated] = useState<DropData[]>([]);
-  const toast = useToast();
   const [qrCodeUrls, setQrCodeUrls] = useState<string[]>([]);
+  const [qrCodeDescriptions, setQrCodeDescriptions] = useState<string[]>([]);
+  const [dropName, setDropName] = useState<string>("");
+  const toast = useToast();
 
   const getAccountInformation = useCallback(async () => {
     try {
-      const tokens = await eventHelperInstance.viewCall({
+      const tokens: string = await eventHelperInstance.viewCall({
         methodName: "ft_balance_of",
         args: { account_id: accountId },
       });
@@ -122,7 +133,7 @@ export function DropManager({
     } finally {
       setIsLoading(false);
     }
-  }, [accountId, setIsErr, setIsLoading, setTokensAvailable, setDropsCreated]);
+  }, [accountId, setIsErr]);
 
   useEffect(() => {
     if (!accountId) return;
@@ -132,7 +143,7 @@ export function DropManager({
   const { onOpen: openDeleteModal, setDeletionArgs: setDeleteArgs } =
     useTokenDeleteModalStore();
 
-  const handleDeleteClick = async (dropId) => {
+  const handleDeleteClick = async (dropId: string) => {
     if (!secretKey) {
       console.error("SK is undefined, unable to delete.");
       return;
@@ -148,9 +159,20 @@ export function DropManager({
     setDeleteArgs(deletionArgs);
   };
 
-  const { onOpen: onQRModalOpen } = useQRModalStore();
+  const {
+    setOnDownload,
+    setOnDownloadAll,
+    setQrCodeUrls: setModalQRCodeUrls,
+    setQrCodeDescriptions: setModalQRCodeDescriptions,
+    setDropName: setModalDropName,
+    onOpen: onQRModalOpen,
+    onClose: handleQRModalClose,
+  } = useQRModalStore();
 
-  const getTableRows: GetTicketDataFn = (data, handleDeleteClick) => {
+  const getTableRows: GetTicketDataFn = (
+    data: DropData[],
+    handleDeleteClick: (dropId: string) => Promise<void>,
+  ) => {
     if (!data) return [];
 
     return data.map((item) => {
@@ -220,40 +242,54 @@ export function DropManager({
     });
   };
 
-  const regenerateKeysForDrops = (drops) => {
-    return drops.map((drop) => {
-      console.log("drop: ", drop);
-      const dropKeyPair = deriveKey(secretKey, drop.name);
-      const dropSecretKey = dropKeyPair.secretKey;
+  const regenerateKeysForDrops = useCallback(
+    (drops: DropData[]): DropWithKeys[] => {
+      return drops.map((drop) => {
+        console.log("drop: ", drop);
+        const dropKeyPair = deriveKey(secretKey, drop.name);
+        const dropSecretKey = dropKeyPair.secretKey;
 
-      let scavengerSecretKeys;
+        let scavengerSecretKeys: Array<{
+          id: number;
+          description: string;
+          secretKey: string;
+        }> = [];
 
-      if (drop.scavenger_hunt) {
-        scavengerSecretKeys = drop.scavenger_hunt.map((piece) => {
-          const keyPair = deriveKey(secretKey, drop.name, piece.id.toString());
-          return {
-            id: piece.id,
-            description: piece.description,
-            secretKey: keyPair.secretKey,
-          };
-        });
-      }
+        if (drop.scavenger_hunt) {
+          scavengerSecretKeys = drop.scavenger_hunt.map((piece) => {
+            const keyPair = deriveKey(
+              secretKey,
+              drop.name,
+              piece.id.toString(),
+            );
+            return {
+              id: piece.id,
+              description: piece.description,
+              secretKey: keyPair.secretKey,
+            };
+          });
+        }
 
-      return {
-        ...drop,
-        dropSecretKey,
-        scavengerSecretKeys,
-      };
-    });
-  };
+        return {
+          ...drop,
+          dropSecretKey,
+          scavengerSecretKeys,
+        };
+      });
+    },
+    [secretKey],
+  );
 
   const generateQRCode = useCallback(
-    async (drop) => {
+    async (drop: DropData) => {
       try {
         const { dropSecretKey, scavengerSecretKeys } = regenerateKeysForDrops([
           drop,
         ])[0];
         const type = drop.type === "Nft" ? "nft" : "token";
+
+        // Set the drop name in the QR modal store
+        setDropName(drop.name);
 
         if (scavengerSecretKeys && scavengerSecretKeys.length > 0) {
           const qrCodes = await Promise.all(
@@ -262,34 +298,37 @@ export function DropManager({
             ),
           );
           setQrCodeUrls(qrCodes);
+          setQrCodeDescriptions(
+            scavengerSecretKeys.map(({ description }) => description),
+          );
         } else {
           const url = await QRCode.toDataURL(
             `${type}%%${dropSecretKey}%%${drop.id}`,
           );
           setQrCodeUrls([url]);
+          setQrCodeDescriptions([drop.name]);
         }
         onQRModalOpen();
       } catch (err) {
         console.error(err);
       }
     },
-    [onQRModalOpen, regenerateKeysForDrops],
+    [onQRModalOpen, regenerateKeysForDrops, setDropName],
   );
-
-  const handleDownloadQrCode = (url: string) => {
+  const handleDownloadQrCode = (url: string, filename: string) => {
     const link = document.createElement("a");
     link.href = url;
-    link.download = "qr-code.png";
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const handleDownloadAllQrCodes = (urls: string[]) => {
+  const handleDownloadAllQrCodes = (urls: string[], filenames: string[]) => {
     urls.forEach((url, index) => {
       const link = document.createElement("a");
       link.href = url;
-      link.download = `qr-code-${index + 1}.png`;
+      link.download = filenames[index];
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -302,8 +341,12 @@ export function DropManager({
     [dropsCreated],
   );
 
-  const { onClose: handleModalClose } = useTokenCreateModalStore();
-  const { onClose: handleQRModalClose } = useQRModalStore();
+  const {
+    setHandleClose,
+    onOpen: setShowTokenCreateModal,
+    setTokenType,
+    onClose: handleModalClose,
+  } = useTokenCreateModalStore();
 
   const handleCreateDropClose = useCallback(
     async (dropCreated, isScavengerHunt, scavengerHunt, setIsModalLoading) => {
@@ -342,6 +385,7 @@ export function DropManager({
           }
 
           // Do not close the modal here to keep the content
+          handleModalClose();
           onQRModalOpen();
         } catch (e) {
           console.error("Error creating drop:", e);
@@ -352,37 +396,45 @@ export function DropManager({
             isClosable: true,
           });
           // Do not close the modal on error
+          handleModalClose();
           handleQRModalClose();
         }
         setIsModalLoading(false);
       } else {
+        handleModalClose();
         // Do not close the modal here
       }
     },
-    [secretKey, getAccountInformation, onQRModalOpen, handleQRModalClose],
+    [
+      secretKey,
+      getAccountInformation,
+      onQRModalOpen,
+      handleModalClose,
+      handleQRModalClose,
+      toast,
+    ],
   );
-
-  const {
-    setHandleClose,
-    onOpen: setShowTokenCreateModal,
-    setTokenType,
-  } = useTokenCreateModalStore();
 
   useEffect(() => {
     setHandleClose(handleCreateDropClose);
   }, [setHandleClose, handleCreateDropClose]);
 
-  const {
-    setOnDownload,
-    setOnDownloadAll,
-    setQrCodeUrls: setModalQRCodeUrls,
-  } = useQRModalStore();
-
   useEffect(() => {
     setOnDownload(handleDownloadQrCode);
     setOnDownloadAll(handleDownloadAllQrCodes);
     setModalQRCodeUrls(qrCodeUrls);
-  }, [setOnDownload, setOnDownloadAll, setModalQRCodeUrls, qrCodeUrls]);
+    setModalQRCodeDescriptions(qrCodeDescriptions);
+    setModalDropName(dropName);
+  }, [
+    setOnDownload,
+    setOnDownloadAll,
+    setModalQRCodeUrls,
+    setModalQRCodeDescriptions,
+    setModalDropName,
+    qrCodeUrls,
+    qrCodeDescriptions,
+    dropName,
+  ]);
 
   // Extract existing drop names
   const existingDropNames = dropsCreated.map((drop) => drop.name);

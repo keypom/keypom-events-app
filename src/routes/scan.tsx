@@ -73,9 +73,7 @@ export default function Scan() {
             accountId,
             dropId,
           });
-          navigate(
-            `/scan/${encodeURIComponent(`${eventHelperInstance.getPubFromSecret(dropSecret)}%%${dropId}`)}`,
-          );
+          navigate(`/scan/${encodeURIComponent(`${dropId}`)}`);
           break;
         }
         case "food":

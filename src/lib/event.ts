@@ -29,6 +29,7 @@ export interface ExtClaimedDrop {
 }
 
 export interface ScavengerHunt {
+  id: number;
   key: string;
   description: string;
 }
@@ -204,7 +205,16 @@ class EventJS {
     scavengerHunt,
     isScavengerHunt,
     createdDrop,
-  }) => {
+  }): Promise<{
+    dropId: string;
+    dropSecretKey: string;
+    scavengerSecretKeys: {
+      id: number;
+      description: string;
+      publicKey: string;
+      secretKey: string;
+    }[];
+  }> => {
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
     await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
     const userAccount = new nearAPI.Account(
@@ -212,14 +222,17 @@ class EventJS {
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
 
-    console.log("Created drop: ", createdDrop);
-
-    const dropKeyPair = await deriveKey(secretKey, createdDrop.name);
+    const dropKeyPair = deriveKey(secretKey, createdDrop.name);
     const dropPublicKey = dropKeyPair.publicKey;
     const dropSecretKey = dropKeyPair.secretKey;
 
-    let scavenger_hunt;
-    let scavengerSecretKeys;
+    let scavenger_hunt: ScavengerHunt[] = [];
+    let scavengerSecretKeys: {
+      id: number;
+      description: string;
+      publicKey: string;
+      secretKey: string;
+    }[] = [];
 
     if (isScavengerHunt) {
       scavenger_hunt = [];
@@ -227,7 +240,7 @@ class EventJS {
 
       for (const [index, piece] of scavengerHunt.entries()) {
         const scavengerId = index + 1;
-        const keyPair = await deriveKey(
+        const keyPair = deriveKey(
           secretKey,
           createdDrop.name,
           scavengerId.toString(),
@@ -292,7 +305,7 @@ class EventJS {
         scavengerSecretKeys,
       };
     } else {
-      console.error("SuccessValue is not available");
+      throw new Error("Failed to create drop");
     }
   };
 
@@ -373,11 +386,6 @@ class EventJS {
           throw new Error("QR Code contains an invalid key");
         }
       }
-    }
-
-    // Check to see if the keys match
-    if (dropInfo.key !== pkToClaim) {
-      throw new Error("Invalid key");
     }
 
     if (alreadyClaimed) {

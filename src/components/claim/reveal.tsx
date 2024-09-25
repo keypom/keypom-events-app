@@ -14,7 +14,7 @@ interface RevealProps {
 
 export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
   const amountToDisplay = eventHelperInstance.yoctoToNearWithMinDecimals(
-    foundItem.amount || "0",
+    foundItem.token_amount || "0",
   );
 
   const isScavenger = numFound !== undefined && numRequired !== undefined;
@@ -32,7 +32,7 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
 
   const rewardComponent = () => {
     // For NFTs we can just use the image split component
-    if (foundItem.type === "nft" && foundItem.nft_metadata) {
+    if (foundItem.type === "Nft" && foundItem.nft_metadata) {
       return (
         <Box
           bg="bg.primary"
