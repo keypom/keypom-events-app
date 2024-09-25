@@ -25,7 +25,7 @@ export interface ExtClaimedDrop {
   found_scavenger_ids?: string[];
   needed_scavenger_ids?: ScavengerHunt[];
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
-  amount?: string; // Only present if the drop is a token
+  token_amount?: string; // Only present if the drop is a token
 }
 
 export interface ScavengerHunt {

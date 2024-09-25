@@ -39,8 +39,8 @@ const mapOwnedJourneyToJourney = (drop: ExtClaimedDrop): Journey => {
       drop.nft_metadata?.media || "", // Use media from nft_metadata for image
     ),
     tokenReward:
-      drop.amount &&
-      eventHelperInstance.yoctoToNearWithMinDecimals(drop.amount),
+      drop.token_amount &&
+      eventHelperInstance.yoctoToNearWithMinDecimals(drop.token_amount),
     steps,
     completed, // Add completed flag
   };

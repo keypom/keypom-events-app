@@ -1,13 +1,13 @@
 import { Box, Heading, VStack, Image } from "@chakra-ui/react";
 import Boxes from "/assets/claim-blocks.webp";
-import eventHelperInstance, { DropData } from "@/lib/event";
+import eventHelperInstance, { ExtClaimedDrop } from "@/lib/event";
 import { ImageSplit } from "./reward-image";
 import { TokenScavRewardImage } from "../wallet/journeys/token-scav-image";
 import { Image as FallbackImage } from "../ui/image";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 
 interface RevealProps {
-  foundItem: DropData;
+  foundItem: ExtClaimedDrop;
   numFound: number | undefined;
   numRequired: number | undefined;
 }
@@ -32,7 +32,7 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
 
   const rewardComponent = () => {
     // For NFTs we can just use the image split component
-    if (foundItem.type === "Nft" && foundItem.nft_metadata) {
+    if (foundItem.type === "nft" && foundItem.nft_metadata) {
       return (
         <Box
           bg="bg.primary"
