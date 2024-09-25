@@ -1,20 +1,20 @@
 import { Box, Heading, VStack, Image } from "@chakra-ui/react";
 import Boxes from "/assets/claim-blocks.webp";
-import eventHelperInstance, { ExtDropData } from "@/lib/event";
+import eventHelperInstance, { ExtClaimedDrop } from "@/lib/event";
 import { ImageSplit } from "./reward-image";
 import { TokenScavRewardImage } from "../wallet/journeys/token-scav-image";
 import { Image as FallbackImage } from "../ui/image";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 
 interface RevealProps {
-  foundItem: ExtDropData;
+  foundItem: ExtClaimedDrop;
   numFound: number | undefined;
   numRequired: number | undefined;
 }
 
 export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
   const amountToDisplay = eventHelperInstance.yoctoToNearWithMinDecimals(
-    foundItem.amount || "0",
+    foundItem.token_amount || "0",
   );
 
   const isScavenger = numFound !== undefined && numRequired !== undefined;

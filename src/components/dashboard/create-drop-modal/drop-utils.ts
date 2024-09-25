@@ -6,9 +6,29 @@ export const isValidNonNegativeNumber = (value: string) =>
 export const validateForm = (
   createdDrop: any,
   setErrors: React.Dispatch<React.SetStateAction<any>>,
+  existingDropNames: string[],
 ) => {
   const errors: any = {};
-  if (!createdDrop.name) errors.name = "Name is required";
+  // Name validation
+  if (!createdDrop.name || createdDrop.name.trim() === "") {
+    errors.name = "Name is required";
+  }
+
+  console.log(
+    "existingDropNames: ",
+    existingDropNames,
+    "Input: ",
+    createdDrop.name,
+  );
+
+  if (
+    existingDropNames
+      .map((name) => name.trim().toLowerCase())
+      .includes(createdDrop.name.trim().toLowerCase())
+  ) {
+    errors.name = "Drop name already used. Please choose a different name.";
+  }
+
   if (!createdDrop.artwork) errors.artwork = "Artwork is required";
 
   if (createdDrop.nftData) {

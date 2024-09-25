@@ -1,27 +1,15 @@
 import * as nearAPI from "near-api-js";
 import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
 import getConfig from "@/config/near";
-import {
-  FinalExecutionStatus,
-  FinalExecutionOutcome,
-} from "near-api-js/lib/providers";
 import { getPubFromSecret } from "@keypom/core";
 import { UserData } from "@/stores/event-credentials";
 import { pinToIpfs } from "./helpers/ipfs";
+import { deriveKey, generateSignature } from "./helpers/crypto";
 
 let instance: EventJS | undefined;
 
 const myKeyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
 const config = getConfig();
-
-function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
-    (
-      +c ^
-      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
-    ).toString(16),
-  );
-}
 
 export interface AttendeeTicketData {
   ticket: string;
@@ -33,26 +21,30 @@ export interface ExtClaimedDrop {
   name: string;
   image: string;
   drop_id: string;
+  key: string;
   found_scavenger_ids?: string[];
   needed_scavenger_ids?: ScavengerHunt[];
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
-  amount?: string; // Only present if the drop is a token
+  token_amount?: string; // Only present if the drop is a token
 }
 
 export interface ScavengerHunt {
-  piece: string;
+  id: number;
+  key: string;
   description: string;
 }
 
-export interface ExtDropData {
-  type: "token" | "nft";
+export interface DropData {
+  type: "Token" | "Nft";
+  id: string;
+  key: string;
   name: string;
-  drop_id: string;
-  image?: string;
+  image: string;
   num_claimed: number;
-  nft_metadata?: NftMetadata; // Only present if the drop is an NFT
-  amount?: string; // Only present if the drop is a token
   scavenger_hunt?: ScavengerHunt[]; // Optional scavenger hunt pieces
+
+  nft_metadata?: NftMetadata; // Only present if the drop is an NFT
+  token_amount?: string; // Only present if the drop is a token
 }
 
 interface NftMetadata {
@@ -74,7 +66,7 @@ class EventJS {
   static instance: EventJS;
   nearConnection!: nearAPI.Near;
   viewAccount!: nearAPI.Account;
-  private dropCache: ExtDropData[] = []; // Cache for all drops
+  private dropCache: DropData[] = []; // Cache for all drops
 
   constructor() {
     if (instance !== undefined) {
@@ -213,13 +205,16 @@ class EventJS {
     scavengerHunt,
     isScavengerHunt,
     createdDrop,
-  }: {
-    secretKey: string;
-    isScavengerHunt: boolean;
-    scavengerHunt: Array<{ piece: string; description: string }>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    createdDrop: any;
-  }) => {
+  }): Promise<{
+    dropId: string;
+    dropSecretKey: string;
+    scavengerSecretKeys: {
+      id: number;
+      description: string;
+      publicKey: string;
+      secretKey: string;
+    }[];
+  }> => {
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
     await myKeyStore.setKey(NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, keyPair);
     const userAccount = new nearAPI.Account(
@@ -227,91 +222,110 @@ class EventJS {
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
 
-    console.log("Created drop: ", createdDrop);
+    const dropKeyPair = deriveKey(secretKey, createdDrop.name);
+    const dropPublicKey = dropKeyPair.publicKey;
+    const dropSecretKey = dropKeyPair.secretKey;
 
-    let scavenger_hunt:
-      | Array<{ piece: string; description: string }>
-      | undefined;
+    let scavenger_hunt: ScavengerHunt[] = [];
+    let scavengerSecretKeys: {
+      id: number;
+      description: string;
+      publicKey: string;
+      secretKey: string;
+    }[] = [];
+
     if (isScavengerHunt) {
       scavenger_hunt = [];
-      for (const { description } of scavengerHunt) {
+      scavengerSecretKeys = [];
+
+      for (const [index, piece] of scavengerHunt.entries()) {
+        const scavengerId = index + 1;
+        const keyPair = deriveKey(
+          secretKey,
+          createdDrop.name,
+          scavengerId.toString(),
+        );
         scavenger_hunt.push({
-          description,
-          piece: uuidv4(),
+          id: scavengerId,
+          key: keyPair.publicKey,
+          description: piece.description,
+        });
+        scavengerSecretKeys.push({
+          id: scavengerId,
+          description: piece.description,
+          publicKey: keyPair.publicKey,
+          secretKey: keyPair.secretKey,
         });
       }
     }
 
-    let res: FinalExecutionOutcome | void;
-
+    let res;
     const pinnedImage = await pinToIpfs(createdDrop.artwork);
+
     if (createdDrop.nftData) {
       res = await userAccount.functionCall({
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "create_nft_drop",
         args: {
-          drop_data: {
-            name: createdDrop.name,
-            scavenger_hunt,
-          },
+          name: createdDrop.name,
+          key: dropPublicKey,
+          scavenger_hunt,
+          image: pinnedImage,
           nft_metadata: {
             ...createdDrop.nftData,
             media: pinnedImage,
           },
         },
+        gas: "300000000000000", // Adjust gas if necessary
       });
-      const status = res?.status as FinalExecutionStatus;
-      if (status && status.SuccessValue) {
-        // Now we're sure SuccessValue exists and is a string
-        let dropId = atob(status.SuccessValue);
-        if (dropId.startsWith('"') && dropId.endsWith('"')) {
-          dropId = dropId.slice(1, -1);
-        }
-        return { dropId, completeScavengerHunt: scavenger_hunt };
-      } else {
-        console.error("SuccessValue is not available");
-      }
-    }
-
-    res = await userAccount.functionCall({
-      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-      methodName: "create_token_drop",
-      args: {
-        drop_data: {
+    } else {
+      res = await userAccount.functionCall({
+        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+        methodName: "create_token_drop",
+        args: {
           image: pinnedImage,
           name: createdDrop.name,
+          key: dropPublicKey,
           scavenger_hunt,
+          token_amount: this.nearToYocto(createdDrop.amount),
         },
-        token_amount: this.nearToYocto(createdDrop.amount),
-      },
-    });
+        gas: "300000000000000", // Adjust gas if necessary
+      });
+    }
 
-    const status = res?.status as FinalExecutionStatus;
+    const status = res?.status;
     if (status && status.SuccessValue) {
-      // Now we're sure SuccessValue exists and is a string
       let dropId = atob(status.SuccessValue);
       if (dropId.startsWith('"') && dropId.endsWith('"')) {
         dropId = dropId.slice(1, -1);
       }
-      return { dropId, completeScavengerHunt: scavenger_hunt };
+      return {
+        dropId,
+        dropSecretKey,
+        scavengerSecretKeys,
+      };
     } else {
-      console.error("SuccessValue is not available");
+      throw new Error("Failed to create drop");
     }
   };
 
   claimEventDrop = async ({
     secretKey,
+    dropSecretKey,
+    isScav,
     accountId,
     dropId,
-    scavId,
   }: {
     secretKey: string;
     dropId: string;
-    scavId: string | null;
+    dropSecretKey: string;
+    isScav: boolean;
     accountId?: string;
   }) => {
+    const pkToClaim = this.getPubFromSecret(dropSecretKey);
+
     // Fetch the drop information
-    const dropInfo = await eventHelperInstance.viewCall({
+    const dropInfo: DropData = await eventHelperInstance.viewCall({
       methodName: "get_drop_information",
       args: { drop_id: dropId },
     });
@@ -322,41 +336,55 @@ class EventJS {
     }
 
     // Fetch claimed drops for the account
-    let curClaim: ExtClaimedDrop | null = null;
+    let existingClaimData: ExtClaimedDrop | null = null;
     try {
-      curClaim = await eventHelperInstance.viewCall({
+      existingClaimData = await eventHelperInstance.viewCall({
         methodName: "get_claimed_drop_for_account",
         args: { account_id: accountId, drop_id: dropId },
       });
-      console.log("Cur Claim: ", curClaim);
+      console.log("Existing Claim: ", existingClaimData);
     } catch (e) {
       console.log("Error: ", e);
     }
     let alreadyClaimed = false;
+
     // At this point the drop must exist since if it didnt we panick
     // Now, we need to check if we have already claimed the drop
-    if (curClaim) {
-      // If there is no scavenger hunt, then we already claimed so panick
-      const neededScavengerIds = curClaim.needed_scavenger_ids;
+    if (existingClaimData) {
+      // If there is no scavenger hunt, then we already claimed so panic
+      const neededScavengerIds = existingClaimData.needed_scavenger_ids;
       if (!neededScavengerIds) {
         alreadyClaimed = true;
       } else {
-        if (!scavId) {
-          throw new Error("No scavenger ID provided");
-        }
-
         // Theres some scavenger hunts so we need to make sure that the one we are trying to claim is valid
         const isValidScavengerId = neededScavengerIds
-          .map((item) => item.piece)
-          .includes(scavId);
+          .map((item) => item.key)
+          .includes(pkToClaim);
 
         if (!isValidScavengerId) {
           throw new Error("Invalid scavenger piece");
         }
 
-        // IF the scavenger ID is valid, check if it has already been claimed
-        const piecesToCheck = curClaim.found_scavenger_ids || [];
-        alreadyClaimed = piecesToCheck.includes(scavId);
+        // If the scavenger ID is valid, check if it has already been claimed
+        const piecesToCheck = existingClaimData.found_scavenger_ids || [];
+        alreadyClaimed = piecesToCheck.includes(pkToClaim);
+      }
+    } else {
+      // If there is no existing claim data we need to check if A) the drop key matches and B) if theres a scav, its valid
+      if (
+        dropInfo.scavenger_hunt !== undefined &&
+        dropInfo.scavenger_hunt !== null
+      ) {
+        const isValidScavengerId = dropInfo.scavenger_hunt
+          .map((item) => item.key)
+          .includes(pkToClaim);
+        if (!isValidScavengerId) {
+          throw new Error("Invalid scavenger piece");
+        }
+      } else {
+        if (dropInfo.key !== pkToClaim) {
+          throw new Error("QR Code contains an invalid key");
+        }
       }
     }
 
@@ -370,12 +398,16 @@ class EventJS {
       this.nearConnection.connection,
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
+
+    const { signature } = generateSignature(dropSecretKey, accountId!);
+
     await userAccount.functionCall({
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "claim_drop",
       args: {
         drop_id: dropId,
-        scavenger_id: scavId,
+        signature,
+        scavenger_id: isScav ? pkToClaim : null,
       },
     });
   };
@@ -478,7 +510,7 @@ class EventJS {
       args: {},
     });
 
-    let allDrops: ExtDropData[] = [];
+    let allDrops: DropData[] = [];
     for (let i = 0; i < numDrops; i += 50) {
       const dropBatch = await this.viewCall({
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
@@ -493,7 +525,7 @@ class EventJS {
   };
 
   // Filter cached drops for NFTs
-  getCachedDrops = async (): Promise<ExtDropData[]> => {
+  getCachedDrops = async (): Promise<DropData[]> => {
     if (this.dropCache.length === 0) {
       await this.fetchDropsWithCache();
     }
@@ -501,7 +533,7 @@ class EventJS {
   };
 
   // Filter cached drops for Tokens
-  getCachedTokenDrops = async (): Promise<ExtDropData[]> => {
+  getCachedTokenDrops = async (): Promise<DropData[]> => {
     if (this.dropCache.length === 0) {
       await this.fetchDropsWithCache();
     }
@@ -509,7 +541,7 @@ class EventJS {
   };
 
   // Filter cached drops for scavenger hunts
-  getCachedScavengerHunts = async (): Promise<ExtDropData[]> => {
+  getCachedScavengerHunts = async (): Promise<DropData[]> => {
     if (this.dropCache.length === 0) {
       await this.fetchDropsWithCache();
     }

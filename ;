@@ -3,10 +3,10 @@ import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
 import { useSwipeable } from "react-swipeable";
 import Boxes from "/assets/boxes-background.webp";
 import { HelpIcon, ArrowIcon } from "@/components/icons";
-import { ExtDropData } from "@/lib/event";
+import { DropData } from "@/lib/event";
 
 interface HiddenProps {
-  foundItem: ExtDropData;
+  foundItem: DropData;
   numFound: number;
   numRequired: number;
   onReveal: () => void;

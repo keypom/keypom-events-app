@@ -44,18 +44,10 @@ export default function Scan() {
       const qrData = value;
 
       const qrDataSplit = qrData.split("%%");
+      console.log("QR Data Split: ", qrDataSplit);
 
-      const isScavenger = qrDataSplit.length === 3;
       const type = qrDataSplit[0];
-
-      let data = qrDataSplit[1];
-      let scavId: string | null = null;
-      if (isScavenger) {
-        scavId = qrDataSplit[1];
-        data = qrDataSplit[2];
-      }
-
-      if (!type || !data) {
+      if (!type) {
         throw new Error("QR data format is incorrect");
       }
 
@@ -65,27 +57,39 @@ export default function Scan() {
       // Redirect based on the QR type, without claiming anything
       switch (type) {
         case "token":
-        case "nft":
+        case "nft": {
+          let dropSecret = qrDataSplit[1];
+          let dropId = qrDataSplit[2];
+          const isScav = qrDataSplit.length === 4 && qrDataSplit[1] === "piece";
+          if (isScav) {
+            dropSecret = qrDataSplit[2];
+            dropId = qrDataSplit[3];
+          }
+
           await eventHelperInstance.claimEventDrop({
             secretKey,
+            dropSecretKey: dropSecret,
+            isScav,
             accountId,
-            dropId: data,
-            scavId,
+            dropId,
           });
-          navigate(`/scan/${encodeURIComponent(data)}`);
+          navigate(`/scan/${encodeURIComponent(`${dropId}`)}`);
           break;
+        }
         case "food":
         case "merch":
           navigate(`/purchase/food`);
           break;
-        case "profile":
-          if (data === displayAccountId) {
+        case "profile": {
+          const profile = qrDataSplit[1];
+          if (profile === displayAccountId) {
             throw new Error("Cannot scan your own profile");
           }
           // Wait 500ms
           await new Promise((resolve) => setTimeout(resolve, 500));
-          navigate(`/wallet/send?to=${data}`);
+          navigate(`/wallet/send?to=${profile}`);
           break;
+        }
         default:
           console.error("Unhandled QR data type:", type);
           throw new Error("Unrecognized QR type");

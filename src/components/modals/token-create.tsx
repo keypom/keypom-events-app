@@ -36,7 +36,11 @@ const defaultScavengerHunt = [
   },
 ];
 
-export function TokenCreateModal() {
+interface TokenCreateModalProps {
+  existingDropNames: string[];
+}
+
+export function TokenCreateModal({ existingDropNames }: TokenCreateModalProps) {
   const {
     isOpen,
     onClose,
@@ -44,15 +48,25 @@ export function TokenCreateModal() {
     tokenType: modalType,
   } = useTokenCreateModalStore();
 
-  const [createdDrop, setCreatedDrop] = useState(defaultDrop);
+  const [createdDrop, setCreatedDrop] = useState<{
+    name: string;
+    artwork?: File;
+    amount: string;
+    nftData?: {
+      title?: string;
+      description?: string;
+      media?: string;
+    };
+  }>(defaultDrop);
+
   const [scavengerPieces, setScavengerPieces] =
     useState<Array<{ piece: string; description: string }>>(
       defaultScavengerHunt,
     );
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isScavengerHunt, setIsScavengerHunt] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isScavengerHunt, setIsScavengerHunt] = useState<boolean>(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const resetValues = () => {
     setErrors({});
@@ -61,9 +75,14 @@ export function TokenCreateModal() {
     setScavengerPieces(defaultScavengerHunt);
   };
 
-  const handleCreateDrop = () => {
-    if (validateForm(createdDrop, setErrors)) {
-      handleClose(createdDrop, isScavengerHunt, scavengerPieces, setIsLoading);
+  const handleCreateDrop = async () => {
+    if (validateForm(createdDrop, setErrors, existingDropNames)) {
+      await handleClose(
+        createdDrop,
+        isScavengerHunt,
+        scavengerPieces,
+        setIsLoading,
+      );
       resetValues();
     }
   };

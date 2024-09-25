@@ -3,11 +3,11 @@ import { Box, Heading, Image, VStack, Text } from "@chakra-ui/react";
 import { useSwipeable } from "react-swipeable";
 import Boxes from "/assets/boxes-background.webp";
 import { HelpIcon, ArrowIcon } from "@/components/icons";
-import { ExtDropData } from "@/lib/event";
+import { ExtClaimedDrop } from "@/lib/event";
 import { motion, useSpring, useTransform } from "framer-motion";
 
 interface HiddenProps {
-  foundItem: ExtDropData;
+  foundItem: ExtClaimedDrop;
   numFound: number | undefined;
   numRequired: number | undefined;
   onReveal: () => void;

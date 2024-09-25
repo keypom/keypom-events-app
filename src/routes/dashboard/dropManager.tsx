@@ -27,7 +27,7 @@ import { DataTable } from "@/components/dashboard/table";
 
 import { truncateAddress } from "@/utils/truncateAddress";
 import { formatTokensAvailable } from "@/utils/formatTokensAvailable";
-import eventHelperInstance, { ExtDropData, ScavengerHunt } from "@/lib/event";
+import eventHelperInstance, { DropData } from "@/lib/event";
 
 import { TokenDeleteModal } from "@/components/modals/token-delete";
 import { useTokenDeleteModalStore } from "@/stores/token-delete-modal";
@@ -36,9 +36,10 @@ import { useTokenCreateModalStore } from "@/stores/token-create-modal";
 import { QRCodeModal } from "@/components/modals/qr-modal";
 import { useQRModalStore } from "@/stores/qr-modal";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
+import { deriveKey } from "@/lib/helpers/crypto";
 
 export type GetTicketDataFn = (
-  data: ExtDropData[],
+  data: DropData[],
   handleDelete: (pubKey: string) => Promise<void>,
 ) => DataItem[];
 
@@ -81,6 +82,15 @@ const eventTableColumns: ColumnItem[] = [
   },
 ];
 
+interface DropWithKeys extends DropData {
+  dropSecretKey: string;
+  scavengerSecretKeys?: Array<{
+    id: number;
+    description: string;
+    secretKey: string;
+  }>;
+}
+
 interface DropManagerProps {
   accountId: string;
   secretKey: string;
@@ -94,21 +104,23 @@ export function DropManager({
   setIsErr,
   isAdmin = false,
 }: DropManagerProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tokensAvailable, setTokensAvailable] = useState<string>();
-  const [dropsCreated, setDropsCreated] = useState<ExtDropData[]>([]);
-  const toast = useToast();
+  const [dropsCreated, setDropsCreated] = useState<DropData[]>([]);
   const [qrCodeUrls, setQrCodeUrls] = useState<string[]>([]);
+  const [qrCodeDescriptions, setQrCodeDescriptions] = useState<string[]>([]);
+  const [dropName, setDropName] = useState<string>("");
+  const toast = useToast();
 
   const getAccountInformation = useCallback(async () => {
     try {
-      const tokens = await eventHelperInstance.viewCall({
+      const tokens: string = await eventHelperInstance.viewCall({
         methodName: "ft_balance_of",
         args: { account_id: accountId },
       });
       setTokensAvailable(eventHelperInstance.yoctoToNearWith2Decimals(tokens));
 
-      const drops: ExtDropData[] = await eventHelperInstance.viewCall({
+      const drops: DropData[] = await eventHelperInstance.viewCall({
         methodName: "get_drops_created_by_account",
         args: { account_id: accountId },
       });
@@ -121,7 +133,7 @@ export function DropManager({
     } finally {
       setIsLoading(false);
     }
-  }, [accountId, setIsErr, setIsLoading, setTokensAvailable, setDropsCreated]);
+  }, [accountId, setIsErr]);
 
   useEffect(() => {
     if (!accountId) return;
@@ -131,7 +143,7 @@ export function DropManager({
   const { onOpen: openDeleteModal, setDeletionArgs: setDeleteArgs } =
     useTokenDeleteModalStore();
 
-  const handleDeleteClick = async (dropId) => {
+  const handleDeleteClick = async (dropId: string) => {
     if (!secretKey) {
       console.error("SK is undefined, unable to delete.");
       return;
@@ -147,21 +159,32 @@ export function DropManager({
     setDeleteArgs(deletionArgs);
   };
 
-  const { onOpen: onQRModalOpen } = useQRModalStore();
+  const {
+    setOnDownload,
+    setOnDownloadAll,
+    setQrCodeUrls: setModalQRCodeUrls,
+    setQrCodeDescriptions: setModalQRCodeDescriptions,
+    setDropName: setModalDropName,
+    onOpen: onQRModalOpen,
+    onClose: handleQRModalClose,
+  } = useQRModalStore();
 
-  const getTableRows: GetTicketDataFn = (data, handleDeleteClick) => {
+  const getTableRows: GetTicketDataFn = (
+    data: DropData[],
+    handleDeleteClick: (dropId: string) => Promise<void>,
+  ) => {
     if (!data) return [];
 
     return data.map((item) => {
       const dropImageCid =
-        item.type === "nft" ? item.nft_metadata!.media : item.image!;
+        item.type === "Nft" ? item.nft_metadata!.media : item.image!;
 
       return {
-        id: item.drop_id,
+        id: item.id,
         name: (
           <HStack spacing={4}>
             <Image
-              alt={`Event image for ${item.drop_id}`}
+              alt={`Event image for ${item.id}`}
               borderRadius="12px"
               boxSize="48px"
               objectFit="contain"
@@ -179,12 +202,12 @@ export function DropManager({
             </VStack>
           </HStack>
         ),
-        type: item.type === "token" ? "Token" : "NFT",
+        type: item.type === "Token" ? "Token" : "NFT",
         numClaimed: item.num_claimed,
         numPieces: item.scavenger_hunt ? item.scavenger_hunt.length : "None",
         reward:
-          item.type === "token" ? (
-            eventHelperInstance.yoctoToNearWith2Decimals(item.amount!)
+          item.type === "Token" ? (
+            eventHelperInstance.yoctoToNearWith2Decimals(item.token_amount!)
           ) : (
             <>NFT</>
           ),
@@ -196,8 +219,7 @@ export function DropManager({
               maxWidth={"max-content"}
               onClick={(e) => {
                 e.stopPropagation();
-                generateQRCode(item.drop_id, item.type, item.scavenger_hunt);
-                onQRModalOpen();
+                generateQRCode(item);
               }}
             >
               Get QR Code
@@ -209,7 +231,7 @@ export function DropManager({
               width={"48px"}
               onClick={(e) => {
                 e.stopPropagation();
-                handleDeleteClick(item.drop_id);
+                handleDeleteClick(item.id);
               }}
             >
               <DeleteIcon color="white" />
@@ -220,46 +242,93 @@ export function DropManager({
     });
   };
 
+  const regenerateKeysForDrops = useCallback(
+    (drops: DropData[]): DropWithKeys[] => {
+      return drops.map((drop) => {
+        console.log("drop: ", drop);
+        const dropKeyPair = deriveKey(secretKey, drop.name);
+        const dropSecretKey = dropKeyPair.secretKey;
+
+        let scavengerSecretKeys: Array<{
+          id: number;
+          description: string;
+          secretKey: string;
+        }> = [];
+
+        if (drop.scavenger_hunt) {
+          scavengerSecretKeys = drop.scavenger_hunt.map((piece) => {
+            const keyPair = deriveKey(
+              secretKey,
+              drop.name,
+              piece.id.toString(),
+            );
+            return {
+              id: piece.id,
+              description: piece.description,
+              secretKey: keyPair.secretKey,
+            };
+          });
+        }
+
+        return {
+          ...drop,
+          dropSecretKey,
+          scavengerSecretKeys,
+        };
+      });
+    },
+    [secretKey],
+  );
+
   const generateQRCode = useCallback(
-    async (
-      dropId: string,
-      type: "nft" | "token",
-      scavengerHunt?: ScavengerHunt[],
-    ) => {
+    async (drop: DropData) => {
       try {
-        if (scavengerHunt && scavengerHunt.length > 0) {
+        const { dropSecretKey, scavengerSecretKeys } = regenerateKeysForDrops([
+          drop,
+        ])[0];
+        const type = drop.type === "Nft" ? "nft" : "token";
+
+        // Set the drop name in the QR modal store
+        setDropName(drop.name);
+
+        if (scavengerSecretKeys && scavengerSecretKeys.length > 0) {
           const qrCodes = await Promise.all(
-            scavengerHunt.map(({ piece }) =>
-              QRCode.toDataURL(`${type}%%${piece}%%${dropId}`),
+            scavengerSecretKeys.map(({ secretKey }) =>
+              QRCode.toDataURL(`${type}%%piece%%${secretKey}%%${drop.id}`),
             ),
           );
           setQrCodeUrls(qrCodes);
+          setQrCodeDescriptions(
+            scavengerSecretKeys.map(({ description }) => description),
+          );
         } else {
-          const url = await QRCode.toDataURL(`${type}%%${dropId}`);
+          const url = await QRCode.toDataURL(
+            `${type}%%${dropSecretKey}%%${drop.id}`,
+          );
           setQrCodeUrls([url]);
+          setQrCodeDescriptions([drop.name]);
         }
         onQRModalOpen();
       } catch (err) {
         console.error(err);
       }
     },
-    [onQRModalOpen],
+    [onQRModalOpen, regenerateKeysForDrops, setDropName],
   );
-
-  const handleDownloadQrCode = (url: string) => {
+  const handleDownloadQrCode = (url: string, filename: string) => {
     const link = document.createElement("a");
     link.href = url;
-    link.download = "qr-code.png";
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const handleDownloadAllQrCodes = (urls: string[]) => {
+  const handleDownloadAllQrCodes = (urls: string[], filenames: string[]) => {
     urls.forEach((url, index) => {
       const link = document.createElement("a");
       link.href = url;
-      link.download = `qr-code-${index + 1}.png`;
+      link.download = filenames[index];
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -272,22 +341,19 @@ export function DropManager({
     [dropsCreated],
   );
 
-  const { onClose: handleModalClose } = useTokenCreateModalStore();
-  const { onClose: handleQRModalClose } = useQRModalStore();
+  const {
+    setHandleClose,
+    onOpen: setShowTokenCreateModal,
+    setTokenType,
+    onClose: handleModalClose,
+  } = useTokenCreateModalStore();
 
   const handleCreateDropClose = useCallback(
-    async (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      dropCreated: any,
-      isScavengerHunt: boolean,
-      scavengerHunt: Array<{ piece: string; description: string }>,
-      setIsModalLoading: (loading: boolean) => void,
-    ) => {
+    async (dropCreated, isScavengerHunt, scavengerHunt, setIsModalLoading) => {
       if (dropCreated) {
         setIsModalLoading(true);
         try {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const { dropId, completeScavengerHunt }: any =
+          const { dropId, dropSecretKey, scavengerSecretKeys } =
             await eventHelperInstance.createConferenceDrop({
               secretKey,
               createdDrop: dropCreated,
@@ -301,13 +367,24 @@ export function DropManager({
             isClosable: true,
           });
           await getAccountInformation(); // Refresh the drop list
+
           const type = dropCreated.nftData === undefined ? "token" : "nft";
-          if (isScavengerHunt) {
-            generateQRCode(dropId, type, completeScavengerHunt);
+
+          if (isScavengerHunt && scavengerSecretKeys) {
+            const qrCodes = await Promise.all(
+              scavengerSecretKeys.map(({ secretKey }) =>
+                QRCode.toDataURL(`${type}%%piece%%${secretKey}%%${dropId}`),
+              ),
+            );
+            setQrCodeUrls(qrCodes);
           } else {
-            generateQRCode(dropId, type);
+            const url = await QRCode.toDataURL(
+              `${type}%%${dropSecretKey}%%${dropId}`,
+            );
+            setQrCodeUrls([url]);
           }
 
+          // Do not close the modal here to keep the content
           handleModalClose();
           onQRModalOpen();
         } catch (e) {
@@ -318,45 +395,50 @@ export function DropManager({
             duration: 5000,
             isClosable: true,
           });
+          // Do not close the modal on error
           handleModalClose();
           handleQRModalClose();
         }
         setIsModalLoading(false);
       } else {
         handleModalClose();
+        // Do not close the modal here
       }
     },
     [
-      handleModalClose,
-      onQRModalOpen,
       secretKey,
       getAccountInformation,
-      generateQRCode,
+      onQRModalOpen,
+      handleModalClose,
       handleQRModalClose,
+      toast,
     ],
   );
-
-  const {
-    setHandleClose,
-    onOpen: setShowTokenCreateModal,
-    setTokenType,
-  } = useTokenCreateModalStore();
 
   useEffect(() => {
     setHandleClose(handleCreateDropClose);
   }, [setHandleClose, handleCreateDropClose]);
 
-  const {
-    setOnDownload,
-    setOnDownloadAll,
-    setQrCodeUrls: setModalQRCodeUrls,
-  } = useQRModalStore();
-
   useEffect(() => {
     setOnDownload(handleDownloadQrCode);
     setOnDownloadAll(handleDownloadAllQrCodes);
     setModalQRCodeUrls(qrCodeUrls);
-  }, [setOnDownload, setOnDownloadAll, setModalQRCodeUrls, qrCodeUrls]);
+    setModalQRCodeDescriptions(qrCodeDescriptions);
+    setModalDropName(dropName);
+  }, [
+    setOnDownload,
+    setOnDownloadAll,
+    setModalQRCodeUrls,
+    setModalQRCodeDescriptions,
+    setModalDropName,
+    qrCodeUrls,
+    qrCodeDescriptions,
+    dropName,
+  ]);
+
+  // Extract existing drop names
+  const existingDropNames = dropsCreated.map((drop) => drop.name);
+  console.log("Existing drop names: ", existingDropNames);
 
   return (
     <Box p={8}>
@@ -368,7 +450,7 @@ export function DropManager({
           <Spacer />
         </Flex>
         <TokenDeleteModal />
-        <TokenCreateModal />
+        <TokenCreateModal existingDropNames={existingDropNames} />
         <QRCodeModal />
         {isLoading ? (
           <Skeleton height="200px" />
