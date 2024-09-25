@@ -14,6 +14,7 @@ export const formatTimestamp = (
   if (!timestamp) return;
 
   const timestampInMs = timestamp / 1e6;
+
   return timeAgoShort(new Date(timestampInMs));
 };
 

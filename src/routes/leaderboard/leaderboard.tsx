@@ -1,4 +1,3 @@
-// Leaderboard.tsx
 import { useState, useEffect } from "react";
 import { Box, VStack, Flex, Spinner } from "@chakra-ui/react";
 import eventHelperInstance from "@/lib/event";
@@ -14,6 +13,7 @@ export default function Leaderboard() {
   const [isErr, setIsErr] = useState(false);
 
   useEffect(() => {
+    // Function to fetch leaderboard data
     const fetchLeaderboardData = async () => {
       try {
         const data = await eventHelperInstance.viewCall({
@@ -34,7 +34,14 @@ export default function Leaderboard() {
       }
     };
 
+    // Initial fetch
     fetchLeaderboardData();
+
+    // Set up interval to refetch every 10 seconds
+    const intervalId = setInterval(fetchLeaderboardData, 10000); // 10000 ms = 10 seconds
+
+    // Cleanup function to clear the interval when the component is unmounted
+    return () => clearInterval(intervalId);
   }, []);
 
   if (isErr) {
