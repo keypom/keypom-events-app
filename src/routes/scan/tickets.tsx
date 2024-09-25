@@ -94,7 +94,7 @@ export default function Scanner() {
         }
 
         // wait 1 second
-        await new Promise((resolve) => setTimeout(resolve, 750));
+        await new Promise((resolve) => setTimeout(resolve, 200));
 
         stateRef.current.ticketToScan = secretKey;
         setTicketToScan(secretKey);
