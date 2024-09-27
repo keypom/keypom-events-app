@@ -104,9 +104,8 @@ const fetchAccountData = async (secretKey: string) => {
       (drop) =>
         "nft_metadata" in drop &&
         drop.scavenger_hunt === null &&
-        drop.type === "Nft",
+        drop.type !== "Token",
     );
-    console.log("unownedCollectibles", unownedCollectibles);
 
     const ownedJourneys: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
       methodName: "get_claimed_scavengers_for_account",

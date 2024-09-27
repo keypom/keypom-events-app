@@ -14,13 +14,8 @@ import { FooterItem } from "@/components/ui/footer";
 // constants/chains.ts
 // TODO: Min add networks and also their correct chain IDs
 export const MULTICHAIN_NETWORKS = [
-  { id: "near", name: "NEAR", icon: "/assets/base_chain.png", chainId: 1 },
-  {
-    id: "ethereum",
-    name: "Ethereum",
-    icon: "/path/to/ethereum-icon.png",
-    chainId: 2,
-  },
+  { id: "near", name: "NEAR", icon: "/assets/near_chain.png", chainId: 1 },
+  { id: "base", name: "BASE", icon: "/assets/base_chain.png", chainId: 84532 },
 ];
 
 /**
