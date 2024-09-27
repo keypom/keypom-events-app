@@ -24,6 +24,7 @@ export interface ExtClaimedDrop {
   key: string;
   found_scavenger_ids?: string[];
   needed_scavenger_ids?: ScavengerHunt[];
+  mc_metadata?: MCMetadata;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   token_amount?: string; // Only present if the drop is a token
 }
@@ -32,6 +33,16 @@ export interface ScavengerHunt {
   id: number;
   key: string;
   description: string;
+}
+
+export interface MCMetadata {
+  // FOR MPC
+  chain_id: number;
+  // Receiving NFT contract on external chain
+  contract_id: string;
+  // Arguments that I pass in to the NFT mint function call on external chain
+  // **NEEDS TO HAVE BEEN CREATED ON THE NFT CONTRACT BEFORE CALLING CREATE DROP**
+  series_id: number;
 }
 
 export interface DropData {
@@ -43,6 +54,7 @@ export interface DropData {
   num_claimed: number;
   scavenger_hunt?: ScavengerHunt[]; // Optional scavenger hunt pieces
 
+  mc_metadata?: MCMetadata;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   token_amount?: string; // Only present if the drop is a token
 }
@@ -263,22 +275,51 @@ class EventJS {
     const pinnedImage = await pinToIpfs(createdDrop.artwork);
 
     if (createdDrop.nftData) {
-      res = await userAccount.functionCall({
-        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-        methodName: "create_nft_drop",
-        args: {
-          name: createdDrop.name,
-          key: dropPublicKey,
-          scavenger_hunt,
-          image: pinnedImage,
-          nft_metadata: {
-            ...createdDrop.nftData,
-            media: pinnedImage,
+      if (createdDrop.chain === "near") {
+        // NEAR NFT Drop
+        res = await userAccount.functionCall({
+          contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+          methodName: "create_nft_drop",
+          args: {
+            name: createdDrop.name,
+            key: dropPublicKey,
+            scavenger_hunt,
+            image: pinnedImage,
+            nft_metadata: {
+              ...createdDrop.nftData,
+              media: pinnedImage,
+            },
           },
-        },
-        gas: "300000000000000", // Adjust gas if necessary
-      });
+          gas: "300000000000000",
+        });
+      } else {
+        // TODO: Min implement the series creation on external chain and implement get chain ID function
+        // Multichain NFT Drop
+        const multichainMetadata = {
+          chain_id: getChainIdFromName(createdDrop.chain),
+          contract_id: createdDrop.contractId || "",
+          series_id: createdDrop.seriesId || 0,
+        };
+
+        res = await userAccount.functionCall({
+          contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+          methodName: "create_multichain_drop",
+          args: {
+            name: createdDrop.name,
+            key: dropPublicKey,
+            scavenger_hunt,
+            image: pinnedImage,
+            multichain_metadata: multichainMetadata,
+            nft_metadata: {
+              ...createdDrop.nftData,
+              media: pinnedImage,
+            },
+          },
+          gas: "300000000000000",
+        });
+      }
     } else {
+      // Token Drop
       res = await userAccount.functionCall({
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "create_token_drop",
@@ -289,7 +330,7 @@ class EventJS {
           scavenger_hunt,
           token_amount: this.nearToYocto(createdDrop.amount),
         },
-        gas: "300000000000000", // Adjust gas if necessary
+        gas: "300000000000000",
       });
     }
 

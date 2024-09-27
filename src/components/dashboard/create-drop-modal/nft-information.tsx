@@ -1,9 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React from "react";
-import { VStack, HStack, Textarea } from "@chakra-ui/react";
+import {
+  VStack,
+  HStack,
+  Textarea,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Button,
+  FormControl as ChakraFormControl,
+  Image,
+  Text,
+} from "@chakra-ui/react";
 import { FormControl } from "@/components/dashboard/form-control";
 import { ImageInput } from "./image-input";
+import { MULTICHAIN_NETWORKS } from "@/constants/common";
 
 interface NFTInformationProps {
   createdDrop: any;
@@ -24,10 +35,22 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
     });
   };
 
+  const onChainSelect = (chainId: string) => {
+    setCreatedDrop({
+      ...createdDrop,
+      chain: chainId,
+    });
+  };
+
+  const selectedChainInfo =
+    MULTICHAIN_NETWORKS.find((c) => c.id === createdDrop.chain) ||
+    MULTICHAIN_NETWORKS.find((c) => c.id === "near")!; // Default to NEAR
+
   return (
     <>
-      <VStack spacing={0} w="100%">
+      <VStack spacing={4} w="100%">
         <HStack spacing={6} w="100%">
+          {/* NFT Title */}
           <FormControl
             label="NFT Title"
             required={true}
@@ -43,9 +66,10 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
               fontFamily={"mono"}
               fontWeight={"700"}
               size="sm"
+              placeholder="Coolest NFT ever"
               sx={{
                 "::placeholder": {
-                  color: "black",
+                  color: "gray.500",
                   fontSize: { base: "xs", md: "sm" },
                   fontFamily: "mono",
                 },
@@ -53,9 +77,9 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
               value={createdDrop.nftData?.title || ""}
               onChange={(e) => onNFTDataChange("title", e.target.value)}
               isInvalid={!!errors.nft?.title}
-              placeholder="Coolest NFT ever"
             />
           </FormControl>
+          {/* NFT Description */}
           <FormControl
             label="NFT Description"
             required={true}
@@ -70,9 +94,10 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
               fontFamily={"mono"}
               fontWeight={"700"}
               size="sm"
+              placeholder="One of a kind proof of touch"
               sx={{
                 "::placeholder": {
-                  color: "black",
+                  color: "gray.500",
                   fontSize: { base: "xs", md: "sm" },
                   fontFamily: "mono",
                 },
@@ -80,10 +105,57 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
               value={createdDrop.nftData?.description || ""}
               onChange={(e) => onNFTDataChange("description", e.target.value)}
               isInvalid={!!errors.nft?.description}
-              placeholder="One of a kind proof of touch"
             />
           </FormControl>
         </HStack>
+        {/* Chain Selector */}
+        <FormControl
+          label="Select Chain"
+          required={true}
+          errorText={errors.chain}
+          my="1"
+        >
+          <ChakraFormControl>
+            <Menu>
+              <MenuButton
+                as={Button}
+                variant="outline"
+                width="full"
+                textAlign="left"
+              >
+                <HStack w="100%">
+                  <Image src={selectedChainInfo.icon} boxSize="16px" />
+                  <Text>{selectedChainInfo.name}</Text>
+                </HStack>
+              </MenuButton>
+              <MenuList
+                background={"black"}
+                borderRadius={"md"}
+                border={"1px solid var(--chakra-colors-brand-400)"}
+                fontFamily={"mono"}
+              >
+                {MULTICHAIN_NETWORKS.map((chain) => (
+                  <MenuItem
+                    key={chain.id}
+                    onClick={() => onChainSelect(chain.id)}
+                    background="black"
+                    color="white"
+                    _hover={{
+                      background: "black",
+                      color: "brand.400",
+                    }}
+                  >
+                    <HStack>
+                      <Image src={chain.icon} boxSize="16px" />
+                      <Text>{chain.name}</Text>
+                    </HStack>
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
+          </ChakraFormControl>
+        </FormControl>
+        {/* Image Input */}
         <ImageInput
           createdDrop={createdDrop}
           setCreatedDrop={setCreatedDrop}

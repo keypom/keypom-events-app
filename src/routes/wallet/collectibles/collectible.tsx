@@ -1,4 +1,4 @@
-import { Heading, Text, VStack } from "@chakra-ui/react";
+import { Heading, HStack, Text, VStack } from "@chakra-ui/react";
 
 import { PageHeading } from "@/components/ui/page-heading";
 
@@ -8,8 +8,16 @@ import { LoadingBox } from "@/components/ui/loading-box";
 import { Collectible, fetchCollectibleById } from "@/lib/api/collectibles";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { MULTICHAIN_NETWORKS } from "@/constants/common";
 
-const CollectibleDetails = ({ title, description, imageSrc }: Collectible) => {
+const CollectibleDetails = ({
+  title,
+  description,
+  imageSrc,
+  chain,
+}: Collectible) => {
+  const chainInfo = MULTICHAIN_NETWORKS.find((c) => c.id === chain);
+
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
       <Image
@@ -33,6 +41,30 @@ const CollectibleDetails = ({ title, description, imageSrc }: Collectible) => {
         <Text fontSize="xs" lineHeight={"120%"}>
           {description}
         </Text>
+        <HStack width="100%" spacing={6} mt={6}>
+          <Image
+            src={chainInfo?.icon}
+            aspectRatio={"1/1"}
+            width="50px" // Set width to make the image larger
+            height="50px" // Set height to make the image larger
+            objectFit="cover"
+            borderRadius="md"
+          />
+          <VStack alignItems="flex-start">
+            <Heading
+              as="h3"
+              fontSize="17px"
+              fontFamily={"mono"}
+              fontWeight="700"
+              color="white"
+            >
+              Deployed on {chainInfo?.name}
+            </Heading>
+            <Text fontSize="xs" lineHeight={"120%"} color="brand.400">
+              Made possible with NEAR Chain Abstraction
+            </Text>
+          </VStack>
+        </HStack>
       </VStack>
     </VStack>
   );

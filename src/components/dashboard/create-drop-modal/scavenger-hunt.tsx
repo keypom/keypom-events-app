@@ -35,7 +35,7 @@ export const ScavengerHunt = ({
 
   return (
     <>
-      <HStack justify="space-between" my="4">
+      <HStack justify="space-between" my="4" mb={isScavengerHunt ? 4 : 10}>
         <Tooltip
           bg={"rgba(23, 25, 35, 1)"}
           color={"white"}
@@ -44,8 +44,8 @@ export const ScavengerHunt = ({
           p={2}
           label="Scavenger hunts require users to collect all the pieces before the reward is given."
         >
-          <HStack spacing={4} fontFamily={"mono"}>
-            <Text fontSize={"xs"}>Make it a Scavenger Hunt!</Text>
+          <HStack spacing={4} fontFamily={"mono"} w="100%">
+            <Text fontSize={"sm"}>Make it a Scavenger Hunt!</Text>
             <Switch
               id="scavenger-hunt"
               isChecked={isScavengerHunt}
@@ -62,7 +62,9 @@ export const ScavengerHunt = ({
             justify="flex-end"
             spacing={4}
           >
-            <Text>Num Pieces</Text>
+            <Text color="white" fontFamily={"mono"} fontSize={"sm"}>
+              Num Pieces
+            </Text>
             <Input
               borderRadius={"md"}
               height="35px"
@@ -75,7 +77,7 @@ export const ScavengerHunt = ({
               size="sm"
               sx={{
                 "::placeholder": {
-                  color: "black",
+                  color: "gray.500",
                   fontSize: { base: "xs", md: "sm" },
                   fontFamily: "mono",
                 },
@@ -114,10 +116,12 @@ export const ScavengerHunt = ({
       )}
       {isScavengerHunt && (
         <>
-          <VStack align="stretch" spacing={4} alignItems={"center"}>
+          <VStack align="stretch" spacing={4} alignItems={"center"} mb={10}>
             {scavengerPieces.map((piece, index) => (
               <VStack key={index} alignItems="flex-start" w="100%">
-                <Text>{piece.piece}</Text>
+                <Text color="white" fontFamily={"mono"} fontSize={"md"}>
+                  {piece.piece}
+                </Text>
                 <HStack alignItems="center" spacing={4} w="100%">
                   <Input
                     borderRadius={"md"}
@@ -130,7 +134,7 @@ export const ScavengerHunt = ({
                     size="sm"
                     sx={{
                       "::placeholder": {
-                        color: "black",
+                        color: "gray.500",
                         fontSize: { base: "xs", md: "sm" },
                         fontFamily: "mono",
                       },
@@ -169,7 +173,8 @@ export const ScavengerHunt = ({
               size="sm"
               variant="primary"
               mb={2}
-              maxWidth={"fit-content"}
+              height="35px"
+              w="100%"
               onClick={() => {
                 addScavengerPiece(
                   scavengerPieces,
