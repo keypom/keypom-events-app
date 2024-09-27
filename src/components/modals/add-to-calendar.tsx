@@ -15,11 +15,11 @@ import { useAddToCalendar } from "@/stores/add-to-calendar";
 
 import googleCalendarLogo from "/assets/calendar/google-calendar.webp";
 import appleCalendar from "/assets/calendar/apple-calendar.webp";
-import { AgendaEvent } from "@/lib/api/agendas";
+import { AgendaItem } from "@/lib/api/agendas";
 
 const TIMEZONE = "Asia/Bangkok";
 
-function createGoogleCalendarLink(event: AgendaEvent) {
+function createGoogleCalendarLink(event: AgendaItem) {
   const { title, stage, description, presenter, startDate, endDate } = event;
 
   const encodedTitle = encodeURIComponent(title);
@@ -29,8 +29,8 @@ function createGoogleCalendarLink(event: AgendaEvent) {
   );
 
   // Format the start and end date-times to the required format
-  const startDateTime = startDate.replace(/[^\w\s]/gi, "");
-  const endDateTime = endDate.replace(/[^\w\s]/gi, "");
+  const startDateTime = startDate.toISOString().replace(/[^\w\s]/gi, "");
+  const endDateTime = endDate.toISOString().replace(/[^\w\s]/gi, "");
 
   // Construct the Google Calendar link
   const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${startDateTime}/${endDateTime}&details=${encodedDescription}&location=${encodedStage}&trp=false&ctz=${TIMEZONE}`;
@@ -38,14 +38,17 @@ function createGoogleCalendarLink(event: AgendaEvent) {
   return googleCalendarUrl;
 }
 
-function createICalendarLink(event: AgendaEvent) {
+function createICalendarLink(event: AgendaItem) {
   const { title, stage, description, presenter, startDate, endDate } = event;
 
   const formattedDescription = `${description}\nPresenter: ${presenter}`;
 
   // Format the start and end date-times to the required format
-  const startDateTime = startDate.replace(/[^\w\s]/gi, "");
-  const endDateTime = endDate.replace(/[^\w\s]/gi, "");
+  const startDateTime = startDate.toISOString().replace(/[^\w\s]/gi, "");
+  const endDateTime = endDate.toISOString().replace(/[^\w\s]/gi, "");
+
+  console.log("startDateTime: ", startDateTime);
+  console.log("endDateTime: ", endDateTime);
 
   // Construct the .ics file content with proper CRLF line breaks and VTIMEZONE component
   const icsContent = [
