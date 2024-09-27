@@ -1,9 +1,10 @@
+import { useState, useEffect } from "react";
 import { VStack, Text, Heading, Flex, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 import { ArrowIcon } from "@/components/icons";
 import { Alert } from "@/lib/api/alerts";
-import { timeAgo } from "@/utils/date";
+import { timeAgoShort } from "@/utils/date";
 
 export function AlertItem({
   title,
@@ -12,6 +13,50 @@ export function AlertItem({
   href,
   linkTitle,
 }: Alert) {
+  const [timeAgo, setTimeAgo] = useState<string>("");
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | undefined;
+
+    const updateTimeAgo = () => {
+      if (creationDate) {
+        setTimeAgo(timeAgoShort(creationDate));
+
+        const creationTimeInMs = new Date(creationDate).getTime();
+        const now = Date.now();
+        const diffMs = now - creationTimeInMs;
+        const diffSeconds = Math.floor(diffMs / 1000);
+
+        // Stop updating if the alert is more than 60 seconds old
+        if (diffSeconds >= 60 && intervalId) {
+          clearInterval(intervalId);
+          intervalId = undefined;
+        }
+      }
+    };
+
+    updateTimeAgo(); // Initial call
+
+    // Set up interval if the alert is less than 60 seconds old
+    if (creationDate) {
+      const creationTimeInMs = creationDate.getTime();
+      const now = Date.now();
+      const diffMs = now - creationTimeInMs;
+      const diffSeconds = Math.floor(diffMs / 1000);
+
+      if (diffSeconds < 60) {
+        intervalId = setInterval(updateTimeAgo, 1000);
+      }
+    }
+
+    // Clean up the interval when the component unmounts
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [creationDate]);
+
   return (
     <VStack
       data-testid="alert-item"
@@ -54,28 +99,32 @@ export function AlertItem({
         >
           {title}
         </Heading>
-        <Text fontSize="10px" fontWeight="700" color="brand.600">
-          {timeAgo(creationDate)}
-        </Text>
+        {creationDate && (
+          <Text fontSize="10px" fontWeight="700" color="brand.600">
+            {timeAgo}
+          </Text>
+        )}
       </Flex>
       <Text color="white" fontSize="xs">
         {description}
       </Text>
-      <Button
-        variant="outline"
-        as={Link}
-        to={href}
-        flexDirection="row"
-        padding="4px 8px"
-      >
-        <span>{linkTitle}</span>
-        <ArrowIcon
-          direction="right"
-          width={8}
-          height={8}
-          color={"var(--chakra-colors-brand-400)"}
-        />
-      </Button>
+      {href && linkTitle && (
+        <Button
+          variant="outline"
+          as={Link}
+          to={href}
+          flexDirection="row"
+          padding="4px 8px"
+        >
+          <span>{linkTitle}</span>
+          <ArrowIcon
+            direction="right"
+            width={8}
+            height={8}
+            color={"var(--chakra-colors-brand-400)"}
+          />
+        </Button>
+      )}
     </VStack>
   );
 }

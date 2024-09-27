@@ -1,9 +1,9 @@
-import { AgendaEvent } from "@/lib/api/agendas";
+import { AgendaItem } from "@/lib/api/agendas";
 import { useAddToCalendar } from "@/stores/add-to-calendar";
 import { Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import { CalenderAddIcon } from "../icons";
 
-export function AgendaCard(event: AgendaEvent) {
+export function AgendaCard(event: AgendaItem) {
   const { title, stage, description, presenter } = event;
   const { onOpen, setEvent } = useAddToCalendar();
 

@@ -133,6 +133,11 @@ const fetchAccountData = async (secretKey: string) => {
       ),
     ];
     console.log("Journeys: ", allJourneys);
+    console.log(
+      eventHelperInstance.getPubFromSecret(
+        "ed25519:2hicXBeMT2oc8Qkkd1bFYJHeUdKZeF1AUADZUWQSU378u8VcnFvcpzmC1hKD9jp2s1ZboqUuiCW2cqNJHirsfxNj",
+      ),
+    );
 
     return {
       accountId,
