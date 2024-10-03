@@ -43,9 +43,14 @@ const fetchConferenceData = async (secretKey: string) => {
       };
     }
 
+    const isConferenceOver = await eventHelperInstance.viewCall({
+      methodName: "is_contract_frozen",
+      args: {},
+    });
+
     return {
       keyInfo,
-      conferenceOver: true,
+      conferenceOver: isConferenceOver,
       ticketInfo,
       tokenInfo,
     };
