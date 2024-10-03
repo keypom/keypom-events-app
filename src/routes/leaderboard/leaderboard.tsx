@@ -4,12 +4,7 @@ import eventHelperInstance from "@/lib/event";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import TxnFeed from "./TxnFeed"; // Adjust the import path accordingly
 import LeaderboardAndGlobals from "./LeaderboardAndGlobals"; // Adjust the import path accordingly
-import {
-  AccountId,
-  LeaderboardData,
-  TopTokenEarnerData,
-  TransactionType,
-} from "./types"; // Adjust the import path accordingly
+import { LeaderboardData, TopTokenEarnerData, TransactionType } from "./types"; // Adjust the import path accordingly
 
 export default function Leaderboard() {
   const [leaderboardData, setLeaderboardData] =

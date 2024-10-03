@@ -45,7 +45,7 @@ const fetchConferenceData = async (secretKey: string) => {
 
     return {
       keyInfo,
-      conferenceOver: false,
+      conferenceOver: true,
       ticketInfo,
       tokenInfo,
     };

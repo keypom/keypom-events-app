@@ -13,6 +13,7 @@ export interface AccountData {
   unownedCollectibles: DropData[];
   journeys: Journey[];
   balance: string;
+  tokensCollected: string;
 }
 
 // Helper function to map owned journeys (ExtClaimedDrop)
@@ -82,6 +83,7 @@ const fetchAccountData = async (secretKey: string) => {
         methodName: "recover_account",
         args: { key_or_account_id: pubKey },
       });
+
     if (!recoveredAccount) {
       throw new Error("Account not found");
     }
@@ -143,6 +145,7 @@ const fetchAccountData = async (secretKey: string) => {
       accountId,
       ownedCollectibles,
       unownedCollectibles,
+      tokensCollected: recoveredAccount.ft_collected,
       journeys: allJourneys,
       displayAccountId: accountId
         .split(".")[0]

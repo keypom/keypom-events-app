@@ -126,7 +126,7 @@ export default function SponsorDashboard() {
   return (
     <Box position="relative" width="100%" minHeight="100vh" bg="bg.primary">
       {/* Header */}
-      <Header sendTo="/sponsorDashboard" />
+      <Header sendTo="/sponsorDashboard" isConferenceOver={false} />
 
       <Box
         position="relative"
