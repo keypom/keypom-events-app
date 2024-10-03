@@ -8,18 +8,17 @@ export interface ConferenceData {
   ticketInfo: TicketTypeInfo;
   keyInfo: AttendeeKeyInfo;
   tokenInfo: TokenAsset;
+  conferenceOver: boolean;
 }
 
 const fetchConferenceData = async (secretKey: string) => {
   try {
     const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
-    console.log("pubKey", pubKey);
     const keyInfo: AttendeeKeyInfo | undefined =
       await eventHelperInstance.viewCall({
         methodName: "get_key_information",
         args: { key: pubKey },
       });
-    console.log("keyInfo", keyInfo);
 
     if (keyInfo === undefined) {
       throw new Error("Invalid ticket");
@@ -46,6 +45,7 @@ const fetchConferenceData = async (secretKey: string) => {
 
     return {
       keyInfo,
+      conferenceOver: true,
       ticketInfo,
       tokenInfo,
     };
