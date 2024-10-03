@@ -4,7 +4,12 @@ import eventHelperInstance from "@/lib/event";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import TxnFeed from "./TxnFeed"; // Adjust the import path accordingly
 import LeaderboardAndGlobals from "./LeaderboardAndGlobals"; // Adjust the import path accordingly
-import { LeaderboardData } from "./types"; // Adjust the import path accordingly
+import {
+  AccountId,
+  LeaderboardData,
+  TopTokenEarnerData,
+  TransactionType,
+} from "./types"; // Adjust the import path accordingly
 
 export default function Leaderboard() {
   const [leaderboardData, setLeaderboardData] =
@@ -73,6 +78,24 @@ export default function Leaderboard() {
     );
   }
 
+  // Prepare placeholders if the leaderboard has fewer than 5 entries
+  const leaderboard: Array<TopTokenEarnerData | null> =
+    leaderboardData!.token_leaderboard.length < 5
+      ? [
+          ...leaderboardData!.token_leaderboard,
+          ...Array(5 - leaderboardData!.token_leaderboard.length).fill(null),
+        ]
+      : leaderboardData!.token_leaderboard;
+
+  // Prepare placeholders if there are fewer than 10 transactions
+  const transactions: Array<TransactionType | null> =
+    leaderboardData!.recent_transactions.length < 10
+      ? [
+          ...leaderboardData!.recent_transactions,
+          ...Array(10 - leaderboardData!.recent_transactions.length).fill(null),
+        ]
+      : leaderboardData!.recent_transactions;
+
   return (
     <Box
       bg={`linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/assets/custom-button-bg.webp)`}
@@ -88,11 +111,11 @@ export default function Leaderboard() {
           justifyContent="space-between"
           width="100%"
         >
-          <TxnFeed recentTransactions={leaderboardData!.recent_transactions} />
+          <TxnFeed recentTransactions={transactions} />
           <LeaderboardAndGlobals
             totalTransactions={leaderboardData!.total_transactions}
             totalTokensTransferred={leaderboardData!.total_tokens_transferred}
-            tokenLeaderboard={leaderboardData!.token_leaderboard}
+            tokenLeaderboard={leaderboard}
           />
         </Flex>
       </VStack>

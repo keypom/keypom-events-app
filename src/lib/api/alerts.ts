@@ -101,13 +101,23 @@ export const fetchFeaturedAlert: () => Promise<Alert | null> = async () => {
     methodName: "get_alerts",
     args: {},
   });
-  const alertsData: AirtableAlert[] = JSON.parse(stringifiedAlerts);
+  const alertsData = JSON.parse(stringifiedAlerts);
+  // Filter out any alerts in the alert data that don't adhere to the Airtable format
+  const filteredAlertsData: AirtableAlert[] = alertsData.filter(
+    (alert) =>
+      alert.Title &&
+      alert.Description &&
+      alert["Custom Link Title"] &&
+      alert["Redirects To"] &&
+      alert["Duration (minutes)"] &&
+      alert.Time,
+  );
   const agenda = await fetchAgenda();
   const reminders = generateReminders(agenda.events);
   const now = new Date();
 
   // Create alerts from Airtable data
-  const alerts = alertsData.map((alert, index) =>
+  const alerts = filteredAlertsData.map((alert, index) =>
     createAlertFromAirtable(alert, index),
   );
 
@@ -149,12 +159,22 @@ export const fetchAlerts: () => Promise<Alert[]> = async () => {
     methodName: "get_alerts",
     args: {},
   });
-  const alertsData: AirtableAlert[] = JSON.parse(stringifiedAlerts);
+  const alertsData = JSON.parse(stringifiedAlerts);
+  // Filter out any alerts in the alert data that don't adhere to the Airtable format
+  const filteredAlertsData: AirtableAlert[] = alertsData.filter(
+    (alert) =>
+      alert.Title &&
+      alert.Description &&
+      alert["Custom Link Title"] &&
+      alert["Redirects To"] &&
+      alert["Duration (minutes)"] &&
+      alert.Time,
+  );
   const agenda = await fetchAgenda();
   const reminders = generateReminders(agenda.events);
 
   // Create alerts from Airtable data
-  const alerts = alertsData.map((alert, index) =>
+  const alerts = filteredAlertsData.map((alert, index) =>
     createAlertFromAirtable(alert, index),
   );
 

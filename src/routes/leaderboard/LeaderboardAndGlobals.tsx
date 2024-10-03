@@ -5,12 +5,12 @@ import Globals from "./Globals"; // Adjust the import path accordingly
 import LeaderboardComponent from "./LeaderboardComponent"; // Adjust the import path accordingly
 import NearLogo from "/assets/near-logo.webp";
 import KeypomLogo from "/assets/keypom-logo.webp";
-import { AccountId } from "./types"; // Adjust the import path accordingly
+import { TopTokenEarnerData } from "./types"; // Adjust the import path accordingly
 
 interface LeaderboardAndGlobalsProps {
   totalTransactions: number;
   totalTokensTransferred: string;
-  tokenLeaderboard: Array<[AccountId, string]>;
+  tokenLeaderboard: Array<TopTokenEarnerData | null>;
 }
 
 const LeaderboardAndGlobals: React.FC<LeaderboardAndGlobalsProps> = ({

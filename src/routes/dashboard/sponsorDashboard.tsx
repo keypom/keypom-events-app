@@ -6,7 +6,7 @@ import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { Header } from "@/components/ui/header";
 import { useSponsorDashParams } from "@/hooks/useSponsorDashParams";
 
-export function SponsorDashboard() {
+export default function SponsorDashboard() {
   const { accountId, secretKey } = useSponsorDashParams();
 
   const [sponsorAccountId, setSponsorAccountId] = useState<string | null>(null);

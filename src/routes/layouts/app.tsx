@@ -13,9 +13,11 @@ import {
 } from "@/constants/common";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { useEffect, useRef } from "react";
+import { useConferenceData } from "@/hooks/useConferenceData";
 
 export default function AppLayout() {
   const { secretKey } = useEventCredentials();
+  const { data, isLoading } = useConferenceData(secretKey);
   const { state } = useNavigation();
 
   const ref = useRef<HTMLDivElement>(null);
@@ -36,6 +38,12 @@ export default function AppLayout() {
     !UNAUTHENTICATED_ROUTES.some((path) => pathname.startsWith(path))
   ) {
     return <Navigate to="/help" replace={true} />;
+  }
+
+  const isConferenceOver = !isLoading && data?.conferenceOver;
+  if (isConferenceOver) {
+    console.log("Conference is over");
+    return <Navigate to="/offboarding" replace={true} />;
   }
 
   const shouldRenderFooter = !HIDDEN_FOOTER_ROUTES.some((path) =>
@@ -64,7 +72,7 @@ export default function AppLayout() {
       flexGrow="1"
       borderRadius={"md"}
     >
-      {shouldRenderHeader && <Header />}
+      {shouldRenderHeader && <Header isConferenceOver={isConferenceOver} />}
       <Box
         ref={ref}
         role="main"
@@ -95,7 +103,7 @@ export default function AppLayout() {
           zIndex: -1,
         }}
       >
-        {state === "loading" ? <LoadingBox /> : <Outlet />}
+        {state === "loading" || isLoading ? <LoadingBox /> : <Outlet />}
       </Box>
       {shouldRenderFooter && <Footer />}
     </Flex>

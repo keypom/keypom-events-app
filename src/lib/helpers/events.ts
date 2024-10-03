@@ -15,4 +15,5 @@ export interface RecoveredAccountInfo {
   account_id: string;
   ft_balance: string;
   account_type: "Basic" | "Sponsor" | "Admin";
+  is_contract_frozen: boolean;
 }
