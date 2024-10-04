@@ -25,9 +25,9 @@ export default function OffboardingPage() {
     const accountId = data?.accountId;
     const baseUrl =
       NETWORK_ID === "testnet"
-        ? "https://testnet.mynearwallet.com"
-        : "https://app.mynearwallet.com";
-    const url = `${baseUrl}/auto-import-secret-key#${accountId}/${secretKey}`;
+        ? "https://testnet.wallet.bitte.ai/offboard"
+        : "https://wallet.bitte.ai/offboard";
+    const url = `${baseUrl}#accountId=${accountId}&privateKey=${secretKey}`;
 
     window.location.href = url;
   };
