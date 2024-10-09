@@ -15,7 +15,7 @@ export function CollectibleCard({
 }: Collectible & {
   disabled?: boolean;
 }) {
-  const chainInfo = MULTICHAIN_NETWORKS.find((c) => c.id === chain);
+  const chainInfo = MULTICHAIN_NETWORKS.find((c) => c.name === chain);
   return (
     <VStack
       as={Link}

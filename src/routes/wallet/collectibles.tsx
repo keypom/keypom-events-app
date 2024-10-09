@@ -52,7 +52,7 @@ const CollectiblesGrid = ({
               chain={
                 collectible.mc_metadata !== undefined
                   ? getChainNameFromId(collectible.mc_metadata.chain_id)
-                  : "near"
+                  : "NEAR"
               }
             />
           </GridItem>
@@ -81,7 +81,7 @@ const CollectiblesGrid = ({
               chain={
                 collectible.mc_metadata !== undefined
                   ? getChainNameFromId(collectible.mc_metadata.chain_id)
-                  : "near"
+                  : "NEAR"
               }
               disabled
             />

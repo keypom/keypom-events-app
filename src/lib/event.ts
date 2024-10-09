@@ -1,10 +1,11 @@
 import * as nearAPI from "near-api-js";
-import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT } from "@/constants/common";
+import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, MULTICHAIN_WORKER_URL } from "@/constants/common";
 import getConfig from "@/config/near";
 import { getPubFromSecret } from "@keypom/core";
 import { UserData } from "@/stores/event-credentials";
 import { pinToIpfs } from "./helpers/ipfs";
 import { deriveKey, generateSignature } from "./helpers/crypto";
+import { getChainIdFromName } from "./helpers/multichain";
 
 let instance: EventJS | undefined;
 
@@ -17,7 +18,7 @@ export interface AttendeeTicketData {
 }
 
 export interface ExtClaimedDrop {
-  type: "token" | "nft";
+  type: "token" | "nft" | "multichain";
   name: string;
   image: string;
   drop_id: string;
@@ -46,7 +47,7 @@ export interface MCMetadata {
 }
 
 export interface DropData {
-  type: "Token" | "Nft";
+  type: "Token" | "Nft" | "Multichain";
   id: string;
   key: string;
   name: string;
@@ -293,10 +294,14 @@ class EventJS {
           gas: "300000000000000",
         });
       } else {
+        let chain_id = getChainIdFromName(createdDrop.chain);
+        // TODO: Return from worker upon creation
+        let contract_id; 
+        let series_id;
         // TODO: Min implement the series creation on external chain and implement get chain ID function
         // Multichain NFT Drop
         const multichainMetadata = {
-          chain_id: getChainIdFromName(createdDrop.chain),
+          chain_id,
           contract_id: createdDrop.contractId || "",
           series_id: createdDrop.seriesId || 0,
         };
@@ -442,15 +447,29 @@ class EventJS {
 
     const { signature } = generateSignature(dropSecretKey, accountId!);
 
-    await userAccount.functionCall({
-      contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
-      methodName: "claim_drop",
-      args: {
-        drop_id: dropId,
-        signature,
-        scavenger_id: isScav ? pkToClaim : null,
-      },
-    });
+    if(dropInfo.mc_metadata){
+      await fetch(`${MULTICHAIN_WORKER_URL}/multichain-claim`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                account_id: accountId,
+                signature,
+                secret_key: secretKey,
+                drop_id: dropId
+            }),
+        })
+
+    }else{
+      await userAccount.functionCall({
+        contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
+        methodName: "claim_drop",
+        args: {
+          drop_id: dropId,
+          signature,
+          scavenger_id: isScav ? pkToClaim : null,
+        },
+      });
+    }
   };
 
   mintConferenceTokens = async ({

@@ -21,7 +21,7 @@ export const fetchCollectibleById: (
   });
   console.log(dropInfo);
 
-  let chain = "near"; // Default to NEAR
+  let chain = "NEAR"; // Default to NEAR
   if (dropInfo?.mc_metadata !== undefined) {
     chain = getChainNameFromId(dropInfo.mc_metadata.chain_id);
   }
