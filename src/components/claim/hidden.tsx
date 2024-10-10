@@ -19,7 +19,7 @@ export function Hidden({
   numFound,
   numRequired,
 }: HiddenProps) {
-  const isNFT = foundItem.type === "nft" || foundItem.type === "multichain"; 
+  const isNFT = foundItem.type !== "token";
   const rewardMessage = () => {
     if (numFound !== numRequired) {
       return "You found a Piece";
