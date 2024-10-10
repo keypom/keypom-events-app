@@ -1,5 +1,6 @@
 import eventHelperInstance, { DropData } from "../event";
 import { getIpfsImageSrcUrl } from "../helpers/ipfs";
+import { getChainNameFromChainId } from "../helpers/multichain";
 
 export interface Collectible {
   id: string;
@@ -8,6 +9,7 @@ export interface Collectible {
   assetType: string;
   imageSrc: string;
   isFound: boolean;
+  chain: string;
 }
 
 export const fetchCollectibleById: (
@@ -19,16 +21,22 @@ export const fetchCollectibleById: (
   });
   console.log(dropInfo);
 
+  let chain = "NEAR"; // Default to NEAR
+  if (dropInfo?.mc_metadata !== undefined) {
+    chain = getChainNameFromChainId(dropInfo.mc_metadata.chain_id);
+  }
+
   if (dropInfo?.nft_metadata === undefined) {
     throw new Error("Incorrect drop metadata. Found token, expected NFT");
   }
 
   return {
     id,
-    title: dropInfo.nft_metadata.title,
-    description: dropInfo.nft_metadata.description,
+    title: dropInfo.nft_metadata.title || "",
+    description: dropInfo.nft_metadata.description || "",
     assetType: "poap",
     imageSrc: getIpfsImageSrcUrl(dropInfo.nft_metadata?.media || ""),
     isFound: true,
+    chain: chain,
   };
 };

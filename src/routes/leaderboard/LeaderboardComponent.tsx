@@ -1,11 +1,11 @@
 // LeaderboardComponent.tsx
 import React from "react";
 import { VStack, HStack, Heading } from "@chakra-ui/react";
-import { AccountId } from "./types"; // Adjust the import path accordingly
+import { TopTokenEarnerData } from "./types"; // Adjust the import path accordingly
 import { TopEarner } from "./TopEarner";
 
 interface LeaderboardComponentProps {
-  tokenLeaderboard: Array<[AccountId, string]>;
+  tokenLeaderboard: Array<TopTokenEarnerData | null>;
 }
 
 const LeaderboardComponent: React.FC<LeaderboardComponentProps> = ({

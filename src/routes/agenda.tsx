@@ -1,3 +1,4 @@
+// Agenda.tsx
 import { EventList } from "@/components/agenda/event-list";
 import {
   CheckedIcon,
@@ -10,8 +11,13 @@ import { AddToCalendarModal } from "@/components/modals/add-to-calendar";
 import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
-import { filterAgenda, findAllDays, findAllStages } from "@/lib/helpers/agenda";
-import { AgendaEvent, fetchAgenda } from "@/lib/api/agendas";
+import {
+  filterAgenda,
+  findAllDays,
+  findAllStages,
+  findAllTags,
+} from "@/lib/helpers/agenda";
+import { AgendaItem, fetchAgenda } from "@/lib/api/agendas";
 import { formatDate } from "@/utils/date";
 import { Box, Button, Flex, Heading, Input, VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -91,8 +97,6 @@ export default function Agenda() {
     queryFn: fetchAgenda,
   });
 
-  console.log(agendaData);
-
   const [showSearch, setShowSearch] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
@@ -106,10 +110,10 @@ export default function Agenda() {
 
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const [filteredEvents, setfilteredEvents] = useState<AgendaEvent[] | []>([]);
+  const [filteredEvents, setfilteredEvents] = useState<AgendaItem[] | []>([]);
 
-  // UseEffect to filter events based on searchKey, selectedDay, selectedStage, and agendaData
   useEffect(() => {
     if (agendaData) {
       const filtered = filterAgenda(
@@ -117,10 +121,11 @@ export default function Agenda() {
         searchKey,
         selectedDay,
         selectedStage,
+        selectedTags,
       );
       setfilteredEvents(filtered.events);
     }
-  }, [agendaData, searchKey, selectedDay, selectedStage]); // Removed filteredEvents and setfilteredEvents from dependencies
+  }, [agendaData, searchKey, selectedDay, selectedStage, selectedTags]);
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
@@ -140,6 +145,14 @@ export default function Agenda() {
     setSelectedStage(stage === selectedStage ? null : stage);
   };
 
+  const handleTagChange = (tag: string) => {
+    setSelectedTags((prevTags) =>
+      prevTags.includes(tag)
+        ? prevTags.filter((t) => t !== tag)
+        : [...prevTags, tag],
+    );
+  };
+
   const stages = useMemo(
     () => (agendaData ? findAllStages(agendaData.events) : []),
     [agendaData],
@@ -147,6 +160,11 @@ export default function Agenda() {
 
   const days = useMemo(
     () => (agendaData ? findAllDays(agendaData.events) : []),
+    [agendaData],
+  );
+
+  const tags = useMemo(
+    () => (agendaData ? findAllTags(agendaData.events) : []),
     [agendaData],
   );
 
@@ -203,6 +221,7 @@ export default function Agenda() {
         {showFilter && (
           <VStack width="100%">
             <VStack width="100%" spacing={0}>
+              {/* Day Filter */}
               <FilterTitle
                 title="Day"
                 isOpen={showFilterByDay}
@@ -219,6 +238,7 @@ export default function Agenda() {
                 ))}
             </VStack>
             <VStack width="100%" spacing={0}>
+              {/* Stage Filter */}
               <FilterTitle
                 title="Stage"
                 isOpen={showFilterByStage}
@@ -234,11 +254,23 @@ export default function Agenda() {
                   />
                 ))}
             </VStack>
-            <FilterTitle
-              title="Tags"
-              isOpen={showFilterByTags}
-              handleFilterOpen={() => setShowFilterByTags((prev) => !prev)}
-            />
+            <VStack width="100%" spacing={0}>
+              {/* Tag Filter */}
+              <FilterTitle
+                title="Tags"
+                isOpen={showFilterByTags}
+                handleFilterOpen={() => setShowFilterByTags((prev) => !prev)}
+              />
+              {showFilterByTags &&
+                tags.map((tag: string) => (
+                  <FilterCheckbox
+                    key={tag}
+                    checked={selectedTags.includes(tag)}
+                    onChange={() => handleTagChange(tag)}
+                    title={tag}
+                  />
+                ))}
+            </VStack>
           </VStack>
         )}
         {isLoading && <LoadingBox />}

@@ -24,6 +24,7 @@ const defaultDrop = {
   artwork: undefined,
   amount: "1",
   nftData: undefined,
+  chain: "near", // Default to NEAR
 };
 const defaultScavengerHunt = [
   {

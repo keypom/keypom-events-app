@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import { AgendaEvent } from "@/lib/api/agendas";
+import { AgendaItem } from "@/lib/api/agendas";
 
 interface AddToCalendarModalStore {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
-  event: AgendaEvent | null;
-  setEvent: (event: AgendaEvent) => void;
+  event: AgendaItem | null;
+  setEvent: (event: AgendaItem) => void;
 }
 
 export const useAddToCalendar = create<AddToCalendarModalStore>((set) => ({
@@ -14,5 +14,5 @@ export const useAddToCalendar = create<AddToCalendarModalStore>((set) => ({
   onClose: () => set(() => ({ isOpen: false })),
   onOpen: () => set(() => ({ isOpen: true })),
   event: null,
-  setEvent: (event: AgendaEvent) => set(() => ({ event })),
+  setEvent: (event: AgendaItem) => set(() => ({ event })),
 }));

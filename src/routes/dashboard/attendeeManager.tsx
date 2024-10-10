@@ -189,7 +189,7 @@ export function AttendeeManager() {
               },
             });
 
-            if (!attendeeInfo) {
+            if (!attendeeInfo || !attendeeInfo.account_id) {
               return {
                 ...attendee,
                 "NEAR Account": undefined,

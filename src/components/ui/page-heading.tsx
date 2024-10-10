@@ -24,13 +24,7 @@ export function PageHeading({
 }: PageHeadingProps) {
   const navigate = useNavigate();
   return (
-    <VStack
-      gap={"1rem"}
-      alignItems={"center"}
-      justifyContent={"center"}
-      w="100%"
-      zIndex={4}
-    >
+    <VStack alignItems={"center"} justifyContent={"center"} w="100%" zIndex={4}>
       <Heading
         as="h2"
         size="lg"

@@ -1,49 +1,70 @@
+// api/agendas.ts
 import eventHelperInstance from "../event";
 
-export type AgendaEvent = {
+export interface AgendaItem {
+  id: number;
   title: string;
+  presenter: string;
   stage: string;
   description: string;
-  presenter: string;
-  startDate: string;
-  endDate: string;
-};
+  reminder: boolean;
+  talkType: string;
+  tags: string[];
+  startDate: Date;
+  endDate: Date;
+}
 
-export type Agenda = {
-  events: AgendaEvent[];
-};
+export interface Agenda {
+  events: AgendaItem[];
+}
 
 export const fetchAgenda: () => Promise<Agenda> = async () => {
   const [stringifiedAgenda] = await eventHelperInstance.viewCall({
     methodName: "get_agenda",
     args: {},
   });
-  const airtableAgenda = JSON.parse(stringifiedAgenda);
+  const agendaData = JSON.parse(stringifiedAgenda);
 
-  console.log("Agenda before sorting: ", airtableAgenda);
+  const filteredAgendaData = agendaData.filter(
+    (item) =>
+      item.Date &&
+      item["Duration (minutes)"] &&
+      item["Talk Title"] &&
+      item.Presenter &&
+      item.Stage &&
+      item.Description &&
+      item["Talk Type"] &&
+      item.Tags,
+  );
 
-  // Map the agenda to the AgendaEvent interface, skipping entries with no valid Start Time or Duration
-  const mappedAgenda: AgendaEvent[] = airtableAgenda
-    .filter((agenda) => agenda["Start Time"] && agenda["Duration (minutes)"]) // Filter out invalid entries
-    .map((agenda, index) => {
-      // Combine Date and Start Time to create the start date
-      const startDate = new Date(`${agenda.Date}T${agenda["Start Time"]}`);
+  const events: AgendaItem[] = filteredAgendaData.map((item, index) => {
+    const durationMinutes = Number(item["Duration (minutes)"]) || 0;
 
-      // Calculate the end date by adding the duration (in minutes)
-      const endDate = new Date(
-        startDate.getTime() + agenda["Duration (minutes)"] * 60000,
-      );
+    // Parse date string as UTC
+    const startDate = new Date(item.Date); // ISO string in UTC
+    const endDate = new Date(startDate.getTime() + durationMinutes * 60000);
 
-      return {
-        id: index + 1, // Generating a unique ID based on the index
-        title: agenda["Talk Title"] || "No Title", // Fallback if the title is missing
-        stage: agenda.Stage || "No stage available",
-        description: agenda.Description || "No description available",
-        presenter: agenda.Presenter || "No presenter available",
-        startDate: startDate.toISOString(), // Convert to ISO string format
-        endDate: endDate.toISOString(), // Convert to ISO string format
-      };
-    });
+    // Parse tags
+    let tags: string[] = [];
+    if (Array.isArray(item.Tags)) {
+      tags = item.Tags.map((tag) => tag.trim());
+    } else if (typeof item.Tags === "string") {
+      tags = item.Tags.split(",").map((tag) => tag.trim());
+    }
 
-  return { events: mappedAgenda };
+    return {
+      id: index + 1,
+      title: item["Talk Title"] || "",
+      presenter: item.Presenter || "",
+      stage: item.Stage || "",
+      description: item.Description || "",
+      reminder: item.Reminder === true,
+      talkType: item["Talk Type"] || "",
+      tags: tags,
+      startDate: startDate, // Already in UTC
+      endDate: endDate, // Calculated in UTC
+    };
+  });
+
+  return { events };
 };

@@ -1,15 +1,15 @@
 import { AgendaCard } from "@/components/agenda/card";
-import { AgendaEvent } from "@/lib/api/agendas";
+import { AgendaItem } from "@/lib/api/agendas";
 import { formatDate, pureFormat } from "@/utils/date";
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 
-export function EventList({ events }: { events: AgendaEvent[] }) {
+export function EventList({ events }: { events: AgendaItem[] }) {
   // Group events by date
   const groupedEvents = events.reduce(
     (acc, event) => {
-      const date = formatDate(new Date(event.startDate));
-      const timeKey = `${pureFormat(event.startDate, "HH:mm")}-${pureFormat(event.endDate, "HH:mm")}`;
+      const date = formatDate(event.startDate);
+      const timeKey = `${pureFormat(event.startDate.toISOString(), "HH:mm")}-${pureFormat(event.endDate.toISOString(), "HH:mm")}`;
 
       if (!acc[date]) {
         acc[date] = {};
@@ -20,7 +20,7 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
       acc[date][timeKey].push(event);
       return acc;
     },
-    {} as Record<string, Record<string, AgendaEvent[]>>,
+    {} as Record<string, Record<string, AgendaItem[]>>,
   );
 
   return (
@@ -81,7 +81,11 @@ export function EventList({ events }: { events: AgendaEvent[] }) {
                   <AgendaCard
                     key={`${event.title}-${index}`}
                     title={event.title}
+                    talkType={event.talkType}
+                    tags={event.tags}
                     stage={event.stage}
+                    id={event.id}
+                    reminder={event.reminder}
                     description={event.description}
                     presenter={event.presenter}
                     startDate={event.startDate}

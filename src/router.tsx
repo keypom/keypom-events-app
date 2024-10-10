@@ -4,23 +4,23 @@ import { PageNotFound } from "@/404-page";
 import { ErrorPage } from "@/error-page";
 import { OfflinePage } from "@/offline-page";
 import { RootLayout } from "@/routes/layouts/root";
-import { ComponentType } from "react";
 import Agenda from "./routes/agenda";
 import Help from "./routes/help";
 import AppLayout from "./routes/layouts/app";
 import Me from "./routes/me";
-import Leaderboard from "./routes/leaderboard/leaderboard";
 
-const lazyWithOfflineCheck = (
-  importCallback: () => Promise<{ default: ComponentType<unknown> }>,
-) => {
+const lazyWithOfflineCheck = (importCallback) => {
   return async () => {
-    if (!navigator.onLine) {
-      // Load the OfflinePage if the user is offline
-      return { Component: OfflinePage };
+    try {
+      if (!navigator.onLine) {
+        return { Component: OfflinePage };
+      }
+      const { default: Component } = await importCallback();
+      return { Component };
+    } catch (error) {
+      console.error("Failed to load component:", error);
+      return { Component: OfflinePage }; // Show fallback on error
     }
-    const { default: Component } = await importCallback();
-    return { Component };
   };
 };
 
@@ -43,9 +43,14 @@ const router = createBrowserRouter([
             index: true,
             element: <Me />,
           },
+          /**
+           * Lazily Loaded Pages
+           */
           {
             path: "/leaderboard",
-            element: <Leaderboard />,
+            lazy: lazyWithOfflineCheck(
+              () => import("@/routes/leaderboard/leaderboard"),
+            ),
           },
           {
             path: "/me",
@@ -61,11 +66,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/me/admin",
-            lazy: async () => {
-              if (!navigator.onLine) {
-                return { Component: OfflinePage };
-              }
-
+            lazy: lazyWithOfflineCheck(async () => {
               const { AdminAuthProvider } = await import(
                 "@/contexts/AdminAuthContext"
               );
@@ -75,21 +76,17 @@ const router = createBrowserRouter([
               );
 
               return {
-                Component: () => (
+                default: () => (
                   <AdminAuthProvider>
                     <AdminDashboard />
                   </AdminAuthProvider>
                 ),
               };
-            },
+            }),
           },
           {
             path: "/me/admin/attendees",
-            lazy: async () => {
-              if (!navigator.onLine) {
-                return { Component: OfflinePage };
-              }
-
+            lazy: lazyWithOfflineCheck(async () => {
               const { AdminAuthProvider } = await import(
                 "@/contexts/AdminAuthContext"
               );
@@ -99,21 +96,17 @@ const router = createBrowserRouter([
               );
 
               return {
-                Component: () => (
+                default: () => (
                   <AdminAuthProvider>
                     <AttendeeManager />
                   </AdminAuthProvider>
                 ),
               };
-            },
+            }),
           },
           {
             path: "/me/admin/drops",
-            lazy: async () => {
-              if (!navigator.onLine) {
-                return { Component: OfflinePage };
-              }
-
+            lazy: lazyWithOfflineCheck(async () => {
               const { AdminAuthProvider } = await import(
                 "@/contexts/AdminAuthContext"
               );
@@ -123,13 +116,13 @@ const router = createBrowserRouter([
               );
 
               return {
-                Component: () => (
+                default: () => (
                   <AdminAuthProvider>
                     <AdminCreateDrop />
                   </AdminAuthProvider>
                 ),
               };
-            },
+            }),
           },
           /**
            * Lazily Loaded App Pages, requires event credentials
@@ -218,6 +211,13 @@ const router = createBrowserRouter([
               },
             ],
           },
+          /**
+           * Conference Over Page
+           */
+          {
+            path: "/offboarding",
+            lazy: lazyWithOfflineCheck(() => import("@/routes/offboarding")),
+          },
         ],
       },
       /**
@@ -225,19 +225,9 @@ const router = createBrowserRouter([
        */
       {
         path: "/sponsorDashboard/:id",
-        lazy: async () => {
-          if (!navigator.onLine) {
-            return { Component: OfflinePage };
-          }
-
-          const { SponsorDashboard } = await import(
-            "@/routes/dashboard/sponsorDashboard"
-          );
-
-          return {
-            Component: () => <SponsorDashboard />,
-          };
-        },
+        lazy: lazyWithOfflineCheck(
+          () => import("@/routes/dashboard/sponsorDashboard"),
+        ),
       },
     ],
   },

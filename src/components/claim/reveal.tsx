@@ -1,10 +1,13 @@
 import { Box, Heading, VStack, Image } from "@chakra-ui/react";
-import Boxes from "/assets/claim-blocks.webp";
 import eventHelperInstance, { ExtClaimedDrop } from "@/lib/event";
 import { ImageSplit } from "./reward-image";
 import { TokenScavRewardImage } from "../wallet/journeys/token-scav-image";
 import { Image as FallbackImage } from "../ui/image";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
+
+// Use the GIF files for token and NFT animations
+import TokenAnimation from "/assets/token_anim.gif";
+import NftAnimation from "/assets/nft_anim.gif";
 
 interface RevealProps {
   foundItem: ExtClaimedDrop;
@@ -32,7 +35,10 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
 
   const rewardComponent = () => {
     // For NFTs we can just use the image split component
-    if (foundItem.type === "nft" && foundItem.nft_metadata) {
+    if (
+      (foundItem.type === "nft" || foundItem.type === "multichain") &&
+      foundItem.nft_metadata
+    ) {
       return (
         <Box
           bg="bg.primary"
@@ -80,11 +86,16 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
     );
   };
 
+  // Determine which animation to display based on the item type
+  const animationSrc =
+    foundItem.type === "token" ? TokenAnimation : NftAnimation;
+
   return (
     <Box position="relative" p={4}>
       <Box position="relative">
+        {/* Update the image source to use the GIF */}
         <Image
-          src={Boxes}
+          src={animationSrc}
           width="100%"
           height="100%"
           position="relative"
