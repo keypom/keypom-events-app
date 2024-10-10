@@ -33,7 +33,7 @@ export const pinToIpfs = async (data: File) => {
 export const pinJsonToIpfs = async (jsonToPin: {}) => {
   const response = await fetch(`${IPFS_PINNING_WORKER_URL}/pin-json`, {
     method: "POST",
-    body: JSON.stringify({...jsonToPin}),
+    body: JSON.stringify({ ...jsonToPin }),
   });
   console.log("Response: ", response);
 

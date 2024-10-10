@@ -1,5 +1,9 @@
 import * as nearAPI from "near-api-js";
-import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, MULTICHAIN_WORKER_URL } from "@/constants/common";
+import {
+  NETWORK_ID,
+  KEYPOM_TOKEN_FACTORY_CONTRACT,
+  MULTICHAIN_WORKER_URL,
+} from "@/constants/common";
 import getConfig from "@/config/near";
 import { getPubFromSecret } from "@keypom/core";
 import { UserData } from "@/stores/event-credentials";
@@ -272,7 +276,7 @@ class EventJS {
       }
     }
 
-    scavenger_hunt = scavenger_hunt.length ? scavenger_hunt : null
+    scavenger_hunt = scavenger_hunt.length ? scavenger_hunt : null;
 
     let res;
     const pinnedImage = await pinToIpfs(createdDrop.artwork);
@@ -296,7 +300,6 @@ class EventJS {
           gas: "300000000000000",
         });
       } else {
-
         const imageMetadata = {
           name: createdDrop.name,
           description: createdDrop.nftData.description,
@@ -306,16 +309,19 @@ class EventJS {
         console.log("createDrop: ", createdDrop);
         let chain_id = getChainIdFromId(createdDrop.chain);
 
-        const seriesResult = await fetch(`${MULTICHAIN_WORKER_URL}/create-series`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chain_id,
-            hash: pinnedMetadata,
-          }),
-        });
+        const seriesResult = await fetch(
+          `${MULTICHAIN_WORKER_URL}/create-series`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chain_id,
+              hash: pinnedMetadata,
+            }),
+          },
+        );
 
-        const {contract_id, series_id} = await seriesResult.json();
+        const { contract_id, series_id } = await seriesResult.json();
 
         const multichainMetadata = {
           chain_id,
@@ -464,19 +470,18 @@ class EventJS {
 
     const { signature } = generateSignature(dropSecretKey, accountId!);
 
-    if(dropInfo.mc_metadata){
+    if (dropInfo.mc_metadata) {
       await fetch(`${MULTICHAIN_WORKER_URL}/multichain-claim`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                account_id: accountId,
-                signature,
-                secret_key: secretKey,
-                drop_id: dropId
-            }),
-        })
-
-    }else{
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          account_id: accountId,
+          signature,
+          secret_key: secretKey,
+          drop_id: dropId,
+        }),
+      });
+    } else {
       await userAccount.functionCall({
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "claim_drop",

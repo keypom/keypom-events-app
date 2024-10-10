@@ -94,14 +94,13 @@ const fetchAccountData = async (secretKey: string) => {
     const accountId = recoveredAccount.account_id;
     const allDrops = await eventHelperInstance.getCachedDrops();
     console.log("allDrops", allDrops);
-    
-    const ownedNFTs: ExtClaimedDrop[] =
-      await eventHelperInstance.viewCall({
-        methodName: "get_claimed_nfts_for_account",
-        args: { account_id: accountId },
-      });
 
-    const ownedMultichainNFTs: ExtClaimedDrop[] = 
+    const ownedNFTs: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
+      methodName: "get_claimed_nfts_for_account",
+      args: { account_id: accountId },
+    });
+
+    const ownedMultichainNFTs: ExtClaimedDrop[] =
       await eventHelperInstance.viewCall({
         methodName: "get_claimed_multichain_nfts_for_account",
         args: { account_id: accountId },
