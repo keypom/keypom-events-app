@@ -3,9 +3,9 @@ import { NETWORK_ID, KEYPOM_TOKEN_FACTORY_CONTRACT, MULTICHAIN_WORKER_URL } from
 import getConfig from "@/config/near";
 import { getPubFromSecret } from "@keypom/core";
 import { UserData } from "@/stores/event-credentials";
-import { pinToIpfs } from "./helpers/ipfs";
+import { getIpfsImageSrcUrl, pinJsonToIpfs, pinToIpfs } from "./helpers/ipfs";
 import { deriveKey, generateSignature } from "./helpers/crypto";
-import { getChainIdFromName } from "./helpers/multichain";
+import { getChainIdFromId } from "./helpers/multichain";
 
 let instance: EventJS | undefined;
 
@@ -294,16 +294,31 @@ class EventJS {
           gas: "300000000000000",
         });
       } else {
-        let chain_id = getChainIdFromName(createdDrop.chain);
-        // TODO: Return from worker upon creation
-        let contract_id; 
-        let series_id;
-        // TODO: Min implement the series creation on external chain and implement get chain ID function
-        // Multichain NFT Drop
+
+        const imageMetadata = {
+          name: createdDrop.name,
+          description: createdDrop.nftData.description,
+          image: getIpfsImageSrcUrl(pinnedImage),
+        };
+        const pinnedMetadata = await pinJsonToIpfs(imageMetadata);
+        console.log("createDrop: ", createdDrop);
+        let chain_id = getChainIdFromId(createdDrop.chain);
+
+        const seriesResult = await fetch(`${MULTICHAIN_WORKER_URL}/create-series`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chain_id,
+            hash: pinnedMetadata,
+          }),
+        });
+
+        const {contract_id, series_id} = await seriesResult.json();
+
         const multichainMetadata = {
           chain_id,
-          contract_id: createdDrop.contractId || "",
-          series_id: createdDrop.seriesId || 0,
+          contract_id,
+          series_id,
         };
 
         res = await userAccount.functionCall({

@@ -1,6 +1,6 @@
 import eventHelperInstance, { DropData } from "../event";
 import { getIpfsImageSrcUrl } from "../helpers/ipfs";
-import { getChainNameFromId } from "../helpers/multichain";
+import { getChainNameFromChainId } from "../helpers/multichain";
 
 export interface Collectible {
   id: string;
@@ -23,7 +23,7 @@ export const fetchCollectibleById: (
 
   let chain = "NEAR"; // Default to NEAR
   if (dropInfo?.mc_metadata !== undefined) {
-    chain = getChainNameFromId(dropInfo.mc_metadata.chain_id);
+    chain = getChainNameFromChainId(dropInfo.mc_metadata.chain_id);
   }
 
   if (dropInfo?.nft_metadata === undefined) {
