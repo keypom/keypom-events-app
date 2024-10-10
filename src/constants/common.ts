@@ -90,6 +90,7 @@ export const HIDDEN_FOOTER_ROUTES = [
   "/scan/tickets",
   "/leaderboard",
   "/me/admin",
+  "/offboarding",
 ];
 
 // Routes that should not have dimension constraints

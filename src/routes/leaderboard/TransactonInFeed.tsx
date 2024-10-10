@@ -1,4 +1,3 @@
-// TransactionInFeed.tsx
 import React, { useState, useEffect } from "react";
 import { Box, HStack, Flex, Text } from "@chakra-ui/react";
 import { formatTimestamp, getUsername, rewardMessage } from "./helpers";
@@ -6,7 +5,7 @@ import { ArrowIcon, UserIcon } from "@/components/icons";
 import { TransactionType } from "./types";
 
 interface TransactionInFeedProps {
-  tx: TransactionType;
+  tx: TransactionType | null;
   index: number;
 }
 
@@ -14,19 +13,20 @@ export const TransactionInFeed: React.FC<TransactionInFeedProps> = React.memo(
   ({ tx, index }) => {
     const [timeAgo, setTimeAgo] = useState<string | undefined>();
 
-    const isClaim = tx.Claim !== undefined;
+    // Check if the transaction is a claim or transfer
+    const isClaim = tx?.Claim !== undefined;
 
     useEffect(() => {
       let intervalId: NodeJS.Timeout | undefined;
 
       const updateTimeAgo = () => {
-        const formattedTime = formatTimestamp(tx);
+        const formattedTime = tx ? formatTimestamp(tx) : "-----";
         setTimeAgo(formattedTime);
 
         // Check if the time difference is now >= 60 seconds
-        const timestamp = tx.Claim
-          ? tx.Claim.timestamp
-          : tx.Transfer?.timestamp;
+        const timestamp = isClaim
+          ? tx?.Claim?.timestamp
+          : tx?.Transfer?.timestamp;
         if (!timestamp) return;
 
         const timestampInMs = timestamp / 1e6;
@@ -43,7 +43,9 @@ export const TransactionInFeed: React.FC<TransactionInFeedProps> = React.memo(
       updateTimeAgo(); // Initial call
 
       // Set up interval if the transaction is less than 60 seconds old
-      const timestamp = tx.Claim ? tx.Claim.timestamp : tx.Transfer?.timestamp;
+      const timestamp = isClaim
+        ? tx?.Claim?.timestamp
+        : tx?.Transfer?.timestamp;
       if (!timestamp) return;
 
       const timestampInMs = timestamp / 1e6;
@@ -53,7 +55,7 @@ export const TransactionInFeed: React.FC<TransactionInFeedProps> = React.memo(
 
       if (diffSeconds < 60) {
         intervalId = setInterval(updateTimeAgo, 1000);
-      } else {
+      } else if (tx !== null) {
         setTimeAgo(formatTimestamp(tx)); // Set initial timeAgo for older transactions
       }
 
@@ -63,7 +65,20 @@ export const TransactionInFeed: React.FC<TransactionInFeedProps> = React.memo(
           clearInterval(intervalId);
         }
       };
-    }, [tx]);
+    }, [tx, isClaim]);
+
+    // Default values in case tx or specific fields are missing
+    const getSender = () => {
+      if (!tx) return "-----";
+      return tx.Transfer?.sender_id
+        ? getUsername(tx.Transfer.sender_id)
+        : getUsername(tx.Claim!.account_id);
+    };
+    const sender = getSender();
+    const receiver = tx?.Transfer?.receiver_id
+      ? `@${getUsername(tx.Transfer.receiver_id)}`
+      : "-----";
+    const message = tx ? rewardMessage(tx) : "-----";
 
     return (
       <Box
@@ -88,10 +103,7 @@ export const TransactionInFeed: React.FC<TransactionInFeedProps> = React.memo(
               textAlign="left"
               color="white"
             >
-              @
-              {getUsername(
-                isClaim ? tx.Claim!.account_id : tx.Transfer!.sender_id,
-              )}
+              {sender}
             </Text>
           </HStack>
 
@@ -104,11 +116,11 @@ export const TransactionInFeed: React.FC<TransactionInFeedProps> = React.memo(
               textAlign="center"
               color="brand.400"
             >
-              {rewardMessage(tx)}
+              {message}
             </Text>
             <ArrowIcon color="white" width={20} />
             <Text fontWeight="700" color="brand.600">
-              {timeAgo}
+              {timeAgo || "-----"}
             </Text>
           </HStack>
 
@@ -138,7 +150,7 @@ export const TransactionInFeed: React.FC<TransactionInFeedProps> = React.memo(
                   textAlign="right"
                   color="white"
                 >
-                  @{getUsername(tx.Transfer?.receiver_id)}
+                  {receiver}
                 </Text>
                 <UserIcon color={"var(--chakra-colors-brand-400)"} width={20} />
               </HStack>

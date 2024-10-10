@@ -1,6 +1,9 @@
 // types.ts
 export type AccountId = string;
 
+export type TopTokenEarnerData = [AccountId, string];
+export type TopPoapEarnerData = [AccountId, number];
+
 export interface ClaimTransaction {
   account_id: AccountId;
   reward: string | "NFT";
@@ -20,9 +23,9 @@ export interface TransactionType {
 }
 
 export interface LeaderboardData {
-  poap_leaderboard: Array<[AccountId, number]>;
-  token_leaderboard: Array<[AccountId, string]>;
-  recent_transactions: Array<TransactionType>;
+  poap_leaderboard: Array<TopPoapEarnerData | null>;
+  token_leaderboard: Array<TopTokenEarnerData | null>;
+  recent_transactions: Array<TransactionType | null>;
   total_tokens_transferred: string;
   total_transactions: number;
 }
