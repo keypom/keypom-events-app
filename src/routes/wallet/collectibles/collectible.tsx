@@ -16,7 +16,7 @@ const CollectibleDetails = ({
   imageSrc,
   chain,
 }: Collectible) => {
-  const chainInfo = MULTICHAIN_NETWORKS.find((c) => c.id === chain);
+  const chainInfo = MULTICHAIN_NETWORKS.find((c) => c.name === chain);
 
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
