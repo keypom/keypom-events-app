@@ -95,20 +95,25 @@ const fetchAccountData = async (secretKey: string) => {
     const allDrops = await eventHelperInstance.getCachedDrops();
     console.log("allDrops", allDrops);
 
-    const ownedCollectibles: ExtClaimedDrop[] =
+    const ownedNFTs: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
+      methodName: "get_claimed_nfts_for_account",
+      args: { account_id: accountId },
+    });
+
+    const ownedMultichainNFTs: ExtClaimedDrop[] =
       await eventHelperInstance.viewCall({
-        methodName: "get_claimed_nfts_for_account",
+        methodName: "get_claimed_multichain_nfts_for_account",
         args: { account_id: accountId },
       });
-    console.log("ownedCollectibles", ownedCollectibles);
+
+    const ownedCollectibles = [...ownedNFTs, ...ownedMultichainNFTs];
 
     const unownedCollectibles = allDrops.filter(
       (drop) =>
         "nft_metadata" in drop &&
         drop.scavenger_hunt === null &&
-        drop.type === "Nft",
+        drop.type !== "Token",
     );
-    console.log("unownedCollectibles", unownedCollectibles);
 
     const ownedJourneys: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
       methodName: "get_claimed_scavengers_for_account",

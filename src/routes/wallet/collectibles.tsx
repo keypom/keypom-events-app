@@ -7,6 +7,7 @@ import { CollectibleCard } from "@/components/wallet/collectibles/card";
 import { useAccountData } from "@/hooks/useAccountData";
 import { ExtClaimedDrop, DropData } from "@/lib/event";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
+import { getChainNameFromChainId } from "@/lib/helpers/multichain";
 
 const Divider = () => {
   return (
@@ -47,7 +48,12 @@ const CollectiblesGrid = ({
               imageSrc={getIpfsImageSrcUrl(
                 collectible.nft_metadata?.media || "",
               )}
-              isFound={false}
+              isFound={true}
+              chain={
+                collectible.mc_metadata !== undefined
+                  ? getChainNameFromChainId(collectible.mc_metadata.chain_id)
+                  : "NEAR"
+              }
             />
           </GridItem>
         ))}
@@ -72,6 +78,11 @@ const CollectiblesGrid = ({
                 collectible.nft_metadata?.media || "",
               )}
               isFound={false}
+              chain={
+                collectible.mc_metadata !== undefined
+                  ? getChainNameFromChainId(collectible.mc_metadata.chain_id)
+                  : "NEAR"
+              }
               disabled
             />
           </GridItem>
