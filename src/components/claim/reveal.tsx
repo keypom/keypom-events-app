@@ -32,7 +32,7 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
 
   const rewardComponent = () => {
     // For NFTs we can just use the image split component
-    if (foundItem.type === "nft" && foundItem.nft_metadata) {
+    if ((foundItem.type === "nft" || foundItem.type === "multichain") && foundItem.nft_metadata) {
       return (
         <Box
           bg="bg.primary"

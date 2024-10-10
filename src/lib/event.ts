@@ -239,7 +239,7 @@ class EventJS {
     const dropPublicKey = dropKeyPair.publicKey;
     const dropSecretKey = dropKeyPair.secretKey;
 
-    let scavenger_hunt: ScavengerHunt[] = [];
+    let scavenger_hunt: ScavengerHunt[] | null = [];
     let scavengerSecretKeys: {
       id: number;
       description: string;
@@ -271,6 +271,8 @@ class EventJS {
         });
       }
     }
+
+    scavenger_hunt = scavenger_hunt.length ? scavenger_hunt : null
 
     let res;
     const pinnedImage = await pinToIpfs(createdDrop.artwork);
