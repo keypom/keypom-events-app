@@ -130,7 +130,7 @@ class EventJS {
       : integerPart;
   };
 
-  yoctoToNearWith2Decimals = (yoctoString: string) => {
+  yoctoToNearWith2Decimals = (yoctoString: string): string => {
     const divisor = 1e24;
     const near =
       (BigInt(yoctoString) / BigInt(divisor)).toString() +

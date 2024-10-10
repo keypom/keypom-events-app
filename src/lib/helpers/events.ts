@@ -14,5 +14,7 @@ export interface TicketTypeInfo {
 export interface RecoveredAccountInfo {
   account_id: string;
   ft_balance: string;
+  ft_collected: string;
   account_type: "Basic" | "Sponsor" | "Admin";
+  is_contract_frozen: boolean;
 }

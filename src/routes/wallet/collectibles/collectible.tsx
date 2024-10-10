@@ -60,9 +60,11 @@ const CollectibleDetails = ({
             >
               Deployed on {chainInfo?.name}
             </Heading>
-            <Text fontSize="xs" lineHeight={"120%"} color="brand.400">
-              Made possible with NEAR Chain Abstraction
-            </Text>
+            {chainInfo?.name !== "NEAR" && (
+              <Text fontSize="xs" lineHeight={"120%"} color="brand.400">
+                Made possible with NEAR Chain Abstraction
+              </Text>
+            )}
           </VStack>
         </HStack>
       </VStack>

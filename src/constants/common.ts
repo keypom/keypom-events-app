@@ -16,11 +16,36 @@ import { FooterItem } from "@/components/ui/footer";
 export const MULTICHAIN_NETWORKS = [
   { id: "near", name: "NEAR", icon: "/assets/near_chain.png", chainId: 397 },
   { id: "base", name: "BASE", icon: "/assets/base_chain.png", chainId: 84532 },
-  { id: "eth", name: "ETHEREUM", icon: "/assets/eth_chain.png", chainId: 20665 },
-  { id: "polygon", name: "POLYGON", icon: "/assets/polygon_chain.png", chainId: 80002 },
-  { id: "arbitrum", name: "ARBITRUM", icon: "/assets/arbitrum_chain.png", chainId: 421614 },
-  { id: "optimism", name: "OPTIMISM", icon: "/assets/optimism_chain.png", chainId: 11155420 },
-  { id: "binance", name: "BSC", icon: "/assets/binance_chain.png", chainId: 97 },
+  {
+    id: "eth",
+    name: "ETHEREUM",
+    icon: "/assets/eth_chain.png",
+    chainId: 20665,
+  },
+  {
+    id: "polygon",
+    name: "POLYGON",
+    icon: "/assets/polygon_chain.png",
+    chainId: 80002,
+  },
+  {
+    id: "arbitrum",
+    name: "ARBITRUM",
+    icon: "/assets/arbitrum_chain.png",
+    chainId: 421614,
+  },
+  {
+    id: "optimism",
+    name: "OPTIMISM",
+    icon: "/assets/optimism_chain.png",
+    chainId: 11155420,
+  },
+  {
+    id: "binance",
+    name: "BSC",
+    icon: "/assets/binance_chain.png",
+    chainId: 97,
+  },
 ];
 
 /**
@@ -32,7 +57,7 @@ export const REQUIRED_ENV_VARS = [
   "VITE_AIRTABLE_WORKER_URL",
   "VITE_IPFS_WORKER_URL",
   "VITE_GOOGLE_CLIENT_ID",
-  "VITE_MULTICHAIN_WORKER_URL"
+  "VITE_MULTICHAIN_WORKER_URL",
 ];
 export const NETWORK_ID = import.meta.env.VITE_NETWORK_ID;
 export const isTestEnv = import.meta.env.MODE === "test";
@@ -90,6 +115,7 @@ export const HIDDEN_FOOTER_ROUTES = [
   "/scan/tickets",
   "/leaderboard",
   "/me/admin",
+  "/offboarding",
 ];
 
 // Routes that should not have dimension constraints

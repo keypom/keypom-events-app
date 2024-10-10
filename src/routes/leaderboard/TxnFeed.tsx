@@ -6,7 +6,7 @@ import { TransactionType } from "./types"; // Adjust the import path accordingly
 import { TransactionInFeed } from "./TransactonInFeed";
 
 interface TxnFeedProps {
-  recentTransactions: TransactionType[];
+  recentTransactions: Array<TransactionType | null>;
 }
 
 const TxnFeed: React.FC<TxnFeedProps> = ({ recentTransactions }) => {
