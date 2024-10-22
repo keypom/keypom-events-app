@@ -16,10 +16,11 @@ const Divider = () => {
   return (
     <hr
       style={{
-        border: "2px solid var(--chakra-colors-brand-400)",
+        border: "1px solid var(--chakra-colors-brand-400)",
         width: "100%",
         maxWidth: "450px",
-        margin: "24px 0",
+        marginTop: "8px",
+        marginBottom: "2px",
       }}
     />
   );
@@ -41,7 +42,7 @@ const CollectiblesGrid = ({
   const itemsPerPage = 4;
 
   return (
-    <VStack spacing={0} width={"100%"} maxWidth="450px">
+    <VStack spacing={0} width={"100%"} maxWidth="450px" mt={0}>
       <Grid
         templateColumns={{
           base: "repeat(2, minmax(0, 1fr))",
@@ -116,7 +117,7 @@ export default function Collectibles() {
         showBackButton
       />
       {isLoading && <LoadingBox />}
-      <HStack w="100%" spacing="0">
+      <HStack w="100%" spacing="0" mt={2}>
         <CollectibleTabButton
           active={curTab === "found"}
           type={"found"}

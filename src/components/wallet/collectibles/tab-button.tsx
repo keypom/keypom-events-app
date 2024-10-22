@@ -70,7 +70,7 @@ export function CollectibleTabButton({
       borderTopRightRadius="md"
       w="full"
       bg={getBackgroundColor(active, numItems)} // Pass both active and numItems for dynamic opacity
-      h="40px"
+      h="50px"
       alignItems={"center"}
       justifyContent={"center"}
       display={"flex"}
@@ -83,7 +83,7 @@ export function CollectibleTabButton({
     >
       <Text
         fontFamily={"mono"}
-        fontSize={"sm"}
+        fontSize={"md"}
         fontWeight={700}
         textAlign={"center"}
         color={active ? "brand.400" : "black"}
