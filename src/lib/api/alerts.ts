@@ -101,25 +101,28 @@ export const fetchFeaturedAlert: () => Promise<Alert | null> = async () => {
     methodName: "get_alerts",
     args: {},
   });
+  console.log(stringifiedAlerts);
   const alertsData = JSON.parse(stringifiedAlerts);
+  console.log("alertsData: ", alertsData);
   // Filter out any alerts in the alert data that don't adhere to the Airtable format
   const filteredAlertsData: AirtableAlert[] = alertsData.filter(
     (alert) =>
       alert.Title &&
       alert.Description &&
-      alert["Custom Link Title"] &&
-      alert["Redirects To"] &&
       alert["Duration (minutes)"] &&
       alert.Time,
   );
+  console.log("filteredAlertsData: ", filteredAlertsData);
   const agenda = await fetchAgenda();
   const reminders = generateReminders(agenda.events);
+  console.log("reminders: ", reminders);
   const now = new Date();
 
   // Create alerts from Airtable data
   const alerts = filteredAlertsData.map((alert, index) =>
     createAlertFromAirtable(alert, index),
   );
+  console.log("alerts: ", alerts);
 
   // Filter active alerts
   const activeAlerts = alerts.filter(
@@ -129,6 +132,7 @@ export const fetchFeaturedAlert: () => Promise<Alert | null> = async () => {
       alert.expiresAt &&
       alert.expiresAt >= now,
   );
+  console.log("activeAlerts: ", activeAlerts);
 
   // Create alerts from active reminders
   const activeReminderAlerts = reminders
@@ -138,11 +142,13 @@ export const fetchFeaturedAlert: () => Promise<Alert | null> = async () => {
         now.getTime() <= reminder.endTime.getTime(),
     )
     .map((reminder) => createAlertFromReminder(reminder, now));
+  console.log("activeReminderAlerts: ", activeReminderAlerts);
 
   // Sort and decide which alert to show
   const sortedActiveAlerts = sortAlertsByCreationDate(activeAlerts);
   const sortedActiveReminderAlerts =
     sortAlertsByCreationDate(activeReminderAlerts);
+  console.log("sortedActiveAlerts: ", sortedActiveAlerts);
 
   if (sortedActiveAlerts.length > 0) {
     return sortedActiveAlerts[0];
@@ -165,8 +171,6 @@ export const fetchAlerts: () => Promise<Alert[]> = async () => {
     (alert) =>
       alert.Title &&
       alert.Description &&
-      alert["Custom Link Title"] &&
-      alert["Redirects To"] &&
       alert["Duration (minutes)"] &&
       alert.Time,
   );

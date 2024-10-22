@@ -1,4 +1,4 @@
-import eventHelperInstance, { DropData } from "../event";
+import eventHelperInstance, { DropData, ExtClaimedDrop } from "../event";
 import { getIpfsImageSrcUrl } from "../helpers/ipfs";
 import { getChainNameFromChainId } from "../helpers/multichain";
 
@@ -14,11 +14,26 @@ export interface Collectible {
 
 export const fetchCollectibleById: (
   id: string,
-) => Promise<Collectible> = async (id) => {
+  accountId: string,
+) => Promise<Collectible> = async (id, accountId) => {
   const dropInfo: DropData = await eventHelperInstance.viewCall({
     methodName: "get_drop_information",
     args: { drop_id: id },
   });
+
+  let isFound = false;
+  try {
+    const claimedDrop: ExtClaimedDrop = await eventHelperInstance.viewCall({
+      methodName: "get_claimed_drop_for_account",
+      args: { drop_id: id, account_id: accountId },
+    });
+    isFound =
+      (claimedDrop.found_scavenger_ids || []).length ===
+      (claimedDrop.needed_scavenger_ids || []).length;
+  } catch (e) {
+    console.log(e);
+    isFound = false;
+  }
   console.log(dropInfo);
 
   let chain = "NEAR"; // Default to NEAR
@@ -36,7 +51,7 @@ export const fetchCollectibleById: (
     description: dropInfo.nft_metadata.description || "",
     assetType: "poap",
     imageSrc: getIpfsImageSrcUrl(dropInfo.nft_metadata?.media || ""),
-    isFound: true,
+    isFound,
     chain: chain,
   };
 };

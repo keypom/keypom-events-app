@@ -1,7 +1,13 @@
-import { Box, Heading, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Text,
+  Image as ChakraImage,
+  VStack,
+} from "@chakra-ui/react";
 import { LockIcon } from "@/components/icons";
 import { Link } from "react-router-dom";
-import { Image } from "@/components/ui/image";
+import { Image as AppImage } from "@/components/ui/image";
 import { MULTICHAIN_NETWORKS } from "@/constants/common";
 import { Collectible } from "@/lib/api/collectibles";
 
@@ -19,7 +25,7 @@ export function CollectibleCard({
   return (
     <VStack
       as={Link}
-      to={disabled ? "" : `/wallet/collectibles/${id}`}
+      to={`/wallet/collectibles/${id}`}
       spacing={2}
       alignItems={"flex-start"}
       cursor={disabled ? "not-allowed" : "pointer"}
@@ -31,7 +37,7 @@ export function CollectibleCard({
         maxWidth="210px"
         maxHeight="210px"
       >
-        <Image
+        <AppImage
           src={imageSrc}
           position="absolute"
           top={0}
@@ -61,17 +67,16 @@ export function CollectibleCard({
         )}
         {/* Chain Icon Positioned at Bottom Right with Tooltip */}
         {chainInfo && (
-          <Image
+          <ChakraImage
             src={chainInfo.icon}
             alt={chainInfo.name}
+            bgColor="transparent"
             position="absolute"
             bottom="1"
             right="1"
             boxSize="24px"
             zIndex={2}
-            opacity={disabled ? 0.5 : 1}
             filter="auto"
-            blur={disabled ? "2px" : "0px"}
             borderRadius="md"
           />
         )}
