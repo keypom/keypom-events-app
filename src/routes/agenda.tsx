@@ -108,7 +108,8 @@ export default function Agenda() {
   const [showFilterByStage, setShowFilterByStage] = useState(true);
   const [showFilterByTags, setShowFilterByTags] = useState(false);
 
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  // Now we support multiple selected days
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -119,13 +120,13 @@ export default function Agenda() {
       const filtered = filterAgenda(
         agendaData,
         searchKey,
-        selectedDay,
+        selectedDays,
         selectedStage,
         selectedTags,
       );
       setfilteredEvents(filtered.events);
     }
-  }, [agendaData, searchKey, selectedDay, selectedStage, selectedTags]);
+  }, [agendaData, searchKey, selectedDays, selectedStage, selectedTags]);
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
@@ -137,8 +138,14 @@ export default function Agenda() {
     if (!showFilter) setShowSearch(false);
   };
 
+  // Update the handleDayChange function to allow selecting multiple days
   const handleDayChange = (day: string) => {
-    setSelectedDay(day === selectedDay ? null : day);
+    setSelectedDays(
+      (prevDays) =>
+        prevDays.includes(day)
+          ? prevDays.filter((d) => d !== day) // Remove the day if it's already selected
+          : [...prevDays, day], // Add the day if it's not already selected
+    );
   };
 
   const handleStageChange = (stage: string) => {
@@ -231,7 +238,7 @@ export default function Agenda() {
                 days.map((day) => (
                   <FilterCheckbox
                     key={day}
-                    checked={selectedDay === day}
+                    checked={selectedDays.includes(day)} // Support multiple selections
                     onChange={() => handleDayChange(day)}
                     title={formatDate(new Date(day))}
                   />

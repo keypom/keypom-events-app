@@ -4,17 +4,20 @@ import { Agenda, AgendaItem } from "../api/agendas";
 export const filterAgenda = (
   agendaData: Agenda,
   searchKey: string,
-  selectedDay: string | null,
+  selectedDays: string[] | null, // Now an array of selected days
   selectedStage: string | null,
-  selectedTags: string[] | null,
+  selectedTags: string[],
 ): Agenda => {
   let filteredEvents = agendaData.events;
 
-  if (selectedDay) {
-    filteredEvents = filteredEvents.filter(
-      (event) =>
-        new Date(event.startDate).toLocaleDateString() ===
-        new Date(selectedDay).toLocaleDateString(),
+  // Filter by multiple selected days
+  if (selectedDays && selectedDays.length > 0) {
+    filteredEvents = filteredEvents.filter((event) =>
+      selectedDays.some(
+        (day) =>
+          new Date(event.startDate).toLocaleDateString() ===
+          new Date(day).toLocaleDateString(),
+      ),
     );
   }
 
