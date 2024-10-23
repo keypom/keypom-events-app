@@ -309,14 +309,20 @@ class EventJS {
         console.log("createDrop: ", createdDrop);
         let chain_id = getChainIdFromId(createdDrop.chain);
 
-        const seriesResult = await fetch(`${MULTICHAIN_WORKER_URL}/create-series`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": secretKey },
-          body: JSON.stringify({
-            chain_id,
-            hash: pinnedMetadata,
-          }),
-        });
+        const seriesResult = await fetch(
+          `${MULTICHAIN_WORKER_URL}/create-series`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: secretKey,
+            },
+            body: JSON.stringify({
+              chain_id,
+              hash: pinnedMetadata,
+            }),
+          },
+        );
 
         const { contract_id, series_id } = await seriesResult.json();
 

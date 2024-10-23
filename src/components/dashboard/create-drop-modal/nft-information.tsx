@@ -21,14 +21,14 @@ interface NFTInformationProps {
   setCreatedDrop: React.Dispatch<React.SetStateAction<any>>;
   errors: any;
   setErrors: React.Dispatch<React.SetStateAction<any>>;
-  isAdmin: Boolean
+  isAdmin: Boolean;
 }
 
 export const NFTInformation: React.FC<NFTInformationProps> = ({
   createdDrop,
   setCreatedDrop,
   errors,
-  isAdmin
+  isAdmin,
 }) => {
   const onNFTDataChange = (key: string, value: string) => {
     setCreatedDrop({
@@ -136,25 +136,25 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
                 border={"1px solid var(--chakra-colors-brand-400)"}
                 fontFamily={"mono"}
               >
-                {MULTICHAIN_NETWORKS
-                  .filter((chain) => !(!isAdmin && chain.id === "eth"))
-                  .map((chain) => (
-                    <MenuItem
-                      key={chain.id}
-                      onClick={() => onChainSelect(chain.id)}
-                      background="black"
-                      color="white"
-                      _hover={{
-                        background: "black",
-                        color: "brand.400",
-                      }}
-                    >
-                      <HStack>
-                        <Image src={chain.icon} boxSize="16px" />
-                        <Text>{chain.name}</Text>
-                      </HStack>
-                    </MenuItem>
-                  ))}
+                {MULTICHAIN_NETWORKS.filter(
+                  (chain) => !(!isAdmin && chain.id === "eth"),
+                ).map((chain) => (
+                  <MenuItem
+                    key={chain.id}
+                    onClick={() => onChainSelect(chain.id)}
+                    background="black"
+                    color="white"
+                    _hover={{
+                      background: "black",
+                      color: "brand.400",
+                    }}
+                  >
+                    <HStack>
+                      <Image src={chain.icon} boxSize="16px" />
+                      <Text>{chain.name}</Text>
+                    </HStack>
+                  </MenuItem>
+                ))}
               </MenuList>
             </Menu>
           </ChakraFormControl>
