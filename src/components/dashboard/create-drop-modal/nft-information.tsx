@@ -137,7 +137,7 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
                 fontFamily={"mono"}
               >
                 {MULTICHAIN_NETWORKS
-                  .filter((chain) => !(!isAdmin && chain.id === "eth"))
+                  .filter((chain) => isAdmin ? true : chain.id !== "eth")
                   .map((chain) => (
                     <MenuItem
                       key={chain.id}
