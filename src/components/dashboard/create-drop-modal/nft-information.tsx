@@ -21,14 +21,14 @@ interface NFTInformationProps {
   setCreatedDrop: React.Dispatch<React.SetStateAction<any>>;
   errors: any;
   setErrors: React.Dispatch<React.SetStateAction<any>>;
-  isAdmin: Boolean
+  isAdmin: Boolean;
 }
 
 export const NFTInformation: React.FC<NFTInformationProps> = ({
   createdDrop,
   setCreatedDrop,
   errors,
-  isAdmin
+  isAdmin,
 }) => {
   const onNFTDataChange = (key: string, value: string) => {
     setCreatedDrop({

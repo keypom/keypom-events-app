@@ -42,7 +42,10 @@ interface TokenCreateModalProps {
   isAdmin: Boolean;
 }
 
-export function TokenCreateModal({ existingDropNames, isAdmin }: TokenCreateModalProps) {
+export function TokenCreateModal({
+  existingDropNames,
+  isAdmin,
+}: TokenCreateModalProps) {
   const {
     isOpen,
     onClose,
