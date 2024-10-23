@@ -29,6 +29,23 @@ export const pinToIpfs = async (data: File) => {
   console.log("jsonResponse: ", jsonResponse);
   return jsonResponse.result;
 };
+
+export const pinJsonToIpfs = async (jsonToPin: {}) => {
+  const response = await fetch(`${IPFS_PINNING_WORKER_URL}/pin-json`, {
+    method: "POST",
+    body: JSON.stringify({ ...jsonToPin }),
+  });
+  console.log("Response: ", response);
+
+  if (!response.ok) {
+    throw new Error("Access denied");
+  }
+
+  const jsonResponse = await response.json();
+  console.log("jsonResponse: ", jsonResponse);
+  return jsonResponse.result;
+};
+
 export async function serializeMediaForWorker(file: File) {
   const arrayBuffer = await fileToArrayBuffer(file);
   return arrayBufferToBase64(arrayBuffer);

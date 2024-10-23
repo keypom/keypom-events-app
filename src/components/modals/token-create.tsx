@@ -24,6 +24,7 @@ const defaultDrop = {
   artwork: undefined,
   amount: "1",
   nftData: undefined,
+  chain: "near", // Default to NEAR
 };
 const defaultScavengerHunt = [
   {
@@ -38,9 +39,13 @@ const defaultScavengerHunt = [
 
 interface TokenCreateModalProps {
   existingDropNames: string[];
+  isAdmin: Boolean;
 }
 
-export function TokenCreateModal({ existingDropNames }: TokenCreateModalProps) {
+export function TokenCreateModal({
+  existingDropNames,
+  isAdmin,
+}: TokenCreateModalProps) {
   const {
     isOpen,
     onClose,
@@ -121,6 +126,7 @@ export function TokenCreateModal({ existingDropNames }: TokenCreateModalProps) {
                 setCreatedDrop={setCreatedDrop}
                 errors={errors}
                 setErrors={setErrors}
+                isAdmin={isAdmin}
               />
             )}
             {modalType === "token" && (

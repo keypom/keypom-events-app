@@ -11,9 +11,13 @@ import { LoadingOverlay } from "./loading-overlay";
 export const QrScanner = ({
   handleScan,
   scanStatus,
+  scanDelay = 1000,
+  allowMultiple = true,
 }: {
   handleScan: (value: string) => Promise<{ message: string } | void>;
   scanStatus: "success" | "error" | undefined;
+  scanDelay?: number;
+  allowMultiple?: boolean;
 }) => {
   const [selectedDevice, setSelectedDevice] = useState<string | undefined>(
     undefined,
@@ -111,8 +115,8 @@ export const QrScanner = ({
     >
       <Scanner
         onScan={onScan}
-        allowMultiple={true}
-        scanDelay={1000}
+        allowMultiple={allowMultiple}
+        scanDelay={scanDelay}
         components={{
           finder: false,
           audio: false,

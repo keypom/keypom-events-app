@@ -139,7 +139,7 @@ Replace existing assets with new ones by dropping images with the same names in 
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated!**.
 
 If you're interested in contributing to this project, please read the [contribution guide](./CONTRIBUTING).
 

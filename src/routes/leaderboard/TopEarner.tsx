@@ -2,11 +2,11 @@
 import React from "react";
 import { Box, HStack, Flex, Text } from "@chakra-ui/react";
 import { getUsername } from "./helpers"; // Adjust the import path accordingly
-import { AccountId } from "./types"; // Adjust the import path accordingly
+import { TopTokenEarnerData } from "./types"; // Adjust the import path accordingly
 import eventHelperInstance from "@/lib/event";
 
 interface TopEarnerProps {
-  earner: [AccountId, string];
+  earner: TopTokenEarnerData | null;
   index: number;
 }
 
@@ -53,7 +53,7 @@ export const TopEarner: React.FC<TopEarnerProps> = React.memo(
               textAlign="left"
               color="white"
             >
-              @{getUsername(earner[0])}
+              @{earner ? getUsername(earner[0]) : "-----"}
             </Text>
           </Flex>
 
@@ -66,7 +66,9 @@ export const TopEarner: React.FC<TopEarnerProps> = React.memo(
               textAlign="center"
               color="brand.400"
             >
-              {eventHelperInstance.yoctoToNearWith2Decimals(earner[1])}
+              {earner
+                ? eventHelperInstance.yoctoToNearWith2Decimals(earner[1])
+                : "-----"}
             </Text>
           </Flex>
         </HStack>

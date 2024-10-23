@@ -84,6 +84,8 @@ export default function Scanner() {
           args: { key: pubKey },
         });
 
+      console.log("keyInfo: ", keyInfo);
+
       if (keyInfo) {
         if (stateRef.current.ticketToScan === String(secretKey)) {
           throw new Error("Ticket already scanned.");
