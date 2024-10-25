@@ -1,3 +1,5 @@
+// AgendaCard.tsx
+
 import { AgendaItem } from "@/lib/api/agendas";
 import { useAddToCalendar } from "@/stores/add-to-calendar";
 import { Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
@@ -54,20 +56,21 @@ export function AgendaCard(event: AgendaItem) {
           />
         </Button>
       </Flex>
-      <Text color={"brand.600"} fontSize={"xs"}>
-        {displayedDescription}
+      <VStack alignItems="flex-start" spacing={0}>
+        <Text color={"brand.600"} fontSize={"xs"}>
+          {displayedDescription}
+        </Text>
         {shouldTruncate && (
           <Button
             variant="link"
             color="brand.400"
             size="xs"
             onClick={() => setIsExpanded(!isExpanded)}
-            ml={1}
           >
             {isExpanded ? "View Less" : "View More"}
           </Button>
         )}
-      </Text>
+      </VStack>
       <Heading as="h4" color={"brand.400"} fontSize={"sm"} fontWeight={"bold"}>
         {stage}
       </Heading>

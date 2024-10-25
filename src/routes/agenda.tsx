@@ -18,7 +18,6 @@ import {
   findAllTags,
 } from "@/lib/helpers/agenda";
 import { AgendaItem, fetchAgenda } from "@/lib/api/agendas";
-import { formatDate } from "@/utils/date";
 import { Box, Button, Flex, Heading, Input, VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -140,6 +139,7 @@ export default function Agenda() {
 
   // Update the handleDayChange function to allow selecting multiple days
   const handleDayChange = (day: string) => {
+    console.log("day: ", day);
     setSelectedDays(
       (prevDays) =>
         prevDays.includes(day)
@@ -169,6 +169,7 @@ export default function Agenda() {
     () => (agendaData ? findAllDays(agendaData.events) : []),
     [agendaData],
   );
+  console.log("days: ", days);
 
   const tags = useMemo(
     () => (agendaData ? findAllTags(agendaData.events) : []),
@@ -240,7 +241,7 @@ export default function Agenda() {
                     key={day}
                     checked={selectedDays.includes(day)} // Support multiple selections
                     onChange={() => handleDayChange(day)}
-                    title={formatDate(new Date(day))}
+                    title={day} // Use day directly, as it's already formatted
                   />
                 ))}
             </VStack>
