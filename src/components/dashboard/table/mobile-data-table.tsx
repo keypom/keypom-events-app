@@ -98,9 +98,14 @@ export const MobileDataTable = ({
               ))}
             </VStack>
             {/* Action Buttons */}
-            <VStack w="full" align="stretch" spacing={2}>
+            <VStack w="full" alignItems="start" spacing={2}>
               {actionRows.map((column) => (
-                <Box key={column.id} mt={2} minWidth="fit-content">
+                <Box
+                  key={column.id}
+                  mt={2}
+                  minWidth="fit-content"
+                  alignItems="left"
+                >
                   {column.selector(row)}
                 </Box>
               ))}

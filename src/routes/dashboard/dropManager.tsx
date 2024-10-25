@@ -212,7 +212,7 @@ export function DropManager({
             <>NFT</>
           ),
         action: (
-          <HStack justify="right" spacing={8} w="100%" h="100%">
+          <HStack justify="left" spacing={8} w="100%" h="100%">
             <Button
               size="md"
               variant="primary"
