@@ -48,7 +48,7 @@ export default function Scan() {
 
       const type = qrDataSplit[0];
       if (!type) {
-        throw new Error("QR data format is incorrect");
+        return;
       }
 
       console.log("QR Type: ", type);
