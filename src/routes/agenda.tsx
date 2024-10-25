@@ -1,4 +1,5 @@
-import { EventList } from "@/components/agenda/event-list";
+// pages/Agenda.tsx
+
 import {
   CheckedIcon,
   Chevron,
@@ -28,6 +29,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
+import { EventList } from "@/components/agenda/event-list";
 
 function FilterTitle({
   title,
@@ -114,12 +116,45 @@ export default function Agenda() {
   const [showFilterByStage, setShowFilterByStage] = useState(true);
   const [showFilterByTags, setShowFilterByTags] = useState(false);
 
-  // Support multiple selected days
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [filterFavourites, setFilterFavourites] = useState(false);
 
-  const [filteredEvents, setFilteredEvents] = useState<AgendaItem[] | []>([]);
+  const [filteredEvents, setFilteredEvents] = useState<AgendaItem[]>([]);
+
+  // Favourites state
+  const [favouritedEvents, setFavouritedEvents] = useState<Set<number>>(
+    new Set(),
+  );
+
+  // Load favourites from localStorage on mount
+  useEffect(() => {
+    const storedFavourites = localStorage.getItem("favouritedEvents");
+    if (storedFavourites) {
+      setFavouritedEvents(new Set(JSON.parse(storedFavourites)));
+    }
+  }, []);
+
+  // Save favourites to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem(
+      "favouritedEvents",
+      JSON.stringify(Array.from(favouritedEvents)),
+    );
+  }, [favouritedEvents]);
+
+  const handleToggleFavourite = (id: number) => {
+    setFavouritedEvents((prevFavourites) => {
+      const newFavourites = new Set(prevFavourites);
+      if (newFavourites.has(id)) {
+        newFavourites.delete(id);
+      } else {
+        newFavourites.add(id);
+      }
+      return newFavourites;
+    });
+  };
 
   useEffect(() => {
     if (agendaData) {
@@ -129,10 +164,19 @@ export default function Agenda() {
         selectedDays,
         selectedStage,
         selectedTags,
+        filterFavourites ? favouritedEvents : null,
       );
       setFilteredEvents(filtered.events);
     }
-  }, [agendaData, searchKey, selectedDays, selectedStage, selectedTags]);
+  }, [
+    agendaData,
+    searchKey,
+    selectedDays,
+    selectedStage,
+    selectedTags,
+    filterFavourites,
+    favouritedEvents,
+  ]);
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
@@ -144,13 +188,11 @@ export default function Agenda() {
     if (!showFilter) setShowSearch(false);
   };
 
-  // Allow selecting multiple days
   const handleDayChange = (day: string) => {
-    setSelectedDays(
-      (prevDays) =>
-        prevDays.includes(day)
-          ? prevDays.filter((d) => d !== day) // Remove the day if it's already selected
-          : [...prevDays, day], // Add the day if it's not already selected
+    setSelectedDays((prevDays) =>
+      prevDays.includes(day)
+        ? prevDays.filter((d) => d !== day)
+        : [...prevDays, day],
     );
   };
 
@@ -281,12 +323,23 @@ export default function Agenda() {
                   />
                 ))}
             </VStack>
+            <VStack width="100%" spacing={0}>
+              <FilterCheckbox
+                title="Favourites"
+                checked={filterFavourites}
+                onChange={setFilterFavourites}
+              />
+            </VStack>
           </VStack>
         )}
         {isLoading ? (
           <LoadingBox />
         ) : filteredEvents.length > 0 ? (
-          <EventList events={filteredEvents} />
+          <EventList
+            events={filteredEvents}
+            favouritedEvents={favouritedEvents}
+            onToggleFavourite={handleToggleFavourite}
+          />
         ) : (
           <Text
             mt={8}
