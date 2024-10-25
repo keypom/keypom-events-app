@@ -1,4 +1,4 @@
-import { Flex, Grid, GridItem, HStack, VStack } from "@chakra-ui/react";
+import { Flex, Grid, GridItem, HStack } from "@chakra-ui/react";
 
 import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
