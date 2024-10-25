@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Box, useBreakpoint, useBreakpointValue } from "@chakra-ui/react";
+import { Box, useBreakpointValue } from "@chakra-ui/react";
 
 export const ImageSplit = ({ numFound, numPieces, children }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -49,7 +49,6 @@ export const ImageSplit = ({ numFound, numPieces, children }) => {
     iphone13: "150px",
     md: "200px", // for iPhone 14 Pro Max size
   });
-  console.log("Box size:", boxSize);
 
   return (
     <Box position="relative" width={boxSize} height={boxSize}>
