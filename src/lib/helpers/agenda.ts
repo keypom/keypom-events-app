@@ -5,11 +5,18 @@ import { Agenda, AgendaItem } from "../api/agendas";
 export const filterAgenda = (
   agendaData: Agenda,
   searchKey: string,
-  selectedDays: string[] | null, // Now an array of selected days
+  selectedDays: string[] | null,
   selectedStage: string | null,
   selectedTags: string[],
+  favouritedEventIds: Set<number> | null = null,
 ): Agenda => {
   let filteredEvents = agendaData.events;
+
+  if (favouritedEventIds) {
+    filteredEvents = filteredEvents.filter((event) =>
+      favouritedEventIds.has(event.id),
+    );
+  }
 
   // Filter by multiple selected days
   if (selectedDays && selectedDays.length > 0) {
