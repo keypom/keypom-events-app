@@ -324,6 +324,10 @@ class EventJS {
           },
         );
 
+        if (!seriesResult.ok) {
+          throw new Error("Access denied. Contact  an admin for more details");
+        }
+
         const { contract_id, series_id } = await seriesResult.json();
 
         const multichainMetadata = {
