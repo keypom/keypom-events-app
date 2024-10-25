@@ -133,7 +133,6 @@ export default function SponsorDashboard() {
         width="100%"
         minHeight="100vh"
         zIndex={5}
-        px={8}
         _before={{
           content: '""',
           position: "absolute",

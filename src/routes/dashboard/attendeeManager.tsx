@@ -499,7 +499,7 @@ const AttendeeTable = ({
       sortable: true,
     },
     {
-      id: "sendTokens",
+      id: "action1",
       title: "Send Tokens",
       selector: (row) => {
         const nearAccount = row["NEAR Account"];
@@ -584,12 +584,12 @@ const AttendeeTable = ({
   return (
     <DataTable
       columns={columns}
+      stackedActionCols={[]}
+      excludedMobileCols={[]}
       data={data}
-      excludeMobileColumns={[]}
       loading={isLoading}
       showColumns={true}
       type="event-attendees"
-      showMobileTitles={["scannedIn"]}
     />
   );
 };

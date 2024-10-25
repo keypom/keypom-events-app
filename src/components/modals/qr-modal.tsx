@@ -114,6 +114,7 @@ export function QRCodeModal() {
             <Button
               variant="primary"
               mr={3}
+              px={16}
               onClick={() => {
                 const filenames = qrCodeDescriptions.map((description) =>
                   generateFilename(dropName, description),
@@ -128,6 +129,7 @@ export function QRCodeModal() {
             <Button
               variant="primary"
               mr={3}
+              px={12}
               onClick={() => {
                 const filename = generateFilename(
                   dropName,

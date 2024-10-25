@@ -128,6 +128,7 @@ export const ScavengerHunt = ({
                     height="35px"
                     maxLength={500}
                     background={"#F2F1EA"}
+                    css={{ touchAction: "manipulation" }} // Limits pinch and zoom gestures
                     color={"black"}
                     fontFamily={"mono"}
                     fontWeight={"700"}
@@ -135,7 +136,7 @@ export const ScavengerHunt = ({
                     sx={{
                       "::placeholder": {
                         color: "gray.500",
-                        fontSize: { base: "xs", md: "sm" },
+                        fontSize: { base: "16px", md: "sm" },
                         fontFamily: "mono",
                       },
                     }}

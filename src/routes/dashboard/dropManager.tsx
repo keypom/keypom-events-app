@@ -46,7 +46,7 @@ export type GetTicketDataFn = (
 const eventTableColumns: ColumnItem[] = [
   {
     id: "dropName",
-    title: "Name",
+    title: "Title",
     selector: (row) => row.name,
     loadingElement: <Skeleton height="30px" />,
   },
@@ -182,7 +182,7 @@ export function DropManager({
       return {
         id: item.id,
         name: (
-          <HStack spacing={4}>
+          <HStack spacing={4} h="100%">
             <Image
               alt={`Event image for ${item.id}`}
               borderRadius="12px"
@@ -212,10 +212,11 @@ export function DropManager({
             <>NFT</>
           ),
         action: (
-          <HStack justify="right" spacing={8} w="100%">
+          <HStack justify="left" spacing={8} w="100%" h="100%">
             <Button
               size="md"
               variant="primary"
+              height={"48px"}
               maxWidth={"max-content"}
               onClick={(e) => {
                 e.stopPropagation();
@@ -443,8 +444,12 @@ export function DropManager({
   return (
     <Box p={8}>
       <>
-        <Flex alignItems="center" mb={4}>
-          <Heading fontFamily="mono" color="white">
+        <Flex alignItems="center" mb={{ base: 4, lg: 8 }}>
+          <Heading
+            fontFamily="mono"
+            color="white"
+            fontSize={{ base: "3xl", lg: "4xl" }}
+          >
             Drop Manager
           </Heading>
           <Spacer />
@@ -470,10 +475,10 @@ export function DropManager({
         <DataTable
           columns={eventTableColumns}
           data={data}
-          excludeMobileColumns={[]}
+          stackedActionCols={["action"]}
+          excludedMobileCols={["dropType"]}
           loading={isLoading}
           showColumns={true}
-          showMobileTitles={["price", "numTickets"]}
           type="conference-drops"
         />
       </>
@@ -487,78 +492,82 @@ const DropActionsSection = ({
   setDropType,
   isAdmin,
 }) => (
-  <>
-    <HStack justify="space-between" py={8}>
-      <Box
-        bg="border.box"
-        border="2px solid transparent"
-        borderRadius="12"
-        borderWidth="2px"
-        w="100%"
+  <Flex
+    py={{ base: 2, lg: 8 }}
+    justify="space-between"
+    flexDirection={{ base: "column", lg: "row" }} // stack on mobile, row on larger screens
+    gap={{ base: 6, lg: 8 }} // spacing between items when stacked
+  >
+    <Box
+      bg="border.box"
+      border="2px solid transparent"
+      borderRadius="12"
+      borderWidth="2px"
+      w="100%"
+    >
+      <HStack align="center" spacing={4}>
+        <Text
+          color="brand.400"
+          fontSize="lg"
+          fontWeight="medium"
+          fontFamily="mono"
+        >
+          Tokens Available
+        </Text>
+        <Heading fontWeight="400" fontSize="2xl" fontFamily="mono">
+          {isAdmin ? "∞" : formatTokensAvailable(tokensAvailable)}
+        </Heading>
+      </HStack>
+    </Box>
+    <Menu>
+      <MenuButton
+        as={Button}
+        variant="primary"
+        mb={{ base: 3, lg: 0 }}
+        maxWidth="max-content"
+        minWidth="max-content"
       >
-        <HStack align="center" spacing={4}>
-          <Text
-            color="brand.400"
-            fontSize="lg"
-            fontWeight="medium"
-            fontFamily={"mono"}
-          >
-            Tokens Available
-          </Text>
-          <Heading fontWeight={"400"}>
-            {isAdmin ? "∞" : formatTokensAvailable(tokensAvailable)}
-          </Heading>
-        </HStack>
-      </Box>
-      <Menu>
-        <MenuButton
-          as={Button}
-          variant="primary"
-          maxWidth={"max-content"}
-          minWidth={"max-content"}
+        Create Drop
+      </MenuButton>
+      <MenuList
+        background="black"
+        borderRadius="md"
+        border="1px solid var(--chakra-colors-brand-400)"
+        fontFamily="mono"
+      >
+        <MenuItem
+          background="black"
+          color="white"
+          _hover={{
+            background: "black",
+            color: "brand.400",
+          }}
+          key="token"
+          icon={<LinkIcon h="4" w="4" />}
+          onClick={() => {
+            setDropType("token");
+            onCreateDrop();
+          }}
         >
-          Create Drop
-        </MenuButton>
-        <MenuList
-          background={"black"}
-          borderRadius={"md"}
-          border={"1px solid var(--chakra-colors-brand-400)"}
-          fontFamily={"mono"}
+          Token Drop
+        </MenuItem>
+        <MenuItem
+          background="black"
+          color="white"
+          _hover={{
+            background: "black",
+            color: "brand.400",
+          }}
+          key="nft"
+          icon={<NFTIcon h="4" w="4" />}
+          onClick={() => {
+            setDropType("nft");
+            onCreateDrop();
+          }}
         >
-          <MenuItem
-            background="black"
-            color="white"
-            _hover={{
-              background: "black",
-              color: "brand.400",
-            }}
-            key="token"
-            icon={<LinkIcon h="4" w="4" />}
-            onClick={() => {
-              setDropType("token");
-              onCreateDrop();
-            }}
-          >
-            Token Drop
-          </MenuItem>
-          <MenuItem
-            background="black"
-            color="white"
-            _hover={{
-              background: "black",
-              color: "brand.400",
-            }}
-            key="nft"
-            icon={<NFTIcon h="4" w="4" />}
-            onClick={() => {
-              setDropType("nft");
-              onCreateDrop();
-            }}
-          >
-            NFT Drop
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    </HStack>
-  </>
+          NFT Drop
+        </MenuItem>
+      </MenuList>
+    </Menu>
+  </Flex>
 );
