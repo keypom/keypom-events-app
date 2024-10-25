@@ -27,8 +27,20 @@ export function AgendaCard({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCalendarClick = () => {
+    // Pass the entire event object with all necessary properties
     onOpen();
-    setEvent(event);
+    setEvent({
+      id,
+      title,
+      stage,
+      description,
+      presenter,
+      reminder: event.reminder,
+      talkType: event.talkType,
+      tags: event.tags,
+      startDate: event.startDate,
+      endDate: event.endDate,
+    });
   };
 
   const maxChars = 150;
