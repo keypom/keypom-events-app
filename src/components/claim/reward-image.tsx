@@ -73,8 +73,8 @@ export const ImageSplit = ({ numFound, numPieces, children }) => {
       {/* Canvas for the mask */}
       <canvas
         ref={canvasRef}
-        width={parseFloat(boxSize)}
-        height={parseFloat(boxSize)}
+        width={parseFloat(boxSize || "150px")}
+        height={parseFloat(boxSize || "150px")}
         style={{
           position: "absolute",
           top: 0,
