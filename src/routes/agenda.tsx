@@ -125,16 +125,12 @@ export default function Agenda() {
 
   // Favourites state
   const [favouritedEvents, setFavouritedEvents] = useState<Set<number>>(
-    new Set(),
+    localStorage.getItem("favouritedEvents")
+      ? new Set(JSON.parse(localStorage.getItem("favouritedEvents")!))
+      : new Set(),
   );
 
   // Load favourites from localStorage on mount
-  useEffect(() => {
-    const storedFavourites = localStorage.getItem("favouritedEvents");
-    if (storedFavourites) {
-      setFavouritedEvents(new Set(JSON.parse(storedFavourites)));
-    }
-  }, []);
 
   // Save favourites to localStorage whenever they change
   useEffect(() => {
@@ -142,6 +138,7 @@ export default function Agenda() {
       "favouritedEvents",
       JSON.stringify(Array.from(favouritedEvents)),
     );
+    console.log("favouritedEvents", favouritedEvents);
   }, [favouritedEvents]);
 
   const handleToggleFavourite = (id: number) => {
