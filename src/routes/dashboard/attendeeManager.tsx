@@ -584,12 +584,12 @@ const AttendeeTable = ({
   return (
     <DataTable
       columns={columns}
+      stackedActionCols={[]}
+      excludedMobileCols={[]}
       data={data}
-      excludeMobileColumns={[]}
       loading={isLoading}
       showColumns={true}
       type="event-attendees"
-      showMobileTitles={["scannedIn"]}
     />
   );
 };
