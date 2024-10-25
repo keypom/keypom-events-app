@@ -1,4 +1,3 @@
-// Agenda.tsx
 import { EventList } from "@/components/agenda/event-list";
 import {
   CheckedIcon,
@@ -18,7 +17,15 @@ import {
   findAllTags,
 } from "@/lib/helpers/agenda";
 import { AgendaItem, fetchAgenda } from "@/lib/api/agendas";
-import { Box, Button, Flex, Heading, Input, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Input,
+  VStack,
+  Text,
+} from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
@@ -107,12 +114,12 @@ export default function Agenda() {
   const [showFilterByStage, setShowFilterByStage] = useState(true);
   const [showFilterByTags, setShowFilterByTags] = useState(false);
 
-  // Now we support multiple selected days
+  // Support multiple selected days
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const [filteredEvents, setfilteredEvents] = useState<AgendaItem[] | []>([]);
+  const [filteredEvents, setFilteredEvents] = useState<AgendaItem[] | []>([]);
 
   useEffect(() => {
     if (agendaData) {
@@ -123,7 +130,7 @@ export default function Agenda() {
         selectedStage,
         selectedTags,
       );
-      setfilteredEvents(filtered.events);
+      setFilteredEvents(filtered.events);
     }
   }, [agendaData, searchKey, selectedDays, selectedStage, selectedTags]);
 
@@ -137,9 +144,8 @@ export default function Agenda() {
     if (!showFilter) setShowSearch(false);
   };
 
-  // Update the handleDayChange function to allow selecting multiple days
+  // Allow selecting multiple days
   const handleDayChange = (day: string) => {
-    console.log("day: ", day);
     setSelectedDays(
       (prevDays) =>
         prevDays.includes(day)
@@ -169,7 +175,6 @@ export default function Agenda() {
     () => (agendaData ? findAllDays(agendaData.events) : []),
     [agendaData],
   );
-  console.log("days: ", days);
 
   const tags = useMemo(
     () => (agendaData ? findAllTags(agendaData.events) : []),
@@ -229,7 +234,6 @@ export default function Agenda() {
         {showFilter && (
           <VStack width="100%">
             <VStack width="100%" spacing={0}>
-              {/* Day Filter */}
               <FilterTitle
                 title="Day"
                 isOpen={showFilterByDay}
@@ -239,14 +243,13 @@ export default function Agenda() {
                 days.map((day) => (
                   <FilterCheckbox
                     key={day}
-                    checked={selectedDays.includes(day)} // Support multiple selections
+                    checked={selectedDays.includes(day)}
                     onChange={() => handleDayChange(day)}
-                    title={day} // Use day directly, as it's already formatted
+                    title={day}
                   />
                 ))}
             </VStack>
             <VStack width="100%" spacing={0}>
-              {/* Stage Filter */}
               <FilterTitle
                 title="Stage"
                 isOpen={showFilterByStage}
@@ -263,7 +266,6 @@ export default function Agenda() {
                 ))}
             </VStack>
             <VStack width="100%" spacing={0}>
-              {/* Tag Filter */}
               <FilterTitle
                 title="Tags"
                 isOpen={showFilterByTags}
@@ -281,8 +283,22 @@ export default function Agenda() {
             </VStack>
           </VStack>
         )}
-        {isLoading && <LoadingBox />}
-        {filteredEvents && <EventList events={filteredEvents} />}
+        {isLoading ? (
+          <LoadingBox />
+        ) : filteredEvents.length > 0 ? (
+          <EventList events={filteredEvents} />
+        ) : (
+          <Text
+            mt={8}
+            fontFamily="mono"
+            color="brand.400"
+            textAlign="center"
+            fontSize="lg"
+            fontWeight="bold"
+          >
+            No events match the current filters.
+          </Text>
+        )}
         {isError && <ErrorBox message={`Error: ${error.message}`} />}
       </VStack>
       <AddToCalendarModal />
