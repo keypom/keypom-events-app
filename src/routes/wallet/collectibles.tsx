@@ -1,4 +1,4 @@
-import { Grid, GridItem, HStack, VStack } from "@chakra-ui/react";
+import { Flex, Grid, GridItem, HStack, VStack } from "@chakra-ui/react";
 
 import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
@@ -42,11 +42,23 @@ const CollectiblesGrid = ({
   const itemsPerPage = 4;
 
   return (
-    <VStack spacing={0} width={"100%"} maxWidth="450px" mt={0}>
+    <Flex
+      direction="column"
+      alignItems="center"
+      mt={4}
+      justifyContent="space-between"
+      flexGrow={1} // Allow the grid to grow and fill available space
+    >
       <Grid
         templateColumns={{
           base: "repeat(2, minmax(0, 1fr))",
         }}
+        gap={4}
+        alignItems="start"
+        maxWidth="450px"
+        width="100%"
+        flexGrow={1} // Allow the grid to grow
+        templateRows="repeat(2, 1fr)" // Ensure the grid has 2 rows (since 4 items max, 2 columns)
       >
         {items.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>
@@ -68,16 +80,30 @@ const CollectiblesGrid = ({
             />
           </GridItem>
         ))}
+        {/* Add invisible GridItems to fill up the space when there are fewer items */}
+        {Array.from({ length: itemsPerPage - items.length }).map((_, index) => (
+          <GridItem key={`empty-${index}`} p={2} pb={4} visibility="hidden">
+            <CollectibleCard
+              id={`empty-${index}`}
+              title="Opening Ceremoy POAP"
+              description=""
+              assetType="POAP"
+              isFound={false}
+              imageSrc=""
+              chain="NEAR"
+              disabled
+            />
+          </GridItem>
+        ))}
       </Grid>
       <Divider />
-      {/* Use Pagination component here */}
       <Pagination
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
         totalItems={totalItems}
         setPage={setPage}
       />
-    </VStack>
+    </Flex>
   );
 };
 
@@ -109,11 +135,11 @@ export default function Collectibles() {
         );
 
   return (
-    <VStack spacing={4} p={4}>
+    <Flex direction="column" p={4}>
       <PageHeading
         title="Collectibles"
         titleSize="24px"
-        description={`${unlockedItems.length}/${lockedItems.length} found`}
+        description={`${unlockedItems.length}/${lockedItems.length + unlockedItems.length} found`}
         showBackButton
       />
       {isLoading && <LoadingBox />}
@@ -137,18 +163,22 @@ export default function Collectibles() {
           }}
         />
       </HStack>
-      {itemsToShow.length > 0 && (
-        <CollectiblesGrid
-          items={itemsToShow}
-          currentPage={curTab === "found" ? foundPage : explorePage}
-          setPage={curTab === "found" ? setFoundPage : setExplorePage}
-          totalItems={
-            curTab === "found" ? unlockedItems.length : lockedItems.length
-          }
-          isFound={curTab === "found"}
-        />
-      )}
+      <Flex direction="column" flex="1">
+        {itemsToShow.length > 0 ? (
+          <CollectiblesGrid
+            items={itemsToShow}
+            currentPage={curTab === "found" ? foundPage : explorePage}
+            setPage={curTab === "found" ? setFoundPage : setExplorePage}
+            totalItems={
+              curTab === "found" ? unlockedItems.length : lockedItems.length
+            }
+            isFound={curTab === "found"}
+          />
+        ) : (
+          <ErrorBox message="No collectibles to display." />
+        )}
+      </Flex>
       {isError && <ErrorBox message={`Error: ${error.message}`} />}
-    </VStack>
+    </Flex>
   );
 }
