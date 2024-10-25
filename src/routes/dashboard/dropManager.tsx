@@ -450,7 +450,10 @@ export function DropManager({
           <Spacer />
         </Flex>
         <TokenDeleteModal />
-        <TokenCreateModal existingDropNames={existingDropNames} />
+        <TokenCreateModal
+          existingDropNames={existingDropNames}
+          isAdmin={isAdmin}
+        />
         <QRCodeModal />
         {isLoading ? (
           <Skeleton height="200px" />

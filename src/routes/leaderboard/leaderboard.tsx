@@ -1,11 +1,10 @@
-// Leaderboard.tsx
 import { useState, useEffect } from "react";
 import { Box, VStack, Flex, Spinner } from "@chakra-ui/react";
 import eventHelperInstance from "@/lib/event";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import TxnFeed from "./TxnFeed"; // Adjust the import path accordingly
 import LeaderboardAndGlobals from "./LeaderboardAndGlobals"; // Adjust the import path accordingly
-import { LeaderboardData } from "./types"; // Adjust the import path accordingly
+import { LeaderboardData, TopTokenEarnerData, TransactionType } from "./types"; // Adjust the import path accordingly
 
 export default function Leaderboard() {
   const [leaderboardData, setLeaderboardData] =
@@ -14,6 +13,7 @@ export default function Leaderboard() {
   const [isErr, setIsErr] = useState(false);
 
   useEffect(() => {
+    // Function to fetch leaderboard data
     const fetchLeaderboardData = async () => {
       try {
         const data = await eventHelperInstance.viewCall({
@@ -34,7 +34,14 @@ export default function Leaderboard() {
       }
     };
 
+    // Initial fetch
     fetchLeaderboardData();
+
+    // Set up interval to refetch every 10 seconds
+    const intervalId = setInterval(fetchLeaderboardData, 10000); // 10000 ms = 10 seconds
+
+    // Cleanup function to clear the interval when the component is unmounted
+    return () => clearInterval(intervalId);
   }, []);
 
   if (isErr) {
@@ -66,6 +73,24 @@ export default function Leaderboard() {
     );
   }
 
+  // Prepare placeholders if the leaderboard has fewer than 5 entries
+  const leaderboard: Array<TopTokenEarnerData | null> =
+    leaderboardData!.token_leaderboard.length < 5
+      ? [
+          ...leaderboardData!.token_leaderboard,
+          ...Array(5 - leaderboardData!.token_leaderboard.length).fill(null),
+        ]
+      : leaderboardData!.token_leaderboard;
+
+  // Prepare placeholders if there are fewer than 10 transactions
+  const transactions: Array<TransactionType | null> =
+    leaderboardData!.recent_transactions.length < 10
+      ? [
+          ...leaderboardData!.recent_transactions,
+          ...Array(10 - leaderboardData!.recent_transactions.length).fill(null),
+        ]
+      : leaderboardData!.recent_transactions;
+
   return (
     <Box
       bg={`linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/assets/custom-button-bg.webp)`}
@@ -81,11 +106,11 @@ export default function Leaderboard() {
           justifyContent="space-between"
           width="100%"
         >
-          <TxnFeed recentTransactions={leaderboardData!.recent_transactions} />
+          <TxnFeed recentTransactions={transactions} />
           <LeaderboardAndGlobals
             totalTransactions={leaderboardData!.total_transactions}
             totalTokensTransferred={leaderboardData!.total_tokens_transferred}
-            tokenLeaderboard={leaderboardData!.token_leaderboard}
+            tokenLeaderboard={leaderboard}
           />
         </Flex>
       </VStack>

@@ -1,19 +1,22 @@
-import { Agenda, AgendaEvent } from "../api/agendas";
+import { formatDate, pureFormat } from "@/utils/date";
+import { Agenda, AgendaItem } from "../api/agendas";
 
+// helpers/agenda.ts
 export const filterAgenda = (
   agendaData: Agenda,
   searchKey: string,
-  selectedDay: string | null,
+  selectedDays: string[] | null, // Now an array of selected days
   selectedStage: string | null,
+  selectedTags: string[],
 ): Agenda => {
   let filteredEvents = agendaData.events;
 
-  if (selectedDay) {
-    filteredEvents = filteredEvents.filter(
-      (event) =>
-        new Date(event.startDate).toLocaleDateString().toLowerCase() ===
-        new Date(selectedDay).toLocaleDateString().toLowerCase(),
-    );
+  // Filter by multiple selected days
+  if (selectedDays && selectedDays.length > 0) {
+    filteredEvents = filteredEvents.filter((event) => {
+      const eventDay = formatDate(event.startDate); // Format event start date to match displayDate format
+      return selectedDays.includes(eventDay);
+    });
   }
 
   if (selectedStage) {
@@ -31,12 +34,28 @@ export const filterAgenda = (
     );
   }
 
+  if (selectedTags && selectedTags.length > 0) {
+    filteredEvents = filteredEvents.filter((event) =>
+      event.tags.some((tag) => selectedTags.includes(tag)),
+    );
+  }
+
   return {
     events: filteredEvents,
   };
 };
 
-export const findAllStages = (events: AgendaEvent[]): string[] => {
+export const findAllTags = (events: AgendaItem[]): string[] => {
+  const tagsSet = new Set<string>();
+  events.forEach((event) => {
+    event.tags.forEach((tag) => {
+      tagsSet.add(tag);
+    });
+  });
+  return Array.from(tagsSet);
+};
+
+export const findAllStages = (events: AgendaItem[]): string[] => {
   const stages = new Set<string>();
 
   events.forEach((event) => {
@@ -46,13 +65,63 @@ export const findAllStages = (events: AgendaEvent[]): string[] => {
   return Array.from(stages);
 };
 
-export const findAllDays = (events: AgendaEvent[]): string[] => {
-  const days = new Set<string>();
+export const findAllDays = (events: AgendaItem[]): string[] => {
+  // Group and sort events
+  const groupedEvents = groupAndSortEvents(events);
 
-  events.forEach((event) => {
-    days.add(new Date(event.startDate).toLocaleDateString());
-    days.add(new Date(event.endDate).toLocaleDateString());
-  });
+  // Extract displayDate values
+  const displayDates = Object.values(groupedEvents).map(
+    ({ displayDate }) => displayDate,
+  );
 
-  return Array.from(days);
+  console.log("Display Dates: ", displayDates);
+  return displayDates;
+};
+
+export const groupAndSortEvents = (
+  events: AgendaItem[],
+): Record<
+  string,
+  { date: Date; displayDate: string; timeslots: Record<string, AgendaItem[]> }
+> => {
+  // Sort the groupedEvents by date (earliest to latest)
+  // Group events by start date in local time
+  const groupedEvents = events.reduce(
+    (acc, event) => {
+      // Use pureFormat with the 'yyyy-MM-dd' format to get the local date
+      const dateKey = pureFormat(event.startDate.toISOString(), "yyyy-MM-dd"); // Local date e.g., "2024-11-09"
+      const displayDate = formatDate(event.startDate); // e.g., "SATURDAY, NOV 9TH"
+      const timeKey = `${pureFormat(event.startDate.toISOString(), "HH:mm")}-${pureFormat(event.endDate.toISOString(), "HH:mm")}`; // Local times
+
+      if (!acc[dateKey]) {
+        acc[dateKey] = {
+          date: event.startDate, // Use startDate for sorting
+          displayDate: displayDate,
+          timeslots: {},
+        };
+      }
+      if (!acc[dateKey].timeslots[timeKey]) {
+        acc[dateKey].timeslots[timeKey] = [];
+      }
+      acc[dateKey].timeslots[timeKey].push(event);
+
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        date: Date;
+        displayDate: string;
+        timeslots: Record<string, AgendaItem[]>;
+      }
+    >,
+  );
+  // Sort by date and maintain the Record structure
+  const sortedGroupedEvents = Object.fromEntries(
+    Object.entries(groupedEvents).sort(
+      ([, a], [, b]) => a.date.getTime() - b.date.getTime(),
+    ),
+  );
+
+  return sortedGroupedEvents;
 };

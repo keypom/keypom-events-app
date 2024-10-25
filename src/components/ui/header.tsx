@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { Redacted } from "@/components/icons";
 
-export function Header({ sendTo = "/" }) {
+export function Header({ sendTo = "/", isConferenceOver }) {
   return (
     <Box
       p={0}
@@ -50,7 +50,7 @@ export function Header({ sendTo = "/" }) {
               color="brand.800"
               flexShrink={0}
             >
-              Bangkok
+              {isConferenceOver === true ? "Game" : "Bangkok"}
             </Text>
             <Redacted />
             <Text
@@ -63,7 +63,7 @@ export function Header({ sendTo = "/" }) {
               color="brand.800"
               flexShrink={0}
             >
-              Nov9-11
+              {isConferenceOver === true ? "Over" : "Nov9-11"}
             </Text>
           </Flex>
         </Box>

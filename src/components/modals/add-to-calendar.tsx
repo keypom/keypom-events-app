@@ -10,16 +10,21 @@ import {
   ModalCloseButton,
   Flex,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
 import { useAddToCalendar } from "@/stores/add-to-calendar";
 
 import googleCalendarLogo from "/assets/calendar/google-calendar.webp";
-import appleCalendar from "/assets/calendar/apple-calendar.webp";
-import { AgendaEvent } from "@/lib/api/agendas";
+import { AgendaItem } from "@/lib/api/agendas";
 
-const TIMEZONE = "Asia/Bangkok";
+const TIMEZONE = "Asia/Bangkok"; // Replace with your desired timezone
 
-function createGoogleCalendarLink(event: AgendaEvent) {
+// Function to format date for Google Calendar (without 'Z')
+function formatDateForGoogleCalendar(date: Date): string {
+  // Returns date in format YYYYMMDDTHHMMSS
+  return date.toISOString().replace(/-|:|\.\d\d\d|Z/g, "");
+}
+
+// Function to create Google Calendar link
+function createGoogleCalendarLink(event: AgendaItem) {
   const { title, stage, description, presenter, startDate, endDate } = event;
 
   const encodedTitle = encodeURIComponent(title);
@@ -28,59 +33,13 @@ function createGoogleCalendarLink(event: AgendaEvent) {
     `${description}\nPresenter: ${presenter}`,
   );
 
-  // Format the start and end date-times to the required format
-  const startDateTime = startDate.replace(/[^\w\s]/gi, "");
-  const endDateTime = endDate.replace(/[^\w\s]/gi, "");
+  const startDateTime = formatDateForGoogleCalendar(startDate);
+  const endDateTime = formatDateForGoogleCalendar(endDate);
 
   // Construct the Google Calendar link
   const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${startDateTime}/${endDateTime}&details=${encodedDescription}&location=${encodedStage}&trp=false&ctz=${TIMEZONE}`;
 
   return googleCalendarUrl;
-}
-
-function createICalendarLink(event: AgendaEvent) {
-  const { title, stage, description, presenter, startDate, endDate } = event;
-
-  const formattedDescription = `${description}\nPresenter: ${presenter}`;
-
-  // Format the start and end date-times to the required format
-  const startDateTime = startDate.replace(/[^\w\s]/gi, "");
-  const endDateTime = endDate.replace(/[^\w\s]/gi, "");
-
-  // Construct the .ics file content with proper CRLF line breaks and VTIMEZONE component
-  const icsContent = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Your Organization//Your Product//EN",
-    "CALSCALE:GREGORIAN",
-    "METHOD:PUBLISH",
-    "BEGIN:VTIMEZONE",
-    `TZID:${TIMEZONE}`,
-    `X-LIC-LOCATION:${TIMEZONE}`,
-    "BEGIN:STANDARD",
-    "TZOFFSETFROM:+0700",
-    "TZOFFSETTO:+0700",
-    "TZNAME:ICT",
-    "DTSTART:19700101T000000",
-    "END:STANDARD",
-    "END:VTIMEZONE",
-    "BEGIN:VEVENT",
-    `UID:${Date.now()}@yourdomain.com`,
-    `DTSTAMP:${startDateTime}Z`,
-    `DTSTART;TZID=${TIMEZONE}:${startDateTime}`,
-    `DTEND;TZID=${TIMEZONE}:${endDateTime}`,
-    `SUMMARY:${title}`,
-    `DESCRIPTION:${formattedDescription.replace(/\n/g, "\\n")}`,
-    `LOCATION:${stage}`,
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\r\n");
-
-  // Create a Blob with the ics content
-  const blob = new Blob([icsContent], { type: "text/calendar" });
-  const url = URL.createObjectURL(blob);
-
-  return url;
 }
 
 const buttonProps = {
@@ -90,8 +49,6 @@ const buttonProps = {
   borderRadius: "lg",
   p: 4,
   variant: "transparent",
-  as: Link,
-  target: "_blank",
   color: "white",
   fontFamily: "mono",
   display: "flex",
@@ -104,60 +61,47 @@ export function AddToCalendarModal() {
   if (!isOpen || !event) return null;
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent
-          background="black"
-          border={"1px solid var(--chakra-colors-brand-400)"}
-          maxWidth={{
-            base: "90%",
-            md: "380px",
-          }}
-        >
-          <ModalHeader px={4} fontFamily={"mono"}>
-            Add to Calendar
-          </ModalHeader>
-          <ModalCloseButton top="16px" right="8px" />
-          <ModalBody width={"100%"} px={4}>
-            <Flex gap={6} width={"100%"} justifyContent={"center"}>
-              <Button
-                {...buttonProps}
-                to={createGoogleCalendarLink(event)}
-                flexDirection={"column"}
-              >
-                <Image
-                  src={googleCalendarLogo}
-                  borderRadius={"lg"}
-                  alt="Google Calendar Logo"
-                  width={12}
-                  height={12}
-                />
-                Google Calendar
-              </Button>
-              <Button
-                {...buttonProps}
-                to={createICalendarLink(event)}
-                flexDirection={"column"}
-              >
-                <Image
-                  borderRadius={"lg"}
-                  src={appleCalendar}
-                  alt="Apple Calendar Logo"
-                  width={12}
-                  height={12}
-                />
-                Apple Calendar
-              </Button>
-            </Flex>
-          </ModalBody>
-          <ModalFooter px={4}>
-            <Button variant="primary" onClick={onClose}>
-              Close
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent
+        background="black"
+        border={"1px solid var(--chakra-colors-brand-400)"}
+        maxWidth={{
+          base: "90%",
+          md: "380px",
+        }}
+      >
+        <ModalHeader px={4} fontFamily={"mono"}>
+          Add to Calendar
+        </ModalHeader>
+        <ModalCloseButton top="16px" right="8px" />
+        <ModalBody width={"100%"} px={4}>
+          <Flex gap={6} width={"100%"} justifyContent={"center"}>
+            <Button
+              {...buttonProps}
+              as="a"
+              href={createGoogleCalendarLink(event)}
+              target="_blank"
+              rel="noopener noreferrer"
+              flexDirection={"column"}
+            >
+              <Image
+                src={googleCalendarLogo}
+                borderRadius={"lg"}
+                alt="Google Calendar Logo"
+                width={12}
+                height={12}
+              />
+              Google Calendar
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+          </Flex>
+        </ModalBody>
+        <ModalFooter px={4}>
+          <Button variant="primary" onClick={onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }

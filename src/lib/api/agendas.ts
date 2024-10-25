@@ -1,49 +1,107 @@
+// api/agendas.ts
 import eventHelperInstance from "../event";
 
-export type AgendaEvent = {
+export interface AgendaItem {
+  id: number;
   title: string;
+  presenter: string;
   stage: string;
   description: string;
-  presenter: string;
-  startDate: string;
-  endDate: string;
-};
+  reminder: boolean;
+  talkType: string;
+  tags: string[];
+  startDate: Date;
+  endDate: Date;
+}
 
-export type Agenda = {
-  events: AgendaEvent[];
-};
+export interface Agenda {
+  events: AgendaItem[];
+}
 
 export const fetchAgenda: () => Promise<Agenda> = async () => {
   const [stringifiedAgenda] = await eventHelperInstance.viewCall({
     methodName: "get_agenda",
     args: {},
   });
-  const airtableAgenda = JSON.parse(stringifiedAgenda);
+  const agendaData = JSON.parse(stringifiedAgenda);
+  console.log(agendaData);
 
-  console.log("Agenda before sorting: ", airtableAgenda);
+  // Update the filtering condition with new field names
+  const filteredAgendaData = agendaData.filter(
+    (item) =>
+      item["⚙️ Start Time"] &&
+      item["⚙️ End Time"] &&
+      item["Session Name"] && // Ensure this field is included in your Airtable query
+      item["Confirmed Speakers"] &&
+      item.Location &&
+      item.Description &&
+      item.Format &&
+      item.Topic,
+  );
+  console.log(filteredAgendaData);
 
-  // Map the agenda to the AgendaEvent interface, skipping entries with no valid Start Time or Duration
-  const mappedAgenda: AgendaEvent[] = airtableAgenda
-    .filter((agenda) => agenda["Start Time"] && agenda["Duration (minutes)"]) // Filter out invalid entries
-    .map((agenda, index) => {
-      // Combine Date and Start Time to create the start date
-      const startDate = new Date(`${agenda.Date}T${agenda["Start Time"]}`);
+  const events: AgendaItem[] = filteredAgendaData.map((item, index) => {
+    // Parse start and end times
+    const startDate = new Date(item["⚙️ Start Time"]); // ISO string in UTC
+    const endDate = new Date(item["⚙️ End Time"]); // ISO string in UTC
 
-      // Calculate the end date by adding the duration (in minutes)
-      const endDate = new Date(
-        startDate.getTime() + agenda["Duration (minutes)"] * 60000,
-      );
+    // Parse tags (Topic)
+    let tags: string[] = [];
+    if (Array.isArray(item.Topic)) {
+      tags = item.Topic.map((tag) => tag.trim());
+    } else if (typeof item.Topic === "string") {
+      tags = item.Topic.split(",").map((tag) => tag.trim());
+    }
 
-      return {
-        id: index + 1, // Generating a unique ID based on the index
-        title: agenda["Talk Title"] || "No Title", // Fallback if the title is missing
-        stage: agenda.Stage || "No stage available",
-        description: agenda.Description || "No description available",
-        presenter: agenda.Presenter || "No presenter available",
-        startDate: startDate.toISOString(), // Convert to ISO string format
-        endDate: endDate.toISOString(), // Convert to ISO string format
-      };
-    });
+    // Parse Confirmed Speakers
+    let speakerNames: string[] = [];
+    if (Array.isArray(item["Confirmed Speakers"])) {
+      speakerNames = item["Confirmed Speakers"];
+    } else if (typeof item["Confirmed Speakers"] === "string") {
+      speakerNames = item["Confirmed Speakers"].split(",").map((s) => s.trim());
+    }
 
-  return { events: mappedAgenda };
+    const speakerNamesFormatted = speakerNames.map((name) =>
+      name.split("-")[0].trim(),
+    );
+
+    // Parse Confirmed Moderators
+    let moderatorNames: string[] = [];
+    if (Array.isArray(item["Confirmed Moderators"])) {
+      moderatorNames = item["Confirmed Moderators"];
+    } else if (typeof item["Confirmed Moderators"] === "string") {
+      moderatorNames = item["Confirmed Moderators"]
+        .split(",")
+        .map((s) => s.trim());
+    }
+
+    // Append '(moderator)' to moderator names
+    const moderatorNamesFormatted = moderatorNames.map(
+      (name) => `${name.split("-")[0].trim()} (moderator)`,
+    );
+
+    // Combine speakers and moderators
+    const presentersList = [
+      ...speakerNamesFormatted,
+      ...moderatorNamesFormatted,
+    ];
+
+    // Join the names with comma and space
+    const presenter = presentersList.join(", ");
+
+    return {
+      id: index + 1,
+      title: item["Session Name"] || "",
+      presenter: presenter,
+      stage: item.Location || "",
+      description: item.Description || "",
+      reminder: item.Reminder === true,
+      talkType: item.Format || "",
+      tags: tags,
+      startDate: startDate, // Already in UTC
+      endDate: endDate, // Already in UTC
+    };
+  });
+
+  return { events };
 };

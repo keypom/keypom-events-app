@@ -1,8 +1,14 @@
-import { Box, Heading, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Text,
+  Image as ChakraImage,
+  VStack,
+} from "@chakra-ui/react";
 import { LockIcon } from "@/components/icons";
 import { Link } from "react-router-dom";
-
-import { Image } from "@/components/ui/image";
+import { Image as AppImage } from "@/components/ui/image";
+import { MULTICHAIN_NETWORKS } from "@/constants/common";
 import { Collectible } from "@/lib/api/collectibles";
 
 export function CollectibleCard({
@@ -11,25 +17,28 @@ export function CollectibleCard({
   title,
   assetType,
   imageSrc,
+  chain,
 }: Collectible & {
   disabled?: boolean;
 }) {
+  const chainInfo = MULTICHAIN_NETWORKS.find((c) => c.name === chain);
   return (
     <VStack
       as={Link}
-      to={disabled ? "" : `/wallet/collectibles/${id}`}
+      to={`/wallet/collectibles/${id}`}
       spacing={2}
       alignItems={"flex-start"}
       cursor={disabled ? "not-allowed" : "pointer"}
+      maxW="210px"
     >
       <Box
         width="100%"
-        paddingBottom="100%" // This creates a 1:1 aspect ratio
+        paddingBottom="100%" // 1:1 aspect ratio
         position="relative"
         maxWidth="210px"
         maxHeight="210px"
       >
-        <Image
+        <AppImage
           src={imageSrc}
           position="absolute"
           top={0}
@@ -57,9 +66,31 @@ export function CollectibleCard({
             />
           </Box>
         )}
+        {/* Chain Icon Positioned at Bottom Right with Tooltip */}
+        {chainInfo && (
+          <ChakraImage
+            src={chainInfo.icon}
+            alt={chainInfo.name}
+            bgColor="transparent"
+            position="absolute"
+            bottom="1"
+            right="1"
+            boxSize="24px"
+            zIndex={2}
+            filter="auto"
+            borderRadius="md"
+          />
+        )}
       </Box>
-      <VStack alignItems="flex-start" gap={0}>
-        <Heading as="h3" fontSize="sm" fontFamily={"mono"} color="white">
+      <VStack alignItems="flex-start" gap={0} width="100%">
+        <Heading
+          as="h3"
+          fontSize="sm"
+          fontFamily={"mono"}
+          color="white"
+          noOfLines={2} // Truncate long titles to one line
+          width="100%"
+        >
           {title}
         </Heading>
         <Text color="brand.400" fontSize="10px" fontWeight={700}>

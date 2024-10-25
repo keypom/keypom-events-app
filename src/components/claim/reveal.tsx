@@ -1,23 +1,26 @@
 import { Box, Heading, VStack, Image } from "@chakra-ui/react";
-import Boxes from "/assets/claim-blocks.webp";
 import eventHelperInstance, { ExtClaimedDrop } from "@/lib/event";
 import { ImageSplit } from "./reward-image";
 import { TokenScavRewardImage } from "../wallet/journeys/token-scav-image";
 import { Image as FallbackImage } from "../ui/image";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 
+// Use the GIF files for token and NFT animations
+import TokenAnimation from "/assets/token_anim.gif";
+import NftAnimation from "/assets/nft_anim.gif";
+
 interface RevealProps {
   foundItem: ExtClaimedDrop;
-  numFound: number | undefined;
-  numRequired: number | undefined;
 }
 
-export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
+export function Reveal({ foundItem }: RevealProps) {
+  const numFound = foundItem.found_scavenger_ids?.length || 1;
+  const numRequired = foundItem.needed_scavenger_ids?.length || 1;
   const amountToDisplay = eventHelperInstance.yoctoToNearWithMinDecimals(
     foundItem.token_amount || "0",
   );
 
-  const isScavenger = numFound !== undefined && numRequired !== undefined;
+  const isScavenger = foundItem.needed_scavenger_ids !== undefined;
   const rewardMessage = () => {
     if (isScavenger) {
       if (numFound === numRequired) {
@@ -32,17 +35,21 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
 
   const rewardComponent = () => {
     // For NFTs we can just use the image split component
-    if (foundItem.type === "nft" && foundItem.nft_metadata) {
+    if (
+      (foundItem.type === "nft" || foundItem.type === "multichain") &&
+      foundItem.nft_metadata
+    ) {
       return (
         <Box
           bg="bg.primary"
-          p={4}
+          p={2}
+          paddingTop={4}
           display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
         >
-          <ImageSplit numPieces={numRequired || 1} numFound={numFound || 1}>
+          <ImageSplit numPieces={numRequired} numFound={numFound}>
             <Box borderRadius="12px">
               <FallbackImage
                 src={getIpfsImageSrcUrl(foundItem.nft_metadata?.media || "")}
@@ -80,11 +87,16 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
     );
   };
 
+  // Determine which animation to display based on the item type
+  const animationSrc =
+    foundItem.type === "token" ? TokenAnimation : NftAnimation;
+
   return (
     <Box position="relative" p={4}>
       <Box position="relative">
+        {/* Update the image source to use the GIF */}
         <Image
-          src={Boxes}
+          src={animationSrc}
           width="100%"
           height="100%"
           position="relative"
@@ -95,16 +107,16 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
       </Box>
       <VStack
         position="absolute"
-        top="45%"
+        top="42%"
         left="50%"
         transform="translate(-50%, -50%)"
         width={"100%"}
         p={4}
-        spacing={8}
+        spacing={12}
       >
         {rewardComponent()}
 
-        <VStack alignItems="center" gap={0} width={"100%"}>
+        <VStack alignItems="center" gap={0} width={"100%"} pt={4}>
           <Heading
             as="h3"
             fontSize="5xl"

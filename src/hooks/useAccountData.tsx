@@ -13,6 +13,7 @@ export interface AccountData {
   unownedCollectibles: DropData[];
   journeys: Journey[];
   balance: string;
+  tokensCollected: string;
 }
 
 // Helper function to map owned journeys (ExtClaimedDrop)
@@ -82,6 +83,7 @@ const fetchAccountData = async (secretKey: string) => {
         methodName: "recover_account",
         args: { key_or_account_id: pubKey },
       });
+
     if (!recoveredAccount) {
       throw new Error("Account not found");
     }
@@ -93,20 +95,34 @@ const fetchAccountData = async (secretKey: string) => {
     const allDrops = await eventHelperInstance.getCachedDrops();
     console.log("allDrops", allDrops);
 
-    const ownedCollectibles: ExtClaimedDrop[] =
+    const foundNFTDrops: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
+      methodName: "get_claimed_nfts_for_account",
+      args: { account_id: accountId },
+    });
+
+    // Modify unownedCollectibles to exclude owned items
+    const ownedNFTs = foundNFTDrops.filter(
+      (drop) =>
+        (drop.found_scavenger_ids || []).length ===
+        (drop.needed_scavenger_ids || []).length,
+    );
+
+    const ownedMultichainNFTs: ExtClaimedDrop[] =
       await eventHelperInstance.viewCall({
-        methodName: "get_claimed_nfts_for_account",
+        methodName: "get_claimed_multichain_nfts_for_account",
         args: { account_id: accountId },
       });
-    console.log("ownedCollectibles", ownedCollectibles);
 
+    const ownedCollectibles = [...ownedNFTs, ...ownedMultichainNFTs];
+
+    // Modify unownedCollectibles to exclude owned items
     const unownedCollectibles = allDrops.filter(
       (drop) =>
         "nft_metadata" in drop &&
         drop.scavenger_hunt === null &&
-        drop.type === "Nft",
+        drop.type !== "Token" &&
+        !ownedCollectibles.some((ownedItem) => ownedItem.drop_id === drop.id),
     );
-    console.log("unownedCollectibles", unownedCollectibles);
 
     const ownedJourneys: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
       methodName: "get_claimed_scavengers_for_account",
@@ -117,7 +133,7 @@ const fetchAccountData = async (secretKey: string) => {
       (drop) => drop.scavenger_hunt !== null,
     );
 
-    // Filter out locked items that have the same drop_id as any unlocked item
+    // Filter out unowned journeys that are already owned
     const filteredUnownedJourneys = unownedJourneys.filter(
       (journey) =>
         !ownedJourneys.some(
@@ -132,12 +148,12 @@ const fetchAccountData = async (secretKey: string) => {
         mapUnownedJourneyToJourney(journey),
       ),
     ];
-    console.log("Journeys: ", allJourneys);
 
     return {
       accountId,
       ownedCollectibles,
       unownedCollectibles,
+      tokensCollected: recoveredAccount.ft_collected,
       journeys: allJourneys,
       displayAccountId: accountId
         .split(".")[0]

@@ -48,7 +48,7 @@ export default function Scan() {
 
       const type = qrDataSplit[0];
       if (!type) {
-        throw new Error("QR data format is incorrect");
+        return;
       }
 
       console.log("QR Type: ", type);
@@ -143,7 +143,12 @@ export default function Scan() {
           {isError && <ErrorBox message={`Error: ${error?.message}`} />}{" "}
           {/* Error Handling */}
           <Box display={"flex"} justifyContent={"center"} alignItems="center">
-            <QrScanner handleScan={handleScan} scanStatus={scanStatus} />
+            <QrScanner
+              handleScan={handleScan}
+              scanStatus={scanStatus}
+              allowMultiple={false}
+              scanDelay={3000}
+            />
           </Box>
         </Box>
         <HStack

@@ -14,8 +14,6 @@ export default function Claim() {
 
   const [revealed, setRevealed] = useState(false);
   const [reward, setReward] = useState<ExtClaimedDrop>();
-  const [numFound, setNumFound] = useState<number | undefined>(undefined);
-  const [numRequired, setNumRequired] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const fetchReward = async () => {
@@ -29,16 +27,6 @@ export default function Claim() {
           methodName: "get_claimed_drop_for_account",
           args: { drop_id: dropId, account_id: data.accountId },
         });
-
-      console.log("Claimed Drop Info: ", claimedDropInfo);
-
-      if (
-        claimedDropInfo.found_scavenger_ids &&
-        claimedDropInfo.needed_scavenger_ids
-      ) {
-        setNumFound(claimedDropInfo.found_scavenger_ids.length);
-        setNumRequired(claimedDropInfo.needed_scavenger_ids.length);
-      }
 
       setReward(claimedDropInfo);
     };
@@ -59,17 +47,8 @@ export default function Claim() {
   }
 
   if (!revealed) {
-    return (
-      <Hidden
-        foundItem={reward}
-        onReveal={onReveal}
-        numFound={numFound}
-        numRequired={numRequired}
-      />
-    );
+    return <Hidden foundItem={reward} onReveal={onReveal} />;
   }
 
-  return (
-    <Reveal foundItem={reward} numFound={numFound} numRequired={numRequired} />
-  );
+  return <Reveal foundItem={reward} />;
 }

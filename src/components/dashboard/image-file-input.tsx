@@ -91,7 +91,9 @@ export const ImageFileInputSmall = ({
             >
               <ImageIcon color="white" h={{ base: "6" }} w={{ base: "6" }} />
               <Show above="md">
-                <Text color="white">{ctaText}</Text>
+                <Text color="white" fontFamily={"mono"} fontSize={"sm"}>
+                  {ctaText}
+                </Text>
               </Show>
               <Center
                 border="1px solid"
@@ -101,7 +103,9 @@ export const ImageFileInputSmall = ({
                 px={{ base: "3" }}
                 py={{ base: "1" }}
               >
-                {buttonText}
+                <Text color="white" fontFamily={"mono"} fontSize={"xs"}>
+                  {buttonText}
+                </Text>
               </Center>
             </Flex>
           )}
