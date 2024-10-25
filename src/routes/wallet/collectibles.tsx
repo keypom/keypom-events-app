@@ -1,4 +1,5 @@
 import { Flex, Grid, GridItem, HStack } from "@chakra-ui/react";
+import { useSearchParams } from "react-router-dom";
 
 import { ErrorBox } from "@/components/ui/error-box";
 import { LoadingBox } from "@/components/ui/loading-box";
@@ -9,7 +10,7 @@ import { ExtClaimedDrop, DropData } from "@/lib/event";
 import { getIpfsImageSrcUrl } from "@/lib/helpers/ipfs";
 import { getChainNameFromChainId } from "@/lib/helpers/multichain";
 import { CollectibleTabButton } from "@/components/wallet/collectibles/tab-button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pagination } from "@/components/wallet/collectibles/pagination";
 
 const Divider = () => {
@@ -47,7 +48,7 @@ const CollectiblesGrid = ({
       alignItems="center"
       mt={4}
       justifyContent="space-between"
-      flexGrow={1} // Allow the grid to grow and fill available space
+      flexGrow={1}
     >
       <Grid
         templateColumns={{
@@ -57,8 +58,8 @@ const CollectiblesGrid = ({
         alignItems="start"
         maxWidth="450px"
         width="100%"
-        flexGrow={1} // Allow the grid to grow
-        templateRows="repeat(2, 1fr)" // Ensure the grid has 2 rows (since 4 items max, 2 columns)
+        flexGrow={1}
+        templateRows="repeat(2, 1fr)"
       >
         {items.map((collectible, index) => (
           <GridItem key={index} p={2} pb={4}>
@@ -80,12 +81,11 @@ const CollectiblesGrid = ({
             />
           </GridItem>
         ))}
-        {/* Add invisible GridItems to fill up the space when there are fewer items */}
         {Array.from({ length: itemsPerPage - items.length }).map((_, index) => (
           <GridItem key={`empty-${index}`} p={2} pb={4} visibility="hidden">
             <CollectibleCard
               id={`empty-${index}`}
-              title="Opening Ceremoy POAP"
+              title="Opening Ceremony POAP"
               description=""
               assetType="POAP"
               isFound={false}
@@ -109,20 +109,27 @@ const CollectiblesGrid = ({
 
 export default function Collectibles() {
   const { data, isLoading, isError, error } = useAccountData();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const unlockedItems =
     !data || isLoading || isError ? [] : data.ownedCollectibles;
   const lockedItems =
     !data || isLoading || isError ? [] : data.unownedCollectibles;
 
-  const [curTab, setCurTab] = useState<"found" | "explore">("explore");
+  // Read `tab` and `page` from URL query parameters
+  const initialTab = searchParams.get("tab") === "found" ? "found" : "explore";
+  const initialPage = parseInt(searchParams.get("page") || "1", 10);
 
-  // Pagination states for both tabs
-  const [foundPage, setFoundPage] = useState(1);
-  const [explorePage, setExplorePage] = useState(1);
+  const [curTab, setCurTab] = useState<"found" | "explore">(initialTab);
+  const [foundPage, setFoundPage] = useState(
+    initialTab === "found" ? initialPage : 1,
+  );
+  const [explorePage, setExplorePage] = useState(
+    initialTab === "explore" ? initialPage : 1,
+  );
+
   const itemsPerPage = 4;
 
-  // Get the items to show on the current tab
   const itemsToShow =
     curTab === "found"
       ? unlockedItems.slice(
@@ -133,6 +140,25 @@ export default function Collectibles() {
           (explorePage - 1) * itemsPerPage,
           explorePage * itemsPerPage,
         );
+
+  const handleTabChange = (newTab: "found" | "explore") => {
+    setCurTab(newTab);
+    setSearchParams({ tab: newTab, page: "1" });
+    if (newTab === "found") setFoundPage(1);
+    else setExplorePage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setSearchParams({ tab: curTab, page: newPage.toString() });
+    if (curTab === "found") setFoundPage(newPage);
+    else setExplorePage(newPage);
+  };
+
+  useEffect(() => {
+    // Sync the `page` and `tab` state with the URL parameters when they change
+    const page = curTab === "found" ? foundPage : explorePage;
+    setSearchParams({ tab: curTab, page: page.toString() });
+  }, [curTab, foundPage, explorePage, setSearchParams]);
 
   return (
     <Flex direction="column" p={4}>
@@ -148,19 +174,13 @@ export default function Collectibles() {
           active={curTab === "found"}
           type={"found"}
           numItems={unlockedItems.length}
-          onClick={() => {
-            setCurTab("found");
-            setFoundPage(1); // Reset to first page when switching tabs
-          }}
+          onClick={() => handleTabChange("found")}
         />
         <CollectibleTabButton
           active={curTab === "explore"}
           type={"explore"}
           numItems={lockedItems.length}
-          onClick={() => {
-            setCurTab("explore");
-            setExplorePage(1); // Reset to first page when switching tabs
-          }}
+          onClick={() => handleTabChange("explore")}
         />
       </HStack>
       <Flex direction="column" flex="1">
@@ -168,7 +188,7 @@ export default function Collectibles() {
           <CollectiblesGrid
             items={itemsToShow}
             currentPage={curTab === "found" ? foundPage : explorePage}
-            setPage={curTab === "found" ? setFoundPage : setExplorePage}
+            setPage={handlePageChange}
             totalItems={
               curTab === "found" ? unlockedItems.length : lockedItems.length
             }
