@@ -21,12 +21,14 @@ interface NFTInformationProps {
   setCreatedDrop: React.Dispatch<React.SetStateAction<any>>;
   errors: any;
   setErrors: React.Dispatch<React.SetStateAction<any>>;
+  isAdmin: Boolean;
 }
 
 export const NFTInformation: React.FC<NFTInformationProps> = ({
   createdDrop,
   setCreatedDrop,
   errors,
+  isAdmin,
 }) => {
   const onNFTDataChange = (key: string, value: string) => {
     setCreatedDrop({
@@ -134,7 +136,9 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
                 border={"1px solid var(--chakra-colors-brand-400)"}
                 fontFamily={"mono"}
               >
-                {MULTICHAIN_NETWORKS.map((chain) => (
+                {MULTICHAIN_NETWORKS.filter((chain) =>
+                  isAdmin ? true : chain.id !== "eth",
+                ).map((chain) => (
                   <MenuItem
                     key={chain.id}
                     onClick={() => onChainSelect(chain.id)}

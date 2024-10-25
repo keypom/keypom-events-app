@@ -16,10 +16,6 @@ export const Pagination = ({
 }: PaginationProps) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  if (totalPages <= 1) {
-    return null; // Don't render the pagination if there's only one page
-  }
-
   // Calculate the item range being viewed
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);

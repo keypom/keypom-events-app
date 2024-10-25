@@ -11,16 +11,16 @@ import NftAnimation from "/assets/nft_anim.gif";
 
 interface RevealProps {
   foundItem: ExtClaimedDrop;
-  numFound: number | undefined;
-  numRequired: number | undefined;
 }
 
-export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
+export function Reveal({ foundItem }: RevealProps) {
+  const numFound = foundItem.found_scavenger_ids?.length || 1;
+  const numRequired = foundItem.needed_scavenger_ids?.length || 1;
   const amountToDisplay = eventHelperInstance.yoctoToNearWithMinDecimals(
     foundItem.token_amount || "0",
   );
 
-  const isScavenger = numFound !== undefined && numRequired !== undefined;
+  const isScavenger = foundItem.needed_scavenger_ids !== undefined;
   const rewardMessage = () => {
     if (isScavenger) {
       if (numFound === numRequired) {
@@ -42,13 +42,14 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
       return (
         <Box
           bg="bg.primary"
-          p={4}
+          p={2}
+          paddingTop={4}
           display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
         >
-          <ImageSplit numPieces={numRequired || 1} numFound={numFound || 1}>
+          <ImageSplit numPieces={numRequired} numFound={numFound}>
             <Box borderRadius="12px">
               <FallbackImage
                 src={getIpfsImageSrcUrl(foundItem.nft_metadata?.media || "")}
@@ -106,16 +107,16 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
       </Box>
       <VStack
         position="absolute"
-        top="45%"
+        top="42%"
         left="50%"
         transform="translate(-50%, -50%)"
         width={"100%"}
         p={4}
-        spacing={8}
+        spacing={12}
       >
         {rewardComponent()}
 
-        <VStack alignItems="center" gap={0} width={"100%"}>
+        <VStack alignItems="center" gap={0} width={"100%"} pt={4}>
           <Heading
             as="h3"
             fontSize="5xl"

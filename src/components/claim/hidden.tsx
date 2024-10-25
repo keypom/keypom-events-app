@@ -8,17 +8,13 @@ import { motion, useSpring, useTransform } from "framer-motion";
 
 interface HiddenProps {
   foundItem: ExtClaimedDrop;
-  numFound: number | undefined;
-  numRequired: number | undefined;
   onReveal: () => void;
 }
 
-export function Hidden({
-  foundItem,
-  onReveal,
-  numFound,
-  numRequired,
-}: HiddenProps) {
+export function Hidden({ foundItem, onReveal }: HiddenProps) {
+  const numFound = foundItem.found_scavenger_ids?.length || 1;
+  const numRequired = foundItem.needed_scavenger_ids?.length || 1;
+
   const isNFT = foundItem.type !== "token";
   const rewardMessage = () => {
     if (numFound !== numRequired) {

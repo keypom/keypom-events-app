@@ -95,10 +95,17 @@ const fetchAccountData = async (secretKey: string) => {
     const allDrops = await eventHelperInstance.getCachedDrops();
     console.log("allDrops", allDrops);
 
-    const ownedNFTs: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
+    const foundNFTDrops: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
       methodName: "get_claimed_nfts_for_account",
       args: { account_id: accountId },
     });
+
+    // Modify unownedCollectibles to exclude owned items
+    const ownedNFTs = foundNFTDrops.filter(
+      (drop) =>
+        (drop.found_scavenger_ids || []).length ===
+        (drop.needed_scavenger_ids || []).length,
+    );
 
     const ownedMultichainNFTs: ExtClaimedDrop[] =
       await eventHelperInstance.viewCall({
@@ -108,11 +115,13 @@ const fetchAccountData = async (secretKey: string) => {
 
     const ownedCollectibles = [...ownedNFTs, ...ownedMultichainNFTs];
 
+    // Modify unownedCollectibles to exclude owned items
     const unownedCollectibles = allDrops.filter(
       (drop) =>
         "nft_metadata" in drop &&
         drop.scavenger_hunt === null &&
-        drop.type !== "Token",
+        drop.type !== "Token" &&
+        !ownedCollectibles.some((ownedItem) => ownedItem.drop_id === drop.id),
     );
 
     const ownedJourneys: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
@@ -124,7 +133,7 @@ const fetchAccountData = async (secretKey: string) => {
       (drop) => drop.scavenger_hunt !== null,
     );
 
-    // Filter out locked items that have the same drop_id as any unlocked item
+    // Filter out unowned journeys that are already owned
     const filteredUnownedJourneys = unownedJourneys.filter(
       (journey) =>
         !ownedJourneys.some(

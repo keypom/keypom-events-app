@@ -313,7 +313,10 @@ class EventJS {
           `${MULTICHAIN_WORKER_URL}/create-series`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: secretKey,
+            },
             body: JSON.stringify({
               chain_id,
               hash: pinnedMetadata,
