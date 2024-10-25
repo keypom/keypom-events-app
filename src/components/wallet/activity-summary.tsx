@@ -81,7 +81,7 @@ export function ActivitySummary() {
   return (
     <VStack spacing={4} width={"100%"}>
       <Text
-        my={{ base: 2, iphone13: 2, iphone14ProMax: 4 }}
+        my={{ base: 2, iphone13: 2, md: 4 }}
         fontFamily={"mono"}
         fontSize={"lg"}
         fontWeight={700}

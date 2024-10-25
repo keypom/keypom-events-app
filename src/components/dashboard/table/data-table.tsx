@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import {
   TableContainer,
-  Show,
   Tbody,
   Table,
   type TableProps,
@@ -12,24 +12,14 @@ import {
   Text,
   Heading,
   VStack,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import { IconBox } from "../icon-box";
-
 import { EMPTY_TABLE_TEXT_MAP } from "./constants";
 import { MobileDataTable } from "./mobile-data-table";
 import { type ColumnItem, type DataItem } from "./types";
-
-/**
- * Example
- *
- * data = [{ name: 'Eric', age: 21 }]
- * columns = [
- *  { title: 'Name', selector: (row) => row.name },
- *  { title: 'Age', selector: (row) => row.age }
- * ]
- */
 
 interface DataTableProps extends TableProps {
   type?:
@@ -50,8 +40,8 @@ interface DataTableProps extends TableProps {
   columns: ColumnItem[];
   data: DataItem[];
   loading?: boolean;
-  showMobileTitles: string[];
-  excludeMobileColumns: string[];
+  stackedActionCols: string[];
+  excludedMobileCols: string[];
 }
 
 export const DataTable = ({
@@ -60,11 +50,13 @@ export const DataTable = ({
   columns = [],
   data = [],
   loading = false,
-  showMobileTitles = [],
-  excludeMobileColumns = [],
+  stackedActionCols = [],
+  excludedMobileCols = [],
   ...props
 }: DataTableProps) => {
   const navigate = useNavigate();
+
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   const getDesktopTableBody = () => {
     if (loading) {
@@ -113,67 +105,61 @@ export const DataTable = ({
   return (
     <>
       {loading || data.length > 0 ? (
-        <>
-          {/* Desktop Table */}
-          <Show above="md">
-            <TableContainer
-              background={"rgba(23, 25, 35, 0.4)"}
-              borderRadius="md"
-              p={8}
-              border={"1px solid var(--chakra-colors-brand-400)"}
-              fontFamily={"mono"}
-            >
-              <Table {...props} borderRadius="12px">
-                {showColumns && (
-                  <Thead>
-                    <Tr>
-                      {columns.map((col, index) => (
-                        <Th
-                          color={"white"}
-                          key={col.id}
-                          fontFamily="body"
-                          {...col.thProps}
-                          borderTopLeftRadius={
-                            index === 0 ? "12px !important" : undefined
-                          }
-                          borderTopRightRadius={
-                            index === columns.length - 1
-                              ? "12px !important"
-                              : undefined
-                          }
-                        >
-                          {col.title}
-                        </Th>
-                      ))}
-                    </Tr>
-                  </Thead>
-                )}
-                <Tbody>{getDesktopTableBody()}</Tbody>
-              </Table>
-            </TableContainer>
-          </Show>
-
-          {/* Mobile table */}
-          <Show below="md">
-            <MobileDataTable
-              columns={columns}
-              data={data}
-              excludeMobileTitles={excludeMobileColumns}
-              loading={loading}
-              showMobileTitles={showMobileTitles}
-              {...props}
-            />
-          </Show>
-        </>
+        isMobile ? (
+          <MobileDataTable
+            columns={columns}
+            data={data}
+            loading={loading}
+            stackedActionCols={stackedActionCols}
+            excludedCols={excludedMobileCols}
+            {...props}
+          />
+        ) : (
+          <TableContainer
+            background={"rgba(23, 25, 35, 0.4)"}
+            borderRadius="md"
+            p={8}
+            border={"1px solid var(--chakra-colors-brand-400)"}
+            fontFamily={"mono"}
+          >
+            <Table {...props} borderRadius="12px">
+              {showColumns && (
+                <Thead>
+                  <Tr>
+                    {columns.map((col, index) => (
+                      <Th
+                        color={"white"}
+                        key={col.id}
+                        fontFamily="body"
+                        {...col.thProps}
+                        borderTopLeftRadius={
+                          index === 0 ? "12px !important" : undefined
+                        }
+                        borderTopRightRadius={
+                          index === columns.length - 1
+                            ? "12px !important"
+                            : undefined
+                        }
+                      >
+                        {col.title}
+                      </Th>
+                    ))}
+                  </Tr>
+                </Thead>
+              )}
+              <Tbody>{getDesktopTableBody()}</Tbody>
+            </Table>
+          </TableContainer>
+        )
       ) : (
         <IconBox
           h="full"
           mt={{ base: "6", md: "7" }}
-          pb={{ base: "6", md: "16" }}
+          p={{ base: "4", md: "8" }}
           w="full"
         >
           <Center>
-            <VStack>
+            <VStack w="full">
               <Heading fontSize={{ base: "xl", md: "2xl" }} fontWeight="600">
                 {EMPTY_TABLE_TEXT_MAP[type].heading}
               </Heading>

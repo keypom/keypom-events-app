@@ -98,8 +98,6 @@ export function TokenCreateModal({ existingDropNames }: TokenCreateModalProps) {
         <ModalOverlay />
         <ModalContent
           background={"black"}
-          maxH="95vh"
-          overflowY="auto"
           padding={8}
           borderRadius={"md"}
           border={"1px solid var(--chakra-colors-brand-400)"}

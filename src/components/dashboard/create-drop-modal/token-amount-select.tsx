@@ -48,7 +48,7 @@ export default function DropTokenAmountSelector({
       errorText={errors.amount}
       label="Token amount"
       required={true}
-      labelProps={{ fontSize: { base: "xs", md: "md" } }}
+      labelProps={{ fontSize: { base: "16px", md: "md" } }}
       fontFamily={"mono"}
       marginY="2"
     >
@@ -65,7 +65,7 @@ export default function DropTokenAmountSelector({
                   currentDrop.amount === String(amount) ? "black" : "brand.400"
                 }
                 display="flex"
-                fontSize={{ base: "xs", md: "sm" }}
+                fontSize={{ base: "16px", md: "sm" }}
                 height="30px"
                 justifyContent="center"
                 sx={{
@@ -106,7 +106,7 @@ export default function DropTokenAmountSelector({
             }
             _placeholder={{
               color: "black",
-              fontSize: { base: "xs", md: "sm" },
+              fontSize: { base: "16px", md: "sm" },
               fontFamily: "mono",
             }}
             height="30px"

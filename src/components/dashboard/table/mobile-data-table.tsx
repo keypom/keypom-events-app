@@ -1,99 +1,113 @@
-import {
-  Box,
-  Table,
-  TableContainer,
-  type TableProps,
-  Tbody,
-  Td,
-  Tr,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, VStack, Text, Stack, Skeleton, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { ColumnItem, DataItem } from "./types";
 
-import { type ColumnItem, type DataItem } from "./types";
-
-interface MobileDataTableProps extends TableProps {
-  showColumns?: boolean;
+interface MobileDataTableProps {
   columns: ColumnItem[];
   data: DataItem[];
-  loading: boolean;
-  showMobileTitles: string[];
-  excludeMobileTitles: string[];
+  loading?: boolean;
+  stackedActionCols?: string[];
+  excludedCols?: string[];
 }
 
 export const MobileDataTable = ({
   columns,
   data,
   loading = false,
-  showMobileTitles = [],
-  excludeMobileTitles = [],
-  ...props
+  stackedActionCols = [],
+  excludedCols = [],
 }: MobileDataTableProps) => {
   const navigate = useNavigate();
 
-  const actionColumn = columns[columns.length - 1];
-  const getMobileTableBody = () => {
-    if (loading) {
-      return Array.from([1, 2, 3]).map((_, index) => (
-        <Tr key={index}>
-          {columns.map((column, colIndex) => (
-            <Td key={`${column.id}-${index}-${colIndex}`} {...column.tdProps}>
-              {column.loadingElement}
-            </Td>
-          ))}
-        </Tr>
-      ));
-    }
+  if (loading) {
+    return (
+      <Stack spacing={4}>
+        {[...Array(3)].map((_, index) => (
+          <Box key={index} padding={4} borderWidth={1} borderRadius="md">
+            <Skeleton height="20px" mb={2} />
+            <Skeleton height="20px" mb={2} />
+            <Skeleton height="20px" />
+          </Box>
+        ))}
+      </Stack>
+    );
+  }
 
-    return data.map((drop) => (
-      <Tr
-        key={drop.id}
-        _hover={
-          (drop.href as string | undefined)
-            ? {
-                cursor: "pointer",
-                background: "gray.50",
-              }
-            : {}
-        }
-        onClick={
-          (drop.href as string | undefined)
-            ? () => {
-                navigate(drop.href as string);
-              }
-            : undefined
-        }
-      >
-        <Td>
-          <VStack align="flex-start" spacing="2">
-            {columns
-              .filter(
-                (column) =>
-                  actionColumn.id !== column.id &&
-                  !excludeMobileTitles.includes(column.id),
-              ) // exclude action column
-              .map((column) => (
-                <Box key={`${drop.id}-${column.id}`}>
-                  {showMobileTitles.includes(column.id)
-                    ? `${column.title}: `
-                    : ""}
-                  {column.selector(drop)}
-                </Box>
-              ))}
-          </VStack>
-        </Td>
-        <Td textAlign="end" verticalAlign="middle">
-          {actionColumn.selector(drop)}
-        </Td>
-      </Tr>
-    ));
-  };
+  const dataRows = columns.filter(
+    (row) =>
+      (!row.id.includes("action") || stackedActionCols.includes(row.id)) &&
+      !excludedCols.includes(row.id),
+  );
+  const actionRows = columns.filter(
+    (row) =>
+      row.id.includes("action") &&
+      !stackedActionCols.includes(row.id) &&
+      !excludedCols.includes(row.id),
+  );
 
   return (
-    <TableContainer whiteSpace="normal">
-      <Table {...props} borderRadius="12px">
-        <Tbody>{getMobileTableBody()}</Tbody>
-      </Table>
-    </TableContainer>
+    <VStack spacing={4} align="stretch">
+      {data.map((row) => (
+        <Box
+          key={row.id}
+          padding={4}
+          borderWidth={1}
+          borderRadius="md"
+          borderColor="brand.400"
+          onClick={
+            row.href
+              ? () => {
+                  navigate(row.href as string);
+                }
+              : undefined
+          }
+          _hover={
+            row.href
+              ? {
+                  cursor: "pointer",
+                  backgroundColor: "gray.700",
+                }
+              : {}
+          }
+          overflowX="auto" // Enable horizontal scroll for rows
+          whiteSpace="nowrap" // Prevent text wrapping to ensure everything fits
+        >
+          <HStack spacing={4} alignItems="center" width="full">
+            <VStack w="full" align="stretch">
+              {dataRows.map((column) => (
+                <Box key={column.id} mb={1} width="100%">
+                  <Text
+                    fontFamily="mono"
+                    fontSize="sm"
+                    color="brand.400"
+                    textAlign="left"
+                  >
+                    {column.title}
+                  </Text>
+                  <Text
+                    fontFamily="mono"
+                    fontSize="xs"
+                    color="white"
+                    textAlign="left"
+                    overflow="hidden" // Ensure text does not overflow
+                    textOverflow="ellipsis" // Show ellipsis if text overflows
+                  >
+                    {column.selector(row)}
+                  </Text>
+                </Box>
+              ))}
+            </VStack>
+            {/* Action Buttons */}
+            <VStack w="full" align="stretch" spacing={2}>
+              {actionRows.map((column) => (
+                <Box key={column.id} mt={2} minWidth="fit-content">
+                  {column.selector(row)}
+                </Box>
+              ))}
+            </VStack>
+          </HStack>
+        </Box>
+      ))}
+    </VStack>
   );
 };

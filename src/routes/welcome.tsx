@@ -43,7 +43,7 @@ export default function WelcomePage() {
         display="flex"
         flexDirection="column"
         pt={12}
-        pb={{ base: 8, iphone13: 8, iphone14ProMax: 16 }}
+        pb={{ base: 8, iphone13: 8, md: 16 }}
         px={4}
         width="100%"
       >
@@ -51,13 +51,13 @@ export default function WelcomePage() {
           textAlign="center"
           pb="2"
           color="brand.400"
-          fontSize={{ base: "20px", iphone13: "22px", iphone14ProMax: "26px" }}
+          fontSize={{ base: "20px", iphone13: "22px", md: "26px" }}
         >
           WELCOME @{data!.displayAccountId}!
         </Heading>
         <Heading
           textAlign="center"
-          fontSize={{ base: "20px", iphone13: "22px", iphone14ProMax: "26px" }}
+          fontSize={{ base: "20px", iphone13: "22px", md: "26px" }}
         >
           GET READY TO RECLAIM YOUR SOVEREIGNTY
         </Heading>
@@ -74,7 +74,7 @@ export default function WelcomePage() {
             fontSize={{
               base: "20px",
               iphone13: "20px",
-              iphone14ProMax: "24px",
+              md: "24px",
             }}
           >
             What is SOV3?
@@ -117,7 +117,7 @@ export default function WelcomePage() {
               fontSize={{
                 base: "20px",
                 iphone13: "20px",
-                iphone14ProMax: "24px",
+                md: "24px",
               }}
             >
               Earn:
@@ -128,7 +128,7 @@ export default function WelcomePage() {
               fontSize={{
                 base: "12px",
                 iphone13: "12px",
-                iphone14ProMax: "16px",
+                md: "16px",
               }}
               textAlign={"left"}
             >
@@ -145,7 +145,7 @@ export default function WelcomePage() {
               fontSize={{
                 base: "20px",
                 iphone13: "20px",
-                iphone14ProMax: "24px",
+                md: "24px",
               }}
             >
               Spend:
@@ -156,7 +156,7 @@ export default function WelcomePage() {
               fontSize={{
                 base: "12px",
                 iphone13: "12px",
-                iphone14ProMax: "16px",
+                md: "16px",
               }}
               textAlign={"left"}
             >

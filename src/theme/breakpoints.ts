@@ -1,4 +1,8 @@
 export const breakpoints = {
-  iphone13: "390px", // iPhone 13
-  iphone14ProMax: "430px", // iPhone 14 Pro Max
+  sm: "320px",
+  iphone13: "390px", // custom breakpoint for iPhone 13
+  md: "429px", // iPhone 14 Pro Max (or other devices close to this width)
+  lg: "768px",
+  xl: "1024px",
+  "2xl": "1280px",
 };

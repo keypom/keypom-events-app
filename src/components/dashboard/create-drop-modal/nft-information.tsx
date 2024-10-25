@@ -70,7 +70,7 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
               sx={{
                 "::placeholder": {
                   color: "gray.500",
-                  fontSize: { base: "xs", md: "sm" },
+                  fontSize: { base: "16px", md: "sm" },
                   fontFamily: "mono",
                 },
               }}
@@ -98,7 +98,7 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
               sx={{
                 "::placeholder": {
                   color: "gray.500",
-                  fontSize: { base: "xs", md: "sm" },
+                  fontSize: { base: "16px", md: "sm" },
                   fontFamily: "mono",
                 },
               }}

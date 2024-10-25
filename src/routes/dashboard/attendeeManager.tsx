@@ -499,7 +499,7 @@ const AttendeeTable = ({
       sortable: true,
     },
     {
-      id: "sendTokens",
+      id: "action1",
       title: "Send Tokens",
       selector: (row) => {
         const nearAccount = row["NEAR Account"];
