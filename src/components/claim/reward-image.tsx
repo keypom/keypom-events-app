@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, useBreakpoint, useBreakpointValue } from "@chakra-ui/react";
 
 export const ImageSplit = ({ numFound, numPieces, children }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -42,24 +42,39 @@ export const ImageSplit = ({ numFound, numPieces, children }) => {
     }
   }, [numFound, numPieces]);
 
+  // Set responsive sizes using Chakra's `useBreakpointValue` hook
+  const boxSize = useBreakpointValue({
+    base: "125px",
+    sm: "125px",
+    iphone13: "150px",
+    md: "200px", // for iPhone 14 Pro Max size
+  });
+  console.log("Box size:", boxSize);
+
   return (
-    <Box position="relative" width="200px" height="200px">
+    <Box position="relative" width={boxSize} height={boxSize}>
       {/* The passed component */}
-      <Box position="absolute" top={0} left={0} width="200px" height="200px">
+      <Box
+        position="absolute"
+        top={0}
+        left={0}
+        width={boxSize}
+        height={boxSize}
+      >
         {children}
       </Box>
 
       {/* Canvas for the mask */}
       <canvas
         ref={canvasRef}
-        width="200px"
-        height="200px"
+        width={boxSize}
+        height={boxSize}
         style={{
           position: "absolute",
           top: 0,
           left: 0,
-          width: "200px",
-          height: "200px",
+          width: boxSize,
+          height: boxSize,
         }}
       />
     </Box>
