@@ -42,7 +42,8 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
       return (
         <Box
           bg="bg.primary"
-          p={4}
+          p={2}
+          paddingTop={4}
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -106,16 +107,16 @@ export function Reveal({ foundItem, numFound, numRequired }: RevealProps) {
       </Box>
       <VStack
         position="absolute"
-        top="45%"
+        top="42%"
         left="50%"
         transform="translate(-50%, -50%)"
         width={"100%"}
         p={4}
-        spacing={8}
+        spacing={12}
       >
         {rewardComponent()}
 
-        <VStack alignItems="center" gap={0} width={"100%"}>
+        <VStack alignItems="center" gap={0} width={"100%"} pt={4}>
           <Heading
             as="h3"
             fontSize="5xl"

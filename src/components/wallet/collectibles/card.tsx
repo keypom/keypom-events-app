@@ -29,6 +29,7 @@ export function CollectibleCard({
       spacing={2}
       alignItems={"flex-start"}
       cursor={disabled ? "not-allowed" : "pointer"}
+      maxW="210px"
     >
       <Box
         width="100%"
@@ -81,8 +82,15 @@ export function CollectibleCard({
           />
         )}
       </Box>
-      <VStack alignItems="flex-start" gap={0}>
-        <Heading as="h3" fontSize="sm" fontFamily={"mono"} color="white">
+      <VStack alignItems="flex-start" gap={0} width="100%">
+        <Heading
+          as="h3"
+          fontSize="sm"
+          fontFamily={"mono"}
+          color="white"
+          noOfLines={2} // Truncate long titles to one line
+          width="100%"
+        >
           {title}
         </Heading>
         <Text color="brand.400" fontSize="10px" fontWeight={700}>

@@ -24,45 +24,82 @@ export const fetchAgenda: () => Promise<Agenda> = async () => {
     args: {},
   });
   const agendaData = JSON.parse(stringifiedAgenda);
+  console.log(agendaData);
 
+  // Update the filtering condition with new field names
   const filteredAgendaData = agendaData.filter(
     (item) =>
-      item.Date &&
-      item["Duration (minutes)"] &&
-      item["Talk Title"] &&
-      item.Presenter &&
-      item.Stage &&
+      item["⚙️ Start Time"] &&
+      item["⚙️ End Time"] &&
+      item["Session Name"] && // Ensure this field is included in your Airtable query
+      item["Confirmed Speakers"] &&
+      item.Location &&
       item.Description &&
-      item["Talk Type"] &&
-      item.Tags,
+      item.Format &&
+      item.Topic,
   );
+  console.log(filteredAgendaData);
 
   const events: AgendaItem[] = filteredAgendaData.map((item, index) => {
-    const durationMinutes = Number(item["Duration (minutes)"]) || 0;
+    // Parse start and end times
+    const startDate = new Date(item["⚙️ Start Time"]); // ISO string in UTC
+    const endDate = new Date(item["⚙️ End Time"]); // ISO string in UTC
 
-    // Parse date string as UTC
-    const startDate = new Date(item.Date); // ISO string in UTC
-    const endDate = new Date(startDate.getTime() + durationMinutes * 60000);
-
-    // Parse tags
+    // Parse tags (Topic)
     let tags: string[] = [];
-    if (Array.isArray(item.Tags)) {
-      tags = item.Tags.map((tag) => tag.trim());
-    } else if (typeof item.Tags === "string") {
-      tags = item.Tags.split(",").map((tag) => tag.trim());
+    if (Array.isArray(item.Topic)) {
+      tags = item.Topic.map((tag) => tag.trim());
+    } else if (typeof item.Topic === "string") {
+      tags = item.Topic.split(",").map((tag) => tag.trim());
     }
+
+    // Parse Confirmed Speakers
+    let speakerNames: string[] = [];
+    if (Array.isArray(item["Confirmed Speakers"])) {
+      speakerNames = item["Confirmed Speakers"];
+    } else if (typeof item["Confirmed Speakers"] === "string") {
+      speakerNames = item["Confirmed Speakers"].split(",").map((s) => s.trim());
+    }
+
+    const speakerNamesFormatted = speakerNames.map((name) =>
+      name.split("-")[0].trim(),
+    );
+
+    // Parse Confirmed Moderators
+    let moderatorNames: string[] = [];
+    if (Array.isArray(item["Confirmed Moderators"])) {
+      moderatorNames = item["Confirmed Moderators"];
+    } else if (typeof item["Confirmed Moderators"] === "string") {
+      moderatorNames = item["Confirmed Moderators"]
+        .split(",")
+        .map((s) => s.trim());
+    }
+
+    // Append '(moderator)' to moderator names
+    const moderatorNamesFormatted = moderatorNames.map(
+      (name) => `${name.split("-")[0].trim()} (moderator)`,
+    );
+
+    // Combine speakers and moderators
+    const presentersList = [
+      ...speakerNamesFormatted,
+      ...moderatorNamesFormatted,
+    ];
+
+    // Join the names with comma and space
+    const presenter = presentersList.join(", ");
 
     return {
       id: index + 1,
-      title: item["Talk Title"] || "",
-      presenter: item.Presenter || "",
-      stage: item.Stage || "",
+      title: item["Session Name"] || "",
+      presenter: presenter,
+      stage: item.Location || "",
       description: item.Description || "",
       reminder: item.Reminder === true,
-      talkType: item["Talk Type"] || "",
+      talkType: item.Format || "",
       tags: tags,
       startDate: startDate, // Already in UTC
-      endDate: endDate, // Calculated in UTC
+      endDate: endDate, // Already in UTC
     };
   });
 
