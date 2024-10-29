@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { VStack, Text, Heading, Flex, Button } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
 
 import { ArrowIcon } from "@/components/icons";
 import { Alert } from "@/lib/api/alerts";
@@ -111,8 +110,10 @@ export function AlertItem({
       {href && linkTitle && (
         <Button
           variant="outline"
-          as={Link}
-          to={href}
+          as="a" // Change to "a" instead of "Link"
+          href={href}
+          target="_blank" // Opens link in a new tab
+          rel="noopener noreferrer" // For security
           flexDirection="row"
           padding="4px 8px"
         >

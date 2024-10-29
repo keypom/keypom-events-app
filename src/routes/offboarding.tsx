@@ -44,7 +44,7 @@ export default function OffboardingPage() {
       <Text
         textAlign={"center"}
         fontSize={"xs"}
-        pt={{ base: 2, iphone13: 2, iphone14ProMax: 4 }}
+        pt={{ base: 2, iphone13: 2, md: 4 }}
       >
         You can now reclaim the assets you’ve collected throughout the
         conference. All SOV will be burnt.

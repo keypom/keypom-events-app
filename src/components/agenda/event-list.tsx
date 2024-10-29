@@ -1,12 +1,22 @@
-// EventList.tsx
+// components/agenda/EventList.tsx
 
-import { AgendaCard } from "@/components/agenda/card";
 import { AgendaItem } from "@/lib/api/agendas";
 import { groupAndSortEvents } from "@/lib/helpers/agenda";
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import React from "react";
+import { AgendaCard } from "./card";
 
-export function EventList({ events }: { events: AgendaItem[] }) {
+interface EventListProps {
+  events: AgendaItem[];
+  favouritedEvents: Set<number>;
+  onToggleFavourite: (id: number) => void;
+}
+
+export function EventList({
+  events,
+  favouritedEvents,
+  onToggleFavourite,
+}: EventListProps) {
   // Group events by start date in local time
   const sortedGroupedEvents = groupAndSortEvents(events);
 
@@ -74,7 +84,12 @@ export function EventList({ events }: { events: AgendaItem[] }) {
                   </VStack>
                   <VStack flexGrow={1} gap={8}>
                     {timeEvents.map((event, index) => (
-                      <AgendaCard key={`${event.title}-${index}`} {...event} />
+                      <AgendaCard
+                        key={`${event.title}-${index}`}
+                        {...event}
+                        isFavourited={favouritedEvents.has(event.id)}
+                        onToggleFavourite={onToggleFavourite}
+                      />
                     ))}
                   </VStack>
                 </Flex>

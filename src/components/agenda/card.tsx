@@ -1,20 +1,46 @@
-// AgendaCard.tsx
+// components/agenda/AgendaCard.tsx
 
 import { AgendaItem } from "@/lib/api/agendas";
 import { useAddToCalendar } from "@/stores/add-to-calendar";
 import { Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import { CalenderAddIcon } from "../icons";
 import { useState } from "react";
+import { FavouriteIcon } from "../icons/favourite-icon";
 
-export function AgendaCard(event: AgendaItem) {
-  const { title, stage, description, presenter } = event;
+interface AgendaCardProps extends AgendaItem {
+  isFavourited: boolean;
+  onToggleFavourite: (id: number) => void;
+}
+
+export function AgendaCard({
+  id,
+  title,
+  stage,
+  description,
+  presenter,
+  isFavourited,
+  onToggleFavourite,
+  ...event
+}: AgendaCardProps) {
   const { onOpen, setEvent } = useAddToCalendar();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCalendarClick = () => {
+    // Pass the entire event object with all necessary properties
     onOpen();
-    setEvent(event);
+    setEvent({
+      id,
+      title,
+      stage,
+      description,
+      presenter,
+      reminder: event.reminder,
+      talkType: event.talkType,
+      tags: event.tags,
+      startDate: event.startDate,
+      endDate: event.endDate,
+    });
   };
 
   const maxChars = 150;
@@ -25,6 +51,10 @@ export function AgendaCard(event: AgendaItem) {
     shouldTruncate && !isExpanded
       ? description.slice(0, maxChars) + "..."
       : description;
+
+  const handleFavouriteClick = () => {
+    onToggleFavourite(id);
+  };
 
   return (
     <VStack width={"100%"} alignItems={"flex-start"} gap={2}>
@@ -48,13 +78,23 @@ export function AgendaCard(event: AgendaItem) {
             {presenter}
           </Heading>
         </VStack>
-        <Button variant={"transparent"} onClick={handleCalendarClick}>
-          <CalenderAddIcon
-            width={24}
-            height={24}
-            color={"var(--chakra-colors-brand-400)"}
-          />
-        </Button>
+        <Flex direction="column" alignItems="center" gap={0} mt={-2}>
+          <Button variant={"transparent"} onClick={handleFavouriteClick}>
+            <FavouriteIcon
+              isFavourited={isFavourited}
+              width={6}
+              height={6}
+              color={"var(--chakra-colors-brand-400)"}
+            />
+          </Button>
+          <Button variant={"transparent"} onClick={handleCalendarClick}>
+            <CalenderAddIcon
+              width={24}
+              height={24}
+              color={"var(--chakra-colors-brand-400)"}
+            />
+          </Button>
+        </Flex>
       </Flex>
       <VStack alignItems="flex-start" spacing={0}>
         <Text color={"brand.600"} fontSize={"xs"}>

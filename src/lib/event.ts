@@ -307,7 +307,7 @@ class EventJS {
         };
         const pinnedMetadata = await pinJsonToIpfs(imageMetadata);
         console.log("createDrop: ", createdDrop);
-        let chain_id = getChainIdFromId(createdDrop.chain);
+        const chain_id = getChainIdFromId(createdDrop.chain);
 
         const seriesResult = await fetch(
           `${MULTICHAIN_WORKER_URL}/create-series`,
@@ -323,6 +323,10 @@ class EventJS {
             }),
           },
         );
+
+        if (!seriesResult.ok) {
+          throw new Error("Access denied. Contact  an admin for more details");
+        }
 
         const { contract_id, series_id } = await seriesResult.json();
 

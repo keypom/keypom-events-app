@@ -143,13 +143,16 @@ export default function Collectibles() {
 
   const handleTabChange = (newTab: "found" | "explore") => {
     setCurTab(newTab);
-    setSearchParams({ tab: newTab, page: "1" });
+    setSearchParams({ tab: newTab, page: "1" }, { replace: true });
     if (newTab === "found") setFoundPage(1);
     else setExplorePage(1);
   };
 
   const handlePageChange = (newPage: number) => {
-    setSearchParams({ tab: curTab, page: newPage.toString() });
+    setSearchParams(
+      { tab: curTab, page: newPage.toString() },
+      { replace: true },
+    );
     if (curTab === "found") setFoundPage(newPage);
     else setExplorePage(newPage);
   };
@@ -157,7 +160,7 @@ export default function Collectibles() {
   useEffect(() => {
     // Sync the `page` and `tab` state with the URL parameters when they change
     const page = curTab === "found" ? foundPage : explorePage;
-    setSearchParams({ tab: curTab, page: page.toString() });
+    setSearchParams({ tab: curTab, page: page.toString() }, { replace: true });
   }, [curTab, foundPage, explorePage, setSearchParams]);
 
   return (

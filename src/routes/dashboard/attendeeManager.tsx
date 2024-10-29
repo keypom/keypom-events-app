@@ -137,9 +137,18 @@ export function AttendeeManager() {
       navigate("/me/admin");
       setIsLoading(false);
     }
-  }, [setAdminUser]);
+  }, [setAdminUser, navigate]);
 
-  // Function to fetch attendee data
+  // Function to chunk an array into batches
+  function chunkArray(array, size) {
+    const result: any = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  }
+
+  // Fetch attendee data with batching
   const fetchAttendeeData = useCallback(
     async (idToken) => {
       try {
@@ -160,7 +169,6 @@ export function AttendeeManager() {
 
         const data = await response.json();
         console.log("Data: ", data);
-        // Check if data.attendees is an array before calling map
         const attendees = data.attendees;
 
         if (!Array.isArray(attendees)) {
@@ -169,45 +177,58 @@ export function AttendeeManager() {
           );
         }
 
-        // Process attendee data in parallel using Promise.all
-        const updatedAttendees = await Promise.all(
-          attendees.map(async (attendee) => {
-            const pubKey = attendee["Conference Public Key"];
-            if (!pubKey) {
-              return {
-                ...attendee,
-                "NEAR Account": undefined,
-                "Scanned In": false,
-              };
-            }
+        // Initialize updatedAttendees with attendees having default values
+        const updatedAttendees = attendees.map((attendee) => ({
+          ...attendee,
+          "NEAR Account": undefined,
+          "Scanned In": false,
+        }));
 
-            // Make the view call for each attendee
-            const attendeeInfo = await eventHelperInstance.viewCall({
-              methodName: "get_key_information",
-              args: {
-                key: pubKey,
-              },
-            });
+        // Map public keys to their indices in updatedAttendees
+        const publicKeyToIndexMap = {};
+        const publicKeys: string[] = [];
 
-            if (!attendeeInfo || !attendeeInfo.account_id) {
-              return {
-                ...attendee,
-                "NEAR Account": undefined,
-                "Scanned In": false,
-              };
-            }
+        updatedAttendees.forEach((attendee, index) => {
+          const pubKey = attendee["Conference Public Key"];
+          if (pubKey) {
+            publicKeyToIndexMap[pubKey] = index;
+            publicKeys.push(pubKey);
+          }
+        });
 
-            // Return the updated attendee information
-            return {
-              ...attendee,
-              "NEAR Account": attendeeInfo.account_id
+        // Split public keys into batches of up to 50
+        const batches = chunkArray(publicKeys, 50);
+
+        for (let i = 0; i < batches.length; i++) {
+          const batch = batches[i];
+
+          // Wait for 100ms between each batch
+          if (i > 0) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          }
+
+          // Make the batch view call
+          const attendeesInfo = await eventHelperInstance.viewCall({
+            methodName: "get_keys_information",
+            args: {
+              public_keys: batch,
+            },
+          });
+
+          // Process the results
+          attendeesInfo.forEach((attendeeInfo, index) => {
+            const pubKey = batch[index];
+            const attendeeIndex = publicKeyToIndexMap[pubKey];
+            const attendee = updatedAttendees[attendeeIndex];
+
+            if (attendeeInfo && attendeeInfo.account_id) {
+              attendee["NEAR Account"] = attendeeInfo.account_id
                 .split(".")[0]
-                .substring(KEYPOM_TOKEN_FACTORY_CONTRACT),
-
-              "Scanned In": attendeeInfo.has_scanned,
-            };
-          }),
-        );
+                .substring(KEYPOM_TOKEN_FACTORY_CONTRACT);
+              attendee["Scanned In"] = attendeeInfo.has_scanned;
+            }
+          });
+        }
 
         setAttendees(updatedAttendees);
         setFilteredAttendees(updatedAttendees); // Initialize filtered data
@@ -499,7 +520,7 @@ const AttendeeTable = ({
       sortable: true,
     },
     {
-      id: "sendTokens",
+      id: "action1",
       title: "Send Tokens",
       selector: (row) => {
         const nearAccount = row["NEAR Account"];
@@ -584,12 +605,12 @@ const AttendeeTable = ({
   return (
     <DataTable
       columns={columns}
+      stackedActionCols={[]}
+      excludedMobileCols={[]}
       data={data}
-      excludeMobileColumns={[]}
       loading={isLoading}
       showColumns={true}
       type="event-attendees"
-      showMobileTitles={["scannedIn"]}
     />
   );
 };

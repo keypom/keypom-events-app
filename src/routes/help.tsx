@@ -1,4 +1,4 @@
-import { Box, VStack, Text, Button } from "@chakra-ui/react";
+import { VStack, Button, Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 import { PageHeading } from "@/components/ui/page-heading";
@@ -8,28 +8,13 @@ export default function Help() {
   return (
     <VStack p={4} spacing={4}>
       <PageHeading title="Help" />
-      <Box
-        bg="bg.primary"
-        width="100%"
-        aspectRatio={"1/1.025"}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        borderRadius="md"
-        border="2px solid var(--chakra-colors-brand-400)"
-      >
-        <Text
-          fontFamily="mono"
-          color="brand.400"
-          textAlign="center"
-          fontSize="lg"
-          fontWeight="bold"
-        >
-          Map of Venue
-          <br />
-          highlighting help desk
-        </Text>
-      </Box>
+      <Image
+        src="/assets/venue_map4x.png"
+        alt="Help"
+        width={{ base: "393px", md: "450px", lg: "500px" }} // Adjust sizes for each breakpoint
+        height={{ base: "298px", md: "340px", lg: "375px" }}
+        objectFit="cover"
+      />
       <Button
         as={Link}
         to={CONTACT_BUTTON.href}

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { Spinner } from "../ui/spinner";
 import { useEffect, useState, useRef } from "react";
 
-const DEFAULT_ALERT: Alert = {
+export const DEFAULT_ALERT: Alert = {
   id: 0,
   title: "No alerts currently",
   description: "Enjoy REDACTED and check back later!",

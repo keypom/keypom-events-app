@@ -28,7 +28,7 @@ export const NameInput = ({
       sx={{
         "::placeholder": {
           color: "gray.500",
-          fontSize: { base: "xs", md: "sm" },
+          fontSize: { base: "16px", md: "sm" },
           fontFamily: "mono",
         },
       }}

@@ -34,7 +34,7 @@ export function JourneyCard({
         <TokenScavRewardImage
           tokenAmount={tokenReward}
           bgColor="gray.200"
-          tokenFontSize="40px"
+          tokenFontSize="35px"
           labelFontSize="16px"
           tokenColor="black"
           labelColor="black"

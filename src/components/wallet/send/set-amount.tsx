@@ -38,7 +38,7 @@ export function SetAmount({
           step="0.01"
           autoFocus
           onChange={(e) => setAmount(parseFloat(e.target.value))}
-          placeholder="789.56"
+          placeholder="42.00"
           _placeholder={{
             color: "black",
             opacity: 0.5,
