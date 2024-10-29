@@ -8,8 +8,9 @@ import {
   Flex,
   Text,
   HStack,
+  Progress, // Import the Progress component from Chakra UI
 } from "@chakra-ui/react";
-import Select from "react-select"; // Import from react-select
+import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { DataTable } from "@/components/dashboard/table";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
@@ -18,7 +19,7 @@ import {
   AIRTABLE_WORKER_URL,
   KEYPOM_TOKEN_FACTORY_CONTRACT,
 } from "@/constants/common";
-import chroma from "chroma-js"; // To handle color manipulation
+import chroma from "chroma-js";
 import { colors } from "@/theme/colors";
 import { truncateAddress } from "@/utils/truncateAddress";
 import eventHelperInstance from "@/lib/event";
@@ -40,6 +41,7 @@ interface AttendeeData {
   "Conference Public Key": string;
   "By submitting this form, I acknowledge that I have read and agree to the Privacy Policy. I consent to the collection, use, and disclosure of my personal information in accordance with the policy.";
   "Last Modified": string;
+  "Scanned In": boolean;
 }
 
 const pageSizeOptions = [
@@ -49,12 +51,12 @@ const pageSizeOptions = [
 ];
 
 const animatedComponents = makeAnimated();
+
 // Custom color styles for react-select
 const colourStyles = {
   control: (styles) => ({
     ...styles,
     backgroundColor: "transparent",
-    // Make placeholder text the same color as the main text
     borderColor: colors.brand[400],
     color: "white",
     ":hover": {
@@ -63,11 +65,11 @@ const colourStyles = {
   }),
   singleValue: (styles) => ({
     ...styles,
-    color: "white", // Ensure the selected value displays in white
+    color: "white",
   }),
   placeholder: (styles) => ({
     ...styles,
-    color: "white", // Set the placeholder text color to white
+    color: "white",
   }),
   option: (styles, { isFocused, isSelected }) => {
     const color = chroma(colors.brand[400]);
@@ -120,12 +122,18 @@ export function AttendeeManager() {
     [],
   );
   const [searchQuery, setSearchQuery] = useState("");
-  const [attendeeTypeFilter, setAttendeeTypeFilter] = useState<string[]>([]); // Allow for multiple selections
+  const [attendeeTypeFilter, setAttendeeTypeFilter] = useState<string[]>([]);
 
-  const [curPage, setCurPage] = useState(0); // Add current page state
-  const [pageSize, setPageSize] = useState(10); // Add page size state
-  const [numPages, setNumPages] = useState(0); // Add total number of pages
+  const [curPage, setCurPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [numPages, setNumPages] = useState(0);
   const toast = useToast();
+
+  // Progress tracking state variables
+  const [progress, setProgress] = useState(0);
+  const [isFetchingAttendees, setIsFetchingAttendees] = useState(true);
+  const [totalBatches, setTotalBatches] = useState(0);
+  const [currentBatch, setCurrentBatch] = useState(0);
 
   // Step 1: retrieve admin token from google login
   useEffect(() => {
@@ -148,10 +156,14 @@ export function AttendeeManager() {
     return result;
   }
 
-  // Fetch attendee data with batching
+  // Fetch attendee data with batching and progress tracking
   const fetchAttendeeData = useCallback(
     async (idToken) => {
       try {
+        setProgress(0);
+        setIsFetchingAttendees(true);
+
+        // Fetch the attendee list from Airtable
         const response = await fetch(`${AIRTABLE_WORKER_URL}/fetch-attendees`, {
           method: "GET",
           headers: {
@@ -177,6 +189,9 @@ export function AttendeeManager() {
           );
         }
 
+        // Update progress after fetching attendees list
+        setProgress(10);
+
         // Initialize updatedAttendees with attendees having default values
         const updatedAttendees = attendees.map((attendee) => ({
           ...attendee,
@@ -184,11 +199,17 @@ export function AttendeeManager() {
           "Scanned In": false,
         }));
 
-        // Map public keys to their indices in updatedAttendees
+        const filteredAttendees = updatedAttendees.filter(
+          (attendee) =>
+            (attendee["Conference Public Key"] || "") !== "ed25519:INVALID" &&
+            (attendee["Ticket Sent"] || "").split(" ").length === 1,
+        );
+
+        // Map public keys to their indices in filteredAttendees
         const publicKeyToIndexMap = {};
         const publicKeys: string[] = [];
 
-        updatedAttendees.forEach((attendee, index) => {
+        filteredAttendees.forEach((attendee, index) => {
           const pubKey = attendee["Conference Public Key"];
           if (pubKey) {
             publicKeyToIndexMap[pubKey] = index;
@@ -198,6 +219,7 @@ export function AttendeeManager() {
 
         // Split public keys into batches of up to 50
         const batches = chunkArray(publicKeys, 50);
+        setTotalBatches(batches.length);
 
         for (let i = 0; i < batches.length; i++) {
           const batch = batches[i];
@@ -208,35 +230,47 @@ export function AttendeeManager() {
           }
 
           // Make the batch view call
-          const attendeesInfo = await eventHelperInstance.viewCall({
-            methodName: "get_keys_information",
-            args: {
-              public_keys: batch,
-            },
-          });
+          try {
+            const attendeesInfo = await eventHelperInstance.viewCall({
+              methodName: "get_keys_information",
+              args: {
+                public_keys: batch,
+              },
+            });
+            // Process the results
+            attendeesInfo.forEach((attendeeInfo, index) => {
+              const pubKey = batch[index];
+              const attendeeIndex = publicKeyToIndexMap[pubKey];
+              const attendee = filteredAttendees[attendeeIndex];
 
-          // Process the results
-          attendeesInfo.forEach((attendeeInfo, index) => {
-            const pubKey = batch[index];
-            const attendeeIndex = publicKeyToIndexMap[pubKey];
-            const attendee = updatedAttendees[attendeeIndex];
+              if (attendeeInfo && attendeeInfo.account_id) {
+                attendee["NEAR Account"] = attendeeInfo.account_id
+                  .split(".")[0]
+                  .substring(KEYPOM_TOKEN_FACTORY_CONTRACT.length + 1);
+                attendee["Scanned In"] = attendeeInfo.has_scanned;
+              }
+            });
 
-            if (attendeeInfo && attendeeInfo.account_id) {
-              attendee["NEAR Account"] = attendeeInfo.account_id
-                .split(".")[0]
-                .substring(KEYPOM_TOKEN_FACTORY_CONTRACT);
-              attendee["Scanned In"] = attendeeInfo.has_scanned;
-            }
-          });
+            // Update progress after each batch
+            setCurrentBatch(i + 1);
+            const progressPercent = 10 + ((i + 1) / batches.length) * 90; // Remaining 90% of progress
+            setProgress(progressPercent);
+          } catch (error: any) {
+            console.error("Error fetching attendee info:", error);
+            console.log("BATCH: ", batch);
+          }
         }
 
-        setAttendees(updatedAttendees);
-        setFilteredAttendees(updatedAttendees); // Initialize filtered data
+        setAttendees(filteredAttendees);
+        setFilteredAttendees(filteredAttendees); // Initialize filtered data
         setIsLoading(false);
+        setIsFetchingAttendees(false);
+        setProgress(100); // Set progress to 100% when done
       } catch (error: any) {
         console.error("Error fetching attendees:", error);
         setIsErr(true);
         setIsLoading(false);
+        setIsFetchingAttendees(false);
         toast({
           title: error.message,
           status: "error",
@@ -254,7 +288,7 @@ export function AttendeeManager() {
       setIsErr(true);
       setIsLoading(false);
       toast({
-        title: "unauthorized",
+        title: "Unauthorized",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -264,7 +298,7 @@ export function AttendeeManager() {
     if (adminUser) {
       fetchAttendeeData(adminUser.idToken);
     }
-  }, [adminUser, fetchAttendeeData, isAdmin]);
+  }, [adminUser, fetchAttendeeData, isAdmin, toast]);
 
   // Create the unique attendee types only when the attendees array changes
   useEffect(() => {
@@ -275,7 +309,7 @@ export function AttendeeManager() {
     );
 
     setUniqueAttendeeTypes(uniqueTypes); // Save unique types for the dropdown
-  }, [attendees]); // Only rerun this effect when `attendees` changes
+  }, [attendees]);
 
   // Apply filtering logic across all attendees (before pagination)
   useEffect(() => {
@@ -309,7 +343,6 @@ export function AttendeeManager() {
           ),
       );
     }
-    console.log("Filtered attendees: ", filtered);
 
     // Update filtered attendees and reset pagination
     setFilteredAttendees(filtered);
@@ -349,73 +382,91 @@ export function AttendeeManager() {
   return (
     <Box px={8} py={4}>
       <PageHeading title={`Admin Dashboard`} titleSize="24px" showBackButton />
-      <Flex my={4} flexWrap="wrap" gap={4} justifyContent="space-between">
-        <HStack spacing={4}>
-          <Input
-            placeholder="Search name or username"
-            _placeholder={{ color: "white" }}
-            borderColor="brand.400"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            width="300px"
+      {isFetchingAttendees && (
+        <Box my={4}>
+          <Text mb={2}>
+            {currentBatch === 0
+              ? "Fetching attendees..."
+              : `Getting batch info for ${currentBatch} of ${totalBatches}`}
+          </Text>
+          <Progress
+            hasStripe
+            isAnimated
+            value={progress}
+            colorScheme="teal"
+            size="md"
+            borderRadius="md"
           />
-          <Select
-            isMulti
-            components={animatedComponents}
-            options={typeOptions}
-            styles={colourStyles}
-            placeholder="Filter by attendee type"
-            onChange={(selectedOptions: any) => {
-              const values = selectedOptions.map((option) => option.value);
-              setAttendeeTypeFilter(values);
-            }}
-          />
-        </HStack>
-        <HStack ml="auto">
-          {" "}
-          {/* Pushes this HStack to the far right */}
-          <Text mr={2}>Rows per page:</Text>
-          <Select
-            defaultValue={pageSizeOptions.find(
-              (option) => option.value === pageSize,
-            )}
-            options={pageSizeOptions}
-            onChange={(selectedOption) =>
-              handlePageSizeChange(selectedOption?.value)
-            }
-            placeholder="Rows per page"
-            styles={colourStyles}
-          />
-        </HStack>
-      </Flex>
+        </Box>
+      )}
+      <>
+        <Flex my={4} flexWrap="wrap" gap={4} justifyContent="space-between">
+          <HStack spacing={4}>
+            <Input
+              placeholder="Search name or username"
+              _placeholder={{ color: "white" }}
+              borderColor="brand.400"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              width="300px"
+            />
+            <Select
+              isMulti
+              components={animatedComponents}
+              options={typeOptions}
+              styles={colourStyles}
+              placeholder="Filter by attendee type"
+              onChange={(selectedOptions: any) => {
+                const values = selectedOptions.map((option) => option.value);
+                setAttendeeTypeFilter(values);
+              }}
+            />
+          </HStack>
+          <HStack ml="auto">
+            <Text mr={2}>Rows per page:</Text>
+            <Select
+              defaultValue={pageSizeOptions.find(
+                (option) => option.value === pageSize,
+              )}
+              options={pageSizeOptions}
+              onChange={(selectedOption) =>
+                handlePageSizeChange(selectedOption?.value)
+              }
+              placeholder="Rows per page"
+              styles={colourStyles}
+            />
+          </HStack>
+        </Flex>
 
-      {/* Data Table */}
-      <AttendeeTable
-        attendees={filteredAttendees}
-        adminKey={adminKey}
-        isLoading={isLoading}
-        curPage={curPage}
-        pageSize={pageSize}
-      />
+        {/* Data Table */}
+        <AttendeeTable
+          attendees={filteredAttendees}
+          adminKey={adminKey}
+          isLoading={isLoading}
+          curPage={curPage}
+          pageSize={pageSize}
+        />
 
-      {/* Pagination Controls */}
-      <Flex justify="space-between" alignItems="center" mt={4}>
-        <Button onClick={handlePrevPage} isDisabled={curPage === 0}>
-          Previous
-        </Button>
-        <Text>
-          Page {curPage + 1} of {numPages}
-        </Text>
-        <Button onClick={handleNextPage} isDisabled={curPage + 1 === numPages}>
-          Next
-        </Button>
-      </Flex>
-
-      {/* Page Size Selector */}
-      <Flex mt={4} justify="flex-end"></Flex>
+        {/* Pagination Controls */}
+        <Flex justify="space-between" alignItems="center" mt={4}>
+          <Button onClick={handlePrevPage} isDisabled={curPage === 0}>
+            Previous
+          </Button>
+          <Text>
+            Page {curPage + 1} of {numPages}
+          </Text>
+          <Button
+            onClick={handleNextPage}
+            isDisabled={curPage + 1 === numPages}
+          >
+            Next
+          </Button>
+        </Flex>
+      </>
     </Box>
   );
 }
+
 const AttendeeTable = ({
   attendees,
   isLoading,
@@ -423,14 +474,14 @@ const AttendeeTable = ({
   pageSize,
   adminKey,
 }) => {
-  const [sendingTo, setSendingTo] = useState<string | null>(null); // Track which user is being sent tokens
+  const [sendingTo, setSendingTo] = useState<string | null>(null);
   const [tokenAmounts, setTokenAmounts] = useState<{ [key: string]: string }>(
     {},
-  ); // Track token amounts per attendee, store as strings to handle decimals
-  const toast = useToast(); // Initialize the toast for notifications
+  );
+  const toast = useToast();
 
   const handleSendTokens = async (attendeeId: string) => {
-    setSendingTo(attendeeId); // Set the attendee as the one being sent tokens
+    setSendingTo(attendeeId);
     try {
       const tokenAmount = parseFloat(tokenAmounts[attendeeId] || "0");
 
@@ -476,7 +527,7 @@ const AttendeeTable = ({
         isClosable: true,
       });
 
-      setSendingTo(null); // Reset the state in case of error
+      setSendingTo(null);
     }
   };
 
@@ -525,13 +576,12 @@ const AttendeeTable = ({
       selector: (row) => {
         const nearAccount = row["NEAR Account"];
         const isNearAccountValid = nearAccount && nearAccount !== "TBD";
-        const isCurrentSending = sendingTo === row["NEAR Account"]; // Check if this row is the one being sent tokens
+        const isCurrentSending = sendingTo === row["NEAR Account"];
 
         return (
           <HStack>
             {isCurrentSending ? (
               <>
-                {/* Show spinner and Sending... message */}
                 <Text>Sending...</Text>
                 <Spinner size="sm" />
               </>
@@ -539,7 +589,6 @@ const AttendeeTable = ({
               <>
                 {tokenAmounts[row["NEAR Account"]] !== undefined ? (
                   <>
-                    {/* Token input field */}
                     <Input
                       size="sm"
                       width="80px"
@@ -550,9 +599,8 @@ const AttendeeTable = ({
                       }
                       isDisabled={
                         sendingTo !== null && sendingTo !== row["NEAR Account"]
-                      } // Disable if sending to another user
+                      }
                     />
-                    {/* Confirm button */}
                     <Button
                       size="sm"
                       onClick={() => handleSendTokens(row["NEAR Account"])}
@@ -561,7 +609,7 @@ const AttendeeTable = ({
                         sendingTo !== null ||
                         parseFloat(tokenAmounts[row["NEAR Account"]] || "0") <=
                           0
-                      } // Disable if invalid NEAR Account or if sending to someone else or token amount is invalid
+                      }
                     >
                       ✔️
                     </Button>
@@ -575,7 +623,7 @@ const AttendeeTable = ({
                         [row["NEAR Account"]]: "0",
                       })
                     }
-                    isDisabled={!isNearAccountValid || sendingTo !== null} // Disable if invalid NEAR Account or sending to another user
+                    isDisabled={!isNearAccountValid || sendingTo !== null}
                   >
                     Send Tokens
                   </Button>
