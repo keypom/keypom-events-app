@@ -12,8 +12,8 @@ interface HiddenProps {
 }
 
 export function Hidden({ foundItem, onReveal }: HiddenProps) {
-  const numFound = foundItem.found_scavenger_ids?.length || 1;
-  const numRequired = foundItem.needed_scavenger_ids?.length || 1;
+  const numFound = foundItem.found_scavenger_ids?.length;
+  const numRequired = foundItem.needed_scavenger_ids?.length;
 
   const isNFT = foundItem.type !== "token";
   const rewardMessage = () => {
@@ -21,7 +21,11 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
       return "You found a Piece";
     }
 
-    if (numFound !== undefined && numRequired !== undefined) {
+    if (
+      numFound !== undefined &&
+      numRequired !== undefined &&
+      numFound === numRequired
+    ) {
       return "You found the pieces";
     }
 

@@ -6,8 +6,13 @@ import { LoadingBox } from "@/components/ui/loading-box";
 import { PageHeading } from "@/components/ui/page-heading";
 import { Alert, fetchAlerts } from "@/lib/api/alerts";
 import { useQuery } from "@tanstack/react-query";
+import { DEFAULT_ALERT } from "@/components/alerts/latest-alert";
 
 function AlertList({ alerts }) {
+  if (alerts.length === 0) {
+    alerts = [DEFAULT_ALERT];
+  }
+
   return (
     <VStack width="100%" spacing={4}>
       {alerts.map((alert: Alert) => (

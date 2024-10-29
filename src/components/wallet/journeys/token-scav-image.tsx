@@ -32,6 +32,7 @@ export const TokenScavRewardImage = ({
     const scalingFactor = 0.75;
     const newFontSize = numericBoxWidth / (tokenLength * scalingFactor);
     const fontSize = Math.max(12, Math.min(newFontSize, 108));
+    console.log({ fontSize });
     setResponsiveFontSize(`${fontSize}px`);
   }, [boxWidth, tokenAmount]);
 

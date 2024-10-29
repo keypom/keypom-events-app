@@ -113,7 +113,7 @@ export default function Agenda() {
 
   // Filter states
   const [showFilterByDay, setShowFilterByDay] = useState(true);
-  const [showFilterByStage, setShowFilterByStage] = useState(true);
+  const [showFilterByStage, setShowFilterByStage] = useState(false);
   const [showFilterByTags, setShowFilterByTags] = useState(false);
 
   const [selectedDays, setSelectedDays] = useState<string[]>([]);

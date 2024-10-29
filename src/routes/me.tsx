@@ -6,12 +6,22 @@ import { WalletActions } from "@/components/wallet/wallet-actions";
 import { useAccountData } from "@/hooks/useAccountData";
 import { useEventCredentials } from "@/stores/event-credentials";
 
+const formatUserName = (name: string) => {
+  if (name.length > 10) {
+    const tryFirstName = name.split(" ")[0];
+    if (tryFirstName.length > 13) {
+      return tryFirstName.slice(0, 10).trimEnd() + "...";
+    }
+    return tryFirstName;
+  }
+  return name;
+};
+
 export default function Me() {
   const { userData } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
 
   const displayName = isLoading || isError ? "------" : data?.displayAccountId;
-  console.log("display name: ", data?.accountId);
 
   if (isError) {
     console.error("Error loading account data: ", error);
@@ -20,7 +30,7 @@ export default function Me() {
   return (
     <VStack spacing={4} pt={4}>
       <PageHeading
-        title={`Welcome ${userData.name}`}
+        title={`Welcome ${formatUserName(userData.name)}`}
         titleSize="24px"
         description={`Username: @${displayName}`}
       />
