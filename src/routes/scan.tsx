@@ -146,7 +146,7 @@ export default function Scan() {
             <QrScanner
               handleScan={handleScan}
               scanStatus={scanStatus}
-              allowMultiple={false}
+              allowMultiple={true}
               scanDelay={3000}
             />
           </Box>

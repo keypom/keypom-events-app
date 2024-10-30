@@ -28,18 +28,18 @@ const defaultDrop = {
 };
 const defaultScavengerHunt = [
   {
-    piece: `Piece 1`,
+    piece: `Step 1`,
     description: "",
   },
   {
-    piece: `Piece 2`,
+    piece: `Step 2`,
     description: "",
   },
 ];
 
 interface TokenCreateModalProps {
   existingDropNames: string[];
-  isAdmin: Boolean;
+  isAdmin: boolean;
 }
 
 export function TokenCreateModal({
@@ -77,7 +77,12 @@ export function TokenCreateModal({
     setErrors({});
     setCreatedDrop(defaultDrop);
     setIsScavengerHunt(false);
-    setScavengerPieces(defaultScavengerHunt);
+
+    // Dynamically generate default scavenger pieces with reset descriptions
+    setScavengerPieces([
+      { piece: `Step 1`, description: "" },
+      { piece: `Step 2`, description: "" },
+    ]);
   };
 
   const handleCreateDrop = async () => {
@@ -133,6 +138,7 @@ export function TokenCreateModal({
                   createdDrop={createdDrop}
                   setCreatedDrop={setCreatedDrop}
                   errors={errors}
+                  setErrors={setErrors} // Pass setErrors here
                 />
                 <DropTokenAmountSelector
                   currentDrop={createdDrop}

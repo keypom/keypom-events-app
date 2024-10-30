@@ -31,7 +31,7 @@ export const rewardMessage = (tx: TransactionType) => {
       return "Collectible";
     }
     if (tx.Claim.reward === "Scavenger Piece") {
-      return "Scavenger Piece";
+      return "Journey Step";
     }
     return eventHelperInstance.yoctoToNearWith2Decimals(tx.Claim.reward);
   }

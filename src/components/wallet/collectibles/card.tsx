@@ -93,9 +93,6 @@ export function CollectibleCard({
         >
           {title}
         </Heading>
-        <Text color="brand.400" fontSize="10px" fontWeight={700}>
-          {assetType}
-        </Text>
       </VStack>
     </VStack>
   );

@@ -37,8 +37,9 @@ const mapOwnedJourneyToJourney = (drop: ExtClaimedDrop): Journey => {
     title: drop.name,
     description: `${foundCount} of ${totalCount} found`, // Shows pieces found
     imageSrc: getIpfsImageSrcUrl(
-      drop.nft_metadata?.media || "", // Use media from nft_metadata for image
+      drop.nft_metadata?.media || drop.image, // Use media from nft_metadata for image
     ),
+    isDisabled: drop.creator_has_funds === false,
     tokenReward:
       drop.token_amount &&
       eventHelperInstance.yoctoToNearWithMinDecimals(drop.token_amount),
@@ -64,8 +65,9 @@ const mapUnownedJourneyToJourney = (drop: DropData): Journey => {
     title: drop.name,
     description: `0 of ${totalCount} found`, // No pieces found for unowned journeys
     imageSrc: getIpfsImageSrcUrl(
-      drop.image || "", // Use media from nft_metadata for image
+      drop.nft_metadata?.media || drop.image, // Use media from nft_metadata for image
     ),
+    isDisabled: drop.creator_has_funds === false,
     tokenReward:
       drop.token_amount &&
       eventHelperInstance.yoctoToNearWithMinDecimals(drop.token_amount),

@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useQRModalStore } from "@/stores/qr-modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 export function QRCodeModal() {
@@ -30,6 +30,12 @@ export function QRCodeModal() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const totalQrCodes = qrCodeUrls.length;
+
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentIndex(0);
+    }
+  }, [isOpen]);
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
@@ -101,7 +107,7 @@ export function QRCodeModal() {
               )}
               <Text fontFamily={"mono"} mt={4} mb={4}>
                 {totalQrCodes > 1
-                  ? "This is a scavenger hunt. Scan all QR codes to get the rewards."
+                  ? "This is a journey. Scan all QR codes to get the rewards."
                   : "Scan this QR code to get the rewards."}
               </Text>
             </Box>

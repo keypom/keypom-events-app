@@ -9,39 +9,50 @@ import { motion, useSpring, useTransform } from "framer-motion";
 interface HiddenProps {
   foundItem: ExtClaimedDrop;
   onReveal: () => void;
+  isActiveScavengerHunt: boolean;
+  numFound: number;
+  numRequired: number;
 }
 
-export function Hidden({ foundItem, onReveal }: HiddenProps) {
-  const numFound = foundItem.found_scavenger_ids?.length;
-  const numRequired = foundItem.needed_scavenger_ids?.length;
-
+export function Hidden({
+  foundItem,
+  onReveal,
+  isActiveScavengerHunt,
+  numFound,
+  numRequired,
+}: HiddenProps) {
   const isNFT = foundItem.type !== "token";
-  const rewardMessage = () => {
-    if (numFound !== numRequired) {
-      return "You found a Piece";
-    }
 
-    if (
-      numFound !== undefined &&
-      numRequired !== undefined &&
-      numFound === numRequired
-    ) {
-      return "You found the pieces";
-    }
+  const piecesLeft = numRequired - numFound;
+  const isScavengerHunt = numRequired > 1;
+  const isScavengerComplete = isScavengerHunt && numFound === numRequired;
 
-    if (isNFT) {
-      return "You found a POAP";
-    }
+  // Define messages and CTA text based on conditions
+  let mainMessage = "";
+  let subMessage: string | undefined = undefined;
+  let ctaText: React.ReactNode = "";
 
-    return "You found some SOV3";
-  };
-
-  const ctaMessage = () => {
-    if (numFound !== numRequired) {
-      return "Swipe to reveal";
+  if (isActiveScavengerHunt) {
+    mainMessage = "COMPLETE";
+    ctaText = (
+      <>
+        <Text as="span" color="brand.400">
+          {piecesLeft} Left.
+        </Text>
+        <Box as="span" width="8px" /> {/* Adjust width as needed */}
+        Swipe to continue
+      </>
+    );
+  } else {
+    mainMessage = "Congrats!";
+    if (!isScavengerHunt || isScavengerComplete) {
+      subMessage = isNFT ? "You found a POAP" : "You found some SOV3";
+      ctaText = "Swipe to reveal and claim";
+    } else {
+      subMessage = "You found a Piece";
+      ctaText = "Swipe to reveal";
     }
-    return "Swipe to reveal and claim";
-  };
+  }
 
   const maxSwipeDistance = 30; // Maximum swipe distance
   const [startX, setStartX] = useState(0); // Track where the swipe started
@@ -58,7 +69,6 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
 
   const handlers = useSwipeable({
     onSwiping: (eventData) => {
-      // Calculate the swipe distance from the starting point
       const newProgress = Math.min(
         Math.max(0, eventData.deltaX - startX),
         maxSwipeDistance,
@@ -66,12 +76,10 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
       springProgress.set(newProgress);
     },
     onSwipeStart: (eventData) => {
-      // Capture the starting point of the swipe
       setStartX(eventData.initial[0]);
     },
     onSwipedRight: () => {
       if (springProgress.get() >= maxSwipeDistance * 0.4) {
-        // Trigger the reveal action if the user swiped at least 80% of the max distance
         onReveal();
       } else {
         springProgress.set(0);
@@ -95,6 +103,17 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
     return () => document.removeEventListener("touchmove", preventTouchMove);
   }, []);
 
+  // Define box dimensions
+  const boxDimensions = isActiveScavengerHunt
+    ? {
+        width: { base: "210px", md: "273px", lg: "273px" },
+        height: { base: "194px", md: "250px", lg: "250px" },
+      }
+    : {
+        width: { base: "170px", md: "190px" },
+        height: { base: "170px", md: "190px" },
+      };
+
   return (
     <Box position="relative" p={4}>
       <Image
@@ -113,21 +132,56 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
         p={4}
         spacing={8}
       >
+        {/* Top Box */}
         <Box
           bg="bg.primary"
-          width={"170px"}
-          height={"170px"}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
+          w={boxDimensions.width}
+          h={boxDimensions.height}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
         >
-          <HelpIcon
-            width={128}
-            height={128}
-            color={"var(--chakra-colors-brand-400)"}
-          />
+          {isActiveScavengerHunt ? (
+            <VStack>
+              <Heading
+                as="h4"
+                fontWeight="normal"
+                textAlign="center"
+                color="brand.400"
+                fontSize={{ base: "50px", md: "48px", lg: "52px" }}
+                mt={1}
+              >
+                STEP
+              </Heading>
+              <Heading
+                as="h3"
+                fontSize={{ base: "80px", md: "130px", lg: "108px" }}
+                fontWeight="bold"
+                color="white"
+                lineHeight="1.1"
+                textAlign="center"
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
+              >
+                {numFound}
+              </Heading>
+            </VStack>
+          ) : (
+            <HelpIcon
+              width={128}
+              height={128}
+              color={"var(--chakra-colors-brand-400)"}
+            />
+          )}
         </Box>
-        <VStack alignItems="flex-start" gap={0} width={"100%"}>
+
+        {/* Message Section */}
+        <VStack
+          alignItems={isActiveScavengerHunt ? "center" : "flex-start"}
+          gap={0}
+          width={"100%"}
+        >
           <Heading
             as="h3"
             fontSize="5xl"
@@ -138,21 +192,25 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
             textAlign="left"
             px={2}
           >
-            Congrats!
+            {mainMessage}
           </Heading>
-          <Text
-            fontFamily="mono"
-            color="brand.400"
-            bg="bg.primary"
-            textAlign="right"
-            alignSelf={"flex-end"}
-            fontSize="xl"
-            px={2}
-            textTransform={"uppercase"}
-          >
-            {rewardMessage()}
-          </Text>
+          {subMessage && (
+            <Text
+              fontFamily="mono"
+              color="brand.400"
+              bg="bg.primary"
+              textAlign="right"
+              alignSelf={"flex-end"}
+              fontSize="xl"
+              px={2}
+              textTransform={"uppercase"}
+            >
+              {subMessage}
+            </Text>
+          )}
         </VStack>
+
+        {/* Swipe Section */}
         <Box p={4} width={"100%"}>
           <Box
             width={"100%"}
@@ -200,8 +258,8 @@ export function Hidden({ foundItem, onReveal }: HiddenProps) {
               {...handlers}
               style={{ touchAction: "none" }} // Disable touch-action to prevent default behaviors like scrolling or refreshing
             >
-              <Text as="span" ms="3">
-                {ctaMessage()}
+              <Text as="span" ms="3" display="flex" alignItems="center">
+                {ctaText}
               </Text>
               <Box
                 as="span"

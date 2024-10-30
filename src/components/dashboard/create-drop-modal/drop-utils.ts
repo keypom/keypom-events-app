@@ -63,7 +63,7 @@ export const addScavengerPiece = (
 ) => {
   if (scavengerPieces.length < 10) {
     const newPiece = {
-      piece: `Piece ${scavengerPieces.length + 1}`,
+      piece: `Step ${scavengerPieces.length + 1}`,
       description: "",
     };
     setScavengerPieces([...scavengerPieces, newPiece]);
@@ -79,7 +79,7 @@ export const updateNumPieces = (
 ) => {
   let numPieces = parseInt(tempNumPieces, 10);
   if (isNaN(numPieces) || numPieces < 2) {
-    setNumPiecesError("Scavenger hunts need to have at least 2 pieces.");
+    setNumPiecesError("Journeys need to have at least 2 steps.");
     numPieces = 2; // Minimum 2 pieces if scavenger hunt is active
   } else {
     setNumPiecesError("");
@@ -87,7 +87,7 @@ export const updateNumPieces = (
 
   if (numPieces <= 10) {
     const newPieces = Array.from({ length: numPieces }, (_, i) => ({
-      piece: `Piece ${i + 1}`,
+      piece: `Step ${i + 1}`,
       description: "",
     }));
     setScavengerPieces(newPieces);
@@ -108,7 +108,7 @@ export const removeScavengerPiece = (
     // Reassign piece numbers to ensure they are sequential
     newPieces = newPieces.map((piece, i) => ({
       ...piece,
-      piece: `Piece ${i + 1}`,
+      piece: `Step ${i + 1}`,
     }));
 
     setScavengerPieces(newPieces);

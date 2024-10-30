@@ -10,5 +10,6 @@ export interface Journey {
   imageSrc: string;
   steps: Step[];
   tokenReward?: string;
+  isDisabled: boolean;
   completed: boolean;
 }
