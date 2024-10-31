@@ -109,11 +109,16 @@ const fetchAccountData = async (secretKey: string) => {
         (drop.needed_scavenger_ids || []).length,
     );
 
-    const ownedMultichainNFTs: ExtClaimedDrop[] =
+    const ownedMultichainNFTs: ExtClaimedDrop[] = (
       await eventHelperInstance.viewCall({
         methodName: "get_claimed_multichain_nfts_for_account",
         args: { account_id: accountId },
-      });
+      })
+    ).filter(
+      (drop) =>
+        (drop.found_scavenger_ids || []).length ===
+        (drop.needed_scavenger_ids || []).length,
+    );
 
     const ownedCollectibles = [...ownedNFTs, ...ownedMultichainNFTs];
 

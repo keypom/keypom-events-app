@@ -62,6 +62,7 @@ const JourneyDetails = ({
       <PageHeading
         title={getRewardText(isDisabled, tokenReward)}
         titleSize="16px"
+        sendTo={"/wallet/journeys"}
         showBackButton
       />
       <VStack
