@@ -481,16 +481,23 @@ class EventJS {
     const { signature } = generateSignature(dropSecretKey, accountId!);
 
     if (dropInfo.mc_metadata) {
-      await fetch(`${MULTICHAIN_WORKER_URL}/multichain-claim`, {
+      const res = await fetch(`${MULTICHAIN_WORKER_URL}/multichain-claim`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           account_id: accountId,
           signature,
+          scavenger_id: isScav ? pkToClaim : null,
           secret_key: secretKey,
+          drop_secret_key: dropSecretKey,
           drop_id: dropId,
         }),
       });
+      if (!res.ok) {
+        throw new Error(
+          "Failed to claim multichain drop. Reach out to Keypom team",
+        );
+      }
     } else {
       await userAccount.functionCall({
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
