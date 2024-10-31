@@ -1,3 +1,5 @@
+// scavenger-hunt.tsx
+
 import {
   VStack,
   Button,
@@ -22,9 +24,13 @@ export const ScavengerHunt = ({
   setIsScavengerHunt,
   scavengerPieces,
   setScavengerPieces,
+  errors,
+  setErrors,
 }) => {
   const [numPiecesError, setNumPiecesError] = useState("");
-  const [tempNumPieces, setTempNumPieces] = useState("2");
+  const [tempNumPieces, setTempNumPieces] = useState(
+    scavengerPieces.length.toString(),
+  );
 
   const handleNumPiecesChange = (e) => {
     const value = e.target.value;
@@ -51,6 +57,11 @@ export const ScavengerHunt = ({
               isChecked={isScavengerHunt}
               onChange={() => {
                 setIsScavengerHunt(!isScavengerHunt);
+                // Reset errors when toggling scavenger hunt
+                setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  scavengerPieces: undefined,
+                }));
               }}
             />
           </HStack>
@@ -109,9 +120,9 @@ export const ScavengerHunt = ({
           </HStack>
         )}
       </HStack>
-      {numPiecesError && (
+      {(numPiecesError || errors.scavengerPieces) && (
         <Text color="red.500" fontSize="sm" marginBottom={4}>
-          {numPiecesError}
+          {numPiecesError || errors.scavengerPieces}
         </Text>
       )}
       {isScavengerHunt && (
@@ -168,6 +179,12 @@ export const ScavengerHunt = ({
                     <DeleteIcon />
                   </Button>
                 </HStack>
+                {/* Display individual error if needed */}
+                {errors[`scavengerPiece_${index}`] && (
+                  <Text color="red.500" fontSize="sm">
+                    {errors[`scavengerPiece_${index}`]}
+                  </Text>
+                )}
               </VStack>
             ))}
             <Button

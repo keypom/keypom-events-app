@@ -73,7 +73,10 @@ export default function Scan() {
             accountId,
             dropId,
           });
-          navigate(`/scan/${encodeURIComponent(`${dropId}`)}`);
+          console.log("Navigating with state: ", dropSecret);
+          navigate(`/scan/${encodeURIComponent(`${dropId}`)}`, {
+            state: { secretKey: dropSecret },
+          });
           break;
         }
         case "food":
@@ -147,7 +150,7 @@ export default function Scan() {
               handleScan={handleScan}
               scanStatus={scanStatus}
               allowMultiple={true}
-              scanDelay={3000}
+              scanDelay={5000}
             />
           </Box>
         </Box>

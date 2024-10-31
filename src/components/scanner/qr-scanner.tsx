@@ -47,19 +47,32 @@ export const QrScanner = ({
     }
   };
 
+  // Increase the cooldown duration to 5000 milliseconds (5 seconds)
   const enableCooldown = () => {
     setIsOnCooldown(true); // Activate cooldown
     setTimeout(() => {
-      setIsOnCooldown(false); // Deactivate cooldown after 1000 milliseconds (1 seconds)
+      setIsOnCooldown(false); // Deactivate cooldown after 5000 milliseconds
       setShowAnimation(false);
-    }, 1000);
+    }, 5000);
   };
 
   const useNextDevice = () => {
-    const currentIndex =
-      devices.findIndex((device) => device.deviceId === selectedDevice) || 0;
-    setSelectedDevice(devices[currentIndex + (1 % devices.length)]?.deviceId);
+    if (devices.length > 0) {
+      const currentIndex = devices.findIndex(
+        (device) => device.deviceId === selectedDevice,
+      );
+      const nextIndex = (currentIndex + 1) % devices.length;
+      const nextDevice = devices[nextIndex];
+      setSelectedDevice(nextDevice.deviceId);
+      localStorage.setItem("selectedDeviceId", nextDevice.deviceId);
+    }
   };
+
+  useEffect(() => {
+    if (selectedDevice) {
+      localStorage.setItem("selectedDeviceId", selectedDevice);
+    }
+  }, [selectedDevice]);
 
   // DO NOT REMOVE: Exposes the triggerTestScan function to the window in test environment
   useEffect(() => {

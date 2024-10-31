@@ -7,6 +7,8 @@ export const validateForm = (
   createdDrop: any,
   setErrors: React.Dispatch<React.SetStateAction<any>>,
   existingDropNames: string[],
+  isScavengerHunt: boolean,
+  scavengerPieces: Array<{ piece: string; description: string }>,
 ) => {
   const errors: any = {};
   // Name validation
@@ -39,6 +41,22 @@ export const validateForm = (
         ...errors.nft,
         description: "NFT description is required",
       };
+  }
+
+  // Scavenger Hunt validation
+  if (isScavengerHunt) {
+    // Check for empty descriptions
+    const emptyDescriptions = scavengerPieces.filter(
+      (piece) => !piece.description || piece.description.trim() === "",
+    );
+    if (emptyDescriptions.length > 0) {
+      errors.scavengerPieces = "All scavenger piece descriptions are required.";
+    }
+
+    // Check for more than 10 pieces
+    if (scavengerPieces.length > 10) {
+      errors.scavengerPieces = "Cannot have more than 10 scavenger pieces.";
+    }
   }
 
   setErrors(errors);
@@ -83,6 +101,11 @@ export const updateNumPieces = (
     numPieces = 2; // Minimum 2 pieces if scavenger hunt is active
   } else {
     setNumPiecesError("");
+  }
+
+  if (numPieces > 10) {
+    numPieces = 10;
+    setNumPiecesError("Journeys cannot have more than 10 steps.");
   }
 
   if (numPieces <= 10) {

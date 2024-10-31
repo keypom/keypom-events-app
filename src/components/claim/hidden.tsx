@@ -12,6 +12,7 @@ interface HiddenProps {
   isActiveScavengerHunt: boolean;
   numFound: number;
   numRequired: number;
+  pieceId?: number;
 }
 
 export function Hidden({
@@ -20,6 +21,7 @@ export function Hidden({
   isActiveScavengerHunt,
   numFound,
   numRequired,
+  pieceId,
 }: HiddenProps) {
   const isNFT = foundItem.type !== "token";
 
@@ -27,6 +29,7 @@ export function Hidden({
   const isScavengerHunt = numRequired > 1;
   const isScavengerComplete = isScavengerHunt && numFound === numRequired;
 
+  const stepNumber = pieceId || numFound.toString();
   // Define messages and CTA text based on conditions
   let mainMessage = "";
   let subMessage: string | undefined = undefined;
@@ -164,7 +167,7 @@ export function Hidden({
                 overflow="hidden"
                 textOverflow="ellipsis"
               >
-                {numFound}
+                {stepNumber}
               </Heading>
             </VStack>
           ) : (

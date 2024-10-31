@@ -4,10 +4,10 @@ import {
   ModalContent,
   Heading,
   VStack,
-  Center,
   Spinner,
   HStack,
   Button,
+  Box,
 } from "@chakra-ui/react";
 
 import { useTokenCreateModalStore } from "@/stores/token-create-modal";
@@ -86,7 +86,15 @@ export function TokenCreateModal({
   };
 
   const handleCreateDrop = async () => {
-    if (validateForm(createdDrop, setErrors, existingDropNames)) {
+    if (
+      validateForm(
+        createdDrop,
+        setErrors,
+        existingDropNames,
+        isScavengerHunt,
+        scavengerPieces,
+      )
+    ) {
       await handleClose(
         createdDrop,
         isScavengerHunt,
@@ -112,6 +120,7 @@ export function TokenCreateModal({
           border={"1px solid var(--chakra-colors-brand-400)"}
           paddingY={6}
           color={"white"}
+          position="relative" // Add this line
         >
           <Heading as="h3" marginBottom={6} size="lg">
             Create Drop
@@ -152,31 +161,42 @@ export function TokenCreateModal({
               setIsScavengerHunt={setIsScavengerHunt}
               scavengerPieces={scavengerPieces}
               setScavengerPieces={setScavengerPieces}
-              // errors={errors}
+              errors={errors}
+              setErrors={setErrors}
             />
-            {isLoading ? (
-              <Center>
-                <Spinner size="lg" />
-              </Center>
-            ) : (
-              <HStack>
-                <Button
-                  variant="primary"
-                  width="full"
-                  onClick={() => handleCreateDrop()}
-                >
-                  Create
-                </Button>
-                <Button
-                  variant="outline"
-                  width="full"
-                  onClick={() => handleCancelDrop()}
-                >
-                  Cancel
-                </Button>
-              </HStack>
-            )}
+            <HStack>
+              <Button
+                variant="primary"
+                width="full"
+                onClick={() => handleCreateDrop()}
+              >
+                Create
+              </Button>
+              <Button
+                variant="outline"
+                width="full"
+                onClick={() => handleCancelDrop()}
+              >
+                Cancel
+              </Button>
+            </HStack>
           </VStack>
+          {isLoading && (
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              width="100%"
+              height="100%"
+              bg="rgba(0, 0, 0, 0.5)" // Darken the modal
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              zIndex={10}
+            >
+              <Spinner size="lg" />
+            </Box>
+          )}
         </ModalContent>
       </Modal>
     </>

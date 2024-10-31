@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { Hidden } from "@/components/claim/hidden";
@@ -9,6 +9,7 @@ import { ErrorBox } from "@/components/ui/error-box";
 import { useAccountData } from "@/hooks/useAccountData";
 
 export default function Claim() {
+  const location = useLocation();
   const { data: encodedDropId } = useParams();
   const { data, isLoading, isError, error } = useAccountData();
 
@@ -16,6 +17,8 @@ export default function Claim() {
   const [reward, setReward] = useState<ExtClaimedDrop>();
 
   const navigate = useNavigate();
+  const secretKey = location.state?.secretKey;
+  console.log("Secret Key: ", secretKey);
 
   useEffect(() => {
     const fetchReward = async () => {
@@ -63,6 +66,15 @@ export default function Claim() {
   const isScavenger = (reward.needed_scavenger_ids?.length || 0) > 1;
   const numFound = reward.found_scavenger_ids?.length || 0;
   const numRequired = reward.needed_scavenger_ids?.length || 0;
+  let pieceId: number | undefined = undefined;
+
+  if (secretKey) {
+    const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
+    pieceId =
+      reward.needed_scavenger_ids?.find((piece) => piece.key === pubKey)?.id ||
+      numFound;
+  }
+
   const isScavengerComplete = isScavenger && numFound === numRequired;
   const isActiveScavengerHunt = isScavenger && !isScavengerComplete;
 
@@ -73,6 +85,7 @@ export default function Claim() {
         onReveal={onReveal}
         isActiveScavengerHunt={isActiveScavengerHunt}
         numFound={numFound}
+        pieceId={pieceId}
         numRequired={numRequired}
       />
     );
