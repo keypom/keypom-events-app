@@ -1,3 +1,4 @@
+import { DropData } from "@/lib/event";
 import { create } from "zustand";
 
 interface TokenDeleteModalStore {
@@ -7,7 +8,7 @@ interface TokenDeleteModalStore {
   deletionArgs: {
     secretKey: string;
     dropId: string;
-    getAccountInformation: () => Promise<void>;
+    getAccountInformation: () => Promise<DropData[] | undefined>;
   };
   setDeletionArgs: (args: TokenDeleteModalStore["deletionArgs"]) => void;
 }
@@ -20,7 +21,7 @@ export const useTokenDeleteModalStore = create<TokenDeleteModalStore>(
     deletionArgs: {
       secretKey: "",
       dropId: "",
-      getAccountInformation: () => Promise.resolve(),
+      getAccountInformation: () => Promise.resolve(undefined),
     },
     setDeletionArgs: (args: TokenDeleteModalStore["deletionArgs"]) =>
       set(() => ({ deletionArgs: args })),

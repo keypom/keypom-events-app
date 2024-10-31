@@ -1,4 +1,4 @@
-import { Box, Heading, VStack, Image, Flex } from "@chakra-ui/react";
+import { Box, Heading, VStack, Image } from "@chakra-ui/react";
 import eventHelperInstance, { ExtClaimedDrop } from "@/lib/event";
 import { ImageSplit } from "./reward-image";
 import { TokenScavRewardImage } from "../wallet/journeys/token-scav-image";

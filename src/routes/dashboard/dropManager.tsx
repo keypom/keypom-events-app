@@ -150,7 +150,11 @@ export function DropManager({
       return;
     }
 
-    const deletionArgs = {
+    const deletionArgs: {
+      secretKey: string;
+      dropId: string;
+      getAccountInformation: () => Promise<DropData[] | undefined>;
+    } = {
       secretKey,
       dropId,
       getAccountInformation,

@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import { CheckIcon, LockIcon } from "@/components/icons";
 import { PageHeading } from "@/components/ui/page-heading";
 import { ErrorBox } from "@/components/ui/error-box";
