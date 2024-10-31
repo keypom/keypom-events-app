@@ -1,10 +1,4 @@
-import {
-  Box,
-  Heading,
-  Text,
-  Image as ChakraImage,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Heading, Image as ChakraImage, VStack } from "@chakra-ui/react";
 import { LockIcon } from "@/components/icons";
 import { Link } from "react-router-dom";
 import { Image as AppImage } from "@/components/ui/image";
@@ -15,7 +9,6 @@ export function CollectibleCard({
   disabled,
   id,
   title,
-  assetType,
   imageSrc,
   chain,
 }: Collectible & {
@@ -93,9 +86,6 @@ export function CollectibleCard({
         >
           {title}
         </Heading>
-        <Text color="brand.400" fontSize="10px" fontWeight={700}>
-          {assetType}
-        </Text>
       </VStack>
     </VStack>
   );

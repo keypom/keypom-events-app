@@ -29,6 +29,7 @@ export interface ExtClaimedDrop {
   key: string;
   found_scavenger_ids?: string[];
   needed_scavenger_ids?: ScavengerHunt[];
+  creator_has_funds?: boolean;
   mc_metadata?: MCMetadata;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   token_amount?: string; // Only present if the drop is a token
@@ -58,6 +59,7 @@ export interface DropData {
   image: string;
   num_claimed: number;
   scavenger_hunt?: ScavengerHunt[]; // Optional scavenger hunt pieces
+  creator_has_funds?: boolean;
 
   mc_metadata?: MCMetadata;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
@@ -399,6 +401,7 @@ class EventJS {
     accountId?: string;
   }) => {
     const pkToClaim = this.getPubFromSecret(dropSecretKey);
+    console.log("pkToClaim: ", pkToClaim);
 
     // Fetch the drop information
     const dropInfo: DropData = await eventHelperInstance.viewCall({
@@ -478,16 +481,23 @@ class EventJS {
     const { signature } = generateSignature(dropSecretKey, accountId!);
 
     if (dropInfo.mc_metadata) {
-      await fetch(`${MULTICHAIN_WORKER_URL}/multichain-claim`, {
+      const res = await fetch(`${MULTICHAIN_WORKER_URL}/multichain-claim`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           account_id: accountId,
           signature,
+          scavenger_id: isScav ? pkToClaim : null,
           secret_key: secretKey,
+          drop_secret_key: dropSecretKey,
           drop_id: dropId,
         }),
       });
+      if (!res.ok) {
+        throw new Error(
+          "Failed to claim multichain drop. Reach out to Keypom team",
+        );
+      }
     } else {
       await userAccount.functionCall({
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,

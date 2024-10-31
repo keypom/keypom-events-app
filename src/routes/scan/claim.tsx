@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { Hidden } from "@/components/claim/hidden";
@@ -14,6 +14,8 @@ export default function Claim() {
 
   const [revealed, setRevealed] = useState(false);
   const [reward, setReward] = useState<ExtClaimedDrop>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchReward = async () => {
@@ -35,7 +37,19 @@ export default function Claim() {
   }, [data, encodedDropId]);
 
   const onReveal = () => {
-    setRevealed(true);
+    const isScavenger = (reward?.needed_scavenger_ids?.length || 0) > 1;
+    const numFound = reward?.found_scavenger_ids?.length || 0;
+    const numRequired = reward?.needed_scavenger_ids?.length || 0;
+    const isScavengerComplete = isScavenger && numFound === numRequired;
+    const isActiveScavengerHunt = isScavenger && !isScavengerComplete;
+
+    if (isActiveScavengerHunt) {
+      // Redirect to journeys page
+      const dropId = decodeURIComponent(encodedDropId!);
+      navigate(`/wallet/journeys/${dropId}`);
+    } else {
+      setRevealed(true);
+    }
   };
 
   if (isError) {
@@ -46,8 +60,22 @@ export default function Claim() {
     return <LoadingBox />;
   }
 
+  const isScavenger = (reward.needed_scavenger_ids?.length || 0) > 1;
+  const numFound = reward.found_scavenger_ids?.length || 0;
+  const numRequired = reward.needed_scavenger_ids?.length || 0;
+  const isScavengerComplete = isScavenger && numFound === numRequired;
+  const isActiveScavengerHunt = isScavenger && !isScavengerComplete;
+
   if (!revealed) {
-    return <Hidden foundItem={reward} onReveal={onReveal} />;
+    return (
+      <Hidden
+        foundItem={reward}
+        onReveal={onReveal}
+        isActiveScavengerHunt={isActiveScavengerHunt}
+        numFound={numFound}
+        numRequired={numRequired}
+      />
+    );
   }
 
   return <Reveal foundItem={reward} />;

@@ -8,12 +8,16 @@ interface ImageInputProps {
   createdDrop: any;
   setCreatedDrop: React.Dispatch<React.SetStateAction<any>>;
   errors: any;
+  setErrors: React.Dispatch<React.SetStateAction<any>>;
 }
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export const ImageInput: React.FC<ImageInputProps> = ({
   createdDrop,
   setCreatedDrop,
   errors,
+  setErrors,
 }) => {
   const [preview, setPreview] = useState<string>();
 
@@ -36,7 +40,29 @@ export const ImageInput: React.FC<ImageInputProps> = ({
       setCreatedDrop({ ...createdDrop, artwork: undefined });
       return;
     }
-    setCreatedDrop({ ...createdDrop, artwork: e.target.files[0] });
+
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      // Set the error message for artwork
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        artwork: `File size should be less than ${MAX_FILE_SIZE / (1024 * 1024)} MB`,
+      }));
+      // Unset the selected file
+      setCreatedDrop({ ...createdDrop, artwork: undefined });
+      return;
+    }
+
+    // Clear any existing errors for artwork
+    if (errors.artwork) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        artwork: undefined,
+      }));
+    }
+
+    setCreatedDrop({ ...createdDrop, artwork: selectedFile });
   };
 
   return (
@@ -47,7 +73,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
       my="1"
     >
       <ImageFileInputSmall
-        accept="image/jpeg, image/png, image/gif"
+        accept="image/jpeg, image/png, image/gif, image/jpg"
         ctaText="Upload drop artwork"
         errorMessage={errors.artwork}
         isInvalid={!!errors.artwork}

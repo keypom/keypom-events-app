@@ -42,10 +42,10 @@ export const ScavengerHunt = ({
           border={"1px solid var(--chakra-colors-brand-400)"}
           borderRadius={"md"}
           p={2}
-          label="Scavenger hunts require users to collect all the pieces before the reward is given."
+          label="Journeys require users to complete all the steps before the reward is given."
         >
           <HStack spacing={4} fontFamily={"mono"} w="100%">
-            <Text fontSize={"sm"}>Make it a Scavenger Hunt!</Text>
+            <Text fontSize={"sm"}>Make it a Journey!</Text>
             <Switch
               id="scavenger-hunt"
               isChecked={isScavengerHunt}
@@ -63,14 +63,14 @@ export const ScavengerHunt = ({
             spacing={4}
           >
             <Text color="white" fontFamily={"mono"} fontSize={"sm"}>
-              Num Pieces
+              Num Steps
             </Text>
             <Input
               borderRadius={"md"}
               height="35px"
               maxLength={500}
               background={"#F2F1EA"}
-              placeholder="num pieces"
+              placeholder="num steps"
               color={"black"}
               fontFamily={"mono"}
               fontWeight={"700"}
@@ -185,7 +185,7 @@ export const ScavengerHunt = ({
               }}
               isDisabled={scavengerPieces.length >= 10}
             >
-              Add Piece
+              Add Step
             </Button>
           </VStack>
         </>
