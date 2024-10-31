@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useTokenDeleteModalStore } from "@/stores/token-delete-modal";
 import { useState } from "react";
-import eventHelperInstance from "@/lib/event";
+import eventHelperInstance, { DropData } from "@/lib/event";
 
 export function TokenDeleteModal() {
   const { isOpen, onClose, deletionArgs } = useTokenDeleteModalStore();
@@ -24,7 +24,7 @@ export function TokenDeleteModal() {
   }: {
     secretKey: string;
     dropId: string;
-    getAccountInformation: () => Promise<void>;
+    getAccountInformation: () => Promise<DropData[] | undefined>;
   }) => {
     try {
       setCurrentStep(1);

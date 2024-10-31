@@ -20,6 +20,7 @@ export default function Journeys() {
       <PageHeading
         title="Journeys"
         titleSize="24px"
+        sendTo="/wallet"
         description={
           totalCount ? `${completedCount} / ${totalCount} completed` : ""
         }

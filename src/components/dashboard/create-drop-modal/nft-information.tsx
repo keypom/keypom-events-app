@@ -21,13 +21,14 @@ interface NFTInformationProps {
   setCreatedDrop: React.Dispatch<React.SetStateAction<any>>;
   errors: any;
   setErrors: React.Dispatch<React.SetStateAction<any>>;
-  isAdmin: Boolean;
+  isAdmin: boolean;
 }
 
 export const NFTInformation: React.FC<NFTInformationProps> = ({
   createdDrop,
   setCreatedDrop,
   errors,
+  setErrors,
   isAdmin,
 }) => {
   const onNFTDataChange = (key: string, value: string) => {
@@ -164,6 +165,7 @@ export const NFTInformation: React.FC<NFTInformationProps> = ({
           createdDrop={createdDrop}
           setCreatedDrop={setCreatedDrop}
           errors={errors}
+          setErrors={setErrors}
         />
       </VStack>
     </>

@@ -1,3 +1,5 @@
+// scavenger-hunt.tsx
+
 import {
   VStack,
   Button,
@@ -22,9 +24,13 @@ export const ScavengerHunt = ({
   setIsScavengerHunt,
   scavengerPieces,
   setScavengerPieces,
+  errors,
+  setErrors,
 }) => {
   const [numPiecesError, setNumPiecesError] = useState("");
-  const [tempNumPieces, setTempNumPieces] = useState("2");
+  const [tempNumPieces, setTempNumPieces] = useState(
+    scavengerPieces.length.toString(),
+  );
 
   const handleNumPiecesChange = (e) => {
     const value = e.target.value;
@@ -42,15 +48,20 @@ export const ScavengerHunt = ({
           border={"1px solid var(--chakra-colors-brand-400)"}
           borderRadius={"md"}
           p={2}
-          label="Scavenger hunts require users to collect all the pieces before the reward is given."
+          label="Journeys require users to complete all the steps before the reward is given."
         >
           <HStack spacing={4} fontFamily={"mono"} w="100%">
-            <Text fontSize={"sm"}>Make it a Scavenger Hunt!</Text>
+            <Text fontSize={"sm"}>Make it a Journey!</Text>
             <Switch
               id="scavenger-hunt"
               isChecked={isScavengerHunt}
               onChange={() => {
                 setIsScavengerHunt(!isScavengerHunt);
+                // Reset errors when toggling scavenger hunt
+                setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  scavengerPieces: undefined,
+                }));
               }}
             />
           </HStack>
@@ -63,14 +74,14 @@ export const ScavengerHunt = ({
             spacing={4}
           >
             <Text color="white" fontFamily={"mono"} fontSize={"sm"}>
-              Num Pieces
+              Num Steps
             </Text>
             <Input
               borderRadius={"md"}
               height="35px"
               maxLength={500}
               background={"#F2F1EA"}
-              placeholder="num pieces"
+              placeholder="num steps"
               color={"black"}
               fontFamily={"mono"}
               fontWeight={"700"}
@@ -109,9 +120,9 @@ export const ScavengerHunt = ({
           </HStack>
         )}
       </HStack>
-      {numPiecesError && (
+      {(numPiecesError || errors.scavengerPieces) && (
         <Text color="red.500" fontSize="sm" marginBottom={4}>
-          {numPiecesError}
+          {numPiecesError || errors.scavengerPieces}
         </Text>
       )}
       {isScavengerHunt && (
@@ -168,6 +179,12 @@ export const ScavengerHunt = ({
                     <DeleteIcon />
                   </Button>
                 </HStack>
+                {/* Display individual error if needed */}
+                {errors[`scavengerPiece_${index}`] && (
+                  <Text color="red.500" fontSize="sm">
+                    {errors[`scavengerPiece_${index}`]}
+                  </Text>
+                )}
               </VStack>
             ))}
             <Button
@@ -185,7 +202,7 @@ export const ScavengerHunt = ({
               }}
               isDisabled={scavengerPieces.length >= 10}
             >
-              Add Piece
+              Add Step
             </Button>
           </VStack>
         </>

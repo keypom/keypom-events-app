@@ -4,7 +4,7 @@ import {
   KEYPOM_TOKEN_FACTORY_CONTRACT,
   MULTICHAIN_WORKER_URL,
 } from "@/constants/common";
-import getConfig from "@/config/near";
+import getConfig, { NearConfig, RpcEndpoint } from "@/config/near";
 import { getPubFromSecret } from "@keypom/core";
 import { UserData } from "@/stores/event-credentials";
 import { getIpfsImageSrcUrl, pinJsonToIpfs, pinToIpfs } from "./helpers/ipfs";
@@ -14,7 +14,6 @@ import { getChainIdFromId } from "./helpers/multichain";
 let instance: EventJS | undefined;
 
 const myKeyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
-const config = getConfig();
 
 export interface AttendeeTicketData {
   ticket: string;
@@ -29,6 +28,7 @@ export interface ExtClaimedDrop {
   key: string;
   found_scavenger_ids?: string[];
   needed_scavenger_ids?: ScavengerHunt[];
+  creator_has_funds?: boolean;
   mc_metadata?: MCMetadata;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
   token_amount?: string; // Only present if the drop is a token
@@ -58,6 +58,7 @@ export interface DropData {
   image: string;
   num_claimed: number;
   scavenger_hunt?: ScavengerHunt[]; // Optional scavenger hunt pieces
+  creator_has_funds?: boolean;
 
   mc_metadata?: MCMetadata;
   nft_metadata?: NftMetadata; // Only present if the drop is an NFT
@@ -70,32 +71,117 @@ interface NftMetadata {
   description: string;
 }
 
-const connectionConfig = {
-  networkId: NETWORK_ID,
-  keyStore: myKeyStore,
-  nodeUrl: config.nodeUrl,
-  walletUrl: config.walletUrl,
-  helperUrl: config.helperUrl,
-  explorerUrl: config.explorerUrl,
-};
-
 class EventJS {
   static instance: EventJS;
   nearConnection!: nearAPI.Near;
   viewAccount!: nearAPI.Account;
   private dropCache: DropData[] = []; // Cache for all drops
+  private config: NearConfig;
+  private rpcList: { [key: string]: RpcEndpoint };
+  private selectedRpcUrl!: string;
 
   constructor() {
     if (instance !== undefined) {
       throw new Error("New instance cannot be created!!");
     }
 
+    this.config = getConfig();
+    this.rpcList = this.config.rpcList;
     this.init();
   }
 
   async init() {
+    this.selectedRpcUrl = await this.selectBestRpcEndpoint();
+    const connectionConfig = {
+      networkId: this.config.networkId,
+      keyStore: myKeyStore,
+      nodeUrl: this.selectedRpcUrl,
+      walletUrl: this.config.walletUrl,
+      helperUrl: this.config.helperUrl,
+      explorerUrl: this.config.explorerUrl,
+    };
     this.nearConnection = await nearAPI.connect(connectionConfig);
-    this.viewAccount = await this.nearConnection.account(config.contractId);
+    this.viewAccount = await this.nearConnection.account(
+      this.config.contractId,
+    );
+  }
+
+  private async selectBestRpcEndpoint(): Promise<string> {
+    const rpcEndpoints: RpcEndpoint[] = Object.values(this.rpcList);
+    const responseTimes: { [url: string]: number } = {};
+
+    await Promise.all(
+      rpcEndpoints.map(async (endpoint: RpcEndpoint) => {
+        const time = await this.pingRpc(endpoint.url);
+        responseTimes[endpoint.url] = time;
+      }),
+    );
+
+    // Filter out endpoints that timed out (-1)
+    const validEndpoints = Object.entries(responseTimes).filter(
+      ([, time]) => time >= 0,
+    );
+
+    if (validEndpoints.length === 0) {
+      throw new Error("No RPC endpoints are available");
+    }
+
+    // Sort by response time
+    validEndpoints.sort((a, b) => a[1] - b[1]);
+
+    // Extract the fastest endpoint and log all endpoints with their response times
+    const fastestRpcUrl = validEndpoints[0][0];
+    const fastestTime = validEndpoints[0][1];
+
+    console.log(
+      `Fastest RPC selected: ${fastestRpcUrl} with response time: ${fastestTime}ms`,
+    );
+
+    // Log each RPC endpoint and its response time, along with the difference compared to the fastest
+    console.log("RPC Endpoint Response Times:");
+    validEndpoints.forEach(([url, time]) => {
+      const timeDifference = time - fastestTime;
+      console.log(
+        ` - ${url}: ${time}ms ${
+          timeDifference > 0 ? `(+${timeDifference}ms)` : "(fastest)"
+        }`,
+      );
+    });
+
+    return fastestRpcUrl;
+  }
+
+  private async pingRpc(url: string): Promise<number> {
+    const start = Date.now();
+    const timeout = 5000; // 5 seconds timeout
+
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: "ping",
+          method: "gas_price",
+          params: [null],
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(id);
+
+      if (!response.ok) {
+        return -1; // Treat non-200 responses as timeouts
+      }
+
+      const end = Date.now();
+      return end - start;
+    } catch (error) {
+      return -1; // Timeout or error
+    }
   }
 
   public static getInstance(): EventJS {
@@ -164,7 +250,7 @@ class EventJS {
     methodName,
     args,
   }) => {
-    const res = await this.viewAccount.viewFunction({
+    const res = await this.viewFunctionWithRetry({
       contractId,
       methodName,
       args,
@@ -208,7 +294,8 @@ class EventJS {
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
 
-    await userAccount.functionCall({
+    await this.functionCallWithRetry({
+      account: userAccount,
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "delete_drop",
       args: {
@@ -284,7 +371,8 @@ class EventJS {
     if (createdDrop.nftData) {
       if (createdDrop.chain === "near") {
         // NEAR NFT Drop
-        res = await userAccount.functionCall({
+        res = await this.functionCallWithRetry({
+          account: userAccount,
           contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
           methodName: "create_nft_drop",
           args: {
@@ -336,7 +424,8 @@ class EventJS {
           series_id,
         };
 
-        res = await userAccount.functionCall({
+        res = await this.functionCallWithRetry({
+          account: userAccount,
           contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
           methodName: "create_multichain_drop",
           args: {
@@ -355,7 +444,8 @@ class EventJS {
       }
     } else {
       // Token Drop
-      res = await userAccount.functionCall({
+      res = await this.functionCallWithRetry({
+        account: userAccount,
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "create_token_drop",
         args: {
@@ -399,6 +489,7 @@ class EventJS {
     accountId?: string;
   }) => {
     const pkToClaim = this.getPubFromSecret(dropSecretKey);
+    console.log("pkToClaim: ", pkToClaim);
 
     // Fetch the drop information
     const dropInfo: DropData = await eventHelperInstance.viewCall({
@@ -409,6 +500,12 @@ class EventJS {
 
     if (!dropInfo) {
       throw new Error("Drop not found");
+    }
+
+    if (dropInfo.creator_has_funds === false) {
+      throw new Error(
+        "The sponsor ran out of tokens. This drop is no longer available",
+      );
     }
 
     // Fetch claimed drops for the account
@@ -478,18 +575,26 @@ class EventJS {
     const { signature } = generateSignature(dropSecretKey, accountId!);
 
     if (dropInfo.mc_metadata) {
-      await fetch(`${MULTICHAIN_WORKER_URL}/multichain-claim`, {
+      const res = await fetch(`${MULTICHAIN_WORKER_URL}/multichain-claim`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           account_id: accountId,
           signature,
+          scavenger_id: isScav ? pkToClaim : null,
           secret_key: secretKey,
+          drop_secret_key: dropSecretKey,
           drop_id: dropId,
         }),
       });
+      if (!res.ok) {
+        throw new Error(
+          "Failed to claim multichain drop. Reach out to Keypom team",
+        );
+      }
     } else {
-      await userAccount.functionCall({
+      await this.functionCallWithRetry({
+        account: userAccount,
         contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
         methodName: "claim_drop",
         args: {
@@ -516,7 +621,9 @@ class EventJS {
       this.nearConnection.connection,
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
-    await userAccount.functionCall({
+
+    await this.functionCallWithRetry({
+      account: userAccount,
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "ft_mint",
       args: {
@@ -541,7 +648,9 @@ class EventJS {
       this.nearConnection.connection,
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
-    await userAccount.functionCall({
+
+    await this.functionCallWithRetry({
+      account: userAccount,
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "ft_transfer",
       args: {
@@ -558,7 +667,9 @@ class EventJS {
       this.nearConnection.connection,
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
-    await userAccount.functionCall({
+
+    await this.functionCallWithRetry({
+      account: userAccount,
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "scan_ticket",
       args: {},
@@ -578,7 +689,9 @@ class EventJS {
       this.nearConnection.connection,
       KEYPOM_TOKEN_FACTORY_CONTRACT,
     );
-    await userAccount.functionCall({
+
+    await this.functionCallWithRetry({
+      account: userAccount,
       contractId: KEYPOM_TOKEN_FACTORY_CONTRACT,
       methodName: "create_account",
       args: {
@@ -638,6 +751,143 @@ class EventJS {
       (drop) => drop.scavenger_hunt && drop.scavenger_hunt.length > 0,
     );
   };
+
+  // Function Call with Retry Logic
+  async functionCallWithRetry({
+    account,
+    contractId,
+    methodName,
+    args,
+    gas,
+    attachedDeposit,
+    retryCount = 3,
+  }: {
+    account: nearAPI.Account;
+    contractId: string;
+    methodName: string;
+    args: any;
+    gas?: string;
+    attachedDeposit?: string;
+    retryCount?: number;
+  }) {
+    let attempts = 0;
+    while (attempts < retryCount) {
+      try {
+        const result = await account.functionCall({
+          contractId,
+          methodName,
+          args,
+          gas,
+          attachedDeposit,
+        });
+        return result;
+      } catch (error) {
+        attempts++;
+        if (attempts >= retryCount) {
+          throw error;
+        } else {
+          console.warn(
+            `Function call failed (attempt ${attempts}). Retrying with a new RPC endpoint...`,
+          );
+          await this.switchToNextRpcEndpoint();
+          // Recreate the account object with the new connection
+          account = new nearAPI.Account(
+            this.nearConnection.connection,
+            account.accountId,
+          );
+        }
+      }
+    }
+  }
+
+  // View Function with Retry Logic
+  async viewFunctionWithRetry({
+    contractId = this.config.contractId,
+    methodName,
+    args,
+    retryCount = 3,
+  }: {
+    contractId?: string;
+    methodName: string;
+    args: any;
+    retryCount?: number;
+  }) {
+    let attempts = 0;
+    while (attempts < retryCount) {
+      try {
+        const res = await this.viewAccount.viewFunction({
+          contractId,
+          methodName,
+          args,
+        });
+        return res;
+      } catch (error) {
+        attempts++;
+        if (attempts >= retryCount) {
+          throw error;
+        } else {
+          console.warn(
+            `View function call failed (attempt ${attempts}). Retrying with a new RPC endpoint...`,
+          );
+          await this.switchToNextRpcEndpoint();
+          // Recreate the viewAccount with the new connection
+          this.viewAccount = await this.nearConnection.account(
+            this.config.contractId,
+          );
+        }
+      }
+    }
+  }
+
+  // Switch to Next Best RPC Endpoint
+  private async switchToNextRpcEndpoint() {
+    // Remove the current RPC endpoint from the list
+    const currentRpcUrl = this.selectedRpcUrl;
+    const remainingRpcEndpoints = Object.values(this.rpcList).filter(
+      (endpoint) => endpoint.url !== currentRpcUrl,
+    );
+
+    if (remainingRpcEndpoints.length === 0) {
+      throw new Error("No alternative RPC endpoints available");
+    }
+
+    // Select the next best RPC endpoint
+    const responseTimes: { [url: string]: number } = {};
+
+    await Promise.all(
+      remainingRpcEndpoints.map(async (endpoint) => {
+        const time = await this.pingRpc(endpoint.url);
+        responseTimes[endpoint.url] = time;
+      }),
+    );
+
+    const validEndpoints = Object.entries(responseTimes).filter(
+      ([, time]) => time >= 0,
+    );
+
+    if (validEndpoints.length === 0) {
+      throw new Error("No RPC endpoints are available");
+    }
+
+    // Sort by response time
+    validEndpoints.sort((a, b) => a[1] - b[1]);
+
+    // Update the selected RPC endpoint
+    this.selectedRpcUrl = validEndpoints[0][0];
+
+    // Reinitialize the nearConnection
+    const connectionConfig = {
+      networkId: this.config.networkId,
+      keyStore: myKeyStore,
+      nodeUrl: this.selectedRpcUrl,
+      walletUrl: this.config.walletUrl,
+      helperUrl: this.config.helperUrl,
+      explorerUrl: this.config.explorerUrl,
+    };
+    this.nearConnection = await nearAPI.connect(connectionConfig);
+
+    console.log(`Switched to new RPC endpoint: ${this.selectedRpcUrl}`);
+  }
 }
 
 const eventHelperInstance = EventJS.getInstance();

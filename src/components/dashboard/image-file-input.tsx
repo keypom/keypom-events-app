@@ -113,8 +113,9 @@ export const ImageFileInputSmall = ({
       </InputGroup>
       {errorMessage && (
         <Text
-          fontSize={{ base: "xs" }}
+          fontSize={{ base: "sm" }}
           mt="6px"
+          color="red.500"
           textAlign="left"
           variant="error"
         >

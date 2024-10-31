@@ -7,6 +7,8 @@ export const validateForm = (
   createdDrop: any,
   setErrors: React.Dispatch<React.SetStateAction<any>>,
   existingDropNames: string[],
+  isScavengerHunt: boolean,
+  scavengerPieces: Array<{ piece: string; description: string }>,
 ) => {
   const errors: any = {};
   // Name validation
@@ -41,6 +43,22 @@ export const validateForm = (
       };
   }
 
+  // Scavenger Hunt validation
+  if (isScavengerHunt) {
+    // Check for empty descriptions
+    const emptyDescriptions = scavengerPieces.filter(
+      (piece) => !piece.description || piece.description.trim() === "",
+    );
+    if (emptyDescriptions.length > 0) {
+      errors.scavengerPieces = "All scavenger piece descriptions are required.";
+    }
+
+    // Check for more than 10 pieces
+    if (scavengerPieces.length > 10) {
+      errors.scavengerPieces = "Cannot have more than 10 scavenger pieces.";
+    }
+  }
+
   setErrors(errors);
   return Object.keys(errors).length === 0;
 };
@@ -63,7 +81,7 @@ export const addScavengerPiece = (
 ) => {
   if (scavengerPieces.length < 10) {
     const newPiece = {
-      piece: `Piece ${scavengerPieces.length + 1}`,
+      piece: `Step ${scavengerPieces.length + 1}`,
       description: "",
     };
     setScavengerPieces([...scavengerPieces, newPiece]);
@@ -79,15 +97,20 @@ export const updateNumPieces = (
 ) => {
   let numPieces = parseInt(tempNumPieces, 10);
   if (isNaN(numPieces) || numPieces < 2) {
-    setNumPiecesError("Scavenger hunts need to have at least 2 pieces.");
+    setNumPiecesError("Journeys need to have at least 2 steps.");
     numPieces = 2; // Minimum 2 pieces if scavenger hunt is active
   } else {
     setNumPiecesError("");
   }
 
+  if (numPieces > 10) {
+    numPieces = 10;
+    setNumPiecesError("Journeys cannot have more than 10 steps.");
+  }
+
   if (numPieces <= 10) {
     const newPieces = Array.from({ length: numPieces }, (_, i) => ({
-      piece: `Piece ${i + 1}`,
+      piece: `Step ${i + 1}`,
       description: "",
     }));
     setScavengerPieces(newPieces);
@@ -108,7 +131,7 @@ export const removeScavengerPiece = (
     // Reassign piece numbers to ensure they are sequential
     newPieces = newPieces.map((piece, i) => ({
       ...piece,
-      piece: `Piece ${i + 1}`,
+      piece: `Step ${i + 1}`,
     }));
 
     setScavengerPieces(newPieces);

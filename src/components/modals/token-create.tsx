@@ -4,10 +4,10 @@ import {
   ModalContent,
   Heading,
   VStack,
-  Center,
   Spinner,
   HStack,
   Button,
+  Box,
 } from "@chakra-ui/react";
 
 import { useTokenCreateModalStore } from "@/stores/token-create-modal";
@@ -28,18 +28,18 @@ const defaultDrop = {
 };
 const defaultScavengerHunt = [
   {
-    piece: `Piece 1`,
+    piece: `Step 1`,
     description: "",
   },
   {
-    piece: `Piece 2`,
+    piece: `Step 2`,
     description: "",
   },
 ];
 
 interface TokenCreateModalProps {
   existingDropNames: string[];
-  isAdmin: Boolean;
+  isAdmin: boolean;
 }
 
 export function TokenCreateModal({
@@ -77,11 +77,24 @@ export function TokenCreateModal({
     setErrors({});
     setCreatedDrop(defaultDrop);
     setIsScavengerHunt(false);
-    setScavengerPieces(defaultScavengerHunt);
+
+    // Dynamically generate default scavenger pieces with reset descriptions
+    setScavengerPieces([
+      { piece: `Step 1`, description: "" },
+      { piece: `Step 2`, description: "" },
+    ]);
   };
 
   const handleCreateDrop = async () => {
-    if (validateForm(createdDrop, setErrors, existingDropNames)) {
+    if (
+      validateForm(
+        createdDrop,
+        setErrors,
+        existingDropNames,
+        isScavengerHunt,
+        scavengerPieces,
+      )
+    ) {
       await handleClose(
         createdDrop,
         isScavengerHunt,
@@ -107,6 +120,7 @@ export function TokenCreateModal({
           border={"1px solid var(--chakra-colors-brand-400)"}
           paddingY={6}
           color={"white"}
+          position="relative" // Add this line
         >
           <Heading as="h3" marginBottom={6} size="lg">
             Create Drop
@@ -133,6 +147,7 @@ export function TokenCreateModal({
                   createdDrop={createdDrop}
                   setCreatedDrop={setCreatedDrop}
                   errors={errors}
+                  setErrors={setErrors} // Pass setErrors here
                 />
                 <DropTokenAmountSelector
                   currentDrop={createdDrop}
@@ -146,31 +161,42 @@ export function TokenCreateModal({
               setIsScavengerHunt={setIsScavengerHunt}
               scavengerPieces={scavengerPieces}
               setScavengerPieces={setScavengerPieces}
-              // errors={errors}
+              errors={errors}
+              setErrors={setErrors}
             />
-            {isLoading ? (
-              <Center>
-                <Spinner size="lg" />
-              </Center>
-            ) : (
-              <HStack>
-                <Button
-                  variant="primary"
-                  width="full"
-                  onClick={() => handleCreateDrop()}
-                >
-                  Create
-                </Button>
-                <Button
-                  variant="outline"
-                  width="full"
-                  onClick={() => handleCancelDrop()}
-                >
-                  Cancel
-                </Button>
-              </HStack>
-            )}
+            <HStack>
+              <Button
+                variant="primary"
+                width="full"
+                onClick={() => handleCreateDrop()}
+              >
+                Create
+              </Button>
+              <Button
+                variant="outline"
+                width="full"
+                onClick={() => handleCancelDrop()}
+              >
+                Cancel
+              </Button>
+            </HStack>
           </VStack>
+          {isLoading && (
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              width="100%"
+              height="100%"
+              bg="rgba(0, 0, 0, 0.5)" // Darken the modal
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              zIndex={10}
+            >
+              <Spinner size="lg" />
+            </Box>
+          )}
         </ModalContent>
       </Modal>
     </>

@@ -31,11 +31,13 @@ const CollectibleDetails = ({
 
   return (
     <VStack alignItems="flex-start" gap={"30px"} maxWidth="320px">
-      <Box position="relative">
+      <Box position="relative" h="320px" w="100%">
         <AppImage
           src={imageSrc}
-          objectFit="cover"
+          objectFit="contain"
           top={0}
+          h="100%"
+          w="100%"
           left={0}
           borderRadius="md"
           opacity={disabled ? 0.5 : 1}

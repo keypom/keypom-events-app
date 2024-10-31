@@ -73,7 +73,10 @@ export default function Scan() {
             accountId,
             dropId,
           });
-          navigate(`/scan/${encodeURIComponent(`${dropId}`)}`);
+          console.log("Navigating with state: ", dropSecret);
+          navigate(`/scan/${encodeURIComponent(`${dropId}`)}`, {
+            state: { secretKey: dropSecret },
+          });
           break;
         }
         case "food":
@@ -146,8 +149,8 @@ export default function Scan() {
             <QrScanner
               handleScan={handleScan}
               scanStatus={scanStatus}
-              allowMultiple={false}
-              scanDelay={3000}
+              allowMultiple={true}
+              scanDelay={5000}
             />
           </Box>
         </Box>
