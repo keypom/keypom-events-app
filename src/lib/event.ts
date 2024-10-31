@@ -502,6 +502,12 @@ class EventJS {
       throw new Error("Drop not found");
     }
 
+    if (dropInfo.creator_has_funds === false) {
+      throw new Error(
+        "The sponsor ran out of tokens. This drop is no longer available",
+      );
+    }
+
     // Fetch claimed drops for the account
     let existingClaimData: ExtClaimedDrop | null = null;
     try {
