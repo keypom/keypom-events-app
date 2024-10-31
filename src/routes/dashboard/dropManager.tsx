@@ -124,7 +124,6 @@ export function DropManager({
         methodName: "get_drops_created_by_account",
         args: { account_id: accountId },
       });
-      console.log("drops: ", drops);
       setDropsCreated(drops);
       return drops; // Return the fetched drops
     } catch (e) {
@@ -480,7 +479,6 @@ export function DropManager({
 
   // Extract existing drop names
   const existingDropNames = dropsCreated.map((drop) => drop.name);
-  console.log("Existing drop names: ", existingDropNames);
 
   return (
     <Box p={8}>

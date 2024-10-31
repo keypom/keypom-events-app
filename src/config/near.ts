@@ -1,10 +1,11 @@
+// near.ts
+
 import { KEYPOM_CONTRACTS, NETWORK_ID } from "@/constants/common";
 
-console.log(
-  "Configured with NEAR Network and Contract ID: ",
-  import.meta.env.VITE_NETWORK_ID,
-  import.meta.env.VITE_CONTRACT_ID,
-);
+export interface RpcEndpoint {
+  url: string;
+  simpleName: string;
+}
 
 export interface NearConfig {
   networkId: string;
@@ -18,6 +19,7 @@ export interface NearConfig {
   NEW_ACCOUNT_AMOUNT: string;
   NEW_CONTRACT_AMOUNT: string;
   contractId: string;
+  rpcList: { [key: string]: RpcEndpoint };
 }
 
 function getConfig(network = NETWORK_ID): NearConfig {
@@ -27,19 +29,30 @@ function getConfig(network = NETWORK_ID): NearConfig {
     attachedDeposit: "10000000000000000000000", // 0.01 N (1kb storage)
     NEW_ACCOUNT_AMOUNT: "1000000000000000000000000",
     NEW_CONTRACT_AMOUNT: "5000000000000000000000000",
+    rpcList: {},
   };
 
+  console.log("network", network);
   switch (network) {
     case "testnet":
       return {
         ...defaultConfig,
         contractId: KEYPOM_CONTRACTS["testnet"].TOKEN_FACTORY_CONTRACT,
         networkId: "testnet",
-        // nodeUrl: "https://test.api.fastnear.com",
         nodeUrl: "https://rpc.testnet.near.org",
         walletUrl: "https://testnet.mynearwallet.com",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://explorer.testnet.near.org",
+        rpcList: {
+          defaultRpc: {
+            url: "https://rpc.testnet.near.org",
+            simpleName: "official rpc",
+          },
+          lavaRpc: {
+            url: "https://g.w.lavanet.xyz:443/gateway/neart/rpc-http/f653c33afd2ea30614f69bc1c73d4940",
+            simpleName: "lava rpc",
+          },
+        },
       };
 
     case "mainnet":
@@ -47,11 +60,28 @@ function getConfig(network = NETWORK_ID): NearConfig {
         ...defaultConfig,
         contractId: KEYPOM_CONTRACTS["mainnet"].TOKEN_FACTORY_CONTRACT,
         networkId: "mainnet",
-        // nodeUrl: "https://api.fastnear.com",
         nodeUrl: "https://rpc.mainnet.near.org",
         walletUrl: "https://app.mynearwallet.com",
         helperUrl: "https://helper.near.org",
         explorerUrl: "https://explorer.near.org",
+        rpcList: {
+          defaultRpc: {
+            url: "https://rpc.mainnet.near.org",
+            simpleName: "official rpc",
+          },
+          lavaRpc: {
+            url: "https://g.w.lavanet.xyz:443/gateway/near/rpc-http/f653c33afd2ea30614f69bc1c73d4940",
+            simpleName: "lava rpc",
+          },
+          betaRpc: {
+            url: "https://beta.rpc.mainnet.near.org",
+            simpleName: "official beta rpc",
+          },
+          fastnearRpc: {
+            url: "https://free.rpc.fastnear.com",
+            simpleName: "fastnear rpc",
+          },
+        },
       };
     default:
       throw Error(
