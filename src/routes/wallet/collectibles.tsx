@@ -13,7 +13,7 @@ import { CollectibleTabButton } from "@/components/wallet/collectibles/tab-butto
 import { useEffect, useState } from "react";
 import { Pagination } from "@/components/wallet/collectibles/pagination";
 
-const Divider = () => {
+export const Divider = () => {
   return (
     <hr
       style={{

@@ -8,6 +8,7 @@ import {
   VStack,
   useToast,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -58,21 +59,13 @@ export default function Scanner() {
         decodeAndParseBase64(qrData);
       userData = parsedUserData;
       secretKey = parsedTicket;
-    } catch (error) {
-      console.error("Scan failed", error);
-      toast({
-        title: "Ticket invalid",
-        description: "QR Code not recognized",
-        status: "error",
-        position: "top",
-        duration: 2000,
-        isClosable: true,
-      });
-      setScanStatus("error");
+    } catch (e) {
+      console.error(e);
+      return;
     }
 
     if (!userData || !secretKey) {
-      throw new Error("QR Code not recognized");
+      return;
     }
     setCurrentUserData(userData);
 
@@ -196,17 +189,27 @@ export default function Scanner() {
               <Heading textAlign="left" size="md" color="brand.400">
                 NAME:
               </Heading>
-              <Heading textAlign="left" size="md">
+              <Text
+                textAlign="left"
+                fontSize="md"
+                fontFamily="mono"
+                wordBreak="break-all"
+              >
                 {currentUserData?.name}
-              </Heading>
+              </Text>
             </VStack>
             <VStack w="100%" alignItems="flex-start">
               <Heading textAlign="left" size="md" color="brand.400">
                 EMAIL:
               </Heading>
-              <Heading textAlign="left" size="md">
+              <Text
+                textAlign="left"
+                fontSize="md"
+                wordBreak="break-all"
+                fontFamily="mono"
+              >
                 {currentUserData?.email}
-              </Heading>
+              </Text>
             </VStack>
           </VStack>
 
