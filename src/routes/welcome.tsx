@@ -51,7 +51,11 @@ export default function WelcomePage() {
           textAlign="center"
           pb="2"
           color="brand.400"
-          fontSize={{ base: "20px", iphone13: "22px", md: "26px" }}
+          fontSize={{ base: "18px", iphone13: "20px", md: "24px" }}
+          maxWidth="90vw" // Responsive width limit
+          overflow="hidden" // Hide overflow
+          textOverflow="ellipsis" // Truncate if necessary
+          whiteSpace="nowrap" // Prevent wrapping
         >
           WELCOME @{data!.displayAccountId}!
         </Heading>
