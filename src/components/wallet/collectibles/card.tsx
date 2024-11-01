@@ -79,10 +79,13 @@ export function CollectibleCard({
         <Heading
           as="h3"
           fontSize="sm"
-          fontFamily={"mono"}
+          fontFamily="mono"
           color="white"
-          noOfLines={2} // Truncate long titles to one line
+          noOfLines={2}
           width="100%"
+          lineHeight="1.25em"
+          minHeight="2.5em"
+          maxHeight="2.5em"
         >
           {title}
         </Heading>

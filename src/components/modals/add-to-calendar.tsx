@@ -17,10 +17,29 @@ import { AgendaItem } from "@/lib/api/agendas";
 
 const TIMEZONE = "Asia/Bangkok"; // Replace with your desired timezone
 
-// Function to format date for Google Calendar (without 'Z')
-function formatDateForGoogleCalendar(date: Date): string {
-  // Returns date in format YYYYMMDDTHHMMSS
-  return date.toISOString().replace(/-|:|\.\d\d\d|Z/g, "");
+function formatDateForGoogleCalendar(date: Date, timeZone: string): string {
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const parts = formatter.formatToParts(date);
+  const dateComponents: { [key: string]: string } = {};
+
+  for (const part of parts) {
+    if (part.type !== "literal") {
+      dateComponents[part.type] = part.value;
+    }
+  }
+
+  return `${dateComponents.year}${dateComponents.month}${dateComponents.day}T${dateComponents.hour}${dateComponents.minute}${dateComponents.second}`;
 }
 
 // Function to create Google Calendar link
@@ -33,8 +52,8 @@ function createGoogleCalendarLink(event: AgendaItem) {
     `${description}\nPresenter: ${presenter}`,
   );
 
-  const startDateTime = formatDateForGoogleCalendar(startDate);
-  const endDateTime = formatDateForGoogleCalendar(endDate);
+  const startDateTime = formatDateForGoogleCalendar(startDate, TIMEZONE);
+  const endDateTime = formatDateForGoogleCalendar(endDate, TIMEZONE);
 
   // Construct the Google Calendar link
   const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${startDateTime}/${endDateTime}&details=${encodedDescription}&location=${encodedStage}&trp=false&ctz=${TIMEZONE}`;

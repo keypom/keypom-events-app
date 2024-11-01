@@ -77,6 +77,27 @@ export function AgendaCard({
           >
             {presenter}
           </Heading>
+          <Text color={"brand.600"} fontSize={"xs"}>
+            {displayedDescription}
+          </Text>
+          {shouldTruncate && (
+            <Button
+              variant="link"
+              color="brand.400"
+              size="xs"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {isExpanded ? "View Less" : "View More"}
+            </Button>
+          )}
+          <Heading
+            as="h4"
+            color={"brand.400"}
+            fontSize={"sm"}
+            fontWeight={"bold"}
+          >
+            {stage}
+          </Heading>
         </VStack>
         <Flex direction="column" alignItems="center" gap={0} mt={-2}>
           <Button variant={"transparent"} onClick={handleFavouriteClick}>
@@ -96,24 +117,7 @@ export function AgendaCard({
           </Button>
         </Flex>
       </Flex>
-      <VStack alignItems="flex-start" spacing={0}>
-        <Text color={"brand.600"} fontSize={"xs"}>
-          {displayedDescription}
-        </Text>
-        {shouldTruncate && (
-          <Button
-            variant="link"
-            color="brand.400"
-            size="xs"
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            {isExpanded ? "View Less" : "View More"}
-          </Button>
-        )}
-      </VStack>
-      <Heading as="h4" color={"brand.400"} fontSize={"sm"} fontWeight={"bold"}>
-        {stage}
-      </Heading>
+      <VStack alignItems="flex-start" spacing={0}></VStack>
     </VStack>
   );
 }

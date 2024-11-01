@@ -53,7 +53,12 @@ export const FormControl = ({
       )}
       <Box mt="1.5">{children}</Box>
       {errorText && (
-        <Text fontSize={{ base: "xs", md: "sm" }} mt="6px" variant="error">
+        <Text
+          fontSize={{ base: "xs", md: "sm" }}
+          mt="6px"
+          variant="error"
+          color="red"
+        >
           {errorText}
         </Text>
       )}

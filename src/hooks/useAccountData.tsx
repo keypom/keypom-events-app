@@ -16,6 +16,38 @@ export interface AccountData {
   tokensCollected: string;
 }
 
+const sortJourneys = (journeys: Journey[]): Journey[] => {
+  return journeys.sort((a, b) => {
+    const aCompletedSteps = a.steps.filter((step) => step.completed).length;
+    const bCompletedSteps = b.steps.filter((step) => step.completed).length;
+    const aTotalSteps = a.steps.length;
+    const bTotalSteps = b.steps.length;
+    const aCompletionRatio = aCompletedSteps / aTotalSteps;
+    const bCompletionRatio = bCompletedSteps / bTotalSteps;
+
+    // Completed journeys go first, sorted by total steps (descending)
+    if (a.completed && b.completed) {
+      return bTotalSteps - aTotalSteps;
+    } else if (a.completed) {
+      return -1;
+    } else if (b.completed) {
+      return 1;
+    }
+
+    // In-progress journeys go next, sorted by highest completion ratio
+    if (aCompletedSteps > 0 && bCompletedSteps > 0) {
+      return bCompletionRatio - aCompletionRatio;
+    }
+
+    // Unstarted journeys go last, sorted by total steps (ascending)
+    if (aCompletedSteps === 0 && bCompletedSteps === 0) {
+      return aTotalSteps - bTotalSteps;
+    }
+
+    return 0;
+  });
+};
+
 // Helper function to map owned journeys (ExtClaimedDrop)
 const mapOwnedJourneyToJourney = (drop: ExtClaimedDrop): Journey => {
   const steps =
@@ -156,12 +188,15 @@ const fetchAccountData = async (secretKey: string) => {
       ),
     ];
 
+    // Sort the journeys
+    const sortedJourneys = sortJourneys(allJourneys);
+
     return {
       accountId,
       ownedCollectibles,
       unownedCollectibles,
       tokensCollected: recoveredAccount.ft_collected,
-      journeys: allJourneys,
+      journeys: sortedJourneys,
       displayAccountId: accountId
         .split(".")[0]
         .substring(KEYPOM_TOKEN_FACTORY_CONTRACT),
