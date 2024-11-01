@@ -59,21 +59,13 @@ export default function Scanner() {
         decodeAndParseBase64(qrData);
       userData = parsedUserData;
       secretKey = parsedTicket;
-    } catch (error) {
-      console.error("Scan failed", error);
-      toast({
-        title: "Ticket invalid",
-        description: "QR Code not recognized",
-        status: "error",
-        position: "top",
-        duration: 2000,
-        isClosable: true,
-      });
-      setScanStatus("error");
+    } catch (e) {
+      console.error(e);
+      return;
     }
 
     if (!userData || !secretKey) {
-      throw new Error("QR Code not recognized");
+      return;
     }
     setCurrentUserData(userData);
 
