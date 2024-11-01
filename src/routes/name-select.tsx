@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Regex to validate account ID (NEAR format: lowercase, alphanumeric, _, -, no capital letters)
-const accountIdPattern = /^([a-z\d]+[-_])*[a-z\d]+$/;
+const accountIdPattern = /^([a-z\d]+(?:[-_][a-z\d]+)*)$/;
 
 // Maximum length for username (total 64 - length of factory contract - 1 for the dot)
 const maxUsernameLength = 64 - KEYPOM_TOKEN_FACTORY_CONTRACT.length - 1;
@@ -82,7 +82,6 @@ const nouns = [
   "ninja",
   "pirate",
   "glitch",
-  "echo",
 ];
 
 export default function SetRecipient() {
@@ -159,8 +158,7 @@ export default function SetRecipient() {
 
   // Handle invalid characters and length while typing
   const handleInputChange = (value: string) => {
-    const split = value.split("@");
-    const lowerCaseValue = split.length > 1 ? split[1] : value;
+    const lowerCaseValue = value.toLowerCase().replace("@", "");
     setSelectedUsername(lowerCaseValue);
 
     if (!lowerCaseValue) {
@@ -175,9 +173,45 @@ export default function SetRecipient() {
       return;
     }
 
+    // Check for spaces
+    if (/\s/.test(lowerCaseValue)) {
+      setIsValidUsername(false);
+      setError("Spaces are not allowed.");
+      return;
+    }
+
+    // Check for invalid characters
+    if (/[^a-z0-9\-_]/.test(lowerCaseValue)) {
+      const invalidChars = lowerCaseValue.match(/[^a-z0-9\-_]/g);
+      // remove duplicates
+      const invalidCharsSet = new Set(invalidChars);
+      setIsValidUsername(false);
+      setError(
+        `Invalid character${invalidChars!.length > 1 ? "s" : ""} ${
+          invalidChars!.length > 1 ? "are" : "is"
+        } not allowed: ${Array.from(invalidCharsSet)!.join(", ")}`,
+      );
+      return;
+    }
+
+    // Check if username starts or ends with a dash or underscore
+    if (/^[-_]/.test(lowerCaseValue) || /[-_]$/.test(lowerCaseValue)) {
+      setIsValidUsername(false);
+      setError("Username cannot start or end with a dash or underscore.");
+      return;
+    }
+
+    // Check for consecutive dashes or underscores
+    if (/[-_]{2,}/.test(lowerCaseValue)) {
+      setIsValidUsername(false);
+      setError("Username cannot contain consecutive dashes or underscores.");
+      return;
+    }
+
+    // Check overall pattern
     if (!accountIdPattern.test(lowerCaseValue)) {
       setIsValidUsername(false);
-      setError("The username contains invalid characters");
+      setError("Invalid username format.");
       return;
     }
 
@@ -275,7 +309,6 @@ export default function SetRecipient() {
             type="text"
             fontSize="22px"
             height="54px"
-            paddingLeft="2.5rem" // Adjust for the '@' icon width
             paddingRight="3rem" // Make space for the randomize icon
             textAlign="center"
             placeholder={`@black_dragon42`}
