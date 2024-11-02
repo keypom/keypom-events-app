@@ -29,7 +29,12 @@ console.log("NETWORK_ID", NETWORK_ID);
 const isMainnet = NETWORK_ID === "mainnet";
 export const MULTICHAIN_NETWORKS = [
   { id: "near", name: "NEAR", icon: "/assets/near_chain.png", chainId: 397 },
-  { id: "base", name: "BASE", icon: "/assets/base_chain.png", chainId: isMainnet ? 8453 : 84532 },
+  {
+    id: "base",
+    name: "BASE",
+    icon: "/assets/base_chain.png",
+    chainId: isMainnet ? 8453 : 84532,
+  },
   {
     id: "eth",
     name: "ETHEREUM",
