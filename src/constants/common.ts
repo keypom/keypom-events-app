@@ -9,46 +9,6 @@ import {
 import { FooterItem } from "@/components/ui/footer";
 
 /**
- * MULTICHAIN NETWORKS
- */
-// constants/chains.ts
-// TODO: Min add mainnet networks and toggle between test and main accordingly
-export const MULTICHAIN_NETWORKS = [
-  { id: "near", name: "NEAR", icon: "/assets/near_chain.png", chainId: 397 },
-  { id: "base", name: "BASE", icon: "/assets/base_chain.png", chainId: 84532 },
-  {
-    id: "eth",
-    name: "ETHEREUM",
-    icon: "/assets/eth_chain.png",
-    chainId: 20665,
-  },
-  {
-    id: "polygon",
-    name: "POLYGON",
-    icon: "/assets/polygon_chain.png",
-    chainId: 80002,
-  },
-  {
-    id: "arbitrum",
-    name: "ARBITRUM",
-    icon: "/assets/arbitrum_chain.png",
-    chainId: 421614,
-  },
-  {
-    id: "optimism",
-    name: "OPTIMISM",
-    icon: "/assets/optimism_chain.png",
-    chainId: 11155420,
-  },
-  {
-    id: "binance",
-    name: "BSC",
-    icon: "/assets/binance_chain.png",
-    chainId: 97,
-  },
-];
-
-/**
  * ENVIRONMENT
  */
 export const REQUIRED_ENV_VARS = [
@@ -61,6 +21,52 @@ export const REQUIRED_ENV_VARS = [
 ];
 export const NETWORK_ID = import.meta.env.VITE_NETWORK_ID;
 console.log("NETWORK_ID", NETWORK_ID);
+
+/**
+ * MULTICHAIN NETWORKS
+ */
+// constants/chains.ts
+const isMainnet = NETWORK_ID === "mainnet";
+export const MULTICHAIN_NETWORKS = [
+  { id: "near", name: "NEAR", icon: "/assets/near_chain.png", chainId: 397 },
+  {
+    id: "base",
+    name: "BASE",
+    icon: "/assets/base_chain.png",
+    chainId: isMainnet ? 8453 : 84532,
+  },
+  {
+    id: "eth",
+    name: "ETHEREUM",
+    icon: "/assets/eth_chain.png",
+    chainId: isMainnet ? 1 : 20665,
+  },
+  {
+    id: "polygon",
+    name: "POLYGON",
+    icon: "/assets/polygon_chain.png",
+    chainId: isMainnet ? 137 : 80002,
+  },
+  {
+    id: "arbitrum",
+    name: "ARBITRUM",
+    icon: "/assets/arbitrum_chain.png",
+    chainId: isMainnet ? 42161 : 421614,
+  },
+  {
+    id: "optimism",
+    name: "OPTIMISM",
+    icon: "/assets/optimism_chain.png",
+    chainId: isMainnet ? 10 : 11155420,
+  },
+  {
+    id: "binance",
+    name: "BSC",
+    icon: "/assets/binance_chain.png",
+    chainId: isMainnet ? 56 : 97,
+  },
+];
+
 export const isTestEnv = import.meta.env.MODE === "test";
 export const AIRTABLE_WORKER_URL = import.meta.env.VITE_AIRTABLE_WORKER_URL;
 export const IPFS_PINNING_WORKER_URL = import.meta.env.VITE_IPFS_WORKER_URL;
