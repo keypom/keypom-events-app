@@ -41,6 +41,7 @@ export function CollectibleCard({
           objectFit="cover"
           borderRadius="md"
           opacity={disabled ? 0.5 : 1}
+          bgColor={disabled ? "gray.200" : "transparent"}
           filter="auto"
           blur={disabled ? "8px" : "0px"}
         />

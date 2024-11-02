@@ -5,6 +5,7 @@ import { NotFound404 } from "@/components/dashboard/not-found-404";
 import TxnFeed from "./TxnFeed"; // Adjust the import path accordingly
 import LeaderboardAndGlobals from "./LeaderboardAndGlobals"; // Adjust the import path accordingly
 import { LeaderboardData, TopTokenEarnerData, TransactionType } from "./types"; // Adjust the import path accordingly
+import { BLACKLISTED_LEADERBOARD_USERNAMES } from "@/constants/common";
 
 export default function Leaderboard() {
   const [leaderboardData, setLeaderboardData] =
@@ -21,8 +22,18 @@ export default function Leaderboard() {
           args: {},
         });
         console.log("Leaderboard data: ", data);
+
+        // Filter out blacklisted accounts from the token_leaderboard
+        const filteredTokenLeaderboard = data.token_leaderboard.filter(
+          (earner: TopTokenEarnerData) => {
+            const username = earner[0].split(".")[0];
+            return !BLACKLISTED_LEADERBOARD_USERNAMES.includes(username);
+          },
+        );
+
         setLeaderboardData({
           ...data,
+          token_leaderboard: filteredTokenLeaderboard,
           poap_leaderboard: data.poap_leaderboard.reverse(),
           recent_transactions: data.recent_transactions.reverse(),
         });

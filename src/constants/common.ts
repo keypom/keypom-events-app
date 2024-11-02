@@ -60,11 +60,12 @@ export const REQUIRED_ENV_VARS = [
   "VITE_MULTICHAIN_WORKER_URL",
 ];
 export const NETWORK_ID = import.meta.env.VITE_NETWORK_ID;
-console.log("NETWORK_ID", NETWORK_ID);
 export const isTestEnv = import.meta.env.MODE === "test";
 export const AIRTABLE_WORKER_URL = import.meta.env.VITE_AIRTABLE_WORKER_URL;
 export const IPFS_PINNING_WORKER_URL = import.meta.env.VITE_IPFS_WORKER_URL;
 export const MULTICHAIN_WORKER_URL = import.meta.env.VITE_MULTICHAIN_WORKER_URL;
+
+export const BLACKLISTED_LEADERBOARD_USERNAMES = ["test-user-1"];
 
 /**
  * KEYPOM

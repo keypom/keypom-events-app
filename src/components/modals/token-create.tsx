@@ -49,9 +49,25 @@ export function TokenCreateModal({
   const {
     isOpen,
     onClose,
-    handleClose,
+    handleClose: handleCloseModal,
     tokenType: modalType,
   } = useTokenCreateModalStore();
+
+  const handleClose = (
+    dropCreated: any,
+    isScavengerHunt: boolean,
+    scavengerHunt: Array<{ piece: string; description: string }>,
+    setIsModalLoading: (loading: boolean) => void,
+  ) => {
+    if (!isLoading) {
+      handleCloseModal(
+        dropCreated,
+        isScavengerHunt,
+        scavengerHunt,
+        setIsModalLoading,
+      );
+    }
+  };
 
   const [createdDrop, setCreatedDrop] = useState<{
     name: string;
@@ -111,7 +127,13 @@ export function TokenCreateModal({
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        size="2xl"
+        closeOnEsc={!isLoading}
+        closeOnOverlayClick={!isLoading}
+      >
         <ModalOverlay />
         <ModalContent
           background={"black"}
@@ -176,6 +198,7 @@ export function TokenCreateModal({
                 variant="outline"
                 width="full"
                 onClick={() => handleCancelDrop()}
+                disabled={isLoading} // Disable when loading
               >
                 Cancel
               </Button>

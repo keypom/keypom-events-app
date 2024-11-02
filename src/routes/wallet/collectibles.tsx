@@ -117,16 +117,39 @@ export default function Collectibles() {
     !data || isLoading || isError ? [] : data.unownedCollectibles;
 
   // Read `tab` and `page` from URL query parameters
-  const initialTab = searchParams.get("tab") === "found" ? "found" : "explore";
+  const queryTab = searchParams.get("tab");
   const initialPage = parseInt(searchParams.get("page") || "1", 10);
 
-  const [curTab, setCurTab] = useState<"found" | "explore">(initialTab);
-  const [foundPage, setFoundPage] = useState(
-    initialTab === "found" ? initialPage : 1,
-  );
-  const [explorePage, setExplorePage] = useState(
-    initialTab === "explore" ? initialPage : 1,
-  );
+  // Initialize `curTab` based on URL parameter or default logic
+  const [curTab, setCurTab] = useState<"found" | "explore">(() => {
+    if (queryTab === "found" || queryTab === "explore") {
+      return queryTab as "found" | "explore";
+    } else {
+      return "explore"; // Default to 'explore' initially
+    }
+  });
+
+  const [foundPage, setFoundPage] = useState(() => {
+    return queryTab === "found" ? initialPage : 1;
+  });
+
+  const [explorePage, setExplorePage] = useState(() => {
+    return queryTab === "explore" ? initialPage : 1;
+  });
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      if (
+        (!queryTab || (queryTab !== "found" && queryTab !== "explore")) &&
+        lockedItems.length === 0 &&
+        curTab !== "found"
+      ) {
+        setCurTab("found");
+        setFoundPage(1);
+        setSearchParams({ tab: "found", page: "1" }, { replace: true });
+      }
+    }
+  }, [isLoading, data, queryTab, lockedItems.length, curTab, setSearchParams]);
 
   const itemsPerPage = 4;
 
@@ -168,7 +191,9 @@ export default function Collectibles() {
       <PageHeading
         title="Collectibles"
         titleSize="24px"
-        description={`${unlockedItems.length}/${lockedItems.length + unlockedItems.length} found`}
+        description={`${unlockedItems.length}/${
+          lockedItems.length + unlockedItems.length
+        } found`}
         showBackButton
       />
       {isLoading && <LoadingBox />}
