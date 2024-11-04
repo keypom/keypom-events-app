@@ -66,13 +66,19 @@ export default function Scan() {
             dropId = qrDataSplit[3];
           }
 
-          await eventHelperInstance.claimEventDrop({
-            secretKey,
-            dropSecretKey: dropSecret,
-            isScav,
-            accountId,
-            dropId,
-          });
+          try {
+            await eventHelperInstance.claimEventDrop({
+              secretKey,
+              dropSecretKey: dropSecret,
+              isScav,
+              accountId,
+              dropId,
+            });
+          } catch (error: any) {
+            console.error("Failed to claim drop", error);
+            return;
+          }
+
           console.log("Navigating with state: ", dropSecret);
           navigate(`/scan/${encodeURIComponent(`${dropId}`)}`, {
             state: { secretKey: dropSecret },
