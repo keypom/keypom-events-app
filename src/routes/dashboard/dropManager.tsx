@@ -376,6 +376,7 @@ export function DropManager({
           const drops = await getAccountInformation(); // Refresh and get the updated drops
 
           if (!drops) {
+            window.location.reload();
             throw new Error("Drops not found in getAccountInformation");
           }
 
@@ -383,6 +384,7 @@ export function DropManager({
           const newDrop = drops.find((drop) => drop.id === dropId);
 
           if (!newDrop) {
+            window.location.reload();
             throw new Error("Newly created drop not found in dropsCreated");
           }
 
