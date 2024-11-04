@@ -65,9 +65,13 @@ function getConfig(network = NETWORK_ID): NearConfig {
         helperUrl: "https://helper.near.org",
         explorerUrl: "https://explorer.near.org",
         rpcList: {
-          defaultRpc: {
-            url: "https://rpc.mainnet.near.org",
-            simpleName: "official rpc",
+          lavaRpc: {
+            url: "https://g.w.lavanet.xyz:443/gateway/near/rpc-http/f653c33afd2ea30614f69bc1c73d4940",
+            simpleName: "lava rpc",
+          },
+          fastnearRpc: {
+            url: "https://free.rpc.fastnear.com",
+            simpleName: "fastnear rpc",
           },
         },
       };
