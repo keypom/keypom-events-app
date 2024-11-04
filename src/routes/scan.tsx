@@ -126,7 +126,7 @@ export default function Scan() {
   }, [scanStatus, statusMessage, toast]);
 
   return (
-    <Box py={4} display={"flex"} flexDirection={"column"} gap={4}>
+    <Box p={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
       <VStack spacing={8} width="100%" transform="scale(calc(100dvh     ))">
         <CameraAccess>
