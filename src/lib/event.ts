@@ -563,7 +563,7 @@ class EventJS {
     }
 
     if (alreadyClaimed) {
-      return;
+      throw new Error("You already scanned this drop");
     }
 
     const keyPair = nearAPI.KeyPair.fromString(secretKey);
