@@ -72,6 +72,8 @@ export const AIRTABLE_WORKER_URL = import.meta.env.VITE_AIRTABLE_WORKER_URL;
 export const IPFS_PINNING_WORKER_URL = import.meta.env.VITE_IPFS_WORKER_URL;
 export const MULTICHAIN_WORKER_URL = import.meta.env.VITE_MULTICHAIN_WORKER_URL;
 
+export const BLACKLISTED_LEADERBOARD_USERNAMES = ["test-user-1"];
+
 /**
  * KEYPOM
  */

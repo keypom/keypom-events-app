@@ -49,8 +49,11 @@ export function TokenDeleteModal() {
   };
 
   const onCloseModal = () => {
-    setCurrentStep(0);
-    onClose();
+    // Only allow closing if deletion is not in progress
+    if (currentStep !== 1) {
+      setCurrentStep(0);
+      onClose();
+    }
   };
 
   function ConfirmDeletion() {
@@ -64,7 +67,11 @@ export function TokenDeleteModal() {
           <Button variant="danger" onClick={onConfirm}>
             Delete
           </Button>
-          <Button variant="outline" onClick={onCloseModal}>
+          <Button
+            variant="outline"
+            onClick={onCloseModal}
+            disabled={currentStep === 1} // Disable when deleting
+          >
             Cancel
           </Button>
         </HStack>
@@ -120,6 +127,7 @@ export function TokenDeleteModal() {
       </VStack>
     );
   }
+  // In the renderModalBody function, ensure that no close buttons are rendered during progress
   const renderModalBody = () => {
     switch (currentStep) {
       case -1:
@@ -138,7 +146,12 @@ export function TokenDeleteModal() {
   if (!isOpen) return null;
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onCloseModal}
+        isCentered
+        closeOnEsc={false} // Prevent closing via escape key or outside click
+      >
         <ModalOverlay />
         <ModalContent
           fontFamily={"mono"}

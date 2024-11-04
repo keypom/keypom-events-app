@@ -11,7 +11,6 @@ export function Image({ src, ...props }: ImageProps) {
         {...props}
         onLoad={() => setLoading(false)}
         onError={() => setLoading(false)}
-        bgColor={"gray.200"}
       />
     </Skeleton>
   );

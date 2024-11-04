@@ -11,22 +11,14 @@ export function CollectibleTabButton({
   numItems: number;
   onClick: () => void;
 }) {
-  const theme = useTheme(); // Access the theme object
+  const theme = useTheme();
 
   const getText = (type: "found" | "explore") => {
-    switch (type) {
-      case "found":
-        return `FOUND (${numItems})`;
-      case "explore":
-        return `EXPLORE (${numItems})`;
-    }
+    return type === "found" ? `FOUND (${numItems})` : `EXPLORE (${numItems})`;
   };
 
-  const getOpacity = (numItems: number) => {
-    return numItems < 1 ? 0.25 : 1;
-  };
+  const getOpacity = (numItems: number) => (numItems < 1 ? 0.25 : 1);
 
-  // Function to convert hex to RGB
   const hexToRgb = (hex: string) => {
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, (_m, r, g, b) => r + r + g + g + b + b);
@@ -43,49 +35,37 @@ export function CollectibleTabButton({
     if (active) {
       return "transparent";
     }
-
     const opacity = getOpacity(numItems);
-
-    // Dynamically get the brand.400 color from the theme and convert it to RGB
     const brand400Hex = theme.colors.brand[400];
     const rgb = hexToRgb(brand400Hex);
-
-    if (rgb) {
-      return `rgba(${rgb}, ${opacity})`; // Apply the RGB color with the dynamic opacity
-    }
-
-    return "transparent";
+    return rgb ? `rgba(${rgb}, ${opacity})` : "transparent";
   };
 
-  const getBottomBorderColor = (active: boolean) => {
-    if (active) {
-      return "transparent";
-    }
-    return "brand.400";
-  };
+  const getBottomBorderColor = (active: boolean) =>
+    active ? "transparent" : "brand.400";
 
   return (
     <Box
       borderTopLeftRadius="md"
       borderTopRightRadius="md"
       w="full"
-      bg={getBackgroundColor(active, numItems)} // Pass both active and numItems for dynamic opacity
+      bg={getBackgroundColor(active, numItems)}
       h="50px"
-      alignItems={"center"}
-      justifyContent={"center"}
-      display={"flex"}
+      alignItems="center"
+      justifyContent="center"
+      display="flex"
       borderWidth="1px"
       borderColor={active ? "brand.400" : "transparent"}
       borderBottomColor={getBottomBorderColor(active)}
-      cursor={numItems > 0 ? "pointer" : "not-allowed"}
-      pointerEvents={numItems > 0 ? "auto" : "none"}
-      onClick={numItems > 0 ? onClick : undefined}
+      cursor={numItems > 0 || active ? "pointer" : "not-allowed"}
+      pointerEvents={numItems > 0 || active ? "auto" : "none"}
+      onClick={numItems > 0 || active ? onClick : undefined}
     >
       <Text
-        fontFamily={"mono"}
-        fontSize={"md"}
+        fontFamily="mono"
+        fontSize="md"
         fontWeight={700}
-        textAlign={"center"}
+        textAlign="center"
         color={active ? "brand.400" : "black"}
       >
         {getText(type)}
