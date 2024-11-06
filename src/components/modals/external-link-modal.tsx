@@ -41,8 +41,8 @@ export function ExternalLinkModal() {
         border="1px solid"
         borderColor="brand.400"
         width="90%"
-        maxWidth="400px"       
-        marginX="auto"  
+        maxWidth="400px"
+        marginX="auto"
         mt="15vh"
       >
         <VStack spacing={4} align="center" textAlign="center">

@@ -21,7 +21,9 @@ export function CameraAccess({ children }) {
 
   const checkCameraPermission = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: {width: { ideal: 1280 }, height: { ideal: 720 }} });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+      });
       // Stop the stream immediately after checking
       stream.getTracks().forEach((track) => track.stop());
       setHasPermission(true);
