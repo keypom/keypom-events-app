@@ -138,7 +138,7 @@ export default function Scan() {
         title: scanStatus === "success" ? "Success" : "Error",
         description: statusMessage,
         status: scanStatus,
-        duration: 5000,
+        duration: scanStatus === "success" ? 1000 : 5000,
         isClosable: true,
       });
       setTimeout(() => {
