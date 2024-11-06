@@ -31,28 +31,21 @@ import {
       }
       return url;
     };
-
-    // Responsive max width for different screen sizes
-    const modalMaxWidth = useBreakpointValue({
-      base: "90%", // Mobile screens
-      xs: "380px", // Small screens (e.g., small tablets)
-      md: "400px", // Medium screens (e.g., larger tablets)
-      lg: "500px", // Large screens (e.g., laptops)
-    });
   
     return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xs">
-      <ModalOverlay/>
-      <ModalContent
-        background="black"
-        padding={6}
-        borderRadius="lg"
-        border="1px solid"
-        borderColor="brand.400"
-        maxWidth={modalMaxWidth} // Set dynamic max width based on viewport
-        width="100%"
-        mt="15vh"
-      >
+      <Modal isOpen={isOpen} onClose={onClose} size="xs">
+        <ModalOverlay/>
+        <ModalContent
+          background="black"
+          padding={6}
+          borderRadius="lg"
+          border="1px solid"
+          borderColor="brand.400"
+          width="90%"
+          maxWidth="400px"       
+          marginX="auto"  
+          mt="15vh"
+        >
         <VStack spacing={4} align="center" textAlign="center">
           <Heading as="h3" fontSize="2xl" fontWeight="bold">
             External Link Found
