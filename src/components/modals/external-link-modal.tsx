@@ -6,63 +6,80 @@ import {
     VStack,
     HStack,
     Button,
-    Text
+    Text,
+    Box,
+    Icon
   } from "@chakra-ui/react";
+  import { FiExternalLink } from "react-icons/fi";
   
   import { useExternalLinkModalStore } from "@/stores/external-link-modal";
   
   export function ExternalLinkModal() {
     const { isOpen, onClose, link} = useExternalLinkModalStore();
-    console.log("link received: ", link)
 
-    function handleClose(){
-      console.log("leaving link: ", link)
-      onClose()
+    function handleContinue() {
+      onClose(); // Close the modal
+      window.open(link!, "_blank", "noopener,noreferrer"); // Open link in new tab
     }
+
+    // Function to truncate the link
+    const truncateLink = (url) => {
+      if(!url) return '';
+      if (url.length > 40) {
+        return `${url.slice(0, 25)}...${url.slice(-10)}`;
+      }
+      return url;
+    };
   
     return (
-      <>
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          size="xl"
-        >
-          <ModalOverlay />
-          <ModalContent
-            background={"black"}
-            padding={8}
-            borderRadius={"md"}
-            border={"1px solid var(--chakra-colors-brand-400)"}
-            paddingY={6}
-            color={"white"}
-            position="relative" // Add this line
-          >
-            <VStack align="stretch" spacing={0}>
-            <Heading as="h3" marginBottom={6} size="lg">External Link Scanned
-            </Heading>
-            <Text align={"center"} marginBottom={3}>{link}</Text>
-              <HStack marginBottom={4}>
-                <Button
-                  variant="primary"
-                  width="full"
-                  href = {link!}
-                  as="a"
-                >
-                  Continue
-                </Button>
-                <Button
-                  variant="outline"
-                  width="full"
-                  onClick={() => handleClose()}
-                >
-                  Cancel
-                </Button>
-              </HStack>
-              <Text align={"center"} color={"grey"} >You will be redirected in a new tab. Visit at your own discretion!</Text>
-            </VStack>
-          </ModalContent>
-        </Modal>
-      </>
-    );
+    <Modal isOpen={isOpen} onClose={onClose} size="xs">
+      <ModalOverlay />
+      <ModalContent
+        background="black"
+        padding={6}
+        borderRadius="lg"
+        border="1px solid"
+        borderColor="brand.400"
+      >
+        <VStack spacing={4} align="center" textAlign="center">
+          <Heading as="h3" fontSize="2xl" fontWeight="bold">
+            External Link Found
+          </Heading>
+          <Box background="gray.800" p={3} borderRadius="md" width="100%">
+            <Text fontSize="sm" color="brand.400" wordBreak="break-all">
+              {truncateLink(link)}
+            </Text>
+          </Box>
+          <Text fontSize="sm" color="gray.400">
+            You will be redirected in a new tab. Proceed with caution!
+          </Text>
+          <HStack spacing={4} width="100%">
+            <Button
+              variant="primary"
+              outline="green"
+              colorScheme="green"
+              width="100%"
+              // height="48px"
+              onClick={handleContinue}
+            >
+              <Box display="flex" alignItems="center">
+                <Icon as={FiExternalLink} mr={2} />
+                Continue
+              </Box>
+            </Button>
+            <Button
+              variant="outline"
+              colorScheme="green"
+              width="100%"
+              // height="48px"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+          </HStack>
+        </VStack>
+      </ModalContent>
+    </Modal>
+  );
   }
   

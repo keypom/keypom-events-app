@@ -20,6 +20,7 @@ import { LoadingBox } from "@/components/ui/loading-box";
 import { ErrorBox } from "@/components/ui/error-box";
 import { useExternalLinkModalStore } from "@/stores/external-link-modal";
 import { ExternalLinkModal } from "@/components/modals/external-link-modal";
+import { CameraAccess } from "@/components/ui/camera-access";
 
 export default function Scan() {
   const navigate = useNavigate();
@@ -69,13 +70,19 @@ export default function Scan() {
             dropId = qrDataSplit[3];
           }
 
-          await eventHelperInstance.claimEventDrop({
-            secretKey,
-            dropSecretKey: dropSecret,
-            isScav,
-            accountId,
-            dropId,
-          });
+          try {
+            await eventHelperInstance.claimEventDrop({
+              secretKey,
+              dropSecretKey: dropSecret,
+              isScav,
+              accountId,
+              dropId,
+            });
+          } catch (error: any) {
+            console.error("Failed to claim drop", error);
+            return;
+          }
+
           console.log("Navigating with state: ", dropSecret);
           navigate(`/scan/${encodeURIComponent(`${dropId}`)}`, {
             state: { secretKey: dropSecret },
@@ -141,68 +148,70 @@ export default function Scan() {
   }, [scanStatus, statusMessage, toast]);
 
   return (
-    <Box py={4} display={"flex"} flexDirection={"column"} gap={4}>
+    <Box p={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
       <VStack spacing={8} width="100%" transform="scale(calc(100dvh     ))">
-        <Box width="100%" height="100%" position={"relative"} px={4}>
-          <Image
-            src={RedactedExpression}
-            alt="Redacted Expression"
-            width="100%"
-            height="220px"
-            objectFit={"cover"}
-            loading="eager"
-            position="absolute"
-            top="50%"
-            left="0"
-            transform="translateY(-50%)"
-            zIndex={-1}
-          />
-          {isLoading && <LoadingBox />}
-          {isError && <ErrorBox message={`Error: ${error?.message}`} />}{" "}
-          {/* Error Handling */}
-          <Box display={"flex"} justifyContent={"center"} alignItems="center">
-            <QrScanner
-              handleScan={handleScan}
-              scanStatus={scanStatus}
-              allowMultiple={true}
-              scanDelay={5000}
+        <CameraAccess>
+          <Box width="100%" height="100%" position={"relative"} px={4}>
+            <Image
+              src={RedactedExpression}
+              alt="Redacted Expression"
+              width="100%"
+              height="220px"
+              objectFit={"cover"}
+              loading="eager"
+              position="absolute"
+              top="50%"
+              left="0"
+              transform="translateY(-50%)"
+              zIndex={-1}
             />
+            {isLoading && <LoadingBox />}
+            {isError && <ErrorBox message={`Error: ${error?.message}`} />}{" "}
+            {/* Error Handling */}
+            <Box display={"flex"} justifyContent={"center"} alignItems="center">
+              <QrScanner
+                handleScan={handleScan}
+                scanStatus={scanStatus}
+                allowMultiple={true}
+                scanDelay={5000}
+              />
+            </Box>
           </Box>
-        </Box>
-        <HStack
-          width="100%"
-          justifyContent={"space-between"}
-          alignItems="flex-start"
-          gap={4}
-          px={4}
-          wrap={"wrap"}
-        >
-          <VStack alignItems="flex-start" gap={4}>
-            <Heading as="h3" fontSize="2xl" color="white">
-              Earn:
-            </Heading>
-            <UnorderedList color="brand.400" fontFamily="mono">
-              <ListItem>Attending Talks</ListItem>
-              <ListItem>Visiting Booths</ListItem>
-              <ListItem>Scavenger Hunts</ListItem>
-              <ListItem>Sponsor Quizzes</ListItem>
-              <ListItem>and more.</ListItem>
-            </UnorderedList>
-          </VStack>
-          <VStack alignItems="flex-start" gap={4}>
-            <Heading as="h3" fontSize="2xl" color="white">
-              Spend:
-            </Heading>
-            <UnorderedList color="brand.400" fontFamily="mono">
-              <ListItem>Swag</ListItem>
-              <ListItem>Food</ListItem>
-              <ListItem>Raffles</ListItem>
-              <ListItem>NFTs</ListItem>
-              <ListItem>and more.</ListItem>
-            </UnorderedList>
-          </VStack>
-        </HStack>
+          <HStack
+            width="100%"
+            justifyContent={"space-between"}
+            alignItems="flex-start"
+            gap={4}
+            px={4}
+            wrap={"wrap"}
+          >
+            <VStack alignItems="flex-start" gap={4}>
+              <Heading as="h3" fontSize="2xl" color="white">
+                Earn:
+              </Heading>
+              <UnorderedList color="brand.400" fontFamily="mono">
+                <ListItem>Attending Talks</ListItem>
+                <ListItem>Visiting Booths</ListItem>
+                <ListItem>Scavenger Hunts</ListItem>
+                <ListItem>Sponsor Quizzes</ListItem>
+                <ListItem>and more.</ListItem>
+              </UnorderedList>
+            </VStack>
+            <VStack alignItems="flex-start" gap={4}>
+              <Heading as="h3" fontSize="2xl" color="white">
+                Spend:
+              </Heading>
+              <UnorderedList color="brand.400" fontFamily="mono">
+                <ListItem>Swag</ListItem>
+                <ListItem>Food</ListItem>
+                <ListItem>Raffles</ListItem>
+                <ListItem>NFTs</ListItem>
+                <ListItem>and more.</ListItem>
+              </UnorderedList>
+            </VStack>
+          </HStack>
+        </CameraAccess>
       </VStack>
       <ExternalLinkModal />
     </Box>

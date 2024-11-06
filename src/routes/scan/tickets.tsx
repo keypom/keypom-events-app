@@ -5,18 +5,19 @@ import {
   Button,
   Center,
   Heading,
-  VStack,
-  useToast,
   Spinner,
   Text,
+  VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
 import { QrScanner } from "@/components/scanner/qr-scanner";
-import { AttendeeKeyInfo } from "@/lib/helpers/events";
 import eventHelperInstance from "@/lib/event";
 import { decodeAndParseBase64 } from "@/lib/helpers/crypto";
+import { AttendeeKeyInfo } from "@/lib/helpers/events";
 import { UserData } from "@/stores/event-credentials";
+import { CameraAccess } from "@/components/ui/camera-access";
 
 interface StateRefObject {
   isScanning: boolean;
@@ -245,24 +246,25 @@ export default function Scanner() {
                 SCAN A TICKET
               </Heading>
             </VStack>
-
-            <Center marginBottom="1" marginTop="6" w="100%">
-              <VStack
-                alignItems="center"
-                h="100%"
-                maxHeight="500px"
-                maxW="500px"
-                overflow="hidden"
-                position="relative"
-                spacing={4}
-                w="full"
-              >
-                <QrScanner
-                  handleScan={handleScanResult}
-                  scanStatus={scanStatus}
-                />
-              </VStack>
-            </Center>
+            <CameraAccess>
+              <Center marginBottom="1" marginTop="6" w="100%">
+                <VStack
+                  alignItems="center"
+                  h="100%"
+                  maxHeight="500px"
+                  maxW="500px"
+                  overflow="hidden"
+                  position="relative"
+                  spacing={4}
+                  w="full"
+                >
+                  <QrScanner
+                    handleScan={handleScanResult}
+                    scanStatus={scanStatus}
+                  />
+                </VStack>
+              </Center>
+            </CameraAccess>
           </VStack>
         </Center>
       )}
