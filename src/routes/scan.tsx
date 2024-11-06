@@ -18,11 +18,14 @@ import { useEventCredentials } from "@/stores/event-credentials";
 import { useAccountData } from "@/hooks/useAccountData";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { ErrorBox } from "@/components/ui/error-box";
+import { useExternalLinkModalStore } from "@/stores/external-link-modal";
+import { ExternalLinkModal } from "@/components/modals/external-link-modal";
 
 export default function Scan() {
   const navigate = useNavigate();
   const { secretKey } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
+  const { onOpen, setLink } = useExternalLinkModalStore()
 
   // Check if data is available and destructure safely
   const accountId = data?.accountId;
@@ -93,9 +96,17 @@ export default function Scan() {
           navigate(`/wallet/send?to=${profile}`);
           break;
         }
-        default:
-          console.error("Unhandled QR data type:", type);
-          throw new Error("Unrecognized QR type");
+        default:{
+          if(!type.startsWith("https://")){
+            console.error("Unhandled QR data type:", type);
+            throw new Error("Unrecognized QR type");
+          }
+          console.log("found link: ", type)
+          // Wait 500ms
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          handleExternalLinkScan(type)
+          break;
+        }
       }
 
       // If the scan was successful, set success status
@@ -107,6 +118,12 @@ export default function Scan() {
       setScanStatus("error");
       setStatusMessage(`Error scanning QR code: ${error.message}`);
     }
+  };
+
+  const handleExternalLinkScan = (externalLink: string) => {
+    onOpen();
+    setLink("https://github.com/keypom/keypom-events-app/commits/main");
+    console.log("set link: ", externalLink)
   };
 
   useEffect(() => {
@@ -188,6 +205,7 @@ export default function Scan() {
           </VStack>
         </HStack>
       </VStack>
+      <ExternalLinkModal />
     </Box>
   );
 }
