@@ -1,37 +1,37 @@
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    Heading,
-    VStack,
-    HStack,
-    Button,
-    Text,
-    Box,
-    Icon
-  } from "@chakra-ui/react";
-  import { FiExternalLink } from "react-icons/fi";
-  
-  import { useExternalLinkModalStore } from "@/stores/external-link-modal";
-  
-  export function ExternalLinkModal() {
-    const { isOpen, onClose, link} = useExternalLinkModalStore();
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  Heading,
+  VStack,
+  HStack,
+  Button,
+  Text,
+  Box,
+  Icon,
+} from "@chakra-ui/react";
+import { FiExternalLink } from "react-icons/fi";
 
-    function handleContinue() {
-      onClose(); // Close the modal
-      window.open(link!, "_blank", "noopener,noreferrer"); // Open link in new tab
+import { useExternalLinkModalStore } from "@/stores/external-link-modal";
+
+export function ExternalLinkModal() {
+  const { isOpen, onClose, link } = useExternalLinkModalStore();
+
+  function handleContinue() {
+    onClose(); // Close the modal
+    window.open(link!, "_blank", "noopener,noreferrer"); // Open link in new tab
+  }
+
+  // Function to truncate the link
+  const truncateLink = (url) => {
+    if (!url) return "";
+    if (url.length > 40) {
+      return `${url.slice(0, 25)}...${url.slice(-10)}`;
     }
+    return url;
+  };
 
-    // Function to truncate the link
-    const truncateLink = (url) => {
-      if(!url) return '';
-      if (url.length > 40) {
-        return `${url.slice(0, 25)}...${url.slice(-10)}`;
-      }
-      return url;
-    };
-  
-    return (
+  return (
     <Modal isOpen={isOpen} onClose={onClose} size="xs">
       <ModalOverlay />
       <ModalContent
@@ -81,5 +81,4 @@ import {
       </ModalContent>
     </Modal>
   );
-  }
-  
+}
