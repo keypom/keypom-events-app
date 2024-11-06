@@ -26,7 +26,7 @@ export default function Scan() {
   const navigate = useNavigate();
   const { secretKey } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
-  const { onOpen, setLink } = useExternalLinkModalStore()
+  const { onOpen, setLink } = useExternalLinkModalStore();
 
   // Check if data is available and destructure safely
   const accountId = data?.accountId;
@@ -103,15 +103,15 @@ export default function Scan() {
           navigate(`/wallet/send?to=${profile}`);
           break;
         }
-        default:{
-          if(!type.startsWith("https://")){
+        default: {
+          if (!type.startsWith("https://")) {
             console.error("Unhandled QR data type:", type);
             throw new Error("Unrecognized QR type");
           }
-          console.log("found link: ", type)
+          console.log("found link: ", type);
           // Wait 500ms
           await new Promise((resolve) => setTimeout(resolve, 500));
-          handleExternalLinkScan(type)
+          handleExternalLinkScan(type);
           break;
         }
       }

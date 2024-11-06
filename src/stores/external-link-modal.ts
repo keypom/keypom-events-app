@@ -8,10 +8,12 @@ interface externalLinkModalStore {
   setLink: (link: string) => void;
 }
 
-export const useExternalLinkModalStore = create<externalLinkModalStore>((set) => ({
-  isOpen: false,
-  onClose: () => set(() => ({ isOpen: false })),
-  onOpen: () => set(() => ({ isOpen: true })),
-  link: null,
-  setLink: (link: string) => set(() => ({ link })),
-}));
+export const useExternalLinkModalStore = create<externalLinkModalStore>(
+  (set) => ({
+    isOpen: false,
+    onClose: () => set(() => ({ isOpen: false })),
+    onOpen: () => set(() => ({ isOpen: true })),
+    link: null,
+    setLink: (link: string) => set(() => ({ link })),
+  }),
+);

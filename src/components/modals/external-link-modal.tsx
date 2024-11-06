@@ -1,51 +1,50 @@
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    Heading,
-    VStack,
-    HStack,
-    Button,
-    Text,
-    Box,
-    Icon,
-    useBreakpointValue
-  } from "@chakra-ui/react";
-  import { FiExternalLink } from "react-icons/fi";
-  
-  import { useExternalLinkModalStore } from "@/stores/external-link-modal";
-  
-  export function ExternalLinkModal() {
-    const { isOpen, onClose, link} = useExternalLinkModalStore();
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  Heading,
+  VStack,
+  HStack,
+  Button,
+  Text,
+  Box,
+  Icon,
+} from "@chakra-ui/react";
+import { FiExternalLink } from "react-icons/fi";
 
-    function handleContinue() {
-      onClose(); // Close the modal
-      window.open(link!, "_blank", "noopener,noreferrer"); // Open link in new tab
+import { useExternalLinkModalStore } from "@/stores/external-link-modal";
+
+export function ExternalLinkModal() {
+  const { isOpen, onClose, link } = useExternalLinkModalStore();
+
+  function handleContinue() {
+    onClose(); // Close the modal
+    window.open(link!, "_blank", "noopener,noreferrer"); // Open link in new tab
+  }
+
+  // Function to truncate the link
+  const truncateLink = (url) => {
+    if (!url) return "";
+    if (url.length > 40) {
+      return `${url.slice(0, 25)}...${url.slice(-10)}`;
     }
+    return url;
+  };
 
-    // Function to truncate the link
-    const truncateLink = (url) => {
-      if(!url) return '';
-      if (url.length > 40) {
-        return `${url.slice(0, 25)}...${url.slice(-10)}`;
-      }
-      return url;
-    };
-  
-    return (
-      <Modal isOpen={isOpen} onClose={onClose} size="xs">
-        <ModalOverlay/>
-        <ModalContent
-          background="black"
-          padding={6}
-          borderRadius="lg"
-          border="1px solid"
-          borderColor="brand.400"
-          width="90%"
-          maxWidth="400px"       
-          marginX="auto"  
-          mt="15vh"
-        >
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="xs">
+      <ModalOverlay />
+      <ModalContent
+        background="black"
+        padding={6}
+        borderRadius="lg"
+        border="1px solid"
+        borderColor="brand.400"
+        width="90%"
+        maxWidth="400px"       
+        marginX="auto"  
+        mt="15vh"
+      >
         <VStack spacing={4} align="center" textAlign="center">
           <Heading as="h3" fontSize="2xl" fontWeight="bold">
             External Link Found
@@ -86,5 +85,4 @@ import {
       </ModalContent>
     </Modal>
   );
-  }
-  
+}
