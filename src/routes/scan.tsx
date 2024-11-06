@@ -122,8 +122,7 @@ export default function Scan() {
 
   const handleExternalLinkScan = (externalLink: string) => {
     onOpen();
-    setLink("https://github.com/keypom/keypom-events-app/commits/main");
-    console.log("set link: ", externalLink)
+    setLink(externalLink);
   };
 
   useEffect(() => {
