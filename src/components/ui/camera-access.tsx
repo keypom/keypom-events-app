@@ -16,13 +16,7 @@ export function CameraAccess({ children }) {
   const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {
-    // Check if permission is already stored in localStorage
-    const storedPermission = localStorage.getItem("cameraPermission");
-    if (storedPermission === "granted") {
-      setHasPermission(true);
-    } else {
-      checkCameraPermission();
-    }
+    checkCameraPermission();
   }, []);
 
   const checkCameraPermission = async () => {
@@ -33,12 +27,11 @@ export function CameraAccess({ children }) {
       // Stop the stream immediately after checking
       stream.getTracks().forEach((track) => track.stop());
       setHasPermission(true);
-      localStorage.setItem("cameraPermission", "granted"); // Store permission state
+      localStorage.setItem("cameraPermission", "granted");
       setShowInstructions(false);
     } catch {
       setHasPermission(false);
       setShowInstructions(true);
-      localStorage.removeItem("cameraPermission"); // Ensure no false positives
     }
   };
 
