@@ -53,7 +53,7 @@ export const QrScanner = ({
     setTimeout(() => {
       setIsOnCooldown(false); // Deactivate cooldown after 5000 milliseconds
       setShowAnimation(false);
-    }, 5000);
+    }, scanDelay);
   };
 
   const useNextDevice = () => {

@@ -70,18 +70,13 @@ export default function Scan() {
             dropId = qrDataSplit[3];
           }
 
-          try {
-            await eventHelperInstance.claimEventDrop({
-              secretKey,
-              dropSecretKey: dropSecret,
-              isScav,
-              accountId,
-              dropId,
-            });
-          } catch (error: any) {
-            console.error("Failed to claim drop", error);
-            return;
-          }
+          await eventHelperInstance.claimEventDrop({
+            secretKey,
+            dropSecretKey: dropSecret,
+            isScav,
+            accountId,
+            dropId,
+          });
 
           console.log("Navigating with state: ", dropSecret);
           navigate(`/scan/${encodeURIComponent(`${dropId}`)}`, {
@@ -143,7 +138,7 @@ export default function Scan() {
       });
       setTimeout(() => {
         setScanStatus(undefined);
-      }, 5000);
+      }, 3000);
     }
   }, [scanStatus, statusMessage, toast]);
 
@@ -174,7 +169,7 @@ export default function Scan() {
                 handleScan={handleScan}
                 scanStatus={scanStatus}
                 allowMultiple={true}
-                scanDelay={5000}
+                scanDelay={3000}
               />
             </Box>
           </Box>
