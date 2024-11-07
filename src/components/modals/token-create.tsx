@@ -91,9 +91,7 @@ export function TokenCreateModal({
     setIsScavengerHunt(false);
 
     // Dynamically generate default scavenger pieces with reset descriptions
-    setScavengerPieces([
-      { piece: `Step 1`, description: "" },
-    ]);
+    setScavengerPieces([{ piece: `Step 1`, description: "" }]);
   };
 
   const handleCreateDrop = async () => {
