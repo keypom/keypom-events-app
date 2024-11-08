@@ -8,17 +8,19 @@ import KeypomLogo from "/assets/keypom-logo.png";
 import BitteLogo from "/assets/bitte-logo-white.png";
 import { XIcon } from "@/components/icons/poweredx";
 import { NETWORK_ID } from "@/constants/common";
+import eventHelperInstance from "@/lib/event";
 
 export default function OffboardingPage() {
-  console.log("Offboarding Page");
   const { userData, secretKey } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
 
   const displayName = isLoading || isError ? "------" : data?.displayAccountId;
-  console.log("display name: ", data?.accountId);
 
   if (isError) {
-    console.error("Error loading account data: ", error);
+    eventHelperInstance.debugLog(
+      `Error loading account data: ${error}`,
+      "error",
+    );
   }
 
   const handleSecureWalletClick = () => {

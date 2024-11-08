@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ErrorBox } from "../ui/error-box";
 import { LoadingOverlay } from "./loading-overlay";
+import eventHelperInstance from "@/lib/event";
 
 export const QrScanner = ({
   handleScan,
@@ -40,7 +41,7 @@ export const QrScanner = ({
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error(error);
+      eventHelperInstance.debugLog(error, "error");
     } finally {
       setIsScanning(false);
       enableCooldown();
@@ -53,7 +54,7 @@ export const QrScanner = ({
     setTimeout(() => {
       setIsOnCooldown(false); // Deactivate cooldown after 5000 milliseconds
       setShowAnimation(false);
-    }, 5000);
+    }, scanDelay);
   };
 
   const useNextDevice = () => {

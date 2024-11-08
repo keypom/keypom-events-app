@@ -1,9 +1,10 @@
 import { Heading, VStack, Text } from "@chakra-ui/react";
 import { useRouteError, isRouteErrorResponse } from "react-router-dom";
+import eventHelperInstance from "./lib/event";
 
 export function ErrorPage() {
   const error = useRouteError() as Error;
-  console.error(error);
+  eventHelperInstance.debugLog(`Error: ${error}`, "error");
 
   if (!isRouteErrorResponse(error)) {
     return null;

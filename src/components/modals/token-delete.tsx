@@ -39,7 +39,7 @@ export function TokenDeleteModal() {
       setCurrentStep(2);
     } catch (error) {
       setCurrentStep(-1);
-      console.error("Error during deletion:", error);
+      eventHelperInstance.debugLog(`Error during deletion: ${error}`, "error");
     }
   };
 

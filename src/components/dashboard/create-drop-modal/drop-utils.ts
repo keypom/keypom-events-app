@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import eventHelperInstance from "@/lib/event";
+
 export const isValidNonNegativeNumber = (value: string) =>
   /^\d*\.?\d+$/.test(value);
 
@@ -16,11 +18,9 @@ export const validateForm = (
     errors.name = "Name is required";
   }
 
-  console.log(
-    "existingDropNames: ",
-    existingDropNames,
-    "Input: ",
-    createdDrop.name,
+  eventHelperInstance.debugLog(
+    `Existing drop names: ${existingDropNames} Input : ${createdDrop.name}`,
+    "log",
   );
 
   if (
@@ -96,9 +96,9 @@ export const updateNumPieces = (
   setTempNumPieces,
 ) => {
   let numPieces = parseInt(tempNumPieces, 10);
-  if (isNaN(numPieces) || numPieces < 2) {
-    setNumPiecesError("Journeys need to have at least 2 steps.");
-    numPieces = 2; // Minimum 2 pieces if scavenger hunt is active
+  if (isNaN(numPieces) || numPieces < 1) {
+    setNumPiecesError("Journeys need to have at least 1 step.");
+    numPieces = 1; // Minimum 2 pieces if scavenger hunt is active
   } else {
     setNumPiecesError("");
   }
@@ -124,8 +124,8 @@ export const removeScavengerPiece = (
   setScavengerPieces,
   setTempNumPieces,
 ) => {
-  if (scavengerPieces.length > 2) {
-    // Ensure there's always at least 2 pieces
+  if (scavengerPieces.length > 1) {
+    // Ensure there's always at least 1 piece
     let newPieces = scavengerPieces.filter((_, i) => i !== index);
 
     // Reassign piece numbers to ensure they are sequential

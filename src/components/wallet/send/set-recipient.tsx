@@ -63,7 +63,7 @@ export function SetRecipient({
       const doesExist = await eventHelperInstance.accountExists(
         `${receiver}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`,
       );
-      console.log("doesExist: ", doesExist);
+      eventHelperInstance.debugLog(`doesExist: ${doesExist}`, "log");
       if (!doesExist) {
         setError("User does not exist.");
         setIsValidUsername(false);
@@ -73,7 +73,7 @@ export function SetRecipient({
       }
       return doesExist;
     } catch (e) {
-      console.log(e);
+      eventHelperInstance.debugLog(`Error: ${e}`, "error");
       setIsValidUsername(false);
       setError("An error occurred while validating the account.");
       return false;
@@ -85,7 +85,7 @@ export function SetRecipient({
   const handleClick = async () => {
     if (!curAccountId) return;
 
-    console.log("curAccountId: ", curAccountId);
+    eventHelperInstance.debugLog(`Current account ID: ${curAccountId}`, "log");
     if (curAccountId === `${receiver}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`) {
       setIsValidUsername(false);
       setError("You cannot send tokens to yourself.");

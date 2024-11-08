@@ -1,4 +1,5 @@
 import { useAccountData } from "@/hooks/useAccountData";
+import eventHelperInstance from "@/lib/event";
 import {
   Box,
   Button,
@@ -17,7 +18,10 @@ export default function WelcomePage() {
   const { data, isLoading, isError, error } = useAccountData();
 
   if (isError) {
-    console.error("Error loading account data: ", error);
+    eventHelperInstance.debugLog(
+      `Error loading account data: ${error}`,
+      "error",
+    );
   }
 
   if (isLoading) {

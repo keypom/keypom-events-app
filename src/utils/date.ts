@@ -1,3 +1,4 @@
+import eventHelperInstance from "@/lib/event";
 import {
   format,
   formatDistanceToNow,
@@ -82,7 +83,7 @@ export const pureFormat = (
     const date = parseISO(dateString);
     return format(date, formatStr);
   } catch (error) {
-    console.error("Error formatting date:", error);
+    eventHelperInstance.debugLog(`Error formatting date: ${error}`, "error");
     return dateString; // Return original string if parsing fails
   }
 };

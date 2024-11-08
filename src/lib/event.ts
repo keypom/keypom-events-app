@@ -3,6 +3,7 @@ import {
   NETWORK_ID,
   KEYPOM_TOKEN_FACTORY_CONTRACT,
   MULTICHAIN_WORKER_URL,
+  IS_DEBUG_MODE,
 } from "@/constants/common";
 import getConfig, { NearConfig, RpcEndpoint } from "@/config/near";
 import { getPubFromSecret } from "@keypom/core";
@@ -134,18 +135,20 @@ class EventJS {
     const fastestRpcUrl = validEndpoints[0][0];
     const fastestTime = validEndpoints[0][1];
 
-    console.log(
-      `Fastest RPC selected: ${fastestRpcUrl} with response time: ${fastestTime}ms`,
+    this.debugLog(
+      `Selected RPC: ${fastestRpcUrl} with response time ${fastestTime}ms`,
+      "log",
     );
 
     // Log each RPC endpoint and its response time, along with the difference compared to the fastest
-    console.log("RPC Endpoint Response Times:");
+    this.debugLog("RPC Endpoint Response Times:", "log");
     validEndpoints.forEach(([url, time]) => {
       const timeDifference = time - fastestTime;
-      console.log(
+      this.debugLog(
         ` - ${url}: ${time}ms ${
           timeDifference > 0 ? `(+${timeDifference}ms)` : "(fastest)"
         }`,
+        "log",
       );
     });
 
@@ -200,6 +203,18 @@ class EventJS {
 
   yoctoToNear = (yocto: string) =>
     nearAPI.utils.format.formatNearAmount(yocto, 4);
+
+  debugLog = (message: string, type: "log" | "warn" | "error") => {
+    if (IS_DEBUG_MODE === true) {
+      if (type === "log") {
+        console.log(message);
+      } else if (type === "warn") {
+        console.warn(message);
+      } else if (type === "error") {
+        console.error(message);
+      }
+    }
+  };
 
   yoctoToNearWithMinDecimals = (yoctoString: string) => {
     const divisor = 1e24;
@@ -395,7 +410,7 @@ class EventJS {
           image: getIpfsImageSrcUrl(pinnedImage),
         };
         const pinnedMetadata = await pinJsonToIpfs(imageMetadata);
-        console.log("createDrop: ", createdDrop);
+        this.debugLog(`createDrop: ${createdDrop}`, "log");
         const chain_id = getChainIdFromId(createdDrop.chain);
 
         const seriesResult = await fetch(
@@ -490,14 +505,14 @@ class EventJS {
     accountId?: string;
   }) => {
     const pkToClaim = this.getPubFromSecret(dropSecretKey);
-    console.log("pkToClaim: ", pkToClaim);
+    this.debugLog(`pkToClaim: ${pkToClaim}`, "log");
 
     // Fetch the drop information
-    const dropInfo: DropData = await eventHelperInstance.viewCall({
+    const dropInfo: DropData = await this.viewCall({
       methodName: "get_drop_information",
       args: { drop_id: dropId },
     });
-    console.log("Drop Info in scan: ", dropInfo);
+    this.debugLog(`dropInfo in scan: ${dropInfo}`, "log");
 
     if (!dropInfo) {
       throw new Error("Drop not found");
@@ -512,13 +527,13 @@ class EventJS {
     // Fetch claimed drops for the account
     let existingClaimData: ExtClaimedDrop | null = null;
     try {
-      existingClaimData = await eventHelperInstance.viewCall({
+      existingClaimData = await this.viewCall({
         methodName: "get_claimed_drop_for_account",
         args: { account_id: accountId, drop_id: dropId },
       });
-      console.log("Existing Claim: ", existingClaimData);
+      this.debugLog(`existingClaimData: ${existingClaimData}`, "log");
     } catch (e) {
-      console.log("Error: ", e);
+      this.debugLog(`existingClaimData error: ${e}`, "error");
     }
     let alreadyClaimed = false;
 
@@ -787,9 +802,7 @@ class EventJS {
         if (attempts >= retryCount) {
           throw error;
         } else {
-          console.warn(
-            `Function call failed (attempt ${attempts}). Retrying with a new RPC endpoint...`,
-          );
+          this.debugLog(`Function call failed (attempt ${attempts}).`, "warn");
           await this.switchToNextRpcEndpoint();
           // Recreate the account object with the new connection
           account = new nearAPI.Account(
@@ -827,8 +840,9 @@ class EventJS {
         if (attempts >= retryCount) {
           throw error;
         } else {
-          console.warn(
-            `View function call failed (attempt ${attempts}). Retrying with a new RPC endpoint...`,
+          this.debugLog(
+            `View function call failed (attempt ${attempts}).`,
+            "warn",
           );
           await this.switchToNextRpcEndpoint();
           // Recreate the viewAccount with the new connection
@@ -888,7 +902,10 @@ class EventJS {
     };
     this.nearConnection = await nearAPI.connect(connectionConfig);
 
-    console.log(`Switched to new RPC endpoint: ${this.selectedRpcUrl}`);
+    this.debugLog(
+      `Switched to new RPC endpoint: ${this.selectedRpcUrl}`,
+      "log",
+    );
   }
 }
 

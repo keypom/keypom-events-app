@@ -68,7 +68,7 @@ export default function Send() {
       setStep(STEPS.SENT);
       setErrorMessage("");
     } catch (error) {
-      console.error(error);
+      eventHelperInstance.debugLog(`Error: ${error}`, "error");
       setErrorMessage(error instanceof Error ? error.message : String(error));
       setStep(STEPS.ERROR);
     }

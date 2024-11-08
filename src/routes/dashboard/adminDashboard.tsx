@@ -30,7 +30,7 @@ export const isTokenValid = (token) => {
     const now = Date.now() / 1000;
     return decoded.exp > now;
   } catch (error) {
-    console.error("Error decoding token:", error);
+    eventHelperInstance.debugLog(`Error decoding token: ${error}`, "error");
     return false;
   }
 };
@@ -53,7 +53,7 @@ export function AdminDashboard() {
     if (storedIdToken && isTokenValid(storedIdToken)) {
       const decodedToken: AdminProfile = jwtDecode(storedIdToken);
       setProfile(decodedToken); // Store decoded profile information
-      console.log("Decoded token:", decodedToken);
+      eventHelperInstance.debugLog(`Decoded token: ${decodedToken}`, "log");
       setAdminUser({ idToken: storedIdToken });
     } else {
       localStorage.removeItem("GOOGLE_AUTH_ID_TOKEN");
@@ -70,7 +70,7 @@ export function AdminDashboard() {
   };
 
   const handleGoogleLoginError = () => {
-    console.error("Login Failed");
+    eventHelperInstance.debugLog("Login Failed", "error");
     setIsErr(true);
     toast({
       title: "Login failed",
@@ -111,7 +111,10 @@ export function AdminDashboard() {
       }
       setIsLoading(false);
     } catch (error) {
-      console.error("Error fetching admin data:", error);
+      eventHelperInstance.debugLog(
+        `Error fetching admin data: ${error}`,
+        "error",
+      );
       setIsErr(true);
       setIsLoading(false);
     }

@@ -127,7 +127,7 @@ const fetchAccountData = async (secretKey: string) => {
 
     const accountId = recoveredAccount.account_id;
     const allDrops = await eventHelperInstance.getCachedDrops();
-    console.log("allDrops", allDrops);
+    eventHelperInstance.debugLog(`allDrops: ${allDrops}`, "log");
 
     const foundNFTDrops: ExtClaimedDrop[] = await eventHelperInstance.viewCall({
       methodName: "get_claimed_nfts_for_account",

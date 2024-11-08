@@ -1,4 +1,4 @@
-import { AttendeeTicketData } from "@/lib/event";
+import eventHelperInstance, { AttendeeTicketData } from "@/lib/event";
 import { decodeAndParseBase64 } from "@/lib/helpers/crypto";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
@@ -11,8 +11,9 @@ export const useTicketClaimParams = () => {
   const encodedTicketData = hash ? hash.replace("#", "") : "";
 
   if (!dropId || !encodedTicketData) {
-    console.error(
+    eventHelperInstance.debugLog(
       "Navigating to home page. dropId or SecretKey are not found in the URL or local storage",
+      "error",
     );
     navigate("/");
   }

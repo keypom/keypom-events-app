@@ -1,3 +1,5 @@
+import eventHelperInstance from "@/lib/event";
+
 export const get = (key: string) => {
   const value = localStorage.getItem(key);
   if (value !== null) {
@@ -6,8 +8,8 @@ export const get = (key: string) => {
     }
     try {
       return JSON.parse(value);
-    } catch (e) {
-      console.warn(e);
+    } catch (e: any) {
+      eventHelperInstance.debugLog(e, "error");
     }
   }
 };

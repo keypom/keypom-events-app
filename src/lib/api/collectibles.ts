@@ -30,11 +30,11 @@ export const fetchCollectibleById: (
     isFound =
       (claimedDrop.found_scavenger_ids || []).length ===
       (claimedDrop.needed_scavenger_ids || []).length;
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    eventHelperInstance.debugLog(e, "error");
     isFound = false;
   }
-  console.log(dropInfo);
+  eventHelperInstance.debugLog(`Drop info: ${dropInfo}`, "log");
 
   let chain = "NEAR"; // Default to NEAR
   if (dropInfo?.mc_metadata !== undefined) {

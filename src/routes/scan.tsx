@@ -18,12 +18,15 @@ import { useEventCredentials } from "@/stores/event-credentials";
 import { useAccountData } from "@/hooks/useAccountData";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { ErrorBox } from "@/components/ui/error-box";
+import { useExternalLinkModalStore } from "@/stores/external-link-modal";
+import { ExternalLinkModal } from "@/components/modals/external-link-modal";
 import { CameraAccess } from "@/components/ui/camera-access";
 
 export default function Scan() {
   const navigate = useNavigate();
   const { secretKey } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
+  const { onOpen, setLink } = useExternalLinkModalStore();
 
   // Check if data is available and destructure safely
   const accountId = data?.accountId;
@@ -45,15 +48,15 @@ export default function Scan() {
       const qrData = value;
 
       const qrDataSplit = qrData.split("%%");
-      console.log("QR Data Split: ", qrDataSplit);
+      eventHelperInstance.debugLog(`QR Data Split: ${qrDataSplit}`, "log");
 
       const type = qrDataSplit[0];
       if (!type) {
         return;
       }
 
-      console.log("QR Type: ", type);
-      console.log("QR Data: ", data);
+      eventHelperInstance.debugLog(`QR Type: ${type}`, "log");
+      eventHelperInstance.debugLog(`QR Data: ${data}`, "log");
 
       // Redirect based on the QR type, without claiming anything
       switch (type) {
@@ -76,11 +79,17 @@ export default function Scan() {
               dropId,
             });
           } catch (error: any) {
-            console.error("Failed to claim drop", error);
+            eventHelperInstance.debugLog(
+              `Failed to claim drop: ${error}`,
+              "error",
+            );
             return;
           }
 
-          console.log("Navigating with state: ", dropSecret);
+          eventHelperInstance.debugLog(
+            `Navigating with state: ${dropSecret}`,
+            "log",
+          );
           navigate(`/scan/${encodeURIComponent(`${dropId}`)}`, {
             state: { secretKey: dropSecret },
           });
@@ -100,9 +109,17 @@ export default function Scan() {
           navigate(`/wallet/send?to=${profile}`);
           break;
         }
-        default:
-          console.error("Unhandled QR data type:", type);
-          throw new Error("Unrecognized QR type");
+        default: {
+          if (!type.startsWith("https://")) {
+            eventHelperInstance.debugLog(`Unhandled QR type: ${type}`, "error");
+            throw new Error("Unrecognized QR type");
+          }
+          console.log("found link: ", type);
+          // Wait 500ms
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          handleExternalLinkScan(type);
+          break;
+        }
       }
 
       // If the scan was successful, set success status
@@ -110,10 +127,15 @@ export default function Scan() {
       setStatusMessage("QR code scanned successfully");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Scan failed", error);
+      eventHelperInstance.debugLog(`Scan failed: ${error}`, "error");
       setScanStatus("error");
       setStatusMessage(`Error scanning QR code: ${error.message}`);
     }
+  };
+
+  const handleExternalLinkScan = (externalLink: string) => {
+    onOpen();
+    setLink(externalLink);
   };
 
   useEffect(() => {
@@ -122,12 +144,12 @@ export default function Scan() {
         title: scanStatus === "success" ? "Success" : "Error",
         description: statusMessage,
         status: scanStatus,
-        duration: 5000,
+        duration: scanStatus === "success" ? 1000 : 5000,
         isClosable: true,
       });
       setTimeout(() => {
         setScanStatus(undefined);
-      }, 5000);
+      }, 3000);
     }
   }, [scanStatus, statusMessage, toast]);
 
@@ -158,7 +180,7 @@ export default function Scan() {
                 handleScan={handleScan}
                 scanStatus={scanStatus}
                 allowMultiple={true}
-                scanDelay={5000}
+                scanDelay={3000}
               />
             </Box>
           </Box>
@@ -197,6 +219,7 @@ export default function Scan() {
           </HStack>
         </CameraAccess>
       </VStack>
+      <ExternalLinkModal />
     </Box>
   );
 }

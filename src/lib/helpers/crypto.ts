@@ -28,10 +28,6 @@ export function generateSignature(secretKeyStr: string, callerId: string) {
   // Encode the signature as base64
   const signatureBase64 = Buffer.from(signature).toString("base64");
 
-  console.log("message: ", message);
-  console.log("signature: ", signatureBase64);
-  console.log("publicKey: ", publicKeyBase58);
-
   return {
     signature: signatureBase64,
     publicKey: `ed25519:${publicKeyBase58}`,
@@ -69,7 +65,6 @@ const encodeToBase64 = (jsonObject: Record<string, any>) => {
 const decodeAndParseBase64 = (base64String: string) => {
   // Step 1: Decode the base64 string to get the JSON string
   const jsonString = Buffer.from(base64String, "base64").toString("utf-8");
-  console.log(jsonString);
 
   // Step 2: Parse the JSON string to get back the original object
   const jsonObject = JSON.parse(jsonString);

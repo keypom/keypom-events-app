@@ -54,7 +54,10 @@ export function AdminCreateDrop() {
       }
       setIsLoading(false);
     } catch (error) {
-      console.error("Error fetching admin data:", error);
+      eventHelperInstance.debugLog(
+        `Error fetching admin data: ${error}`,
+        "error",
+      );
       setIsLoading(false);
       navigate("/me/admin");
       return; // Return here to avoid executing further code after navigation

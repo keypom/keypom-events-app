@@ -1,15 +1,15 @@
 import { IPFS_PINNING_WORKER_URL } from "@/constants/common";
+import eventHelperInstance from "../event";
 
 export const getIpfsImageSrcUrl = (cid: string) => {
   return `https://gateway.pinata.cloud/ipfs/${cid}`;
   const url = `https://${cid}.ipfs.storry.tv`;
-  console.log("url: ", url);
   return url;
 };
 
 export const pinToIpfs = async (data: File) => {
   const serializedMedia: string = await serializeMediaForWorker(data);
-  console.log("serializedMedia: ", serializedMedia, serializedMedia.toString());
+  eventHelperInstance.debugLog(`serializedMedia: ${serializedMedia}`, "log");
 
   const response = await fetch(`${IPFS_PINNING_WORKER_URL}/pin`, {
     method: "POST",
@@ -19,14 +19,14 @@ export const pinToIpfs = async (data: File) => {
       fileName: data.name,
     }),
   });
-  console.log("Response: ", response);
+  eventHelperInstance.debugLog(`response: ${response}`, "log");
 
   if (!response.ok) {
     throw new Error("Access denied");
   }
 
   const jsonResponse = await response.json();
-  console.log("jsonResponse: ", jsonResponse);
+  eventHelperInstance.debugLog(`jsonResponse: ${jsonResponse}`, "log");
   return jsonResponse.result;
 };
 
@@ -35,14 +35,14 @@ export const pinJsonToIpfs = async (jsonToPin: {}) => {
     method: "POST",
     body: JSON.stringify({ ...jsonToPin }),
   });
-  console.log("Response: ", response);
+  eventHelperInstance.debugLog(`response: ${response}`, "log");
 
   if (!response.ok) {
     throw new Error("Access denied");
   }
 
   const jsonResponse = await response.json();
-  console.log("jsonResponse: ", jsonResponse);
+  eventHelperInstance.debugLog(`jsonResponse: ${jsonResponse}`, "log");
   return jsonResponse.result;
 };
 
