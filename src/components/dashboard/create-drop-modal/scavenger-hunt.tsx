@@ -174,7 +174,7 @@ export const ScavengerHunt = ({
                         setTempNumPieces,
                       );
                     }}
-                    isDisabled={scavengerPieces.length <= 2}
+                    isDisabled={scavengerPieces.length <= 1}
                   >
                     <DeleteIcon />
                   </Button>

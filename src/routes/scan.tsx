@@ -48,15 +48,15 @@ export default function Scan() {
       const qrData = value;
 
       const qrDataSplit = qrData.split("%%");
-      console.log("QR Data Split: ", qrDataSplit);
+      eventHelperInstance.debugLog(`QR Data Split: ${qrDataSplit}`, "log");
 
       const type = qrDataSplit[0];
       if (!type) {
         return;
       }
 
-      console.log("QR Type: ", type);
-      console.log("QR Data: ", data);
+      eventHelperInstance.debugLog(`QR Type: ${type}`, "log");
+      eventHelperInstance.debugLog(`QR Data: ${data}`, "log");
 
       // Redirect based on the QR type, without claiming anything
       switch (type) {
@@ -70,15 +70,26 @@ export default function Scan() {
             dropId = qrDataSplit[3];
           }
 
-          await eventHelperInstance.claimEventDrop({
-            secretKey,
-            dropSecretKey: dropSecret,
-            isScav,
-            accountId,
-            dropId,
-          });
+          try {
+            await eventHelperInstance.claimEventDrop({
+              secretKey,
+              dropSecretKey: dropSecret,
+              isScav,
+              accountId,
+              dropId,
+            });
+          } catch (error: any) {
+            eventHelperInstance.debugLog(
+              `Failed to claim drop: ${error}`,
+              "error",
+            );
+            return;
+          }
 
-          console.log("Navigating with state: ", dropSecret);
+          eventHelperInstance.debugLog(
+            `Navigating with state: ${dropSecret}`,
+            "log",
+          );
           navigate(`/scan/${encodeURIComponent(`${dropId}`)}`, {
             state: { secretKey: dropSecret },
           });
@@ -100,7 +111,7 @@ export default function Scan() {
         }
         default: {
           if (!type.startsWith("https://")) {
-            console.error("Unhandled QR data type:", type);
+            eventHelperInstance.debugLog(`Unhandled QR type: ${type}`, "error");
             throw new Error("Unrecognized QR type");
           }
           console.log("found link: ", type);
@@ -116,7 +127,7 @@ export default function Scan() {
       setStatusMessage("QR code scanned successfully");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Scan failed", error);
+      eventHelperInstance.debugLog(`Scan failed: ${error}`, "error");
       setScanStatus("error");
       setStatusMessage(`Error scanning QR code: ${error.message}`);
     }

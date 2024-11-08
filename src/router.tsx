@@ -8,6 +8,7 @@ import Agenda from "./routes/agenda";
 import Help from "./routes/help";
 import AppLayout from "./routes/layouts/app";
 import Me from "./routes/me";
+import eventHelperInstance from "./lib/event";
 
 const lazyWithOfflineCheck = (importCallback) => {
   return async () => {
@@ -18,7 +19,10 @@ const lazyWithOfflineCheck = (importCallback) => {
       const { default: Component } = await importCallback();
       return { Component };
     } catch (error) {
-      console.error("Failed to load component:", error);
+      eventHelperInstance.debugLog(
+        `Failed to load component: ${error}`,
+        "error",
+      );
       return { Component: OfflinePage }; // Show fallback on error
     }
   };

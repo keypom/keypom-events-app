@@ -227,7 +227,7 @@ export default function SetRecipient() {
     try {
       const accountId = `${selectedUsername}.${KEYPOM_TOKEN_FACTORY_CONTRACT}`;
       const doesExist = await eventHelperInstance.accountExists(accountId);
-      console.log("doesExist: ", doesExist);
+      eventHelperInstance.debugLog(`doesExist: ${doesExist}`, "log");
       if (doesExist) {
         setError("The chosen name already exists.");
         setIsValidUsername(false);
@@ -236,8 +236,8 @@ export default function SetRecipient() {
         setIsValidUsername(true);
       }
       return !doesExist;
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      eventHelperInstance.debugLog(e, "error");
       setIsValidUsername(false);
       setError("An error occurred while validating the account.");
       return false;
@@ -261,10 +261,10 @@ export default function SetRecipient() {
           });
           setIsClaiming(false);
           navigate(`/welcome`);
-        } catch (e) {
+        } catch (e: any) {
           setIsClaiming(false);
           setError("Error claiming ticket. Please contact support.");
-          console.error(e);
+          eventHelperInstance.debugLog(e, "error");
         }
       }
     }

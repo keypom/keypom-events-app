@@ -1,5 +1,6 @@
 import { formatDate, pureFormat } from "@/utils/date";
 import { Agenda, AgendaItem } from "../api/agendas";
+import eventHelperInstance from "../event";
 
 // helpers/agenda.ts
 export const filterAgenda = (
@@ -81,7 +82,7 @@ export const findAllDays = (events: AgendaItem[]): string[] => {
     ({ displayDate }) => displayDate,
   );
 
-  console.log("Display Dates: ", displayDates);
+  eventHelperInstance.debugLog(`Display Dates: ${displayDates}`, "log");
   return displayDates;
 };
 

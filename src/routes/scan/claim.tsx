@@ -18,7 +18,7 @@ export default function Claim() {
 
   const navigate = useNavigate();
   const secretKey = location.state?.secretKey;
-  console.log("Secret Key: ", secretKey);
+  eventHelperInstance.debugLog(`Secret Key: ${secretKey}`, "log");
 
   useEffect(() => {
     const fetchReward = async () => {

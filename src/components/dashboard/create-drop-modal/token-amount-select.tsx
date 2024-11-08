@@ -3,6 +3,7 @@ import { Box, HStack, Input, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 
 import { FormControl } from "@/components/dashboard/form-control";
+import eventHelperInstance from "@/lib/event";
 
 interface DropTokenAmountSelectorProps {
   errors: any;
@@ -28,7 +29,7 @@ export default function DropTokenAmountSelector({
     } catch (e) {
       amount = "";
       setCustomAmount("");
-      console.error("Error parsing float: ", e);
+      eventHelperInstance.debugLog(`Error parsing float: ${e}`, "error");
     }
     setCurrentDrop({ ...currentDrop, amount: amount });
   };

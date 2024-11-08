@@ -1,3 +1,4 @@
+import eventHelperInstance from "@/lib/event";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export const useConferenceClaimParams = () => {
@@ -22,8 +23,9 @@ export const useConferenceClaimParams = () => {
   }
 
   if (!dropId || !secretKey) {
-    console.error(
-      "Navigating to home page. dropId or SecretKey are not found in the URL or local storage",
+    eventHelperInstance.debugLog(
+      "Navigating to home page. dropId or SecretKey not found in URL or local storage",
+      "error",
     );
     navigate("/");
   }

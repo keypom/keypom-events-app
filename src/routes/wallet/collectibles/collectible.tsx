@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import { MULTICHAIN_NETWORKS } from "@/constants/common";
 import { LockIcon } from "@/components/icons";
 import { useAccountData } from "@/hooks/useAccountData";
+import eventHelperInstance from "@/lib/event";
 
 const CollectibleDetails = ({
   title,
@@ -124,7 +125,10 @@ export default function CollectiblePage() {
     queryFn: () => fetchCollectibleById(id!, accountData?.accountId || ""),
     enabled: !!id,
   });
-  console.log(data);
+  eventHelperInstance.debugLog(
+    `[Collectible] Data: ${JSON.stringify(data)}`,
+    "log",
+  );
 
   const isLoading = accountDataLoading || isQueryLoading;
   const isError = isAccountDataError || isQueryError;

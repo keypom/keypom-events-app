@@ -1,3 +1,4 @@
+import eventHelperInstance from "@/lib/event";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const useTicketScanningParams = () => {
@@ -5,8 +6,9 @@ export const useTicketScanningParams = () => {
   const { funderAndEventId } = useParams();
 
   if (funderAndEventId === undefined || funderAndEventId === "") {
-    console.error(
+    eventHelperInstance.debugLog(
       "Navigating to home page. eventId is not found in the URL paramater",
+      "error",
     );
     navigate("/");
     return {
@@ -17,8 +19,9 @@ export const useTicketScanningParams = () => {
 
   const split = funderAndEventId.split(":");
   if (split.length !== 2) {
-    console.error(
+    eventHelperInstance.debugLog(
       "Navigating to home page. eventId is not found in the URL paramater",
+      "error",
     );
     navigate("/");
     return {
@@ -34,8 +37,9 @@ export const useTicketScanningParams = () => {
     funderId === undefined ||
     funderId === ""
   ) {
-    console.error(
-      "Navigating to home page. dropId or SecretKey are not found in the URL paramater",
+    eventHelperInstance.debugLog(
+      "Navigation to home page. dropId or SecretKey are not found in the URL paramater",
+      "error",
     );
     navigate("/");
     return {
