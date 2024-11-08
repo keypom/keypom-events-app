@@ -31,10 +31,6 @@ const defaultScavengerHunt = [
     piece: `Step 1`,
     description: "",
   },
-  {
-    piece: `Step 2`,
-    description: "",
-  },
 ];
 
 interface TokenCreateModalProps {
@@ -95,10 +91,7 @@ export function TokenCreateModal({
     setIsScavengerHunt(false);
 
     // Dynamically generate default scavenger pieces with reset descriptions
-    setScavengerPieces([
-      { piece: `Step 1`, description: "" },
-      { piece: `Step 2`, description: "" },
-    ]);
+    setScavengerPieces([{ piece: `Step 1`, description: "" }]);
   };
 
   const handleCreateDrop = async () => {
