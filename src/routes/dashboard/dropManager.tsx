@@ -126,8 +126,8 @@ export function DropManager({
       });
       setDropsCreated(drops);
       return drops; // Return the fetched drops
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      eventHelperInstance.debugLog(e, "error");
       if (!setIsErr) return;
       setIsErr(true);
     } finally {
@@ -145,7 +145,10 @@ export function DropManager({
 
   const handleDeleteClick = async (dropId: string) => {
     if (!secretKey) {
-      console.error("SK is undefined, unable to delete.");
+      eventHelperInstance.debugLog(
+        "SK is undefined, unable to delete.",
+        "error",
+      );
       return;
     }
 
@@ -250,7 +253,7 @@ export function DropManager({
   const regenerateKeysForDrops = useCallback(
     (drops: DropData[]): DropWithKeys[] => {
       return drops.map((drop) => {
-        console.log("drop: ", drop);
+        eventHelperInstance.debugLog(`Drop: ${drop}`, "log");
         const dropKeyPair = deriveKey(secretKey, drop.name);
         const dropSecretKey = dropKeyPair.secretKey;
 
@@ -314,8 +317,8 @@ export function DropManager({
           setQrCodeDescriptions([drop.name]);
         }
         onQRModalOpen();
-      } catch (err) {
-        console.error(err);
+      } catch (err: any) {
+        eventHelperInstance.debugLog(err, "error");
       }
     },
     [onQRModalOpen, regenerateKeysForDrops, setDropName],
@@ -428,8 +431,8 @@ export function DropManager({
 
           handleModalClose();
           onQRModalOpen();
-        } catch (e) {
-          console.error("Error creating drop:", e);
+        } catch (e: any) {
+          eventHelperInstance.debugLog(`Error creating drop: ${e}`, "error");
           toast({
             title: "Drop creation unsuccessful. Please try again.",
             status: "error",

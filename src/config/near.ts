@@ -32,7 +32,6 @@ function getConfig(network = NETWORK_ID): NearConfig {
     rpcList: {},
   };
 
-  console.log("network", network);
   switch (network) {
     case "testnet":
       return {

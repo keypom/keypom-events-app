@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { ImageIcon } from "@/components/dashboard/icons";
+import eventHelperInstance from "@/lib/event";
 
 interface ImageFileInputSmallProps extends InputProps {
   label?: string;
@@ -67,7 +68,7 @@ export const ImageFileInputSmall = ({
             type="file"
             zIndex="2"
             onClick={(e) => {
-              console.log("File input clicked", e);
+              eventHelperInstance.debugLog(`File input clicked: ${e}`, "log");
             }}
             {...props}
           />

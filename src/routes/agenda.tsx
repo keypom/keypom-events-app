@@ -30,6 +30,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { EventList } from "@/components/agenda/event-list";
+import eventHelperInstance from "@/lib/event";
 
 function FilterTitle({
   title,
@@ -138,7 +139,10 @@ export default function Agenda() {
       "favouritedEvents",
       JSON.stringify(Array.from(favouritedEvents)),
     );
-    console.log("favouritedEvents", favouritedEvents);
+    eventHelperInstance.debugLog(
+      `favouritedEvents: ${favouritedEvents}`,
+      "log",
+    );
   }, [favouritedEvents]);
 
   const handleToggleFavourite = (id: number) => {

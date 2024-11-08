@@ -5,6 +5,7 @@ import { PageHeading } from "@/components/ui/page-heading";
 import { WalletActions } from "@/components/wallet/wallet-actions";
 import { useAccountData } from "@/hooks/useAccountData";
 import { useEventCredentials } from "@/stores/event-credentials";
+import eventHelperInstance from "@/lib/event";
 
 const formatUserName = (name: string) => {
   if (name.length > 10) {
@@ -24,7 +25,10 @@ export default function Me() {
   const displayName = isLoading || isError ? "------" : data?.displayAccountId;
 
   if (isError) {
-    console.error("Error loading account data: ", error);
+    eventHelperInstance.debugLog(
+      `Error loading account data: ${error}`,
+      "error",
+    );
   }
 
   return (

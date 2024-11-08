@@ -31,7 +31,10 @@ export default function SponsorDashboard() {
         setSponsorKey(storedSecretKey);
       }
     } catch (error) {
-      console.error("Failed to parse stored sponsor data:", error);
+      eventHelperInstance.debugLog(
+        `Failed to parse stored sponsor data: ${error}`,
+        "error",
+      );
       localStorage.removeItem("SPONSOR_AUTH_TOKEN");
     } finally {
       setIsLoading(false); // Ensure loading state is always updated
@@ -45,10 +48,9 @@ export default function SponsorDashboard() {
       }
 
       try {
-        console.log(
-          "Fetching sponsor connection data...",
-          sponsorAccountId,
-          sponsorKey,
+        eventHelperInstance.debugLog(
+          `Fetching sponsor connection data: ${sponsorAccountId}, ${sponsorKey}`,
+          "log",
         );
         const recoveredAccount = await eventHelperInstance.viewCall({
           methodName: "recover_account",
@@ -72,7 +74,10 @@ export default function SponsorDashboard() {
         setIsValidated(recoveredAccount.account_status === "Sponsor");
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching admin data:", error);
+        eventHelperInstance.debugLog(
+          `Failed to fetch admin data: ${error}`,
+          "error",
+        );
         setIsErr(true);
         setIsLoading(false);
       }

@@ -60,8 +60,8 @@ export default function Scanner() {
         decodeAndParseBase64(qrData);
       userData = parsedUserData;
       secretKey = parsedTicket;
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      eventHelperInstance.debugLog(e, "error");
       return;
     }
 
@@ -78,7 +78,7 @@ export default function Scanner() {
           args: { key: pubKey },
         });
 
-      console.log("keyInfo: ", keyInfo);
+      eventHelperInstance.debugLog(`key info: ${keyInfo}`, "log");
 
       if (keyInfo) {
         if (stateRef.current.ticketToScan === String(secretKey)) {
@@ -112,7 +112,7 @@ export default function Scanner() {
         throw new Error("No ticket information found.");
       }
     } catch (err: any) {
-      console.error("Scan failed", err);
+      eventHelperInstance.debugLog(`Scan failed: ${err}`, "error");
       toast({
         title: "Ticket invalid",
         description: err.message,
@@ -137,8 +137,11 @@ export default function Scanner() {
     try {
       await eventHelperInstance.handleScanIntoEvent({ secretKey: ticket });
       stateRef.current.ticketToScan = null;
-    } catch (error) {
-      console.error("Error processing ticket:", ticket, error);
+    } catch (error: any) {
+      eventHelperInstance.debugLog(
+        `Error processing ticket: ${ticket}`,
+        "error",
+      );
     }
 
     setIsProcessing(false); // End the processing animation

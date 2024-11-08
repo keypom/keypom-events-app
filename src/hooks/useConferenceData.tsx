@@ -55,7 +55,10 @@ const fetchConferenceData = async (secretKey: string) => {
       tokenInfo,
     };
   } catch (error) {
-    console.error("Error fetching conference data:", error);
+    eventHelperInstance.debugLog(
+      `Error fetching conference data: ${error}`,
+      "error",
+    );
     // Re-throw the error to ensure React Query handles it
     return Promise.reject(error);
   }

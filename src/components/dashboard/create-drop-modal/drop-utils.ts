@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import eventHelperInstance from "@/lib/event";
+
 export const isValidNonNegativeNumber = (value: string) =>
   /^\d*\.?\d+$/.test(value);
 
@@ -16,11 +18,9 @@ export const validateForm = (
     errors.name = "Name is required";
   }
 
-  console.log(
-    "existingDropNames: ",
-    existingDropNames,
-    "Input: ",
-    createdDrop.name,
+  eventHelperInstance.debugLog(
+    `Existing drop names: ${existingDropNames} Input : ${createdDrop.name}`,
+    "log",
   );
 
   if (

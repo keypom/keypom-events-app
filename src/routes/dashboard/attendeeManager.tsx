@@ -180,7 +180,10 @@ export function AttendeeManager() {
         }
 
         const data = await response.json();
-        console.log("Data: ", data);
+        eventHelperInstance.debugLog(
+          `Fetch Attendees Response: ${data}`,
+          "log",
+        );
         const attendees = data.attendees;
 
         if (!Array.isArray(attendees)) {
@@ -256,8 +259,11 @@ export function AttendeeManager() {
             const progressPercent = 10 + ((i + 1) / batches.length) * 90; // Remaining 90% of progress
             setProgress(progressPercent);
           } catch (error: any) {
-            console.error("Error fetching attendee info:", error);
-            console.log("BATCH: ", batch);
+            eventHelperInstance.debugLog(
+              `Error fetching attendee info: ${error}`,
+              "error",
+            );
+            eventHelperInstance.debugLog(`Batch: ${batch}`, "log");
           }
         }
 
@@ -267,7 +273,10 @@ export function AttendeeManager() {
         setIsFetchingAttendees(false);
         setProgress(100); // Set progress to 100% when done
       } catch (error: any) {
-        console.error("Error fetching attendees:", error);
+        eventHelperInstance.debugLog(
+          `Error fetching attendees: ${error}`,
+          "error",
+        );
         setIsErr(true);
         setIsLoading(false);
         setIsFetchingAttendees(false);
@@ -516,7 +525,7 @@ const AttendeeTable = ({
       setSendingTo(null);
       setTokenAmounts({});
     } catch (error) {
-      console.error("Error sending tokens", error);
+      eventHelperInstance.debugLog(`Error sending tokens: ${error}`, "error");
 
       // Show error toast if token sending fails
       toast({
