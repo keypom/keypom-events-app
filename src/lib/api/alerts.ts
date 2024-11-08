@@ -101,9 +101,12 @@ export const fetchFeaturedAlert: () => Promise<Alert | null> = async () => {
     methodName: "get_alerts",
     args: {},
   });
-  console.log(stringifiedAlerts);
+  eventHelperInstance.debugLog(
+    `Stringified alerts: ${stringifiedAlerts}`,
+    "log",
+  );
   const alertsData = JSON.parse(stringifiedAlerts);
-  console.log("alertsData: ", alertsData);
+  eventHelperInstance.debugLog(`Alerts data: ${alertsData}`, "log");
   // Filter out any alerts in the alert data that don't adhere to the Airtable format
   const filteredAlertsData: AirtableAlert[] = alertsData.filter(
     (alert) =>
@@ -112,17 +115,20 @@ export const fetchFeaturedAlert: () => Promise<Alert | null> = async () => {
       alert["Duration (minutes)"] &&
       alert.Time,
   );
-  console.log("filteredAlertsData: ", filteredAlertsData);
+  eventHelperInstance.debugLog(
+    `Filtered alerts data: ${filteredAlertsData}`,
+    "log",
+  );
   const agenda = await fetchAgenda();
   const reminders = generateReminders(agenda.events);
-  console.log("reminders: ", reminders);
+  eventHelperInstance.debugLog(`Reminders: ${reminders}`, "log");
   const now = new Date();
 
   // Create alerts from Airtable data
   const alerts = filteredAlertsData.map((alert, index) =>
     createAlertFromAirtable(alert, index),
   );
-  console.log("alerts: ", alerts);
+  eventHelperInstance.debugLog(`Alerts: ${alerts}`, "log");
 
   // Filter active alerts
   const activeAlerts = alerts.filter(
@@ -132,7 +138,7 @@ export const fetchFeaturedAlert: () => Promise<Alert | null> = async () => {
       alert.expiresAt &&
       alert.expiresAt >= now,
   );
-  console.log("activeAlerts: ", activeAlerts);
+  eventHelperInstance.debugLog(`Active alerts: ${activeAlerts}`, "log");
 
   // Create alerts from active reminders
   const activeReminderAlerts = reminders
@@ -142,13 +148,19 @@ export const fetchFeaturedAlert: () => Promise<Alert | null> = async () => {
         now.getTime() <= reminder.endTime.getTime(),
     )
     .map((reminder) => createAlertFromReminder(reminder, now));
-  console.log("activeReminderAlerts: ", activeReminderAlerts);
+  eventHelperInstance.debugLog(
+    `Active reminder alerts: ${activeReminderAlerts}`,
+    "log",
+  );
 
   // Sort and decide which alert to show
   const sortedActiveAlerts = sortAlertsByCreationDate(activeAlerts);
   const sortedActiveReminderAlerts =
     sortAlertsByCreationDate(activeReminderAlerts);
-  console.log("sortedActiveAlerts: ", sortedActiveAlerts);
+  eventHelperInstance.debugLog(
+    `Sorted active alerts: ${sortedActiveAlerts}`,
+    "log",
+  );
 
   if (sortedActiveAlerts.length > 0) {
     return sortedActiveAlerts[0];

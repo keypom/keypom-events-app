@@ -38,7 +38,10 @@ export default function TicketQRCode({
   // Effect to check for QR scan and reload if necessary
   useEffect(() => {
     const checkForQRScanned = async () => {
-      console.log("Checking for QR scanned: ", secretKey);
+      eventHelperInstance.debugLog(
+        `Checking for QR Scanned: ${secretKey}`,
+        "log",
+      );
       const pubKey = eventHelperInstance.getPubFromSecret(secretKey);
       const keyInfo: AttendeeKeyInfo = await eventHelperInstance.viewCall({
         methodName: "get_key_information",
@@ -90,7 +93,10 @@ export default function TicketQRCode({
       // Clamp the size between minSize and maxSize
       const newSize = Math.min(Math.max(interpolatedSize, minSize), maxSize);
 
-      console.log("Screen height: ", screenHeight, "QR Size: ", newSize);
+      eventHelperInstance.debugLog(
+        `Screen height: ${screenHeight} QR Size: ${newSize}`,
+        "log",
+      );
       setQrSize(newSize);
     };
 

@@ -24,7 +24,7 @@ export const fetchAgenda: () => Promise<Agenda> = async () => {
     args: {},
   });
   const agendaData = JSON.parse(stringifiedAgenda);
-  console.log(agendaData);
+  eventHelperInstance.debugLog(agendaData, "log");
 
   // Update the filtering condition with new field names
   const filteredAgendaData = agendaData.filter(
@@ -38,7 +38,7 @@ export const fetchAgenda: () => Promise<Agenda> = async () => {
       item.Format &&
       item.Topic,
   );
-  console.log(filteredAgendaData);
+  eventHelperInstance.debugLog(filteredAgendaData, "log");
 
   const events: AgendaItem[] = filteredAgendaData.map((item, index) => {
     // Parse start and end times

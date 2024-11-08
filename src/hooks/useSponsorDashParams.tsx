@@ -1,3 +1,4 @@
+import eventHelperInstance from "@/lib/event";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export const useSponsorDashParams = () => {
@@ -9,8 +10,9 @@ export const useSponsorDashParams = () => {
   const sponsorKey = hash ? hash.replace("#", "") : "";
 
   if (!accountId || !sponsorKey) {
-    console.error(
-      "Navigating to home page. accountId or sponsor data are not found in the URL or local storage",
+    eventHelperInstance.debugLog(
+      `Navigating to home page. accountId or sponsor data are not found in the URL or local storage`,
+      "error",
     );
     navigate("/");
   }

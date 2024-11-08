@@ -14,6 +14,7 @@ import {
 import { useEventCredentials } from "@/stores/event-credentials";
 import { useEffect, useRef } from "react";
 import { useConferenceData } from "@/hooks/useConferenceData";
+import eventHelperInstance from "@/lib/event";
 
 export default function AppLayout() {
   const { secretKey } = useEventCredentials();
@@ -42,7 +43,7 @@ export default function AppLayout() {
 
   const isConferenceOver = !isLoading && data?.conferenceOver;
   if (isConferenceOver && pathname !== "/offboarding") {
-    console.log("Conference is over");
+    eventHelperInstance.debugLog("Conference is over", "log");
     return <Navigate to="/offboarding" replace={true} />;
   }
 

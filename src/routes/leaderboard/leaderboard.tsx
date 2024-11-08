@@ -21,7 +21,7 @@ export default function Leaderboard() {
           methodName: "get_leaderboard_information",
           args: {},
         });
-        console.log("Leaderboard data: ", data);
+        eventHelperInstance.debugLog(`Leaderboard data: ${data}`, "log");
 
         // Filter out blacklisted accounts from the token_leaderboard
         const filteredTokenLeaderboard = data.token_leaderboard.filter(
@@ -39,7 +39,7 @@ export default function Leaderboard() {
         });
         setIsLoading(false);
       } catch (e: any) {
-        console.log(e);
+        eventHelperInstance.debugLog(e, "error");
         setIsErr(true);
         setIsLoading(false);
       }
