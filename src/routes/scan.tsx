@@ -18,12 +18,15 @@ import { useEventCredentials } from "@/stores/event-credentials";
 import { useAccountData } from "@/hooks/useAccountData";
 import { LoadingBox } from "@/components/ui/loading-box";
 import { ErrorBox } from "@/components/ui/error-box";
+import { useExternalLinkModalStore } from "@/stores/external-link-modal";
+import { ExternalLinkModal } from "@/components/modals/external-link-modal";
 import { CameraAccess } from "@/components/ui/camera-access";
 
 export default function Scan() {
   const navigate = useNavigate();
   const { secretKey } = useEventCredentials();
   const { data, isLoading, isError, error } = useAccountData();
+  const { onOpen, setLink } = useExternalLinkModalStore();
 
   // Check if data is available and destructure safely
   const accountId = data?.accountId;
@@ -106,9 +109,17 @@ export default function Scan() {
           navigate(`/wallet/send?to=${profile}`);
           break;
         }
-        default:
-          eventHelperInstance.debugLog(`Unhandled QR type: ${type}`, "error");
-          throw new Error("Unrecognized QR type");
+        default: {
+          if (!type.startsWith("https://")) {
+            eventHelperInstance.debugLog(`Unhandled QR type: ${type}`, "error");
+            throw new Error("Unrecognized QR type");
+          }
+          console.log("found link: ", type);
+          // Wait 500ms
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          handleExternalLinkScan(type);
+          break;
+        }
       }
 
       // If the scan was successful, set success status
@@ -122,18 +133,23 @@ export default function Scan() {
     }
   };
 
+  const handleExternalLinkScan = (externalLink: string) => {
+    onOpen();
+    setLink(externalLink);
+  };
+
   useEffect(() => {
     if (scanStatus) {
       toast({
         title: scanStatus === "success" ? "Success" : "Error",
         description: statusMessage,
         status: scanStatus,
-        duration: 5000,
+        duration: scanStatus === "success" ? 1000 : 5000,
         isClosable: true,
       });
       setTimeout(() => {
         setScanStatus(undefined);
-      }, 5000);
+      }, 3000);
     }
   }, [scanStatus, statusMessage, toast]);
 
@@ -164,7 +180,7 @@ export default function Scan() {
                 handleScan={handleScan}
                 scanStatus={scanStatus}
                 allowMultiple={true}
-                scanDelay={5000}
+                scanDelay={3000}
               />
             </Box>
           </Box>
@@ -203,6 +219,7 @@ export default function Scan() {
           </HStack>
         </CameraAccess>
       </VStack>
+      <ExternalLinkModal />
     </Box>
   );
 }
