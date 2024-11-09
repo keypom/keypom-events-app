@@ -50,7 +50,7 @@ export default function Scanner() {
     stateRef.current.ticketToScan = ticketToScan;
   }, [ticketToScan]);
 
-  const handleScanResult = async (qrData: string) => {
+  const handleScanResult = async (qrData: string): Promise<void> => {
     setScanStatus(undefined);
 
     let userData: UserData | null = null;
@@ -61,6 +61,14 @@ export default function Scanner() {
       userData = parsedUserData;
       secretKey = parsedTicket;
     } catch (e: any) {
+      toast({
+        title: "Invalid Ticket",
+        description: "QR Code Format is Incorrect",
+        status: "error",
+        position: "top",
+        duration: 2000,
+        isClosable: true,
+      });
       eventHelperInstance.debugLog(e, "error");
       return;
     }
@@ -107,7 +115,7 @@ export default function Scanner() {
         setIsVerifying(true);
         setScanStatus("success");
 
-        return Promise.resolve({ message: "Ticket successfully scanned." });
+        return;
       } else {
         throw new Error("No ticket information found.");
       }

@@ -28,7 +28,6 @@ export default function Scan() {
   const { data, isLoading, isError, error } = useAccountData();
   const { onOpen, setLink } = useExternalLinkModalStore();
 
-  // Check if data is available and destructure safely
   const accountId = data?.accountId;
   const displayAccountId = data?.displayAccountId;
 
@@ -39,6 +38,13 @@ export default function Scan() {
 
   const handleScan = async (value: string): Promise<void> => {
     if (!accountId || !secretKey) {
+      toast({
+        title: "Error",
+        description: "Account information is missing.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
       return;
     }
 
@@ -70,21 +76,14 @@ export default function Scan() {
             dropId = qrDataSplit[3];
           }
 
-          try {
-            await eventHelperInstance.claimEventDrop({
-              secretKey,
-              dropSecretKey: dropSecret,
-              isScav,
-              accountId,
-              dropId,
-            });
-          } catch (error: any) {
-            eventHelperInstance.debugLog(
-              `Failed to claim drop: ${error}`,
-              "error",
-            );
-            return;
-          }
+          // Attempt to claim the drop
+          await eventHelperInstance.claimEventDrop({
+            secretKey,
+            dropSecretKey: dropSecret,
+            isScav,
+            accountId,
+            dropId,
+          });
 
           eventHelperInstance.debugLog(
             `Navigating with state: ${dropSecret}`,
@@ -93,6 +92,10 @@ export default function Scan() {
           navigate(`/scan/${encodeURIComponent(`${dropId}`)}`, {
             state: { secretKey: dropSecret },
           });
+
+          // If the scan was successful, set success status
+          setScanStatus("success");
+          setStatusMessage("QR code scanned successfully");
           break;
         }
         case "food":
@@ -114,22 +117,16 @@ export default function Scan() {
             eventHelperInstance.debugLog(`Unhandled QR type: ${type}`, "error");
             throw new Error("Unrecognized QR type");
           }
-          console.log("found link: ", type);
           // Wait 500ms
           await new Promise((resolve) => setTimeout(resolve, 500));
           handleExternalLinkScan(type);
           break;
         }
       }
-
-      // If the scan was successful, set success status
-      setScanStatus("success");
-      setStatusMessage("QR code scanned successfully");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       eventHelperInstance.debugLog(`Scan failed: ${error}`, "error");
       setScanStatus("error");
-      setStatusMessage(`Error scanning QR code: ${error.message}`);
+      setStatusMessage(`Error scanning QR code: ${error.message || error}`);
     }
   };
 
@@ -144,11 +141,13 @@ export default function Scan() {
         title: scanStatus === "success" ? "Success" : "Error",
         description: statusMessage,
         status: scanStatus,
-        duration: scanStatus === "success" ? 1000 : 5000,
+        duration: scanStatus === "success" ? 3000 : 5000,
         isClosable: true,
       });
+      // Reset scanStatus after displaying the message
       setTimeout(() => {
         setScanStatus(undefined);
+        setStatusMessage("");
       }, 3000);
     }
   }, [scanStatus, statusMessage, toast]);
@@ -156,7 +155,7 @@ export default function Scan() {
   return (
     <Box p={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
-      <VStack spacing={8} width="100%" transform="scale(calc(100dvh     ))">
+      <VStack spacing={8} width="100%">
         <CameraAccess>
           <Box width="100%" height="100%" position={"relative"} px={4}>
             <Image
@@ -173,14 +172,13 @@ export default function Scan() {
               zIndex={-1}
             />
             {isLoading && <LoadingBox />}
-            {isError && <ErrorBox message={`Error: ${error?.message}`} />}{" "}
-            {/* Error Handling */}
+            {isError && <ErrorBox message={`Error: ${error?.message}`} />}
             <Box display={"flex"} justifyContent={"center"} alignItems="center">
               <QrScanner
                 handleScan={handleScan}
                 scanStatus={scanStatus}
                 allowMultiple={true}
-                scanDelay={3000}
+                scanDelay={1000}
               />
             </Box>
           </Box>

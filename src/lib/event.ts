@@ -206,6 +206,7 @@ class EventJS {
 
   debugLog = (message: string, type: "log" | "warn" | "error") => {
     if (IS_DEBUG_MODE === true) {
+      console.log(`${type}: ${message}`);
       if (type === "log") {
         console.log(message);
       } else if (type === "warn") {
