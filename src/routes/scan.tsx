@@ -16,11 +16,11 @@ import { useEffect, useState } from "react";
 import eventHelperInstance from "@/lib/event";
 import { useEventCredentials } from "@/stores/event-credentials";
 import { useAccountData } from "@/hooks/useAccountData";
-import { LoadingBox } from "@/components/ui/loading-box";
 import { ErrorBox } from "@/components/ui/error-box";
 import { useExternalLinkModalStore } from "@/stores/external-link-modal";
 import { ExternalLinkModal } from "@/components/modals/external-link-modal";
 import { CameraAccess } from "@/components/ui/camera-access";
+import { LoadingBox } from "@/components/ui/loading-box";
 
 export default function Scan() {
   const navigate = useNavigate();
@@ -37,14 +37,10 @@ export default function Scan() {
   const [statusMessage, setStatusMessage] = useState("");
 
   const handleScan = async (value: string): Promise<void> => {
+    console.log("Scanning: ", value);
+
     if (!accountId || !secretKey) {
-      toast({
-        title: "Error",
-        description: "Account information is missing.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      console.log("Missing credentials");
       return;
     }
 
@@ -127,6 +123,8 @@ export default function Scan() {
       eventHelperInstance.debugLog(`Scan failed: ${error}`, "error");
       setScanStatus("error");
       setStatusMessage(`Error scanning QR code: ${error.message || error}`);
+    } finally {
+      console.log("Scanning complete");
     }
   };
 
@@ -152,6 +150,10 @@ export default function Scan() {
     }
   }, [scanStatus, statusMessage, toast]);
 
+  if (isLoading) {
+    return <LoadingBox />;
+  }
+
   return (
     <Box p={4} display={"flex"} flexDirection={"column"} gap={4}>
       <PageHeading title="Scan" />
@@ -171,7 +173,6 @@ export default function Scan() {
               transform="translateY(-50%)"
               zIndex={-1}
             />
-            {isLoading && <LoadingBox />}
             {isError && <ErrorBox message={`Error: ${error?.message}`} />}
             <Box display={"flex"} justifyContent={"center"} alignItems="center">
               <QrScanner
