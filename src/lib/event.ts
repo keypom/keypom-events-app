@@ -505,6 +505,7 @@ class EventJS {
     isScav: boolean;
     accountId?: string;
   }) => {
+    console.log("claimEventDrop", { secretKey, dropId, dropSecretKey });
     const pkToClaim = this.getPubFromSecret(dropSecretKey);
     this.debugLog(`pkToClaim: ${pkToClaim}`, "log");
 

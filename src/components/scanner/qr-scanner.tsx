@@ -4,10 +4,9 @@ import { isTestEnv } from "@/constants/common";
 import { Box } from "@chakra-ui/react";
 import { Scanner, useDevices } from "@yudiel/react-qr-scanner";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ErrorBox } from "../ui/error-box";
 import { LoadingOverlay } from "./loading-overlay";
-import eventHelperInstance from "@/lib/event";
 
 export const QrScanner = ({
   handleScan,
@@ -23,44 +22,60 @@ export const QrScanner = ({
   const [selectedDevice, setSelectedDevice] = useState<string | undefined>(
     undefined,
   );
-  const [isOnCooldown, setIsOnCooldown] = useState(false);
-  const [isScanning, setIsScanning] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
   const devices = useDevices();
 
-  const cooldownDelay = 3000; // Cooldown period after processing (in milliseconds)
+  // Use refs for scanning logic
+  const isScanningRef = useRef(false);
+  const isOnCooldownRef = useRef(false);
+
+  // Use state for triggering re-renders
+  const [isScanning, setIsScanning] = useState(false);
+  const [isOnCooldown, setIsOnCooldown] = useState(false);
 
   const variants = {
     open: { x: [0, -50, 50, -50, 50, -50, 50, 0] },
     closed: { x: 0 },
   };
 
-  const onScan = async (result) => {
-    if (isOnCooldown || isScanning) return;
+  const enableCooldown = useCallback(() => {
+    isOnCooldownRef.current = true; // Set cooldown flag
+    setIsOnCooldown(true); // Trigger re-render
 
-    const value = result[0].rawValue;
+    setShowAnimation(true); // Optional: Show animation or overlay
 
-    setIsScanning(true);
-
-    try {
-      await handleScan(value);
-    } catch (error: any) {
-      // Errors are handled within handleScan
-      eventHelperInstance.debugLog(error, "error");
-    } finally {
-      setIsScanning(false);
-      enableCooldown();
-    }
-  };
-
-  const enableCooldown = () => {
-    setIsOnCooldown(true);
-    setShowAnimation(true);
     setTimeout(() => {
-      setIsOnCooldown(false);
-      setShowAnimation(false);
-    }, cooldownDelay);
-  };
+      isOnCooldownRef.current = false; // Reset cooldown flag after 3 seconds
+      setIsOnCooldown(false); // Trigger re-render
+      setShowAnimation(false); // Hide animation or overlay
+    }, 3000); // Cooldown duration in milliseconds
+  }, []);
+
+  const onScan = useCallback(
+    async (result: any) => {
+      if (isOnCooldownRef.current || isScanningRef.current) {
+        // Ignore scans during cooldown or if already scanning
+        return;
+      }
+
+      isScanningRef.current = true; // Set scanning flag to true
+      setIsScanning(true); // Trigger re-render
+
+      const value = result[0]?.rawValue;
+
+      try {
+        await handleScan(value);
+      } catch (error) {
+        // Handle errors
+        console.error(error);
+      } finally {
+        isScanningRef.current = false; // Reset scanning flag
+        setIsScanning(false); // Trigger re-render
+        enableCooldown(); // Start cooldown
+      }
+    },
+    [handleScan, enableCooldown],
+  );
 
   const useNextDevice = () => {
     if (devices.length > 0) {
@@ -83,18 +98,17 @@ export const QrScanner = ({
   // DO NOT REMOVE: Exposes the triggerTestScan function to the window in test environment
   useEffect(() => {
     if (isTestEnv) {
-      // @ts-expect-error - Expose the triggerTestScan function to the window
-      window.triggerTestScan = (result) => {
+      // Expose the triggerTestScan function to the window
+      (window as any).triggerTestScan = (result) => {
         onScan(result);
       };
     }
     return () => {
       if (isTestEnv) {
-        // @ts-expect-error - Expose the triggerTestScan function to the window
-        delete window.triggerTestScan;
+        delete (window as any).triggerTestScan;
       }
     };
-  }, []);
+  }, [onScan]);
 
   if (!devices) {
     return (
@@ -163,9 +177,7 @@ export const QrScanner = ({
           },
           video: {
             borderRadius: "1rem",
-            border: `3px solid ${
-              showAnimation ? "red" : "var(--green, #00EC97)"
-            }`,
+            border: `3px solid var(--green, #00EC97)`,
             background: "#00ec97",
             objectFit: "cover",
             aspectRatio: "1/1",
