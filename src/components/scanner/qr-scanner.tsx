@@ -15,7 +15,7 @@ export const QrScanner = ({
   scanDelay = 1000,
   allowMultiple = true,
 }: {
-  handleScan: (value: string) => Promise<{ message: string } | void>;
+  handleScan: (value: string) => Promise<void>;
   scanStatus: "success" | "error" | undefined;
   scanDelay?: number;
   allowMultiple?: boolean;
@@ -28,19 +28,24 @@ export const QrScanner = ({
   const [showAnimation, setShowAnimation] = useState(false);
   const devices = useDevices();
 
+  const cooldownDelay = 3000; // Cooldown period after processing (in milliseconds)
+
   const variants = {
     open: { x: [0, -50, 50, -50, 50, -50, 50, 0] },
     closed: { x: 0 },
   };
+
   const onScan = async (result) => {
     if (isOnCooldown || isScanning) return;
-    setIsScanning(true);
-    try {
-      const value = result[0].rawValue;
-      await handleScan(value);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const value = result[0].rawValue;
+
+    setIsScanning(true);
+
+    try {
+      await handleScan(value);
     } catch (error: any) {
+      // Errors are handled within handleScan
       eventHelperInstance.debugLog(error, "error");
     } finally {
       setIsScanning(false);
@@ -48,13 +53,13 @@ export const QrScanner = ({
     }
   };
 
-  // Increase the cooldown duration to 5000 milliseconds (5 seconds)
   const enableCooldown = () => {
-    setIsOnCooldown(true); // Activate cooldown
+    setIsOnCooldown(true);
+    setShowAnimation(true);
     setTimeout(() => {
-      setIsOnCooldown(false); // Deactivate cooldown after 5000 milliseconds
+      setIsOnCooldown(false);
       setShowAnimation(false);
-    }, scanDelay);
+    }, cooldownDelay);
   };
 
   const useNextDevice = () => {
@@ -89,8 +94,6 @@ export const QrScanner = ({
         delete window.triggerTestScan;
       }
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!devices) {
@@ -160,7 +163,9 @@ export const QrScanner = ({
           },
           video: {
             borderRadius: "1rem",
-            border: `3px solid ${showAnimation ? "red" : "var(--green, #00EC97)"}`,
+            border: `3px solid ${
+              showAnimation ? "red" : "var(--green, #00EC97)"
+            }`,
             background: "#00ec97",
             objectFit: "cover",
             aspectRatio: "1/1",

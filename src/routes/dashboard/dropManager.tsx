@@ -299,10 +299,16 @@ export function DropManager({
         // Set the drop name in the QR modal store
         setDropName(drop.name);
 
+        // Define the QR code options with increased width
+        const qrCodeOptions = { width: 1080 }; // Adjust the width as needed
+
         if (scavengerSecretKeys && scavengerSecretKeys.length > 0) {
           const qrCodes = await Promise.all(
             scavengerSecretKeys.map(({ secretKey }) =>
-              QRCode.toDataURL(`${type}%%piece%%${secretKey}%%${drop.id}`),
+              QRCode.toDataURL(
+                `${type}%%piece%%${secretKey}%%${drop.id}`,
+                qrCodeOptions, // Pass the options here
+              ),
             ),
           );
           setQrCodeUrls(qrCodes);
@@ -312,6 +318,7 @@ export function DropManager({
         } else {
           const url = await QRCode.toDataURL(
             `${type}%%${dropSecretKey}%%${drop.id}`,
+            qrCodeOptions, // Pass the options here
           );
           setQrCodeUrls([url]);
           setQrCodeDescriptions([drop.name]);
@@ -323,6 +330,7 @@ export function DropManager({
     },
     [onQRModalOpen, regenerateKeysForDrops, setDropName],
   );
+
   const handleDownloadQrCode = useCallback((url: string, filename: string) => {
     const link = document.createElement("a");
     link.href = url;
@@ -400,6 +408,9 @@ export function DropManager({
           // Set the drop name
           setDropName(newDrop.name);
 
+          // Define the QR code options with increased width
+          const qrCodeOptions = { width: 1080 }; // Adjust the width as needed
+
           if (isScavengerHunt) {
             // Use regenerateKeysForDrops to ensure consistency
             const { scavengerSecretKeys } = regenerateKeysForDrops([
@@ -414,7 +425,10 @@ export function DropManager({
 
             const qrCodes = await Promise.all(
               scavengerSecretKeys.map(({ secretKey }) =>
-                QRCode.toDataURL(`${type}%%piece%%${secretKey}%%${dropId}`),
+                QRCode.toDataURL(
+                  `${type}%%piece%%${secretKey}%%${dropId}`,
+                  qrCodeOptions, // Pass the options here
+                ),
               ),
             );
             setQrCodeUrls(qrCodes);
@@ -424,6 +438,7 @@ export function DropManager({
           } else {
             const url = await QRCode.toDataURL(
               `${type}%%${dropSecretKey}%%${dropId}`,
+              qrCodeOptions, // Pass the options here
             );
             setQrCodeUrls([url]);
             setQrCodeDescriptions([newDrop.name]);
