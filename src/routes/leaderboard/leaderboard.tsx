@@ -1,3 +1,4 @@
+// Import statements remain the same
 import { useState, useEffect } from "react";
 import { Box, VStack, Flex, Spinner } from "@chakra-ui/react";
 import eventHelperInstance from "@/lib/event";
@@ -23,6 +24,8 @@ export default function Leaderboard() {
         });
         eventHelperInstance.debugLog(`Leaderboard data: ${data}`, "log");
 
+        // **Updated Code Starts Here**
+
         // Filter out blacklisted accounts from the token_leaderboard
         const filteredTokenLeaderboard = data.token_leaderboard.filter(
           (earner: TopTokenEarnerData) => {
@@ -31,12 +34,35 @@ export default function Leaderboard() {
           },
         );
 
+        // Limit the filtered leaderboard to at most 5 entries
+        const topFiveLeaderboard = filteredTokenLeaderboard.slice(0, 5);
+
+        // Prepare placeholders if the leaderboard has fewer than 5 entries
+        const leaderboard: Array<TopTokenEarnerData | null> = [
+          ...topFiveLeaderboard,
+          ...Array(5 - topFiveLeaderboard.length).fill(null),
+        ];
+
+        // Similarly, limit and prepare recent transactions
+        const recentTransactions = data.recent_transactions.reverse();
+        const transactions: Array<TransactionType | null> =
+          recentTransactions.length < 10
+            ? [
+                ...recentTransactions,
+                ...Array(10 - recentTransactions.length).fill(null),
+              ]
+            : recentTransactions.slice(0, 10);
+
+        // Set the state with the prepared data
         setLeaderboardData({
           ...data,
-          token_leaderboard: filteredTokenLeaderboard,
+          token_leaderboard: leaderboard,
           poap_leaderboard: data.poap_leaderboard.reverse(),
-          recent_transactions: data.recent_transactions.reverse(),
+          recent_transactions: transactions,
         });
+
+        // **Updated Code Ends Here**
+
         setIsLoading(false);
       } catch (e: any) {
         eventHelperInstance.debugLog(e, "error");
@@ -84,24 +110,6 @@ export default function Leaderboard() {
     );
   }
 
-  // Prepare placeholders if the leaderboard has fewer than 5 entries
-  const leaderboard: Array<TopTokenEarnerData | null> =
-    leaderboardData!.token_leaderboard.length < 5
-      ? [
-          ...leaderboardData!.token_leaderboard,
-          ...Array(5 - leaderboardData!.token_leaderboard.length).fill(null),
-        ]
-      : leaderboardData!.token_leaderboard;
-
-  // Prepare placeholders if there are fewer than 10 transactions
-  const transactions: Array<TransactionType | null> =
-    leaderboardData!.recent_transactions.length < 10
-      ? [
-          ...leaderboardData!.recent_transactions,
-          ...Array(10 - leaderboardData!.recent_transactions.length).fill(null),
-        ]
-      : leaderboardData!.recent_transactions;
-
   return (
     <Box
       bg={`linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/assets/custom-button-bg.webp)`}
@@ -117,11 +125,11 @@ export default function Leaderboard() {
           justifyContent="space-between"
           width="100%"
         >
-          <TxnFeed recentTransactions={transactions} />
+          <TxnFeed recentTransactions={leaderboardData!.recent_transactions} />
           <LeaderboardAndGlobals
             totalTransactions={leaderboardData!.total_transactions}
             totalTokensTransferred={leaderboardData!.total_tokens_transferred}
-            tokenLeaderboard={leaderboard}
+            tokenLeaderboard={leaderboardData!.token_leaderboard}
           />
         </Flex>
       </VStack>
