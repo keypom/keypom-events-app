@@ -43,8 +43,12 @@ export default function Send() {
       return;
     }
 
-    // Ensure balance is defined and use BN to compare balances
-    if (!curBalance || (amount > parseFloat(curBalance) && !isAdmin)) {
+    // Remove commas from the balance string
+
+    const numericBalance = curBalance
+      ? parseFloat(curBalance.replace(/,/g, ""))
+      : 0;
+    if (!curBalance || (amount > numericBalance && !isAdmin)) {
       setErrorMessage("You don't have enough tokens to send.");
       setStep(STEPS.ERROR);
       setIsSending(false); // Reset sending status
