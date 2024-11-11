@@ -74,7 +74,7 @@ export const IS_DEBUG_MODE = import.meta.env.VITE_DEBUG_MODE;
 console.log("NETWORK_ID", NETWORK_ID);
 console.log("IS_DEBUG_MODE", IS_DEBUG_MODE);
 
-export const BLACKLISTED_LEADERBOARD_USERNAMES = ["test-user-1"];
+export const BLACKLISTED_LEADERBOARD_USERNAMES = ["test-user-1", "tempzies"];
 
 /**
  * KEYPOM
