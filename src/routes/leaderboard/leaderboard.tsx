@@ -35,12 +35,12 @@ export default function Leaderboard() {
         );
 
         // Limit the filtered leaderboard to at most 5 entries
-        const topFiveLeaderboard = filteredTokenLeaderboard.slice(0, 5);
+        const topFiveLeaderboard = filteredTokenLeaderboard.slice(0, 8);
 
         // Prepare placeholders if the leaderboard has fewer than 5 entries
         const leaderboard: Array<TopTokenEarnerData | null> = [
           ...topFiveLeaderboard,
-          ...Array(5 - topFiveLeaderboard.length).fill(null),
+          ...Array(8 - topFiveLeaderboard.length).fill(null),
         ];
 
         // Similarly, limit and prepare recent transactions

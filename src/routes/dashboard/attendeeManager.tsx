@@ -15,10 +15,7 @@ import makeAnimated from "react-select/animated";
 import { DataTable } from "@/components/dashboard/table";
 import { NotFound404 } from "@/components/dashboard/not-found-404";
 import { useAdminAuthContext } from "@/contexts/AdminAuthContext";
-import {
-  AIRTABLE_WORKER_URL,
-  KEYPOM_TOKEN_FACTORY_CONTRACT,
-} from "@/constants/common";
+import { AIRTABLE_WORKER_URL } from "@/constants/common";
 import chroma from "chroma-js";
 import { colors } from "@/theme/colors";
 import { truncateAddress } from "@/utils/truncateAddress";
@@ -124,6 +121,9 @@ export function AttendeeManager() {
   const [searchQuery, setSearchQuery] = useState("");
   const [attendeeTypeFilter, setAttendeeTypeFilter] = useState<string[]>([]);
 
+  const [scannedInFilter, setScannedInFilter] = useState("all");
+  const [nearAccountFilter, setNearAccountFilter] = useState("all");
+
   const [curPage, setCurPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [numPages, setNumPages] = useState(0);
@@ -146,6 +146,16 @@ export function AttendeeManager() {
       setIsLoading(false);
     }
   }, [setAdminUser, navigate]);
+
+  useEffect(() => {
+    const uniqueTypes = Array.from(
+      new Set(
+        attendees.flatMap((attendee) => attendee["I consider myself..."] || []),
+      ),
+    );
+
+    setUniqueAttendeeTypes(uniqueTypes); // Save unique types for the dropdown
+  }, [attendees]);
 
   // Function to chunk an array into batches
   function chunkArray(array, size) {
@@ -246,10 +256,10 @@ export function AttendeeManager() {
               const attendeeIndex = publicKeyToIndexMap[pubKey];
               const attendee = filteredAttendees[attendeeIndex];
 
-              if (attendeeInfo && attendeeInfo.account_id) {
+              if (attendeeInfo) {
                 attendee["NEAR Account"] = attendeeInfo.account_id
-                  .split(".")[0]
-                  .substring(KEYPOM_TOKEN_FACTORY_CONTRACT.length + 1);
+                  ? attendeeInfo.account_id.split(".")[0]
+                  : null;
                 attendee["Scanned In"] = attendeeInfo.has_scanned;
               }
             });
@@ -353,11 +363,44 @@ export function AttendeeManager() {
       );
     }
 
+    // Apply scanned in filter
+    if (scannedInFilter !== "all") {
+      filtered = filtered.filter((attendee) => {
+        if (scannedInFilter === "yes") {
+          return attendee["Scanned In"] === true;
+        } else if (scannedInFilter === "no") {
+          return attendee["Scanned In"] !== true;
+        }
+        return true;
+      });
+    }
+
+    // Apply NEAR account created filter
+    if (nearAccountFilter !== "all") {
+      filtered = filtered.filter((attendee) => {
+        const hasNearAccount =
+          attendee["NEAR Account"] && attendee["NEAR Account"] !== "TBD";
+        if (nearAccountFilter === "yes") {
+          return hasNearAccount;
+        } else if (nearAccountFilter === "no") {
+          return !hasNearAccount;
+        }
+        return true;
+      });
+    }
+
     // Update filtered attendees and reset pagination
     setFilteredAttendees(filtered);
     setNumPages(Math.ceil(filtered.length / pageSize)); // Calculate total pages
     setCurPage(0); // Reset to first page when filters change
-  }, [searchQuery, attendeeTypeFilter, attendees, pageSize]);
+  }, [
+    searchQuery,
+    attendeeTypeFilter,
+    attendees,
+    pageSize,
+    scannedInFilter,
+    nearAccountFilter,
+  ]);
 
   const handleNextPage = () => {
     setCurPage((prev) => Math.min(prev + 1, numPages - 1));
@@ -387,6 +430,19 @@ export function AttendeeManager() {
     label: type,
     value: type,
   }));
+
+  // Filter options
+  const scannedInOptions = [
+    { label: "Filter by scanned in", value: "all" },
+    { label: "Scanned In", value: "yes" },
+    { label: "Not Scanned In", value: "no" },
+  ];
+
+  const nearAccountOptions = [
+    { label: "Filter by account created", value: "all" },
+    { label: "Account Created", value: "yes" },
+    { label: "No Account", value: "no" },
+  ];
 
   return (
     <Box px={8} py={4}>
@@ -428,6 +484,38 @@ export function AttendeeManager() {
               onChange={(selectedOptions: any) => {
                 const values = selectedOptions.map((option) => option.value);
                 setAttendeeTypeFilter(values);
+              }}
+            />
+            {/* New Scanned In Filter */}
+            <Select
+              isMulti={false}
+              components={animatedComponents}
+              options={scannedInOptions}
+              styles={colourStyles}
+              placeholder="Scanned In"
+              value={scannedInOptions.find(
+                (option) => option.value === scannedInFilter,
+              )}
+              onChange={(selectedOption) => {
+                setScannedInFilter(
+                  selectedOption?.value || "Filter by scanned in",
+                );
+              }}
+            />
+            {/* New NEAR Account Created Filter */}
+            <Select
+              isMulti={false}
+              components={animatedComponents}
+              options={nearAccountOptions}
+              styles={colourStyles}
+              placeholder="Account Created"
+              value={nearAccountOptions.find(
+                (option) => option.value === nearAccountFilter,
+              )}
+              onChange={(selectedOption) => {
+                setNearAccountFilter(
+                  selectedOption?.value || "Filter by account created",
+                );
               }}
             />
           </HStack>
