@@ -45,7 +45,7 @@ export default function AppLayout() {
   if (
     isConferenceOver &&
     pathname !== "/offboarding" &&
-    pathname !== "/me/admin"
+    !pathname.startsWith("/me/admin")
   ) {
     eventHelperInstance.debugLog("Conference is over", "log");
     return <Navigate to="/offboarding" replace={true} />;
