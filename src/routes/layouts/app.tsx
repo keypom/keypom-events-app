@@ -41,8 +41,8 @@ export default function AppLayout() {
     return <Navigate to="/help" replace={true} />;
   }
 
-  const isConferenceOver = !isLoading && data?.conferenceOver;
-  if (isConferenceOver && pathname !== "/offboarding") {
+  const isConferenceOver = !isLoading && true;
+  if (isConferenceOver && pathname !== "/offboarding" && pathname !== "/me/admin") {
     eventHelperInstance.debugLog("Conference is over", "log");
     return <Navigate to="/offboarding" replace={true} />;
   }
