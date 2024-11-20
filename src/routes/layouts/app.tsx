@@ -15,7 +15,6 @@ import { useEventCredentials } from "@/stores/event-credentials";
 import { useEffect, useRef } from "react";
 import { useConferenceData } from "@/hooks/useConferenceData";
 import eventHelperInstance from "@/lib/event";
-import path from "path";
 
 export default function AppLayout() {
   const { secretKey } = useEventCredentials();
