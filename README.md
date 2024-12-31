@@ -33,6 +33,27 @@
 pnpm install
 ```
 
+### Environment Variables
+
+Copy `.env.example` to `.env` and configure the following variables:
+
+```bash
+# NEAR network to use (mainnet or testnet)
+VITE_NETWORK_ID=
+
+# Keypom token factory contract (deploy from https://github.com/keypom/events-account-factory)
+VITE_CONTRACT_ID=
+
+# Worker URLs
+VITE_AIRTABLE_WORKER_URL= # Get admins and attendees from airtable (email collection)
+VITE_IPFS_WORKER_URL=     # Pinning NFT drop image + metadata (admin dashboard)
+VITE_MULTICHAIN_WORKER_URL= # Chain abstraction, create multichain drop (admin dashboard)
+
+# Google OAuth client ID for authentication
+# See: https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid
+VITE_GOOGLE_CLIENT_ID=
+```
+
 ### Running the app
 
 First, run the development server:
