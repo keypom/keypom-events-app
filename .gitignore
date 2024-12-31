@@ -28,4 +28,6 @@ dist-ssr
 /playwright/.cache/
 stats.html
 
+.env
+
 *.tsbuildinfo
